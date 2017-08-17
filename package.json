@@ -1,0 +1,11 @@
+{
+    "scripts": {
+        "start": "electron index.js"
+    },
+    "devDependencies": {
+        "electron": "^1.7.5"
+    },
+    "dependencies": {
+        "chokidar": "^1.7.0"
+    }
+}
