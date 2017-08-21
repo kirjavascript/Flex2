@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<meta charset="utf-8">
+<head>
+    <title>Flex 2</title>
+    <style>
+        @font-face {
+            font-family: 'Hacker',
+            src: url('styles/hack-regular.ttf') format('truetype');
+        }
+
+        .nuke {
+            opacity: 0.5;
+            transform: scale(1.9);
+            position: absolute;
+            bottom: -0px;
+            right: -0px;
+        }
+    </style>
+</head>
+<body>~flex2...<img src="nuke.png" class="nuke"/></body>
+<script>
+require('babel-register')({
+    cache: true,
+    presets: [
+        'stage-0',
+    ],
+    plugins: [
+        'transform-react-jsx',
+        'transform-decorators-legacy',
+        'transform-class-properties',
+    ],
+});
+require('./index');
+</script>
+</html>

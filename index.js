@@ -15,12 +15,9 @@ app.on('ready', function() {
         resizable: false,
     });
 
-    // mainWindow.openDevTools();
-    // mainWindow.maximize();
-
-    mainWindow.loadURL('file://' + __dirname + '/src/index.html');
-
     // mainWindow.setMenu(null);
+    mainWindow.openDevTools();
+    mainWindow.loadURL('file://' + __dirname + '/web/index.html');
 
     mainWindow.on('closed', function() {
         mainWindow = null;
@@ -28,7 +25,7 @@ app.on('ready', function() {
 });
 
 require('chokidar')
-    .watch(['src/**/*'], {ignored: /[\/\\]\./})
+    .watch(['web/**/*'], {ignored: /[\/\\]\./})
     .on('change', () => {
         mainWindow.reload();
     });

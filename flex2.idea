@@ -1,5 +1,6 @@
 UNDO
-project files for art/map/dplc
+autoupdate / new version information
+1 project file per hack (tree list?)
 custom mappings format files (s1/s2/s3 uses definition files)
 spriteplotter
 rotsprite
@@ -8,3 +9,9 @@ DPLC Editor
 load files via drag and drop
 load files in another thread(?)
 angled guidelines / rotate sprite view
+
+palettes / sprites / dplcs tab? (!)
+dplcs lists them individually
+sprites has a long list
+reactdnd for sprites
+recent projects
