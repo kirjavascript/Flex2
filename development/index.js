@@ -52,6 +52,7 @@ module.exports = (app, mainWindow) => {
                         }
                         else {
                             mainWindow.reload();
+                            console.log('SCSS Compiled');
                         }
                     }
                 );

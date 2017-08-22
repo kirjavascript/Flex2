@@ -1,18 +1,23 @@
-@import "./variables.scss";
+@import './variables.scss';
+@import './fonts.scss';
 
 html {
     user-select: none;
     overflow: hidden;
+    cursor: default;
+}
+
+img {
+    -webkit-user-drag: none;
+    user-drag: none;
 }
 
 body {
     margin: 0;
-    cursor: default;
-    background-color: $grey;
+    background-color: $black;
     color: $white;
     font-size: 14px;
-    font-family: 'Hacker';
-    font-weight: 700;
+    font-family: Hack Regular;
 }
 
 .nuke {
@@ -21,4 +26,9 @@ body {
     position: absolute;
     bottom: 0;
     right: 0;
+    width: 45vw;
+}
+p {
+    color: $grey;
+    font-family: Hack Bold;
 }

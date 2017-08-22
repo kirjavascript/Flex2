@@ -2,6 +2,7 @@
 // http://ourcodeworld.com/articles/read/288/how-to-handle-drag-and-drop-file-feature-in-electron-framework
 // https://github.com/veltman/flubber + react-motion
 // react ui framework
+// webpack in seperate process, use chokidar to watch web/
 
 // breadcrumbs like vim airline
 // get comment colour
@@ -9,6 +10,7 @@
 // ; command mode - list commands in help
 // .flex
 //
+
 
 const { observable, computed, action, autorun } = require('mobx');
 const { observer } = require('mobx-react');
@@ -18,7 +20,6 @@ class Thing {
 }
 
 let thing = new Thing();
-
 
 const React = require('react');
 const { render } = require('react-dom');
