@@ -1,5 +1,3 @@
-require('./styles/root.scss');
-
 // const { remote } = require('electron').remote;
 // http://ourcodeworld.com/articles/read/288/how-to-handle-drag-and-drop-file-feature-in-electron-framework
 // https://github.com/veltman/flubber + react-motion

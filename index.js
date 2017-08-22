@@ -1,4 +1,5 @@
 const { app, BrowserWindow } = require('electron');
+const flexDevTools = require('./development');
 let mainWindow = null;
 
 app.on('window-all-closed', function() {
@@ -16,34 +17,14 @@ app.on('ready', function() {
     });
 
     mainWindow.setMenu(null);
-    mainWindow.openDevTools();
     mainWindow.loadURL('file://' + __dirname + '/static/index.html');
 
     mainWindow.on('closed', function() {
         mainWindow = null;
     });
-});
 
-// webpack reload
+    // development...
 
-const webpack = require('webpack');
-const webpackConfig = require('./webpack.config.js')({dev:true});
-const compiler = webpack(webpackConfig);
-
-compiler.watch({
-
-    aggregateTimeout: 300,
-    poll: true
-
-}, (err, stats) => {
-
-    if (err) {
-        console.error(err)
-    }
-    else {
-        console.log(stats.toString({colors:true, chunks:false}));
-        console.log('Sending reload signal...');
-        mainWindow.reload();
-    }
+    flexDevTools(app, mainWindow);
 
 });

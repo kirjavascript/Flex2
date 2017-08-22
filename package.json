@@ -11,7 +11,7 @@
         "babel-plugin-transform-decorators-legacy": "^1.3.4",
         "babel-plugin-transform-react-jsx": "^6.24.1",
         "babel-preset-stage-0": "^6.24.1",
-        "css-loader": "^0.28.5",
+        "chokidar": "^1.7.0",
         "electron": "^1.7.5",
         "eslint": "^3.7.0",
         "eslint-loader": "^1.5.0",
@@ -19,9 +19,6 @@
         "import-glob-loader": "^1.1.0",
         "raw-loader": "^0.5.1",
         "sass.js": "^0.10.6",
-        "sassjs-loader": "^1.0.0",
-        "style-loader": "^0.18.2",
-        "stylelint-webpack-plugin": "^0.7.0",
         "webpack": "^3.5.5"
     },
     "dependencies": {

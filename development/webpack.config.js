@@ -1,6 +1,3 @@
-let webpack = require('webpack');
-let StyleLintPlugin = require('stylelint-webpack-plugin');
-
 module.exports = (env={}, args={}) => {
 
     let config = {
@@ -9,7 +6,7 @@ module.exports = (env={}, args={}) => {
             root: './modules/root.js',
         },
         output: {
-            path: __dirname  + '/static/bundles',
+            path: __dirname  + '/../static/bundles',
             filename: '[name].js',
         },
         module: {
@@ -33,15 +30,6 @@ module.exports = (env={}, args={}) => {
                     ]
                 },
                 {
-                    test: /\.scss$/,
-                    use: [
-                        { loader:'style-loader' },
-                        { loader:'raw-loader' },
-                        { loader:'sassjs-loader' },
-                        { loader:'import-glob-loader' },
-                    ]
-                },
-                {
                     test: /\.js$/,
                     enforce: 'pre',
                     loader: 'eslint-loader',
@@ -56,14 +44,6 @@ module.exports = (env={}, args={}) => {
             ],
         },
         plugins: [
-            new webpack.DefinePlugin({
-                __DEV__: env.dev,
-                __WEB__: true,
-            }),
-            new StyleLintPlugin({
-                configFile: '.stylelintrc',
-                syntax: 'scss',
-            }),
         ],
         resolve: {
             extensions: ['.js', '.json'],
