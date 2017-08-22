@@ -15,17 +15,35 @@ app.on('ready', function() {
         resizable: false,
     });
 
-    // mainWindow.setMenu(null);
+    mainWindow.setMenu(null);
     mainWindow.openDevTools();
-    mainWindow.loadURL('file://' + __dirname + '/web/index.html');
+    mainWindow.loadURL('file://' + __dirname + '/static/index.html');
 
     mainWindow.on('closed', function() {
         mainWindow = null;
     });
 });
 
-require('chokidar')
-    .watch(['web/**/*'], {ignored: /[\/\\]\./})
-    .on('change', () => {
+// webpack reload
+
+const webpack = require('webpack');
+const webpackConfig = require('./webpack.config.js')({dev:true});
+const compiler = webpack(webpackConfig);
+
+compiler.watch({
+
+    aggregateTimeout: 300,
+    poll: true
+
+}, (err, stats) => {
+
+    if (err) {
+        console.error(err)
+    }
+    else {
+        console.log(stats.toString({colors:true, chunks:false}));
+        console.log('Sending reload signal...');
         mainWindow.reload();
-    });
+    }
+
+});
