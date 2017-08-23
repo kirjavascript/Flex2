@@ -1,3 +1,5 @@
+const webpack = require('webpack');
+
 module.exports = (env={}, args={}) => {
 
     let config = {
@@ -52,8 +54,14 @@ module.exports = (env={}, args={}) => {
             }
 
         },
-        devtool: env.dev ? 'source-map' : false,
     };
+
+    if (env.dev) {
+        // config.devtool = 'eval';
+    }
+    else {
+        config.plugins.push(new webpack.optimize.ModuleConcatenationPlugin());
+    }
 
     return config;
 

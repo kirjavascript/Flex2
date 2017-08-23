@@ -2,12 +2,13 @@ const { writeFile } = require('fs');
 
 module.exports = (app, mainWindow) => {
 
+
     mainWindow.openDevTools();
 
     // webpack reload
 
     const webpack = require('webpack');
-    const webpackConfig = require('./webpack.config.js')({dev:true});
+    const webpackConfig = require('./webpack.config.js')({dev: true});
     const compiler = webpack(webpackConfig);
 
     compiler.watch({
@@ -34,7 +35,7 @@ module.exports = (app, mainWindow) => {
     const sassCompiler = require('sass.js/dist/sass.node');
 
     const options = {
-      style: sassCompiler.Sass.style.compressed,
+        style: sassCompiler.Sass.style.compressed,
     };
 
     const buildSass = () => {

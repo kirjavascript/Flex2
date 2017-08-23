@@ -11,6 +11,7 @@
 // .flex
 //
 
+require('./store/project');
 
 const { observable, computed, action, autorun } = require('mobx');
 const { observer } = require('mobx-react');
