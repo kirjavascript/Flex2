@@ -1,6 +1,7 @@
 const { dialog } = require('electron').remote;
 import { observable, computed, action, autorun, toJS } from 'mobx';
 import { writeFile, readFile, stat } from 'fs';
+import { stringify } from '#util/stringify';
 import { workspace } from '#store/workspace';
 import { ObjectDef } from '#store/objectdef';
 
@@ -35,7 +36,11 @@ export class Project {
                         throw err;
                     }
                     this.reset();
+                    // rehydrate...
                     Object.assign(this, JSON.parse(data));
+                    this.objects.replace(
+                        this.objects.map((obj) => new ObjectDef(this, obj))
+                    );
                     this.boot();
                 }
                 catch (e) {
@@ -56,7 +61,7 @@ export class Project {
         if (!booted) {
             booted = true;
             autorun(() => {
-                const data = JSON.stringify(toJS(project), null, 4);
+                const data = stringify(project);
 
                 if (workspace.projectPath) {
                     writeFile(

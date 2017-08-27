@@ -4,8 +4,7 @@ import { project } from '#store/project';
 import { workspace } from '#store/workspace';
 import { Indent, Item } from './tree-ui';
 import { toJS } from 'mobx';
-// http://chenglou.github.io/react-motion/demos/demo8-draggable-list/
-// + computed flatten
+
 @observer
 export class ProjectTree extends Component {
 
@@ -18,7 +17,7 @@ export class ProjectTree extends Component {
 
                 <div className="indent">
                     {project.objects.map((obj) => (
-                        <div key={Math.random()}>
+                        <div key={obj.key}>
                             <Item color="blue">
                                 Object
                             </Item>
@@ -31,6 +30,9 @@ export class ProjectTree extends Component {
                                 </Item>
                                 <Item color="red">
                                     DPLCS
+                                </Item>
+                                <Item prefix="-" onClick={obj.remove}>
+                                    delete object
                                 </Item>
                             </div>
                         </div>

@@ -24,3 +24,8 @@ recent projects
 // asset??
 // .flex
 // breadcrumbs like vim airline
+
+// definition saved in json, load changes UI to object view and changes to intermediate format
+// format decides how assets are saved
+// load to/from environment
+// new path

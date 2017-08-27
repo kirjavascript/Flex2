@@ -1,9 +1,23 @@
 import { observable, computed, action, autorun, toJS } from 'mobx';
 
 export class ObjectDef {
-    constructor(parent, obj = void 0) {
-        this.parent = parent;
 
+    @observable name = '';
+    @observable art = {
+        path: null,
+        format: null,
+    };
+    @observable mappings = {
+        path: null,
+        format: null,
+    };
+    @observable dplcs = {
+        enabled: false,
+        path: '',
+        format: null,
+    };
+
+    constructor(parent, obj = void 0) {
         // if rehydrating...
         if (obj) {
             Object.assign(this, obj);
@@ -12,6 +26,7 @@ export class ObjectDef {
             this.key = Math.random().toString(35).slice(2);
         }
 
+        this.parent = parent;
     }
 
     @action remove = () => {

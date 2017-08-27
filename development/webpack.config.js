@@ -52,6 +52,7 @@ module.exports = (env={}, args={}) => {
             alias: {
                 '#store': __dirname + '/../modules/store',
                 '#components': __dirname + '/../modules/components',
+                '#util': __dirname + '/../modules/util',
             }
 
         },

@@ -1,0 +1,22 @@
+{
+    "name": "boom",
+    "objects": [
+        {
+            "key": "nvrromfb3hn",
+            "name": "",
+            "art": {
+                "path": null,
+                "format": null
+            },
+            "mappings": {
+                "path": null,
+                "format": null
+            },
+            "dplcs": {
+                "enabled": false,
+                "path": "",
+                "format": null
+            }
+        }
+    ]
+}
