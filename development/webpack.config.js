@@ -50,7 +50,8 @@ module.exports = (env={}, args={}) => {
         resolve: {
             extensions: ['.js', '.json'],
             alias: {
-                '#js': __dirname + '/modules/js',
+                '#store': __dirname + '/../modules/store',
+                '#components': __dirname + '/../modules/components',
             }
 
         },

@@ -15,3 +15,12 @@ dplcs lists them individually
 sprites has a long list
 reactdnd for sprites
 recent projects
+
+// keyboard shortcuts that only work in certain components` (higher-order)
+// http://ourcodeworld.com/articles/read/288/how-to-handle-drag-and-drop-file-feature-in-electron-framework
+// react ui framework
+
+// use a project tree + drag and drop[ drag files]
+// asset??
+// .flex
+// breadcrumbs like vim airline

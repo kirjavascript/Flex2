@@ -1,42 +1,28 @@
-// const { remote } = require('electron').remote;
-// http://ourcodeworld.com/articles/read/288/how-to-handle-drag-and-drop-file-feature-in-electron-framework
-// https://github.com/veltman/flubber + react-motion
-// react ui framework
-// webpack in seperate process, use chokidar to watch web/
+import React from 'react';
+import { render } from 'react-dom';
+import { observer } from 'mobx-react';
 
-// breadcrumbs like vim airline
-// get comment colour
-// use a project tree
-// ; command mode - list commands in help
-// .flex
-//
+import { workspace } from '#store/workspace';
 
-require('./store/project');
-
-const { observable, computed, action, autorun } = require('mobx');
-const { observer } = require('mobx-react');
-
-class Thing {
-    @observable v = 7;
-}
-
-let thing = new Thing();
-
-const React = require('react');
-const { render } = require('react-dom');
+import { ProjectExplorer } from '#components/project/menu';
+import { ProjectTree } from '#components/project/tree';
 
 @observer
-class Test extends React.Component {
+class Root extends React.Component {
 
     render() {
-        return <div>
-            <input type="range" onChange={(e) => {
-                thing.v = (e.target.value);
-            }}/>
-            {thing.v}
-        </div>;
+        return do {
+            if (!workspace.projectPath) {
+                <ProjectExplorer/>;
+            }
+            else {
+                <div>
+                    <ProjectTree/>
+                </div>;
+            }
+        };
     }
 
 }
 
-render(<Test/>, document.body.appendChild(document.createElement('div')));
+render(<Root/>, document.body.appendChild(document.createElement('div')));

@@ -35,7 +35,7 @@ module.exports = (app, mainWindow) => {
     const sassCompiler = require('sass.js/dist/sass.node');
 
     const options = {
-        style: sassCompiler.Sass.style.compressed,
+        // style: sassCompiler.Sass.style.compressed,
     };
 
     const buildSass = () => {

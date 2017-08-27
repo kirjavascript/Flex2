@@ -1,1 +1,106 @@
-@font-face{font-family:'Hack Regular';src:url("../fonts/hack-regular-webfont.ttf") format("truetype")}@font-face{font-family:'Hack Bold';src:url("../fonts/hack-bold-webfont.ttf") format("truetype")}@font-face{font-family:'Hack Italic';src:url("../fonts/hack-italic-webfont.ttf") format("truetype")}@font-face{font-family:'Hack Bold Italic';src:url("../fonts/hack-bolditalic-webfont.ttf") format("truetype")}html{user-select:none;overflow:hidden;cursor:default}img{-webkit-user-drag:none;user-drag:none}body{margin:0;background-color:#282C34;color:#ABB2BF;font-size:14px;font-family:Hack Regular}.nuke{opacity:0.5;transform:scale(1.9);position:absolute;bottom:0;right:0;width:45vw}p{color:#4E5462;font-family:Hack Bold}
+@font-face {
+  font-family: 'Hack Regular';
+  src: url("../fonts/hack-regular-webfont.ttf") format("truetype"); }
+
+@font-face {
+  font-family: 'Hack Bold';
+  src: url("../fonts/hack-bold-webfont.ttf") format("truetype"); }
+
+@font-face {
+  font-family: 'Hack Italic';
+  src: url("../fonts/hack-italic-webfont.ttf") format("truetype"); }
+
+@font-face {
+  font-family: 'Hack Bold Italic';
+  src: url("../fonts/hack-bolditalic-webfont.ttf") format("truetype"); }
+
+.project-menu {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  align-items: center;
+  justify-content: center; }
+  .project-menu .item {
+    text-align: center;
+    background-color: #98C379;
+    color: #282C34;
+    font-family: Hack Bold;
+    padding: 2px 5px;
+    margin: 5px;
+    width: 200px;
+    font-size: 14px;
+    word-break: break-word; }
+  .project-menu input {
+    margin: 4px;
+    margin-bottom: 0px;
+    width: 200px; }
+
+.project-tree {
+  width: 220px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0px 0px 7px #282C34; }
+  .project-tree .indent {
+    margin-left: 10px; }
+  .project-tree .item {
+    background-color: #4E5462;
+    padding: 2px 5px;
+    margin: 2px;
+    color: #ABB2BF;
+    display: flex;
+    justify-content: space-between; }
+  .project-tree .color, .project-tree .item.magenta, .project-tree .item.blue, .project-tree .item.yellow, .project-tree .item.green, .project-tree .item.red {
+    color: #282C34;
+    font-family: Hack Bold; }
+  .project-tree .item.magenta {
+    background-color: #C678DD; }
+  .project-tree .item.blue {
+    background-color: #61AFEF; }
+  .project-tree .item.yellow {
+    background-color: #D19A66; }
+  .project-tree .item.green {
+    background-color: #98C379; }
+  .project-tree .item.red {
+    background-color: #E06C75; }
+
+html {
+  user-select: none;
+  overflow: hidden;
+  cursor: default; }
+
+img {
+  -webkit-user-drag: none;
+  user-drag: none; }
+
+body {
+  margin: 0;
+  background-color: #282C34;
+  color: #ABB2BF;
+  font-size: 14px;
+  font-family: Hack Regular; }
+
+input {
+  background-color: #282C34;
+  border: 1px solid #5C6370;
+  color: #ABB2BF;
+  font-family: Hack Bold;
+  padding: 2px 5px; }
+  input::placeholder {
+    color: #5C6370; }
+  input:focus {
+    outline: none; }
+
+.nuke {
+  transform: scale(1.9);
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 45vw;
+  z-index: -1; }
+
+p {
+  color: #4E5462;
+  font-family: Hack Bold; }

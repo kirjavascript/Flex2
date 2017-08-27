@@ -1,0 +1,51 @@
+.project-tree {
+    width: 220px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0px 0px 7px $black;
+
+    .indent {
+        margin-left: 10px;
+    }
+
+
+    .item {
+        background-color: $grey;
+        padding: 2px 5px;
+        margin: 2px;
+        color: $white;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .color {
+        color: $black;
+        font-family: Hack Bold;
+    }
+    .item.magenta {
+        @extend .color;
+        background-color: $magenta;
+    }
+
+    .item.blue {
+        @extend .color;
+        background-color: $blue;
+    }
+
+    .item.yellow {
+        @extend .color;
+        background-color: $yellow2;
+    }
+
+    .item.green {
+        @extend .color;
+        background-color: $green;
+    }
+
+    .item.red {
+        @extend .color;
+        background-color: $red;
+    }
+}
