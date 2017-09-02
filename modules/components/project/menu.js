@@ -65,21 +65,21 @@ export class ProjectExplorer extends Component {
                                 placeholder="Project Name..."
                             />
                             {this.newProjectName && (
-                                <div className="item" onClick={this.createNew}>
+                                <div className="menu-item" onClick={this.createNew}>
                                     Create '{this.newProjectName}'
                                 </div>
                             )}
-                            <div className="item" onClick={this.resetMenu}>
+                            <div className="menu-item" onClick={this.resetMenu}>
                                 Cancel
                             </div>
                         </div>;
                     }
                     else {
                         <div>
-                            <div className="item" onClick={this.newProject}>
+                            <div className="menu-item" onClick={this.newProject}>
                                 New Project
                             </div>
-                            <div className="item" onClick={this.openProject}>
+                            <div className="menu-item" onClick={this.openProject}>
                                 Open Project
                             </div>
                         </div>;

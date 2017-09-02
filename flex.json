@@ -1,15 +1,14 @@
 {
-    "name": "boom",
+    "name": "Sonic Boom",
     "objects": [
         {
-            "key": "nvrromfb3hn",
-            "name": "",
+            "name": "Sonic",
             "art": {
-                "path": null,
+                "path": "../../sonic/boom/objects/sonic/art_sonic.bin",
                 "format": null
             },
             "mappings": {
-                "path": null,
+                "path": "",
                 "format": null
             },
             "dplcs": {

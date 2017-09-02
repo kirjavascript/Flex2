@@ -4,11 +4,11 @@ export class ObjectDef {
 
     @observable name = '';
     @observable art = {
-        path: null,
+        path: '',
         format: null,
     };
     @observable mappings = {
-        path: null,
+        path: '',
         format: null,
     };
     @observable dplcs = {
@@ -16,14 +16,14 @@ export class ObjectDef {
         path: '',
         format: null,
     };
+    @computed get key() {
+        return Math.random().toString(35).slice(2);
+    }
 
     constructor(parent, obj = void 0) {
         // if rehydrating...
         if (obj) {
             Object.assign(this, obj);
-        }
-        else {
-            this.key = Math.random().toString(35).slice(2);
         }
 
         this.parent = parent;

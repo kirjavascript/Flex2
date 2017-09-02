@@ -15,6 +15,7 @@ module.exports = (env={}, args={}) => {
             loaders: [
                 {
                     test: /\.js$/,
+                    exclude: /node_modules/,
                     use: [
                         {
                             loader: 'babel-loader',
@@ -35,6 +36,7 @@ module.exports = (env={}, args={}) => {
                     test: /\.js$/,
                     enforce: 'pre',
                     loader: 'eslint-loader',
+                    exclude: /node_modules/,
                     options: {
                         configFile: '.eslintrc',
                         failOnWarning: false,
@@ -52,7 +54,9 @@ module.exports = (env={}, args={}) => {
             alias: {
                 '#store': __dirname + '/../modules/store',
                 '#components': __dirname + '/../modules/components',
+                '#ui': __dirname + '/../modules/components/ui',
                 '#util': __dirname + '/../modules/util',
+                '#styles': __dirname + '/../styles/',
             }
 
         },

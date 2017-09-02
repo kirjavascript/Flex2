@@ -1,0 +1,60 @@
+.item {
+    color: $white;
+    padding: 2px 5px;
+    margin: 2px 0;
+    display: flex;
+    justify-content: space-between;
+    width: 150px;
+}
+
+.center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.panel {
+    background-color: $black;
+    border: 1px solid $white2;
+}
+
+input {
+    background-color: $black;
+    border: 1px solid $white2;
+    color: $white;
+    font-family: Hack Bold;
+    padding: 2px 5px;
+    width: 150px;
+    &:placeholder {
+        color: $white2;
+    }
+    &:focus {
+        outline: none;
+    }
+}
+
+.file {
+    @extend .row;
+    .dropzone {
+        border: 2px dashed $grey;
+        padding: 15px;
+        border-radius: 5px;
+        text-align: center;
+        width: 200px;
+    }
+    .clear {
+        color: $grey;
+        font-family: Hack Bold;
+    }
+    .dragging {
+        background-color: $grey;
+    }
+}

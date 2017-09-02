@@ -1,7 +1,9 @@
 @import './variables.scss';
 @import './fonts.scss';
+@import './components/ui.scss';
+@import './components/layout.scss';
 @import './components/project-menu.scss';
-@import './components/project-tree.scss';
+@import './components/project-config.scss';
 
 html {
     user-select: none;
@@ -22,22 +24,8 @@ body {
     font-family: Hack Regular;
 }
 
-input {
-    background-color: $black;
-    border: 1px solid $white2;
-    color: $white;
-    font-family: Hack Bold;
-    padding: 2px 5px;
-    &::placeholder {
-        color: $white2;
-    }
-    &:focus {
-        outline: none;
-    }
-}
-
 .nuke {
-    // opacity: 0.5;
+    opacity: 0.5;
     transform: scale(1.9);
     position: absolute;
     bottom: 0;
@@ -46,7 +34,24 @@ input {
     z-index: -1;
 }
 
-p {
-    color: $grey;
-    font-family: Hack Bold;
+::-webkit-scrollbar {
+    &:vertical {
+        width: 10px;
+    }
+    &:horizontal {
+        height: 10px;
+    }
+    background-color: $black;
+}
+::-webkit-scrollbar-track-piece {
+    // background-color: $grey;
+}
+::-webkit-scrollbar-thumb {
+    background-color: $grey;
+}
+::-webkit-scrollbar-corner {
+    display: none;
+}
+::-webkit-scrollbar-resizer {
+    display: none;
 }

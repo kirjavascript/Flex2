@@ -9,21 +9,16 @@ DPLC Editor
 load files via drag and drop
 load files in another thread(?)
 angled guidelines / rotate sprite view
+chgeck new version
 
 palettes / sprites / dplcs tab? (!)
 dplcs lists them individually
 sprites has a long list
 reactdnd for sprites
 recent projects
+draggable reordering
 
 // keyboard shortcuts that only work in certain components` (higher-order)
-// http://ourcodeworld.com/articles/read/288/how-to-handle-drag-and-drop-file-feature-in-electron-framework
-// react ui framework
-
-// use a project tree + drag and drop[ drag files]
-// asset??
-// .flex
-// breadcrumbs like vim airline
 
 // definition saved in json, load changes UI to object view and changes to intermediate format
 // format decides how assets are saved

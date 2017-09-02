@@ -37,9 +37,10 @@ export class Project {
                     }
                     this.reset();
                     // rehydrate...
-                    Object.assign(this, JSON.parse(data));
+                    const projectData = JSON.parse(data);
+                    this.name = projectData.name;
                     this.objects.replace(
-                        this.objects.map((obj) => new ObjectDef(this, obj))
+                        projectData.objects.map((obj) => new ObjectDef(this, obj))
                     );
                     this.boot();
                 }

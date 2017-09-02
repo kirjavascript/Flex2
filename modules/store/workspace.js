@@ -1,6 +1,7 @@
 import { observable, computed, action, autorun } from 'mobx';
 import { storage } from './storage';
 import { project } from './project';
+import path from 'path';
 
 class Workspace {
     @observable projectPath = '';
@@ -15,6 +16,13 @@ class Workspace {
     }
     @action closeProject = () => {
         this.projectPath = '';
+    };
+
+    @action relativePath = (filepath) => {
+        return path.relative(this.projectPath, filepath);
+    };
+    @action absolutePath = (filepath) => {
+        return path.resolve(this.projectPath, filepath);
     };
 }
 
