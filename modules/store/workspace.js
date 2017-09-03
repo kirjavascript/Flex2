@@ -31,5 +31,4 @@ storage(workspace, 'workspace');
 if (workspace.projectPath) {
     workspace.openProject();
 }
-
 export { workspace };

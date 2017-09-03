@@ -1,20 +1,21 @@
 import { observable, computed, action, autorun, toJS } from 'mobx';
+import { environment } from '#store/environment';
 
 export class ObjectDef {
 
     @observable name = '';
     @observable art = {
         path: '',
-        format: null,
+        compression: 'Uncompressed',
     };
     @observable mappings = {
         path: '',
-        format: null,
+        format: 'Sonic 1',
     };
     @observable dplcs = {
         enabled: false,
         path: '',
-        format: null,
+        format: 'Sonic 1',
     };
     @computed get key() {
         return Math.random().toString(35).slice(2);
@@ -28,6 +29,14 @@ export class ObjectDef {
 
         this.parent = parent;
     }
+
+    @action load = () => {
+        environment.loadObject(this);
+    };
+
+    @action save = () => {
+        environment.saveObject(this);
+    };
 
     @action remove = () => {
         const newList = this.parent.objects.filter((d) => d != this);

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { project } from '#store/project';
 import { workspace } from '#store/workspace';
-import { Item, Input, File } from '#ui';
+import { Item, Input, File, Select } from '#ui';
 
 @observer
 export class ProjectConfig extends Component {
@@ -41,26 +41,99 @@ export class ProjectConfig extends Component {
                                     accessor="name"
                                     placeholder="Object Name"
                                 />
-   </div>
+                           </div>
                             <div className="indent">
+                                <Item color="magenta">
+                                    Palettes
+                                </Item>
                                 <Item color="green">
                                     Art
                                 </Item>
                                 <div className="options">
+                                    <Select
+                                        label="Compression"
+                                        options={[
+                                            'Uncompressed',
+                                            'Nemesis',
+                                            'Kosinski',
+                                            'Kosinski-M',
+                                            'Comper',
+                                        ]}
+                                        store={obj.art}
+                                        accessor="compression"
+                                    />
                                     <File
                                         store={obj.art}
                                         accessor="path"
                                     />
-   </div>
+                                </div>
                                 <Item color="yellow">
                                     Mappings
                                 </Item>
+                                <div className="options">
+                                    <Select
+                                        label="Format"
+                                        options={[
+                                            'Sonic 1',
+                                            'Sonic 2',
+                                            'Sonic 3&K',
+                                            'Custom...',
+                                        ]}
+                                        store={obj.mappings}
+                                        accessor="format"
+                                    />
+                                    <File
+                                        store={obj.mappings}
+                                        accessor="path"
+                                    />
+                                </div>
                                 <Item color="red">
                                     DPLCS
                                 </Item>
-                                <Item color="red" inverted onClick={obj.remove}>
-                                    Delete Object
-                                </Item>
+                                <div className="options">
+                                    <Select
+                                        label="Enabled"
+                                        options={[
+                                            'Yes',
+                                            'No',
+                                        ]}
+                                        store={obj.dplcs}
+                                        accessor="enabled"
+                                    />
+                                    {obj.dplcs.enabled == 'Yes' && (
+                                        <div>
+                                            <Select
+                                                label="Format"
+                                                options={[
+                                                    'Sonic 1',
+                                                    'Sonic 2',
+                                                    'Sonic 3&K',
+                                                    'Sonic CD',
+                                                    'Custom...',
+                                                ]}
+                                                store={obj.dplcs}
+                                                accessor="format"
+                                            />
+                                           <File
+                                               store={obj.dplcs}
+                                               accessor="path"
+                                           />
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="actions">
+                                    <Item color="red" inverted onClick={obj.remove}>
+                                        Delete Object
+                                    </Item>
+                                    <div>
+                                        <Item color="green" inverted onClick={obj.load}>
+                                            Load Object
+                                        </Item>
+                                        <Item color="green" inverted onClick={obj.save}>
+                                            Save To Object
+                                        </Item>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     ))}

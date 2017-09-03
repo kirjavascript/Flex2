@@ -2,19 +2,19 @@
     "name": "Sonic Boom",
     "objects": [
         {
-            "name": "Sonic",
+            "name": "",
             "art": {
                 "path": "../../sonic/boom/objects/sonic/art_sonic.bin",
-                "format": null
+                "compression": "Uncompressed"
             },
             "mappings": {
                 "path": "",
-                "format": null
+                "format": "Sonic 1"
             },
             "dplcs": {
                 "enabled": false,
                 "path": "",
-                "format": null
+                "format": "Sonic 1"
             }
         }
     ]

@@ -4,6 +4,11 @@ import { model, saveModel } from './model';
 import FlexLayout from 'flexlayout-react';
 
 import { ProjectConfig } from '#components/project/config';
+import { Palettes } from '#components/palettes';
+import { Art } from '#components/art';
+import { Sprites } from '#components/sprites';
+import { Mappings } from '#components/mappings';
+import { DPLCs } from '#components/dplcs';
 
 export class Layout extends Component {
 
@@ -11,9 +16,24 @@ export class Layout extends Component {
         let component = node.getComponent();
         saveModel();
 
-        return do {
+        return node._visible && do {
             if (component == 'project') {
                 <ProjectConfig/>;
+            }
+            else if (component == 'palettes') {
+                <Palettes/>;
+            }
+            else if (component == 'art') {
+                <Art/>;
+            }
+            else if (component == 'sprites') {
+                <Sprites/>;
+            }
+            else if (component == 'mappings') {
+                <Mappings/>;
+            }
+            else if (component == 'dplcs') {
+                <DPLCs/>;
             }
         };
     }

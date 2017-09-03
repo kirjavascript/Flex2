@@ -26,27 +26,27 @@ const DEFAULT_LAYOUT = {
                     {
                         'type': 'tab',
                         'name': 'Palettes',
-                        'component':'grid',
+                        'component':'palettes',
                     },
                     {
                         'type': 'tab',
                         'name': 'Art',
-                        'component':'grid',
+                        'component':'art',
                     },
                     {
                         'type': 'tab',
                         'name': 'Sprites',
-                        'component':'grid',
+                        'component':'sprites',
                     },
                     {
                         'type': 'tab',
                         'name': 'Mappings',
-                        'component':'grid',
+                        'component':'mappings',
                     },
                     {
                         'type': 'tab',
                         'name': 'DPLCs',
-                        'component':'grid',
+                        'component':'dplcs',
                     },
                 ]
             },
@@ -57,7 +57,7 @@ const DEFAULT_LAYOUT = {
 const savedLayout = localStorage.getItem('layout');
 
 export const model = do {
-    if (false && savedLayout) {
+    if (savedLayout) {
         FlexLayout.Model.fromJson(JSON.parse(savedLayout));
     }
     else {

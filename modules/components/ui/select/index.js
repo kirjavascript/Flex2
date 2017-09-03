@@ -1,25 +1,37 @@
 import React, { Component } from 'react';
-import SVARS from 'sass-variables-loader!#styles/variables.scss';
 import { observer } from 'mobx-react';
+import Dropdown from 'react-dropdown';
 
 @observer
-export class Input extends Component {
+export class Select extends Component {
 
-    onChange = (e) => {
+    onChange = ({value, label}) => {
         const { store, accessor } = this.props;
-        store[accessor] = e.target.value;
+        store[accessor] = value;
+    }
+
+    constructor(props) {
+        super(props);
+
+        this.options = this.props.options.map((option) => {
+            if (typeof option == 'string') {
+                return {label: option, value: option};
+            }
+            else {
+                return option;
+            }
+        });
     }
 
     render() {
-        const { label, store, accessor, color, ...otherProps } = this.props;
+        const { label, store, accessor, ...otherProps } = this.props;
 
-        return <div>
+        return <div className="row select">
             {label} &emsp;
-            <input
-                style={color && {color: SVARS[color]}}
+            <Dropdown
+                options={this.options}
                 value={store[accessor]}
                 onChange={this.onChange}
-                {...otherProps}
             />
         </div>;
     }

@@ -1,6 +1,7 @@
 .project-config {
     padding: 20px;
     max-width: 60vw;
+    min-width: 600px;
     margin: 0 auto;
 
     h1 {
@@ -29,6 +30,15 @@
 
     .options {
         margin: 10px;
+        .select {
+            margin-bottom: 10px;
+        }
+    }
+
+    .actions {
+        @extend .row;
+        margin: 10px 10px 5px 10px;
+        align-items: flex-end;
     }
 
 }

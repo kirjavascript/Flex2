@@ -28,7 +28,7 @@
   align-items: center;
   justify-content: center; }
 
-.row, .file {
+.row, .project-config .actions {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -38,24 +38,34 @@
   background-color: #282C34;
   border: 1px solid #5C6370; }
 
-input {
+input, .select .Dropdown-placeholder {
   background-color: #282C34;
   border: 1px solid #5C6370;
   color: #ABB2BF;
   font-family: Hack Bold;
   padding: 2px 5px;
   width: 150px; }
-  input:placeholder {
+  input:placeholder, .select .Dropdown-placeholder:placeholder {
     color: #5C6370; }
-  input:focus {
+  input:focus, .select .Dropdown-placeholder:focus {
     outline: none; }
+
+.select .Dropdown-menu {
+  position: absolute;
+  border: 1px solid #5C6370;
+  color: #ABB2BF;
+  padding: 5px;
+  width: 150px;
+  background-color: #282C34; }
+
+.select .Dropdown-option:hover {
+  background-color: #4E5462; }
 
 .file .dropzone {
   border: 2px dashed #4E5462;
   padding: 15px;
   border-radius: 5px;
-  text-align: center;
-  width: 200px; }
+  text-align: center; }
 
 .file .clear {
   color: #4E5462;
@@ -377,7 +387,7 @@ input {
     width: 200px;
     font-size: 14px;
     word-break: break-word; }
-  .project-menu input {
+  .project-menu input, .project-menu .select .Dropdown-placeholder, .select .project-menu .Dropdown-placeholder {
     margin: 4px;
     margin-bottom: 0px;
     width: 200px; }
@@ -385,6 +395,7 @@ input {
 .project-config {
   padding: 20px;
   max-width: 60vw;
+  min-width: 600px;
   margin: 0 auto; }
   .project-config h1 {
     text-align: center;
@@ -404,6 +415,15 @@ input {
     margin-left: 5px; }
   .project-config .options {
     margin: 10px; }
+    .project-config .options .select {
+      margin-bottom: 10px; }
+  .project-config .actions {
+    margin: 10px 10px 5px 10px;
+    align-items: flex-end; }
+
+.tile canvas {
+  background-color: white;
+  image-rendering: pixelated; }
 
 html {
   user-select: none;

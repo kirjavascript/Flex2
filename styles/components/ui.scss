@@ -41,14 +41,29 @@ input {
     }
 }
 
+.select {
+    .Dropdown-placeholder {
+        @extend input;
+    }
+    .Dropdown-menu {
+        position: absolute;
+        border: 1px solid $white2;
+        color: $white;
+        padding: 5px;
+        width: 150px;
+        background-color: $black;
+    }
+    .Dropdown-option:hover {
+        background-color: $grey;
+    }
+}
+
 .file {
-    @extend .row;
     .dropzone {
         border: 2px dashed $grey;
         padding: 15px;
         border-radius: 5px;
         text-align: center;
-        width: 200px;
     }
     .clear {
         color: $grey;

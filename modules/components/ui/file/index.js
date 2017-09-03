@@ -56,20 +56,31 @@ export class File extends Component {
         const { dragging } = this.state;
 
         return <div className="file" {...otherProps}>
-            <div
-                className={`dropzone ${dragging && 'dragging'}`}
-                onClick={this.onClick}
-                onDragOver={this.onDragOver}
-                onDragLeave={this.onDragLeave}
-                onDrop={this.onDrop}
-            >
-                Click or drag files
-            </div>
+            { do {
+                if (store[accessor]) {
+                    <div className="row">
+                        Path
+                        <div>
+                            {store[accessor]}
+                            <span onClick={this.onEmpty} className="clear">
+                                &nbsp;(clear)
+                            </span>
+                        </div>
+                    </div>;
+                }
+                else {
+                    <div
+                        className={`dropzone ${dragging && 'dragging'}`}
+                        onClick={this.onClick}
+                        onDragOver={this.onDragOver}
+                        onDragLeave={this.onDragLeave}
+                        onDrop={this.onDrop}
+                    >
+                        Click or drag files
+                    </div>;
+                }
+            }}
 
-            {store[accessor]}
-            {store[accessor] && <div onClick={this.onEmpty} className="clear">
-                &nbsp;(clear)
-            </div>}
 
         </div>;
     }
