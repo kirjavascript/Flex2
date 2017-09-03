@@ -1,6 +1,8 @@
 {
+    "name": "Flex2",
+    "main": "index.js",
     "scripts": {
-        "start": "electron index.js"
+        "start": "electron ."
     },
     "devDependencies": {
         "babel-cli": "^6.24.1",

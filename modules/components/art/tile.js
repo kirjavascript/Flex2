@@ -34,6 +34,7 @@ export class Tile extends Component {
     componentWillReceiveProps(newProps) {
         const { data, palette } = this.props;
 
+        // diff the new pixels
         for (let i = 0; i < newProps.data.length; i++) {
             if (newProps.palette[newProps.data[i]] !== palette[data[i]]) {
                 break;
@@ -42,7 +43,6 @@ export class Tile extends Component {
                 return;
             }
         }
-        // do diff
         this.renderCanvas(newProps);
     }
 
@@ -52,8 +52,9 @@ export class Tile extends Component {
 
     render() {
         const { data, palette, scale = 4 } = this.props;
-        return <div className="tile">
+        return (
             <canvas
+                className="tile"
                 width="8"
                 height="8"
                 ref={this.canvasRef}
@@ -62,7 +63,7 @@ export class Tile extends Component {
                     height: 8 * scale,
                 }}
             />
-        </div>;
+        );
     }
 
 }

@@ -56,6 +56,7 @@ module.exports = (env={}, args={}) => {
                 '#components': __dirname + '/../modules/components',
                 '#ui': __dirname + '/../modules/components/ui',
                 '#util': __dirname + '/../modules/util',
+                '#formats': __dirname + '/../modules/formats',
                 '#styles': __dirname + '/../styles/',
             }
 

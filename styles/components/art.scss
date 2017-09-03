@@ -1,6 +1,10 @@
+.tile-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
 .tile {
-    canvas {
-        background-color: white;
-        image-rendering: pixelated;
-    }
+    background-color: white;
+    image-rendering: pixelated;
 }

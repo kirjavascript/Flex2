@@ -1,20 +1,21 @@
 {
+    "description": "Flex 2 Project File",
     "name": "Sonic Boom",
     "objects": [
         {
-            "name": "",
+            "name": "Sonic",
             "art": {
                 "path": "../../sonic/boom/objects/sonic/art_sonic.bin",
                 "compression": "Uncompressed"
             },
             "mappings": {
-                "path": "",
-                "format": "Sonic 1"
+                "path": "../../sonic/boom/objects/sonic/map_sonic.bin",
+                "format": "Sonic 2"
             },
             "dplcs": {
-                "enabled": false,
+                "enabled": "No",
                 "path": "",
-                "format": "Sonic 1"
+                "format": "Sonic 2"
             }
         }
     ]

@@ -5,10 +5,9 @@ export function bufferToTiles(buffer) {
 
     for (let i = 0; i < tileQty; i++) {
         let pixels = [];
-        for (let pxlDuo = 0; pxlDuo < 0x20; pxlDuo++) {
-            let duo = data[(0x20 * i) + pxlDuo];
-            let [hi, lo] = [duo >> 4, duo & 0xF];
-            pixels.push(hi, lo);
+        for (let duoIndex = 0; duoIndex < 0x20; duoIndex++) {
+            let duxel = data[(0x20 * i) + duoIndex];
+            pixels.push(duxel >> 4, duxel & 0xF);
         }
         tiles.push(pixels);
     }

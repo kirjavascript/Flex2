@@ -1,3 +1,5 @@
+import { toJS } from 'mobx';
+
 let saveData = true;
 
 export function storage(obj, name) {

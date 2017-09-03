@@ -10,10 +10,13 @@ app.on('window-all-closed', function() {
 
 app.on('ready', function() {
     mainWindow = new BrowserWindow({
+        title: 'Flex 2',
+        backgroundColor: '#282C34',
         width: 1200,
         height: 800,
         center: true,
-        resizable: false,
+        resizable: true,
+        show: false,
     });
 
     mainWindow.setMenu(null);
@@ -21,6 +24,11 @@ app.on('ready', function() {
 
     mainWindow.on('closed', function() {
         mainWindow = null;
+    });
+
+    mainWindow.on('ready-to-show', function() {
+        mainWindow.show();
+        mainWindow.focus();
     });
 
     // development...

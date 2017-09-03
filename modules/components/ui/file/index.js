@@ -18,10 +18,6 @@ export class File extends Component {
         dialog.showOpenDialog({
             title: 'Open Project',
             properties: ['openFile'],
-            filters: [
-                {name: 'Art Binary', extensions: ['bin']},
-                {name: 'All Files', extensions: ['*']},
-            ],
         }, (paths) => {
             if (paths) {
                 store[accessor] = workspace.relativePath(paths[0]);
@@ -52,7 +48,7 @@ export class File extends Component {
     }
 
     render() {
-        const { store, accessor, ...otherProps } = this.props;
+        const { label, store, accessor, ...otherProps } = this.props;
         const { dragging } = this.state;
 
         return <div className="file" {...otherProps}>
@@ -76,7 +72,7 @@ export class File extends Component {
                         onDragLeave={this.onDragLeave}
                         onDrop={this.onDrop}
                     >
-                        Click or drag files
+                        {label || 'Click or drag files'}
                     </div>;
                 }
             }}

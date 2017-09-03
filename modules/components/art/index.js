@@ -7,16 +7,18 @@ import { Tile } from './tile';
 export class Art extends Component {
 
     render() {
-        return <div>
-            {environment.tiles.map((tile, i) => {
-                return (
-                    <Tile
-                        key={i}
-                        data={tile}
-                        palette={environment.palettes[0]}
-                    />
-                );
-            })}
+        return <div className="art">
+            <div className="tile-list">
+                {environment.tiles.map((tile, i) => {
+                    return (
+                        <Tile
+                            key={i}
+                            data={tile}
+                            palette={environment.palettes[0]}
+                        />
+                    );
+                })}
+            </div>
         </div>;
     }
 

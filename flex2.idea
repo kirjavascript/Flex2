@@ -1,26 +1,31 @@
-UNDO
+desktop version
+project files
+dynamic UI
+==
+
+UNDO (dont save to file)
 autoupdate / new version information
-1 project file per hack (tree list?)
-custom mappings format files (s1/s2/s3 uses definition files)
+asm parser with regex
 spriteplotter
 rotsprite
 mapping_tool
 DPLC Editor
-load files via drag and drop
 load files in another thread(?)
 angled guidelines / rotate sprite view
-chgeck new version
 
 palettes / sprites / dplcs tab? (!)
 dplcs lists them individually
 sprites has a long list
-reactdnd for sprites
-recent projects
 draggable reordering
+recent projects
+mouse select/drag sprites
 
 // keyboard shortcuts that only work in certain components` (higher-order)
+// zoom in mappings view
+divide tile index by 2 for sonic 2 2 player mappings
 
 // definition saved in json, load changes UI to object view and changes to intermediate format
 // format decides how assets are saved
-// load to/from environment
-// new path
+
+// add transparency toggle support
+custom mappings format files (s1/s2/s3 uses definition files)

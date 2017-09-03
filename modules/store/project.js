@@ -1,14 +1,15 @@
-const { dialog } = require('electron').remote;
 import { observable, computed, action, autorun, toJS } from 'mobx';
-import { writeFile, readFile, stat } from 'fs';
+import { writeFileSync, readFile, stat } from 'fs';
 import { stringify } from '#util/stringify';
 import { workspace } from '#store/workspace';
 import { ObjectDef } from '#store/objectdef';
+import { errorMsg } from '#util/dialog';
 
 let booted = false;
 
 export class Project {
 
+    description = 'Flex 2 Project File';
     @observable name = '';
     @observable objects = [];
 
@@ -46,12 +47,7 @@ export class Project {
                 }
                 catch (e) {
                     workspace.projectPath = '';
-                    dialog.showMessageBox({
-                        type: 'error',
-                        title: 'File Read Error',
-                        message: e.message,
-                        buttons: ['Ok'],
-                    });
+                    errorMsg('File Read Error', e.message);
                 }
             },
         );
@@ -65,16 +61,12 @@ export class Project {
                 const data = stringify(project);
 
                 if (workspace.projectPath) {
-                    writeFile(
+                    // needs to be sync to ensure no data corruption
+                    writeFileSync(
                         workspace.projectPath,
                         data,
                         (err) => {
-                            err && dialog.showMessageBox({
-                                type: 'error',
-                                title: 'File Write Error',
-                                message: err,
-                                buttons: ['Ok'],
-                            });
+                            err && errorMsg('File Write Error', err);
                         }
                     );
                 }

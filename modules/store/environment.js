@@ -1,8 +1,10 @@
+import { readFile } from 'fs';
 import { observable, computed, action, autorun, toJS } from 'mobx';
 import { storage } from './storage';
 import { workspace } from '#store/workspace';
-import { readFile } from 'fs';
-import { bufferToTiles } from '#util/art';
+import { errorMsg } from '#util/dialog';
+import { bufferToTiles } from '#formats/art';
+import { bufferToMappings } from '#formats/mapping';
 
 class Environment {
 
@@ -14,6 +16,14 @@ class Environment {
         [[0,0,0],[0,34,34],[0,68,68],[0,102,102],[0,136,136],[0,170,170],[0,204,204],[0,238,238],[0,238,204],[0,204,170],[0,170,136],[0,136,102],[0,102,68],[0,68,34],[0,34,0],[0,0,238]],
     ];
 
+    @observable tiles = [
+        // each tile is a length 16 array of palette line indexes
+    ];
+
+    @observable mappings = [];
+
+    @observable dplcs = [];
+
     @computed get palettesWeb() {
         return this.palettes.map((line) => {
             return line.map((color) => {
@@ -22,33 +32,45 @@ class Environment {
         });
     }
 
-    @observable tiles = [];
-
     @action loadObject = (obj) => {
         // load art
-        const artPath = workspace.absolutePath(obj.art.path);
-        readFile(artPath, (err, data) => {
-            if (err) return;
-            this.tiles.replace(bufferToTiles(data));
+        // const artPath = workspace.absolutePath(obj.art.path);
+        // readFile(artPath, (err, buffer) => {
+        //     if (err) return errorMsg('Error Reading Art File', err);
+        //     this.tiles.replace(bufferToTiles(buffer));
+        // });
+        // load mappings
+        const mappingPath = workspace.absolutePath(obj.mappings.path);
+        readFile(mappingPath, (err, buffer) => {
+            if (err) return errorMsg('Error Reading Mapping File', err);
+            this.mappings.replace(bufferToMappings(buffer));
         });
     };
 
     @action saveObject = (obj) => {
-        this.tiles[0] = [
-            3,3,3,3,3,3,3,3,
-            3,3,3,3,3,3,3,3,
-            3,3,3,3,3,3,3,3,
-            3,3,3,3,3,3,3,3,
-            3,3,3,3,3,3,3,3,
-            3,3,3,3,3,3,3,3,
-            3,3,3,3,3,3,3,3,
-            3,3,3,3,3,3,3,3,
-        ];
+        // this.tiles[0] = [
+        //     3,3,3,3,3,3,3,3,
+        //     3,3,3,3,3,3,3,3,
+        //     3,3,3,3,3,3,3,3,
+        //     3,3,3,3,3,3,3,3,
+        //     3,3,3,3,3,3,3,3,
+        //     3,3,3,3,3,3,3,3,
+        //     3,3,3,3,3,3,3,3,
+        //     3,3,3,3,3,3,3,3,
+        // ];
+        // this.palettes[0][0] = [0, 0, 0];
+        // this.paletteRender();
+    };
+
+    @action paletteRender = (callback) => {
+        // force a rerender
+        callback && callback(this.palettes);
+        this.palettes.replace(toJS(this.palettes));
     };
 
 }
 
 
 const environment = new Environment();
-// storage(environment, 'environment');
+storage(environment, 'environment');
 export { environment };

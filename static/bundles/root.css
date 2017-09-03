@@ -421,7 +421,12 @@ input, .select .Dropdown-placeholder {
     margin: 10px 10px 5px 10px;
     align-items: flex-end; }
 
-.tile canvas {
+.tile-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; }
+
+.tile {
   background-color: white;
   image-rendering: pixelated; }
 

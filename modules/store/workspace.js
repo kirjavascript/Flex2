@@ -19,10 +19,10 @@ class Workspace {
     };
 
     @action relativePath = (filepath) => {
-        return path.relative(this.projectPath, filepath);
+        return path.relative(path.basename(this.projectPath), filepath);
     };
     @action absolutePath = (filepath) => {
-        return path.resolve(this.projectPath, filepath);
+        return path.resolve(path.basename(this.projectPath), filepath);
     };
 }
 
