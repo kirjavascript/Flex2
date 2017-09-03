@@ -28,4 +28,4 @@ divide tile index by 2 for sonic 2 2 player mappings
 // format decides how assets are saved
 
 // add transparency toggle support
-custom mappings format files (s1/s2/s3 uses definition files)
+support DPLCS / support formats / custom

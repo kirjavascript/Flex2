@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { project } from '#store/project';
 import { workspace } from '#store/workspace';
-import { Item, Input, File, Select } from '#ui';
+import { Item, Input, File, Select, Editor } from '#ui';
 
 @observer
 export class ProjectConfig extends Component {
 
     render() {
         return <div className="project-config">
+                <Editor/>
                 <h1>{project.name}</h1>
 
                 <div className="row">
@@ -77,7 +78,7 @@ export class ProjectConfig extends Component {
                                             'Sonic 1',
                                             'Sonic 2',
                                             'Sonic 3&K',
-                                            'Custom...',
+                                            'Custom',
                                         ]}
                                         store={obj.mappings}
                                         accessor="format"

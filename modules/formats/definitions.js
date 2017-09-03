@@ -21,6 +21,7 @@ export const mapDefS2 = `
 
 const tokens = {
     '?': 'ignore',
+    // mappings
     'T': 'top',
     'W': 'width',
     'H': 'height',
@@ -33,36 +34,38 @@ const tokens = {
     'L': 'left',
 };
 
-// genericize this to support dplcs too
-
-export function parseMapDef(definition) {
+export function parseDef(definition) {
     // stripe comments and whitespace
     definition = definition.replace(/(\s|;(.*?)$)/gm, '');
+
     try {
+        let def = {};
+
         const headerSizeMatch = definition.match(/headerSize\((\d+)\)/);
         if (!headerSizeMatch) {
             throw new Error('Cannot find header size');
         }
-        const spriteDefMatch = definition.match(/spriteDefinition\((.*?)\)/);
-        if (!spriteDefMatch) {
-            throw new Error('Cannot find sprite definition');
+        else {
+            def.headerSize = parseInt(headerSizeMatch[1]);
         }
-        const spriteDef = spriteDefMatch[1];
 
-        const spriteLayout = spriteDef
-            .match(/(.)\1*/g)
-            .map((str) => ({
-                name: tokens[str[0]],
-                length: str.length,
-            }));
+        const spriteDefMatch = definition.match(/spriteDefinition\((.*?)\)/);
+        if (spriteDefMatch) {
+            const spriteDef = spriteDefMatch[1];
+            const spriteLayout = spriteDef
+                .match(/(.)\1*/g)
+                .map((str) => ({
+                    name: tokens[str[0]] || 'unknown',
+                    length: str.length,
+                }));
 
-        return {
-            headerSize: parseInt(headerSizeMatch[1]),
-            mappingSize: spriteDef.length / 8,
-            mappingDef: spriteLayout,
-        };
+            def.mappingSize = spriteDef.length / 8;
+            def.mappingDef = spriteLayout;
+        }
+
+        return def;
     }
     catch(e) {
-        errorMsg('Error Parsing Mapping Definition', e.message);
+        errorMsg('Error Parsing Definition', e.message);
     }
 }

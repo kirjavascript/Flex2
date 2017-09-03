@@ -13,7 +13,7 @@
                 "format": "Sonic 2"
             },
             "dplcs": {
-                "enabled": "No",
+                "enabled": "Yes",
                 "path": "",
                 "format": "Sonic 2"
             }
