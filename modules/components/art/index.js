@@ -8,6 +8,7 @@ export class Art extends Component {
 
     render() {
         return <div className="art">
+            TODO: transparency toggle
             <div className="tile-list">
                 {environment.tiles.map((tile, i) => {
                     return (

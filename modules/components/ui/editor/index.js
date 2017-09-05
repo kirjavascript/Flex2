@@ -1,14 +1,10 @@
 import React, { Component } from 'react';
 import ace from 'brace';
 import 'brace/keybinding/vim';
-import 'brace/mode/assembly_x86';
-import './theme.js';
-// import { observer } from 'mobx-react';
-// import { autorun } from 'mobx';
-// https://ace.c9.io/#nav=higlighter&api=editor
+import './theme';
+import './syntax';
+import { autorun } from 'mobx';
 
-
-// @observer
 export class Editor extends Component {
 
     constructor(props) {
@@ -19,15 +15,13 @@ export class Editor extends Component {
 
     onRef = (node) => {
         if (node) {
-
             let editor = ace.edit(this.id);
             editor.setTheme('ace/theme/flex');
-            // editor.getSession().setUseWorker(false);
+            editor.getSession().setMode('ace/mode/flex');
             editor.$blockScrolling = Infinity;
-            editor.getSession().setMode('ace/mode/assembly_x86');
-
             editor.setShowPrintMargin(false);
             editor.setHighlightActiveLine(false);
+            editor.setShowFoldWidgets(false);
             editor.renderer.setScrollMargin(5, 5, 5, 5);
 
             editor.setOptions({
@@ -37,19 +31,33 @@ export class Editor extends Component {
             });
 
             // editor.setKeyboardHandler('ace/keyboard/vim');
-            // getValue/setValue
+            // editor.setKeyboardHandler(null);
+
+            const { store, accessor } = this.props;
+
+            if (store && accessor) {
+                this.disposer = autorun(() => {
+                    this.externalEdit = true;
+                    editor.setValue(store[accessor]);
+                    editor.clearSelection();
+                    this.externalEdit = false;
+                });
+
+                editor.getSession().on('change', (e) => {
+                    if (!this.externalEdit) {
+                        store[accessor] = editor.getValue();
+                    }
+                });
+            }
+
         }
         else {
-            // autorun disposer
+            this.disposer && this.disposer();
         }
     };
 
     render() {
-        // const { label, store, accessor, color, ...otherProps } = this.props;
-
-        return <div className="ace-flex-wrap">
-            <div id={this.id} ref={this.onRef}/>
-        </div>;
+        return <div id={this.id} ref={this.onRef}/>;
     }
 
 }

@@ -29,3 +29,4 @@ divide tile index by 2 for sonic 2 2 player mappings
 
 // add transparency toggle support
 support DPLCS / support formats / custom
+this.buffer = w/e in <Tile/>

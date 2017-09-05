@@ -10,6 +10,7 @@ export class ProjectConfig extends Component {
     render() {
         return <div className="project-config">
                 <Editor/>
+
                 <h1>{project.name}</h1>
 
                 <div className="row">

@@ -10,7 +10,7 @@
             },
             "mappings": {
                 "path": "../../sonic/boom/objects/sonic/map_sonic.bin",
-                "format": "Sonic 2"
+                "format": "Sonic 1"
             },
             "dplcs": {
                 "enabled": "Yes",

@@ -6,6 +6,11 @@ import path from 'path';
 class Workspace {
     @observable projectPath = '';
 
+    @observable config = {
+        transparency: false,
+        vimMode: false,
+    };
+
     @action newProject = ({name, path}) => {
         this.projectPath = path;
         project.new({name, path});
@@ -13,7 +18,7 @@ class Workspace {
     @action openProject = (path) => {
         if (path) { this.projectPath = path; }
         project.open();
-    }
+    };
     @action closeProject = () => {
         this.projectPath = '';
     };
