@@ -33,3 +33,14 @@ export function readBinary(data, index, size) {
         return value.toString(2).padStart(8, '0');
     }).join``;
 }
+
+export function parseSigned(value) {
+    // no radix as this only makes sense for base-2
+    if (+value[0]) {
+        // if negative
+        return ((1 << value.length) - parseInt(value, 2)) * -1;
+    }
+    else {
+        return parseInt(value.slice(1), 2);
+    }
+}

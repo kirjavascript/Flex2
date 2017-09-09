@@ -11,7 +11,7 @@ ace.define('ace/mode/flex_highlight_rules',['require','exports','module','ace/li
         this.$rules = {
             start: [
                 { token: 'comment', regex: ';.*$' },
-                { token: 'keyword', regex: /(headerSize|spriteDefinition)/ },
+                { token: 'keyword', regex: /(headerSize|mappingDefinition|dplcDefinition)/ },
                 { token: ['fn-bracket', 'number', 'fn-bracket'], regex: /(\()(\d+)(\))/ },
             ],
         };

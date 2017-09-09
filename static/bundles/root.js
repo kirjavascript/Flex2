@@ -1354,7 +1354,7 @@ var _prodInvariant = __webpack_require__(2),
     _assign = __webpack_require__(4);
 
 var CallbackQueue = __webpack_require__(82);
-var PooledClass = __webpack_require__(21);
+var PooledClass = __webpack_require__(22);
 var ReactFeatureFlags = __webpack_require__(83);
 var ReactReconciler = __webpack_require__(26);
 var Transaction = __webpack_require__(40);
@@ -1594,7 +1594,7 @@ module.exports = ReactUpdates;
 /***/ (function(module, exports, __webpack_require__) {
 
 (function (global, factory) {
-	 true ? factory(exports, __webpack_require__(22), __webpack_require__(3), __webpack_require__(11)) :
+	 true ? factory(exports, __webpack_require__(20), __webpack_require__(3), __webpack_require__(11)) :
 	typeof define === 'function' && define.amd ? define(['exports', 'mobx', 'react', 'react-dom'], factory) :
 	(factory((global.mobxReact = global.mobxReact || {}),global.mobx,global.React,global.ReactDOM));
 }(this, (function (exports,mobx,React,ReactDOM) { 'use strict';
@@ -2532,7 +2532,7 @@ exports.default = Orientation;
 
 var _assign = __webpack_require__(4);
 
-var PooledClass = __webpack_require__(21);
+var PooledClass = __webpack_require__(22);
 
 var emptyFunction = __webpack_require__(9);
 var warning = __webpack_require__(1);
@@ -3197,469 +3197,6 @@ module.exports = DOMProperty;
 
 /***/ }),
 /* 20 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/**
- * Copyright 2014-present, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- */
-
-
-
-var _assign = __webpack_require__(4);
-
-var ReactCurrentOwner = __webpack_require__(13);
-
-var warning = __webpack_require__(1);
-var canDefineProperty = __webpack_require__(37);
-var hasOwnProperty = Object.prototype.hasOwnProperty;
-
-var REACT_ELEMENT_TYPE = __webpack_require__(73);
-
-var RESERVED_PROPS = {
-  key: true,
-  ref: true,
-  __self: true,
-  __source: true
-};
-
-var specialPropKeyWarningShown, specialPropRefWarningShown;
-
-function hasValidRef(config) {
-  if (process.env.NODE_ENV !== 'production') {
-    if (hasOwnProperty.call(config, 'ref')) {
-      var getter = Object.getOwnPropertyDescriptor(config, 'ref').get;
-      if (getter && getter.isReactWarning) {
-        return false;
-      }
-    }
-  }
-  return config.ref !== undefined;
-}
-
-function hasValidKey(config) {
-  if (process.env.NODE_ENV !== 'production') {
-    if (hasOwnProperty.call(config, 'key')) {
-      var getter = Object.getOwnPropertyDescriptor(config, 'key').get;
-      if (getter && getter.isReactWarning) {
-        return false;
-      }
-    }
-  }
-  return config.key !== undefined;
-}
-
-function defineKeyPropWarningGetter(props, displayName) {
-  var warnAboutAccessingKey = function () {
-    if (!specialPropKeyWarningShown) {
-      specialPropKeyWarningShown = true;
-      process.env.NODE_ENV !== 'production' ? warning(false, '%s: `key` is not a prop. Trying to access it will result ' + 'in `undefined` being returned. If you need to access the same ' + 'value within the child component, you should pass it as a different ' + 'prop. (https://fb.me/react-special-props)', displayName) : void 0;
-    }
-  };
-  warnAboutAccessingKey.isReactWarning = true;
-  Object.defineProperty(props, 'key', {
-    get: warnAboutAccessingKey,
-    configurable: true
-  });
-}
-
-function defineRefPropWarningGetter(props, displayName) {
-  var warnAboutAccessingRef = function () {
-    if (!specialPropRefWarningShown) {
-      specialPropRefWarningShown = true;
-      process.env.NODE_ENV !== 'production' ? warning(false, '%s: `ref` is not a prop. Trying to access it will result ' + 'in `undefined` being returned. If you need to access the same ' + 'value within the child component, you should pass it as a different ' + 'prop. (https://fb.me/react-special-props)', displayName) : void 0;
-    }
-  };
-  warnAboutAccessingRef.isReactWarning = true;
-  Object.defineProperty(props, 'ref', {
-    get: warnAboutAccessingRef,
-    configurable: true
-  });
-}
-
-/**
- * Factory method to create a new React element. This no longer adheres to
- * the class pattern, so do not use new to call it. Also, no instanceof check
- * will work. Instead test $$typeof field against Symbol.for('react.element') to check
- * if something is a React Element.
- *
- * @param {*} type
- * @param {*} key
- * @param {string|object} ref
- * @param {*} self A *temporary* helper to detect places where `this` is
- * different from the `owner` when React.createElement is called, so that we
- * can warn. We want to get rid of owner and replace string `ref`s with arrow
- * functions, and as long as `this` and owner are the same, there will be no
- * change in behavior.
- * @param {*} source An annotation object (added by a transpiler or otherwise)
- * indicating filename, line number, and/or other information.
- * @param {*} owner
- * @param {*} props
- * @internal
- */
-var ReactElement = function (type, key, ref, self, source, owner, props) {
-  var element = {
-    // This tag allow us to uniquely identify this as a React Element
-    $$typeof: REACT_ELEMENT_TYPE,
-
-    // Built-in properties that belong on the element
-    type: type,
-    key: key,
-    ref: ref,
-    props: props,
-
-    // Record the component responsible for creating this element.
-    _owner: owner
-  };
-
-  if (process.env.NODE_ENV !== 'production') {
-    // The validation flag is currently mutative. We put it on
-    // an external backing store so that we can freeze the whole object.
-    // This can be replaced with a WeakMap once they are implemented in
-    // commonly used development environments.
-    element._store = {};
-
-    // To make comparing ReactElements easier for testing purposes, we make
-    // the validation flag non-enumerable (where possible, which should
-    // include every environment we run tests in), so the test framework
-    // ignores it.
-    if (canDefineProperty) {
-      Object.defineProperty(element._store, 'validated', {
-        configurable: false,
-        enumerable: false,
-        writable: true,
-        value: false
-      });
-      // self and source are DEV only properties.
-      Object.defineProperty(element, '_self', {
-        configurable: false,
-        enumerable: false,
-        writable: false,
-        value: self
-      });
-      // Two elements created in two different places should be considered
-      // equal for testing purposes and therefore we hide it from enumeration.
-      Object.defineProperty(element, '_source', {
-        configurable: false,
-        enumerable: false,
-        writable: false,
-        value: source
-      });
-    } else {
-      element._store.validated = false;
-      element._self = self;
-      element._source = source;
-    }
-    if (Object.freeze) {
-      Object.freeze(element.props);
-      Object.freeze(element);
-    }
-  }
-
-  return element;
-};
-
-/**
- * Create and return a new ReactElement of the given type.
- * See https://facebook.github.io/react/docs/top-level-api.html#react.createelement
- */
-ReactElement.createElement = function (type, config, children) {
-  var propName;
-
-  // Reserved names are extracted
-  var props = {};
-
-  var key = null;
-  var ref = null;
-  var self = null;
-  var source = null;
-
-  if (config != null) {
-    if (hasValidRef(config)) {
-      ref = config.ref;
-    }
-    if (hasValidKey(config)) {
-      key = '' + config.key;
-    }
-
-    self = config.__self === undefined ? null : config.__self;
-    source = config.__source === undefined ? null : config.__source;
-    // Remaining properties are added to a new props object
-    for (propName in config) {
-      if (hasOwnProperty.call(config, propName) && !RESERVED_PROPS.hasOwnProperty(propName)) {
-        props[propName] = config[propName];
-      }
-    }
-  }
-
-  // Children can be more than one argument, and those are transferred onto
-  // the newly allocated props object.
-  var childrenLength = arguments.length - 2;
-  if (childrenLength === 1) {
-    props.children = children;
-  } else if (childrenLength > 1) {
-    var childArray = Array(childrenLength);
-    for (var i = 0; i < childrenLength; i++) {
-      childArray[i] = arguments[i + 2];
-    }
-    if (process.env.NODE_ENV !== 'production') {
-      if (Object.freeze) {
-        Object.freeze(childArray);
-      }
-    }
-    props.children = childArray;
-  }
-
-  // Resolve default props
-  if (type && type.defaultProps) {
-    var defaultProps = type.defaultProps;
-    for (propName in defaultProps) {
-      if (props[propName] === undefined) {
-        props[propName] = defaultProps[propName];
-      }
-    }
-  }
-  if (process.env.NODE_ENV !== 'production') {
-    if (key || ref) {
-      if (typeof props.$$typeof === 'undefined' || props.$$typeof !== REACT_ELEMENT_TYPE) {
-        var displayName = typeof type === 'function' ? type.displayName || type.name || 'Unknown' : type;
-        if (key) {
-          defineKeyPropWarningGetter(props, displayName);
-        }
-        if (ref) {
-          defineRefPropWarningGetter(props, displayName);
-        }
-      }
-    }
-  }
-  return ReactElement(type, key, ref, self, source, ReactCurrentOwner.current, props);
-};
-
-/**
- * Return a function that produces ReactElements of a given type.
- * See https://facebook.github.io/react/docs/top-level-api.html#react.createfactory
- */
-ReactElement.createFactory = function (type) {
-  var factory = ReactElement.createElement.bind(null, type);
-  // Expose the type on the factory and the prototype so that it can be
-  // easily accessed on elements. E.g. `<Foo />.type === Foo`.
-  // This should not be named `constructor` since this may not be the function
-  // that created the element, and it may not even be a constructor.
-  // Legacy hook TODO: Warn if this is accessed
-  factory.type = type;
-  return factory;
-};
-
-ReactElement.cloneAndReplaceKey = function (oldElement, newKey) {
-  var newElement = ReactElement(oldElement.type, newKey, oldElement.ref, oldElement._self, oldElement._source, oldElement._owner, oldElement.props);
-
-  return newElement;
-};
-
-/**
- * Clone and return a new ReactElement using element as the starting point.
- * See https://facebook.github.io/react/docs/top-level-api.html#react.cloneelement
- */
-ReactElement.cloneElement = function (element, config, children) {
-  var propName;
-
-  // Original props are copied
-  var props = _assign({}, element.props);
-
-  // Reserved names are extracted
-  var key = element.key;
-  var ref = element.ref;
-  // Self is preserved since the owner is preserved.
-  var self = element._self;
-  // Source is preserved since cloneElement is unlikely to be targeted by a
-  // transpiler, and the original source is probably a better indicator of the
-  // true owner.
-  var source = element._source;
-
-  // Owner will be preserved, unless ref is overridden
-  var owner = element._owner;
-
-  if (config != null) {
-    if (hasValidRef(config)) {
-      // Silently steal the ref from the parent.
-      ref = config.ref;
-      owner = ReactCurrentOwner.current;
-    }
-    if (hasValidKey(config)) {
-      key = '' + config.key;
-    }
-
-    // Remaining properties override existing props
-    var defaultProps;
-    if (element.type && element.type.defaultProps) {
-      defaultProps = element.type.defaultProps;
-    }
-    for (propName in config) {
-      if (hasOwnProperty.call(config, propName) && !RESERVED_PROPS.hasOwnProperty(propName)) {
-        if (config[propName] === undefined && defaultProps !== undefined) {
-          // Resolve default props
-          props[propName] = defaultProps[propName];
-        } else {
-          props[propName] = config[propName];
-        }
-      }
-    }
-  }
-
-  // Children can be more than one argument, and those are transferred onto
-  // the newly allocated props object.
-  var childrenLength = arguments.length - 2;
-  if (childrenLength === 1) {
-    props.children = children;
-  } else if (childrenLength > 1) {
-    var childArray = Array(childrenLength);
-    for (var i = 0; i < childrenLength; i++) {
-      childArray[i] = arguments[i + 2];
-    }
-    props.children = childArray;
-  }
-
-  return ReactElement(element.type, key, ref, self, source, owner, props);
-};
-
-/**
- * Verifies the object is a ReactElement.
- * See https://facebook.github.io/react/docs/top-level-api.html#react.isvalidelement
- * @param {?object} object
- * @return {boolean} True if `object` is a valid component.
- * @final
- */
-ReactElement.isValidElement = function (object) {
-  return typeof object === 'object' && object !== null && object.$$typeof === REACT_ELEMENT_TYPE;
-};
-
-module.exports = ReactElement;
-
-/***/ }),
-/* 21 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/**
- * Copyright 2013-present, Facebook, Inc.
- * All rights reserved.
- *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
- *
- * 
- */
-
-
-
-var _prodInvariant = __webpack_require__(2);
-
-var invariant = __webpack_require__(0);
-
-/**
- * Static poolers. Several custom versions for each potential number of
- * arguments. A completely generic pooler is easy to implement, but would
- * require accessing the `arguments` object. In each of these, `this` refers to
- * the Class itself, not an instance. If any others are needed, simply add them
- * here, or in their own files.
- */
-var oneArgumentPooler = function (copyFieldsFrom) {
-  var Klass = this;
-  if (Klass.instancePool.length) {
-    var instance = Klass.instancePool.pop();
-    Klass.call(instance, copyFieldsFrom);
-    return instance;
-  } else {
-    return new Klass(copyFieldsFrom);
-  }
-};
-
-var twoArgumentPooler = function (a1, a2) {
-  var Klass = this;
-  if (Klass.instancePool.length) {
-    var instance = Klass.instancePool.pop();
-    Klass.call(instance, a1, a2);
-    return instance;
-  } else {
-    return new Klass(a1, a2);
-  }
-};
-
-var threeArgumentPooler = function (a1, a2, a3) {
-  var Klass = this;
-  if (Klass.instancePool.length) {
-    var instance = Klass.instancePool.pop();
-    Klass.call(instance, a1, a2, a3);
-    return instance;
-  } else {
-    return new Klass(a1, a2, a3);
-  }
-};
-
-var fourArgumentPooler = function (a1, a2, a3, a4) {
-  var Klass = this;
-  if (Klass.instancePool.length) {
-    var instance = Klass.instancePool.pop();
-    Klass.call(instance, a1, a2, a3, a4);
-    return instance;
-  } else {
-    return new Klass(a1, a2, a3, a4);
-  }
-};
-
-var standardReleaser = function (instance) {
-  var Klass = this;
-  !(instance instanceof Klass) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Trying to release an instance into a pool of a different type.') : _prodInvariant('25') : void 0;
-  instance.destructor();
-  if (Klass.instancePool.length < Klass.poolSize) {
-    Klass.instancePool.push(instance);
-  }
-};
-
-var DEFAULT_POOL_SIZE = 10;
-var DEFAULT_POOLER = oneArgumentPooler;
-
-/**
- * Augments `CopyConstructor` to be a poolable class, augmenting only the class
- * itself (statically) not adding any prototypical fields. Any CopyConstructor
- * you give this may have a `poolSize` property, and will look for a
- * prototypical `destructor` on instances.
- *
- * @param {Function} CopyConstructor Constructor that can be used to reset.
- * @param {Function} pooler Customizable pooler.
- */
-var addPoolingTo = function (CopyConstructor, pooler) {
-  // Casting as any so that flow ignores the actual implementation and trusts
-  // it to match the type we declared
-  var NewKlass = CopyConstructor;
-  NewKlass.instancePool = [];
-  NewKlass.getPooled = pooler || DEFAULT_POOLER;
-  if (!NewKlass.poolSize) {
-    NewKlass.poolSize = DEFAULT_POOL_SIZE;
-  }
-  NewKlass.release = standardReleaser;
-  return NewKlass;
-};
-
-var PooledClass = {
-  addPoolingTo: addPoolingTo,
-  oneArgumentPooler: oneArgumentPooler,
-  twoArgumentPooler: twoArgumentPooler,
-  threeArgumentPooler: threeArgumentPooler,
-  fourArgumentPooler: fourArgumentPooler
-};
-
-module.exports = PooledClass;
-
-/***/ }),
-/* 22 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -7233,6 +6770,469 @@ if (typeof __MOBX_DEVTOOLS_GLOBAL_HOOK__ === "object") {
 
 
 /***/ }),
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/**
+ * Copyright 2014-present, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ */
+
+
+
+var _assign = __webpack_require__(4);
+
+var ReactCurrentOwner = __webpack_require__(13);
+
+var warning = __webpack_require__(1);
+var canDefineProperty = __webpack_require__(37);
+var hasOwnProperty = Object.prototype.hasOwnProperty;
+
+var REACT_ELEMENT_TYPE = __webpack_require__(73);
+
+var RESERVED_PROPS = {
+  key: true,
+  ref: true,
+  __self: true,
+  __source: true
+};
+
+var specialPropKeyWarningShown, specialPropRefWarningShown;
+
+function hasValidRef(config) {
+  if (process.env.NODE_ENV !== 'production') {
+    if (hasOwnProperty.call(config, 'ref')) {
+      var getter = Object.getOwnPropertyDescriptor(config, 'ref').get;
+      if (getter && getter.isReactWarning) {
+        return false;
+      }
+    }
+  }
+  return config.ref !== undefined;
+}
+
+function hasValidKey(config) {
+  if (process.env.NODE_ENV !== 'production') {
+    if (hasOwnProperty.call(config, 'key')) {
+      var getter = Object.getOwnPropertyDescriptor(config, 'key').get;
+      if (getter && getter.isReactWarning) {
+        return false;
+      }
+    }
+  }
+  return config.key !== undefined;
+}
+
+function defineKeyPropWarningGetter(props, displayName) {
+  var warnAboutAccessingKey = function () {
+    if (!specialPropKeyWarningShown) {
+      specialPropKeyWarningShown = true;
+      process.env.NODE_ENV !== 'production' ? warning(false, '%s: `key` is not a prop. Trying to access it will result ' + 'in `undefined` being returned. If you need to access the same ' + 'value within the child component, you should pass it as a different ' + 'prop. (https://fb.me/react-special-props)', displayName) : void 0;
+    }
+  };
+  warnAboutAccessingKey.isReactWarning = true;
+  Object.defineProperty(props, 'key', {
+    get: warnAboutAccessingKey,
+    configurable: true
+  });
+}
+
+function defineRefPropWarningGetter(props, displayName) {
+  var warnAboutAccessingRef = function () {
+    if (!specialPropRefWarningShown) {
+      specialPropRefWarningShown = true;
+      process.env.NODE_ENV !== 'production' ? warning(false, '%s: `ref` is not a prop. Trying to access it will result ' + 'in `undefined` being returned. If you need to access the same ' + 'value within the child component, you should pass it as a different ' + 'prop. (https://fb.me/react-special-props)', displayName) : void 0;
+    }
+  };
+  warnAboutAccessingRef.isReactWarning = true;
+  Object.defineProperty(props, 'ref', {
+    get: warnAboutAccessingRef,
+    configurable: true
+  });
+}
+
+/**
+ * Factory method to create a new React element. This no longer adheres to
+ * the class pattern, so do not use new to call it. Also, no instanceof check
+ * will work. Instead test $$typeof field against Symbol.for('react.element') to check
+ * if something is a React Element.
+ *
+ * @param {*} type
+ * @param {*} key
+ * @param {string|object} ref
+ * @param {*} self A *temporary* helper to detect places where `this` is
+ * different from the `owner` when React.createElement is called, so that we
+ * can warn. We want to get rid of owner and replace string `ref`s with arrow
+ * functions, and as long as `this` and owner are the same, there will be no
+ * change in behavior.
+ * @param {*} source An annotation object (added by a transpiler or otherwise)
+ * indicating filename, line number, and/or other information.
+ * @param {*} owner
+ * @param {*} props
+ * @internal
+ */
+var ReactElement = function (type, key, ref, self, source, owner, props) {
+  var element = {
+    // This tag allow us to uniquely identify this as a React Element
+    $$typeof: REACT_ELEMENT_TYPE,
+
+    // Built-in properties that belong on the element
+    type: type,
+    key: key,
+    ref: ref,
+    props: props,
+
+    // Record the component responsible for creating this element.
+    _owner: owner
+  };
+
+  if (process.env.NODE_ENV !== 'production') {
+    // The validation flag is currently mutative. We put it on
+    // an external backing store so that we can freeze the whole object.
+    // This can be replaced with a WeakMap once they are implemented in
+    // commonly used development environments.
+    element._store = {};
+
+    // To make comparing ReactElements easier for testing purposes, we make
+    // the validation flag non-enumerable (where possible, which should
+    // include every environment we run tests in), so the test framework
+    // ignores it.
+    if (canDefineProperty) {
+      Object.defineProperty(element._store, 'validated', {
+        configurable: false,
+        enumerable: false,
+        writable: true,
+        value: false
+      });
+      // self and source are DEV only properties.
+      Object.defineProperty(element, '_self', {
+        configurable: false,
+        enumerable: false,
+        writable: false,
+        value: self
+      });
+      // Two elements created in two different places should be considered
+      // equal for testing purposes and therefore we hide it from enumeration.
+      Object.defineProperty(element, '_source', {
+        configurable: false,
+        enumerable: false,
+        writable: false,
+        value: source
+      });
+    } else {
+      element._store.validated = false;
+      element._self = self;
+      element._source = source;
+    }
+    if (Object.freeze) {
+      Object.freeze(element.props);
+      Object.freeze(element);
+    }
+  }
+
+  return element;
+};
+
+/**
+ * Create and return a new ReactElement of the given type.
+ * See https://facebook.github.io/react/docs/top-level-api.html#react.createelement
+ */
+ReactElement.createElement = function (type, config, children) {
+  var propName;
+
+  // Reserved names are extracted
+  var props = {};
+
+  var key = null;
+  var ref = null;
+  var self = null;
+  var source = null;
+
+  if (config != null) {
+    if (hasValidRef(config)) {
+      ref = config.ref;
+    }
+    if (hasValidKey(config)) {
+      key = '' + config.key;
+    }
+
+    self = config.__self === undefined ? null : config.__self;
+    source = config.__source === undefined ? null : config.__source;
+    // Remaining properties are added to a new props object
+    for (propName in config) {
+      if (hasOwnProperty.call(config, propName) && !RESERVED_PROPS.hasOwnProperty(propName)) {
+        props[propName] = config[propName];
+      }
+    }
+  }
+
+  // Children can be more than one argument, and those are transferred onto
+  // the newly allocated props object.
+  var childrenLength = arguments.length - 2;
+  if (childrenLength === 1) {
+    props.children = children;
+  } else if (childrenLength > 1) {
+    var childArray = Array(childrenLength);
+    for (var i = 0; i < childrenLength; i++) {
+      childArray[i] = arguments[i + 2];
+    }
+    if (process.env.NODE_ENV !== 'production') {
+      if (Object.freeze) {
+        Object.freeze(childArray);
+      }
+    }
+    props.children = childArray;
+  }
+
+  // Resolve default props
+  if (type && type.defaultProps) {
+    var defaultProps = type.defaultProps;
+    for (propName in defaultProps) {
+      if (props[propName] === undefined) {
+        props[propName] = defaultProps[propName];
+      }
+    }
+  }
+  if (process.env.NODE_ENV !== 'production') {
+    if (key || ref) {
+      if (typeof props.$$typeof === 'undefined' || props.$$typeof !== REACT_ELEMENT_TYPE) {
+        var displayName = typeof type === 'function' ? type.displayName || type.name || 'Unknown' : type;
+        if (key) {
+          defineKeyPropWarningGetter(props, displayName);
+        }
+        if (ref) {
+          defineRefPropWarningGetter(props, displayName);
+        }
+      }
+    }
+  }
+  return ReactElement(type, key, ref, self, source, ReactCurrentOwner.current, props);
+};
+
+/**
+ * Return a function that produces ReactElements of a given type.
+ * See https://facebook.github.io/react/docs/top-level-api.html#react.createfactory
+ */
+ReactElement.createFactory = function (type) {
+  var factory = ReactElement.createElement.bind(null, type);
+  // Expose the type on the factory and the prototype so that it can be
+  // easily accessed on elements. E.g. `<Foo />.type === Foo`.
+  // This should not be named `constructor` since this may not be the function
+  // that created the element, and it may not even be a constructor.
+  // Legacy hook TODO: Warn if this is accessed
+  factory.type = type;
+  return factory;
+};
+
+ReactElement.cloneAndReplaceKey = function (oldElement, newKey) {
+  var newElement = ReactElement(oldElement.type, newKey, oldElement.ref, oldElement._self, oldElement._source, oldElement._owner, oldElement.props);
+
+  return newElement;
+};
+
+/**
+ * Clone and return a new ReactElement using element as the starting point.
+ * See https://facebook.github.io/react/docs/top-level-api.html#react.cloneelement
+ */
+ReactElement.cloneElement = function (element, config, children) {
+  var propName;
+
+  // Original props are copied
+  var props = _assign({}, element.props);
+
+  // Reserved names are extracted
+  var key = element.key;
+  var ref = element.ref;
+  // Self is preserved since the owner is preserved.
+  var self = element._self;
+  // Source is preserved since cloneElement is unlikely to be targeted by a
+  // transpiler, and the original source is probably a better indicator of the
+  // true owner.
+  var source = element._source;
+
+  // Owner will be preserved, unless ref is overridden
+  var owner = element._owner;
+
+  if (config != null) {
+    if (hasValidRef(config)) {
+      // Silently steal the ref from the parent.
+      ref = config.ref;
+      owner = ReactCurrentOwner.current;
+    }
+    if (hasValidKey(config)) {
+      key = '' + config.key;
+    }
+
+    // Remaining properties override existing props
+    var defaultProps;
+    if (element.type && element.type.defaultProps) {
+      defaultProps = element.type.defaultProps;
+    }
+    for (propName in config) {
+      if (hasOwnProperty.call(config, propName) && !RESERVED_PROPS.hasOwnProperty(propName)) {
+        if (config[propName] === undefined && defaultProps !== undefined) {
+          // Resolve default props
+          props[propName] = defaultProps[propName];
+        } else {
+          props[propName] = config[propName];
+        }
+      }
+    }
+  }
+
+  // Children can be more than one argument, and those are transferred onto
+  // the newly allocated props object.
+  var childrenLength = arguments.length - 2;
+  if (childrenLength === 1) {
+    props.children = children;
+  } else if (childrenLength > 1) {
+    var childArray = Array(childrenLength);
+    for (var i = 0; i < childrenLength; i++) {
+      childArray[i] = arguments[i + 2];
+    }
+    props.children = childArray;
+  }
+
+  return ReactElement(element.type, key, ref, self, source, owner, props);
+};
+
+/**
+ * Verifies the object is a ReactElement.
+ * See https://facebook.github.io/react/docs/top-level-api.html#react.isvalidelement
+ * @param {?object} object
+ * @return {boolean} True if `object` is a valid component.
+ * @final
+ */
+ReactElement.isValidElement = function (object) {
+  return typeof object === 'object' && object !== null && object.$$typeof === REACT_ELEMENT_TYPE;
+};
+
+module.exports = ReactElement;
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/**
+ * Copyright 2013-present, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * 
+ */
+
+
+
+var _prodInvariant = __webpack_require__(2);
+
+var invariant = __webpack_require__(0);
+
+/**
+ * Static poolers. Several custom versions for each potential number of
+ * arguments. A completely generic pooler is easy to implement, but would
+ * require accessing the `arguments` object. In each of these, `this` refers to
+ * the Class itself, not an instance. If any others are needed, simply add them
+ * here, or in their own files.
+ */
+var oneArgumentPooler = function (copyFieldsFrom) {
+  var Klass = this;
+  if (Klass.instancePool.length) {
+    var instance = Klass.instancePool.pop();
+    Klass.call(instance, copyFieldsFrom);
+    return instance;
+  } else {
+    return new Klass(copyFieldsFrom);
+  }
+};
+
+var twoArgumentPooler = function (a1, a2) {
+  var Klass = this;
+  if (Klass.instancePool.length) {
+    var instance = Klass.instancePool.pop();
+    Klass.call(instance, a1, a2);
+    return instance;
+  } else {
+    return new Klass(a1, a2);
+  }
+};
+
+var threeArgumentPooler = function (a1, a2, a3) {
+  var Klass = this;
+  if (Klass.instancePool.length) {
+    var instance = Klass.instancePool.pop();
+    Klass.call(instance, a1, a2, a3);
+    return instance;
+  } else {
+    return new Klass(a1, a2, a3);
+  }
+};
+
+var fourArgumentPooler = function (a1, a2, a3, a4) {
+  var Klass = this;
+  if (Klass.instancePool.length) {
+    var instance = Klass.instancePool.pop();
+    Klass.call(instance, a1, a2, a3, a4);
+    return instance;
+  } else {
+    return new Klass(a1, a2, a3, a4);
+  }
+};
+
+var standardReleaser = function (instance) {
+  var Klass = this;
+  !(instance instanceof Klass) ? process.env.NODE_ENV !== 'production' ? invariant(false, 'Trying to release an instance into a pool of a different type.') : _prodInvariant('25') : void 0;
+  instance.destructor();
+  if (Klass.instancePool.length < Klass.poolSize) {
+    Klass.instancePool.push(instance);
+  }
+};
+
+var DEFAULT_POOL_SIZE = 10;
+var DEFAULT_POOLER = oneArgumentPooler;
+
+/**
+ * Augments `CopyConstructor` to be a poolable class, augmenting only the class
+ * itself (statically) not adding any prototypical fields. Any CopyConstructor
+ * you give this may have a `poolSize` property, and will look for a
+ * prototypical `destructor` on instances.
+ *
+ * @param {Function} CopyConstructor Constructor that can be used to reset.
+ * @param {Function} pooler Customizable pooler.
+ */
+var addPoolingTo = function (CopyConstructor, pooler) {
+  // Casting as any so that flow ignores the actual implementation and trusts
+  // it to match the type we declared
+  var NewKlass = CopyConstructor;
+  NewKlass.instancePool = [];
+  NewKlass.getPooled = pooler || DEFAULT_POOLER;
+  if (!NewKlass.poolSize) {
+    NewKlass.poolSize = DEFAULT_POOL_SIZE;
+  }
+  NewKlass.release = standardReleaser;
+  return NewKlass;
+};
+
+var PooledClass = {
+  addPoolingTo: addPoolingTo,
+  oneArgumentPooler: oneArgumentPooler,
+  twoArgumentPooler: twoArgumentPooler,
+  threeArgumentPooler: threeArgumentPooler,
+  fourArgumentPooler: fourArgumentPooler
+};
+
+module.exports = PooledClass;
+
+/***/ }),
 /* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -7674,7 +7674,7 @@ var _assign = __webpack_require__(4);
 var ReactBaseClasses = __webpack_require__(71);
 var ReactChildren = __webpack_require__(114);
 var ReactDOMFactories = __webpack_require__(118);
-var ReactElement = __webpack_require__(20);
+var ReactElement = __webpack_require__(21);
 var ReactPropTypes = __webpack_require__(122);
 var ReactVersion = __webpack_require__(124);
 
@@ -8133,7 +8133,7 @@ module.exports = DOMLazyTree;
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return workspace; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_mobx__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_mobx__ = __webpack_require__(20);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__storage__ = __webpack_require__(103);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__project__ = __webpack_require__(104);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_path__ = __webpack_require__(106);
@@ -11014,13 +11014,14 @@ module.exports = ReactBrowserEventEmitter;
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return environment; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_fs__ = __webpack_require__(105);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_fs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_fs__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_mobx__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_mobx__ = __webpack_require__(20);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__storage__ = __webpack_require__(103);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__store_workspace__ = __webpack_require__(28);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__util_dialog__ = __webpack_require__(46);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__formats_art__ = __webpack_require__(215);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__formats_mapping__ = __webpack_require__(216);
-var _desc, _value, _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__formats_dplc__ = __webpack_require__(253);
+var _desc, _value, _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8;
 
 function _initDefineProp(target, property, descriptor, context) {
     if (!descriptor) return;
@@ -11073,6 +11074,7 @@ function _initializerWarningHelper(descriptor, context) {
 
 
 
+
 let Environment = (_class = class Environment {
     constructor() {
         _initDefineProp(this, 'palettes', _descriptor, this);
@@ -11083,11 +11085,13 @@ let Environment = (_class = class Environment {
 
         _initDefineProp(this, 'dplcs', _descriptor4, this);
 
-        _initDefineProp(this, 'loadObject', _descriptor5, this);
+        _initDefineProp(this, 'dplcConfig', _descriptor5, this);
 
-        _initDefineProp(this, 'saveObject', _descriptor6, this);
+        _initDefineProp(this, 'loadObject', _descriptor6, this);
 
-        _initDefineProp(this, 'paletteRender', _descriptor7, this);
+        _initDefineProp(this, 'saveObject', _descriptor7, this);
+
+        _initDefineProp(this, 'paletteRender', _descriptor8, this);
     }
 
     get palettesWeb() {
@@ -11096,6 +11100,11 @@ let Environment = (_class = class Environment {
                 return '#' + color.map(d => d.toString(16).padStart(2, '0')).join``;
             });
         });
+    }
+
+    get mappingsNormalized() {
+        // has mappings after applying DPLCs
+        return this.mappings;
     }
 
 }, (_descriptor = _applyDecoratedDescriptor(_class.prototype, 'palettes', [__WEBPACK_IMPORTED_MODULE_1_mobx__["observable"]], {
@@ -11122,25 +11131,41 @@ let Environment = (_class = class Environment {
     initializer: function () {
         return [];
     }
-}), _applyDecoratedDescriptor(_class.prototype, 'palettesWeb', [__WEBPACK_IMPORTED_MODULE_1_mobx__["computed"]], Object.getOwnPropertyDescriptor(_class.prototype, 'palettesWeb'), _class.prototype), _descriptor5 = _applyDecoratedDescriptor(_class.prototype, 'loadObject', [__WEBPACK_IMPORTED_MODULE_1_mobx__["action"]], {
+}), _descriptor5 = _applyDecoratedDescriptor(_class.prototype, 'dplcConfig', [__WEBPACK_IMPORTED_MODULE_1_mobx__["observable"]], {
+    enumerable: true,
+    initializer: function () {
+        return { enabled: false };
+    }
+}), _applyDecoratedDescriptor(_class.prototype, 'palettesWeb', [__WEBPACK_IMPORTED_MODULE_1_mobx__["computed"]], Object.getOwnPropertyDescriptor(_class.prototype, 'palettesWeb'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'mappingsNormalized', [__WEBPACK_IMPORTED_MODULE_1_mobx__["computed"]], Object.getOwnPropertyDescriptor(_class.prototype, 'mappingsNormalized'), _class.prototype), _descriptor6 = _applyDecoratedDescriptor(_class.prototype, 'loadObject', [__WEBPACK_IMPORTED_MODULE_1_mobx__["action"]], {
     enumerable: true,
     initializer: function () {
         return obj => {
             // load art
-            // const artPath = workspace.absolutePath(obj.art.path);
-            // readFile(artPath, (err, buffer) => {
-            //     if (err) return errorMsg('Error Reading Art File', err);
-            //     this.tiles.replace(bufferToTiles(buffer));
-            // });
+            const artPath = __WEBPACK_IMPORTED_MODULE_3__store_workspace__["a" /* workspace */].absolutePath(obj.art.path);
+            Object(__WEBPACK_IMPORTED_MODULE_0_fs__["readFile"])(artPath, (err, buffer) => {
+                if (err) return Object(__WEBPACK_IMPORTED_MODULE_4__util_dialog__["a" /* errorMsg */])('Error Reading Art File', err);
+                this.tiles.replace(Object(__WEBPACK_IMPORTED_MODULE_5__formats_art__["a" /* bufferToTiles */])(buffer));
+            });
             // load mappings
             const mappingPath = __WEBPACK_IMPORTED_MODULE_3__store_workspace__["a" /* workspace */].absolutePath(obj.mappings.path);
             Object(__WEBPACK_IMPORTED_MODULE_0_fs__["readFile"])(mappingPath, (err, buffer) => {
                 if (err) return Object(__WEBPACK_IMPORTED_MODULE_4__util_dialog__["a" /* errorMsg */])('Error Reading Mapping File', err);
-                this.mappings.replace(Object(__WEBPACK_IMPORTED_MODULE_6__formats_mapping__["a" /* bufferToMappings */])(buffer));
+                this.mappings.replace(Object(__WEBPACK_IMPORTED_MODULE_6__formats_mapping__["a" /* bufferToMappings */])(buffer, obj.mappingDefinition));
             });
+            // load DPLCs
+            this.dplcConfig.enabled = obj.dplcs.enabled == 'Yes';
+            if (this.dplcConfig.enabled) {
+                const dplcPath = __WEBPACK_IMPORTED_MODULE_3__store_workspace__["a" /* workspace */].absolutePath(obj.dplcs.path);
+                Object(__WEBPACK_IMPORTED_MODULE_0_fs__["readFile"])(dplcPath, (err, buffer) => {
+                    if (err) return Object(__WEBPACK_IMPORTED_MODULE_4__util_dialog__["a" /* errorMsg */])('Error Reading DPLC File', err);
+                    this.dplcs.replace(Object(__WEBPACK_IMPORTED_MODULE_7__formats_dplc__["a" /* bufferToDPLCs */])(buffer, obj.dplcDefinition));
+                });
+            } else {
+                this.dplcs.replace([]);
+            }
         };
     }
-}), _descriptor6 = _applyDecoratedDescriptor(_class.prototype, 'saveObject', [__WEBPACK_IMPORTED_MODULE_1_mobx__["action"]], {
+}), _descriptor7 = _applyDecoratedDescriptor(_class.prototype, 'saveObject', [__WEBPACK_IMPORTED_MODULE_1_mobx__["action"]], {
     enumerable: true,
     initializer: function () {
         return obj => {
@@ -11158,7 +11183,7 @@ let Environment = (_class = class Environment {
             // this.paletteRender();
         };
     }
-}), _descriptor7 = _applyDecoratedDescriptor(_class.prototype, 'paletteRender', [__WEBPACK_IMPORTED_MODULE_1_mobx__["action"]], {
+}), _descriptor8 = _applyDecoratedDescriptor(_class.prototype, 'paletteRender', [__WEBPACK_IMPORTED_MODULE_1_mobx__["action"]], {
     enumerable: true,
     initializer: function () {
         return callback => {
@@ -14206,7 +14231,7 @@ module.exports = getIteratorFn;
 
 var ReactCurrentOwner = __webpack_require__(13);
 var ReactComponentTreeHook = __webpack_require__(8);
-var ReactElement = __webpack_require__(20);
+var ReactElement = __webpack_require__(21);
 
 var checkReactTypeSpec = __webpack_require__(119);
 
@@ -15169,7 +15194,7 @@ var _prodInvariant = __webpack_require__(2);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var PooledClass = __webpack_require__(21);
+var PooledClass = __webpack_require__(22);
 
 var invariant = __webpack_require__(0);
 
@@ -17533,7 +17558,7 @@ module.exports = getHostComponentFromComposite;
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = storage;
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_mobx__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_mobx__ = __webpack_require__(20);
 
 
 let saveData = true;
@@ -17579,7 +17604,7 @@ window.__clearStorage = () => {
 
 "use strict";
 /* unused harmony export Project */
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_mobx__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_mobx__ = __webpack_require__(20);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_fs__ = __webpack_require__(105);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_fs___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_fs__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__util_stringify__ = __webpack_require__(213);
@@ -18680,13 +18705,13 @@ let Root = Object(__WEBPACK_IMPORTED_MODULE_2_mobx_react__["observer"])(_class =
 
 Object(__WEBPACK_IMPORTED_MODULE_1_react_dom__["render"])(__WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(Root, null), document.body.appendChild(document.createElement('div')));
 
-document.addEventListener('dragover', function (event) {
-    event.preventDefault();
+document.addEventListener('dragover', e => {
+    e.preventDefault();
     return false;
 }, false);
 
-document.addEventListener('drop', function (event) {
-    event.preventDefault();
+document.addEventListener('drop', e => {
+    e.preventDefault();
     return false;
 }, false);
 
@@ -18708,7 +18733,7 @@ document.addEventListener('drop', function (event) {
 
 
 var PooledClass = __webpack_require__(115);
-var ReactElement = __webpack_require__(20);
+var ReactElement = __webpack_require__(21);
 
 var emptyFunction = __webpack_require__(9);
 var traverseAllChildren = __webpack_require__(116);
@@ -19265,7 +19290,7 @@ module.exports = KeyEscapeUtils;
 
 
 
-var ReactElement = __webpack_require__(20);
+var ReactElement = __webpack_require__(21);
 
 /**
  * Create a factory that creates HTML tag elements.
@@ -19583,7 +19608,7 @@ module.exports = ReactPropTypesSecret;
 
 
 
-var _require = __webpack_require__(20),
+var _require = __webpack_require__(21),
     isValidElement = _require.isValidElement;
 
 var factory = __webpack_require__(76);
@@ -19697,7 +19722,7 @@ module.exports = '15.6.1';
 var _require = __webpack_require__(71),
     Component = _require.Component;
 
-var _require2 = __webpack_require__(20),
+var _require2 = __webpack_require__(21),
     isValidElement = _require2.isValidElement;
 
 var ReactNoopUpdateQueue = __webpack_require__(72);
@@ -20602,7 +20627,7 @@ module.exports = factory;
 
 var _prodInvariant = __webpack_require__(25);
 
-var ReactElement = __webpack_require__(20);
+var ReactElement = __webpack_require__(21);
 
 var invariant = __webpack_require__(0);
 
@@ -21321,7 +21346,7 @@ module.exports = BeforeInputEventPlugin;
 
 var _assign = __webpack_require__(4);
 
-var PooledClass = __webpack_require__(21);
+var PooledClass = __webpack_require__(22);
 
 var getTextContentAccessor = __webpack_require__(81);
 
@@ -27464,7 +27489,7 @@ module.exports = flattenChildren;
 
 var _assign = __webpack_require__(4);
 
-var PooledClass = __webpack_require__(21);
+var PooledClass = __webpack_require__(22);
 var Transaction = __webpack_require__(40);
 var ReactInstrumentation = __webpack_require__(10);
 var ReactServerUpdateQueue = __webpack_require__(177);
@@ -28151,7 +28176,7 @@ var _assign = __webpack_require__(4);
 
 var EventListener = __webpack_require__(98);
 var ExecutionEnvironment = __webpack_require__(6);
-var PooledClass = __webpack_require__(21);
+var PooledClass = __webpack_require__(22);
 var ReactDOMComponentTree = __webpack_require__(5);
 var ReactUpdates = __webpack_require__(14);
 
@@ -28393,7 +28418,7 @@ module.exports = ReactInjection;
 var _assign = __webpack_require__(4);
 
 var CallbackQueue = __webpack_require__(82);
-var PooledClass = __webpack_require__(21);
+var PooledClass = __webpack_require__(22);
 var ReactBrowserEventEmitter = __webpack_require__(44);
 var ReactInputSelection = __webpack_require__(99);
 var ReactInstrumentation = __webpack_require__(10);
@@ -30778,8 +30803,9 @@ function stringify(obj) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ObjectDef; });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_mobx__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_mobx__ = __webpack_require__(20);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__store_environment__ = __webpack_require__(45);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__formats_definitions__ = __webpack_require__(217);
 var _desc, _value, _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7;
 
 function _initDefineProp(target, property, descriptor, context) {
@@ -30828,9 +30854,26 @@ function _initializerWarningHelper(descriptor, context) {
 
 
 
+
 let ObjectDef = (_class = class ObjectDef {
     get key() {
         return Math.random().toString(35).slice(2);
+    }
+    get mappingDefinition() {
+        const { format, customDefinition } = this.mappings;
+        if (format == 'Custom') {
+            return customDefinition;
+        } else {
+            return __WEBPACK_IMPORTED_MODULE_2__formats_definitions__["b" /* mappingFormats */][format];
+        }
+    }
+    get dplcDefinition() {
+        const { format, customDefinition } = this.dplcs;
+        if (format == 'Custom') {
+            return customDefinition;
+        } else {
+            return __WEBPACK_IMPORTED_MODULE_2__formats_definitions__["a" /* dplcFormats */][format];
+        }
     }
 
     constructor(parent, obj = void 0) {
@@ -30874,19 +30917,21 @@ let ObjectDef = (_class = class ObjectDef {
     initializer: function () {
         return {
             path: '',
-            format: 'Sonic 1'
+            format: 'Sonic 1',
+            customDefinition: ''
         };
     }
 }), _descriptor4 = _applyDecoratedDescriptor(_class.prototype, 'dplcs', [__WEBPACK_IMPORTED_MODULE_0_mobx__["observable"]], {
     enumerable: true,
     initializer: function () {
         return {
-            enabled: false,
+            enabled: 'Yes',
             path: '',
-            format: 'Sonic 1'
+            format: 'Sonic 1',
+            customDefinition: ''
         };
     }
-}), _applyDecoratedDescriptor(_class.prototype, 'key', [__WEBPACK_IMPORTED_MODULE_0_mobx__["computed"]], Object.getOwnPropertyDescriptor(_class.prototype, 'key'), _class.prototype), _descriptor5 = _applyDecoratedDescriptor(_class.prototype, 'load', [__WEBPACK_IMPORTED_MODULE_0_mobx__["action"]], {
+}), _applyDecoratedDescriptor(_class.prototype, 'key', [__WEBPACK_IMPORTED_MODULE_0_mobx__["computed"]], Object.getOwnPropertyDescriptor(_class.prototype, 'key'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'mappingDefinition', [__WEBPACK_IMPORTED_MODULE_0_mobx__["computed"]], Object.getOwnPropertyDescriptor(_class.prototype, 'mappingDefinition'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'dplcDefinition', [__WEBPACK_IMPORTED_MODULE_0_mobx__["computed"]], Object.getOwnPropertyDescriptor(_class.prototype, 'dplcDefinition'), _class.prototype), _descriptor5 = _applyDecoratedDescriptor(_class.prototype, 'load', [__WEBPACK_IMPORTED_MODULE_0_mobx__["action"]], {
     enumerable: true,
     initializer: function () {
         return () => {
@@ -30915,7 +30960,7 @@ let ObjectDef = (_class = class ObjectDef {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* unused harmony export bufferToTiles */
+/* harmony export (immutable) */ __webpack_exports__["a"] = bufferToTiles;
 function bufferToTiles(buffer) {
     let tiles = [];
     const data = new Uint8Array(buffer);
@@ -30952,25 +30997,28 @@ function bufferToMappings(buffer, format) {
 
     const headers = Object(__WEBPACK_IMPORTED_MODULE_1__util__["a" /* getHeaders */])(data);
 
-    const { headerSize, mappingSize, mappingDef } = Object(__WEBPACK_IMPORTED_MODULE_0__definitions__["b" /* parseDef */])(__WEBPACK_IMPORTED_MODULE_0__definitions__["a" /* mapDefS2 */]);
+    const { headerSize, mappingSize, mappingDef } = Object(__WEBPACK_IMPORTED_MODULE_0__definitions__["c" /* parseDef */])(format);
 
     headers.forEach(headerOffset => {
 
-        const mappingQty = Object(__WEBPACK_IMPORTED_MODULE_1__util__["c" /* readN */])(data, headerOffset, headerSize);
+        const mappingQty = Object(__WEBPACK_IMPORTED_MODULE_1__util__["d" /* readN */])(data, headerOffset, headerSize);
         const mappingOffset = headerOffset + headerSize;
         let sprites = [];
 
         for (let i = 0; i < mappingQty; i++) {
             // convert each line to a binary string to easily extract properties
-            const binStr = Object(__WEBPACK_IMPORTED_MODULE_1__util__["b" /* readBinary */])(data, mappingOffset + mappingSize * i, mappingSize);
+            const binStr = Object(__WEBPACK_IMPORTED_MODULE_1__util__["c" /* readBinary */])(data, mappingOffset + mappingSize * i, mappingSize);
             const obj = {};
             let index = 0;
 
             mappingDef.forEach(({ name, length }) => {
                 // extract prop and convert to int
-                const value = parseInt(binStr.slice(index, index + length), 2);
+                const binFragment = binStr.slice(index, index + length);
+                const value = parseInt(binFragment, 2);
 
-                if (['top', 'left', 'palette', 'art'].includes(name)) {
+                if (['top', 'left'].includes(name)) {
+                    obj[name] = Object(__WEBPACK_IMPORTED_MODULE_1__util__["b" /* parseSigned */])(binFragment);
+                } else if (['palette', 'art'].includes(name)) {
                     obj[name] = value;
                 } else if (['width', 'height'].includes(name)) {
                     obj[name] = value + 1;
@@ -30995,34 +31043,83 @@ function bufferToMappings(buffer, format) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["b"] = parseDef;
+/* harmony export (immutable) */ __webpack_exports__["c"] = parseDef;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__util_dialog__ = __webpack_require__(46);
 
 
-const mapDefS2 = `
-    ; Sonic 2 Mapping Definition
+const mappingFormats = {
+    'Sonic 1': `; Sonic 1 Mapping Definition
 
-    headerSize(2)           ; bytes
-    spriteDefinition(
-        TTTT TTTT           ; relative top edge position of sprite
-        ????                ; always zero (ignore)
-        WW                  ; width of mapping (tiles -1)
-        HH                  ; height of mapping (tiles -1)
-        P                   ; priority flag
-        CC                  ; palette line
-        Y                   ; v flip
-        X                   ; h flip
-        AAA AAAA AAAA       ; art tile
-        2222222222222222    ; two player data
-        LLLL LLLL LLLL LLLL ; relative left edge position of sprite
-    )
-`;
-/* harmony export (immutable) */ __webpack_exports__["a"] = mapDefS2;
+headerSize(1)           ; bytes
+mappingDefinition(
+    TTTT TTTT           ; relative signed top edge position of sprite
+    ????                ; always zero (ignore)
+    WW                  ; width of mapping (tiles -1)
+    HH                  ; height of mapping (tiles -1)
+    P                   ; priority flag
+    CC                  ; palette line
+    Y                   ; v flip
+    X                   ; h flip
+    AAA AAAA AAAA       ; art tile offset
+    LLLL LLLL           ; relative signed left edge position of sprite
+)`,
+    'Sonic 2': `; Sonic 2 Mapping Definition
+
+headerSize(2)           ; bytes
+mappingDefinition(
+    TTTT TTTT           ; relative signed top edge position of sprite
+    ????                ; always zero (ignore)
+    WW                  ; width of mapping (tiles -1)
+    HH                  ; height of mapping (tiles -1)
+    P                   ; priority flag
+    CC                  ; palette line
+    Y                   ; v flip
+    X                   ; h flip
+    AAA AAAA AAAA       ; art tile offset
+    2222222222222222    ; two player data
+    LLLL LLLL LLLL LLLL ; relative signed left edge position of sprite
+)`,
+
+    'Sonic 3&K': `; Sonic 3&K Mapping Definition
+
+headerSize(2)           ; bytes
+mappingDefinition(
+    TTTT TTTT           ; relative signed top edge position of sprite
+    ????                ; always zero (ignore)
+    WW                  ; width of mapping (tiles -1)
+    HH                  ; height of mapping (tiles -1)
+    P                   ; priority flag
+    CC                  ; palette line
+    Y                   ; v flip
+    X                   ; h flip
+    AAA AAAA AAAA       ; art tile offset
+    LLLL LLLL LLLL LLLL ; relative signed left edge position of sprite
+)`
+};
+/* harmony export (immutable) */ __webpack_exports__["b"] = mappingFormats;
+
+
+const dplcFormats = {
+    'Sonic 1': `; Sonic 1 DPLC Definition
+
+headerSize(1)           ; bytes
+dplcDefinition(
+    NNNN                ; number of tiles (-1)
+    AAAA AAAA AAAA      ; art tile offset
+)`,
+    'Sonic 2/3&K': `; Sonic 2/3&K DPLC Definition
+
+headerSize(2)           ; bytes
+dplcDefinition(
+    NNNN                ; number of tiles (-1)
+    AAAA AAAA AAAA      ; art tile offset
+)`
+};
+/* harmony export (immutable) */ __webpack_exports__["a"] = dplcFormats;
 
 
 const tokens = {
     '?': 'ignore',
-    // mappings
     'T': 'top',
     'W': 'width',
     'H': 'height',
@@ -31032,7 +31129,8 @@ const tokens = {
     'X': 'hflip',
     'A': 'art',
     '2': 'two',
-    'L': 'left'
+    'L': 'left',
+    'N': 'size'
 };
 
 function parseDef(definition) {
@@ -31049,22 +31147,38 @@ function parseDef(definition) {
             def.headerSize = parseInt(headerSizeMatch[1]);
         }
 
-        const spriteDefMatch = definition.match(/spriteDefinition\((.*?)\)/);
-        if (spriteDefMatch) {
-            const spriteDef = spriteDefMatch[1];
-            const spriteLayout = spriteDef.match(/(.)\1*/g).map(str => ({
-                name: tokens[str[0]] || 'unknown',
-                length: str.length
-            }));
+        const mappingDefMatch = definition.match(/mappingDefinition\((.*?)\)/);
+        if (mappingDefMatch) {
+            const mappingDef = mappingDefMatch[1];
+            const { size, layout } = parseTokens(mappingDef);
+            def.mappingSize = size;
+            def.mappingDef = layout;
+        }
 
-            def.mappingSize = spriteDef.length / 8;
-            def.mappingDef = spriteLayout;
+        const dplcDefMatch = definition.match(/dplcDefinition\((.*?)\)/);
+        if (dplcDefMatch) {
+            const dplcDef = dplcDefMatch[1];
+            const { size, layout } = parseTokens(dplcDef);
+            def.dplcSize = size;
+            def.dplcDef = layout;
         }
 
         return def;
     } catch (e) {
         Object(__WEBPACK_IMPORTED_MODULE_0__util_dialog__["a" /* errorMsg */])('Error Parsing Definition', e.message);
     }
+}
+
+function parseTokens(definition) {
+    const spriteLayout = definition.match(/(.)\1*/g).map(str => ({
+        name: tokens[str[0]] || 'unknown',
+        length: str.length
+    }));
+
+    return {
+        size: definition.length / 8,
+        layout: spriteLayout
+    };
 }
 
 /***/ }),
@@ -31074,8 +31188,9 @@ function parseDef(definition) {
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["a"] = getHeaders;
 /* unused harmony export readWord */
-/* harmony export (immutable) */ __webpack_exports__["c"] = readN;
-/* harmony export (immutable) */ __webpack_exports__["b"] = readBinary;
+/* harmony export (immutable) */ __webpack_exports__["d"] = readN;
+/* harmony export (immutable) */ __webpack_exports__["c"] = readBinary;
+/* harmony export (immutable) */ __webpack_exports__["b"] = parseSigned;
 function getHeaders(data) {
     let a = 0x7FFF; // ???
     let headers = [];
@@ -31112,6 +31227,16 @@ function readBinary(data, index, size) {
     }).join``;
 }
 
+function parseSigned(value) {
+    // no radix as this only makes sense for base-2
+    if (+value[0]) {
+        // if negative
+        return ((1 << value.length) - parseInt(value, 2)) * -1;
+    } else {
+        return parseInt(value.slice(1), 2);
+    }
+}
+
 /***/ }),
 /* 219 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -31120,7 +31245,7 @@ function readBinary(data, index, size) {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ProjectExplorer; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_mobx__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_mobx__ = __webpack_require__(20);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_mobx_react__ = __webpack_require__(15);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_mobx_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_mobx_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__store_workspace__ = __webpack_require__(28);
@@ -33173,8 +33298,10 @@ exports.default = BorderButton;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_mobx_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_mobx_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__store_project__ = __webpack_require__(104);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__store_workspace__ = __webpack_require__(28);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__ui__ = __webpack_require__(111);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__object__ = __webpack_require__(252);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__ui__ = __webpack_require__(111);
 var _class;
+
 
 
 
@@ -33188,7 +33315,6 @@ let ProjectConfig = Object(__WEBPACK_IMPORTED_MODULE_1_mobx_react__["observer"])
         return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
             'div',
             { className: 'project-config' },
-            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4__ui__["a" /* Editor */], null),
             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 'h1',
                 null,
@@ -33197,19 +33323,19 @@ let ProjectConfig = Object(__WEBPACK_IMPORTED_MODULE_1_mobx_react__["observer"])
             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 'div',
                 { className: 'row' },
-                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4__ui__["c" /* Input */], {
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_5__ui__["c" /* Input */], {
                     label: 'Project Name',
                     placeholder: 'Project Name...',
                     store: __WEBPACK_IMPORTED_MODULE_2__store_project__["a" /* project */],
                     accessor: 'name'
                 }),
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                    __WEBPACK_IMPORTED_MODULE_4__ui__["d" /* Item */],
+                    __WEBPACK_IMPORTED_MODULE_5__ui__["d" /* Item */],
                     { color: 'blue', onClick: __WEBPACK_IMPORTED_MODULE_2__store_project__["a" /* project */].newObject, inverted: true },
                     'New Object'
                 ),
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                    __WEBPACK_IMPORTED_MODULE_4__ui__["d" /* Item */],
+                    __WEBPACK_IMPORTED_MODULE_5__ui__["d" /* Item */],
                     { color: 'magenta', inverted: true, onClick: __WEBPACK_IMPORTED_MODULE_3__store_workspace__["a" /* workspace */].closeProject },
                     'Close Project'
                 )
@@ -33217,124 +33343,7 @@ let ProjectConfig = Object(__WEBPACK_IMPORTED_MODULE_1_mobx_react__["observer"])
             !!__WEBPACK_IMPORTED_MODULE_2__store_project__["a" /* project */].objects.length && __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 'div',
                 { className: 'panel' },
-                __WEBPACK_IMPORTED_MODULE_2__store_project__["a" /* project */].objects.map(obj => __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                    'div',
-                    { key: obj.key },
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                        'div',
-                        { className: 'row object-header' },
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                            __WEBPACK_IMPORTED_MODULE_4__ui__["d" /* Item */],
-                            { color: 'blue' },
-                            'Object'
-                        ),
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4__ui__["c" /* Input */], {
-                            store: obj,
-                            color: 'blue',
-                            accessor: 'name',
-                            placeholder: 'Object Name'
-                        })
-                    ),
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                        'div',
-                        { className: 'indent' },
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                            __WEBPACK_IMPORTED_MODULE_4__ui__["d" /* Item */],
-                            { color: 'magenta' },
-                            'Palettes'
-                        ),
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                            __WEBPACK_IMPORTED_MODULE_4__ui__["d" /* Item */],
-                            { color: 'green' },
-                            'Art'
-                        ),
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                            'div',
-                            { className: 'options' },
-                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4__ui__["e" /* Select */], {
-                                label: 'Compression',
-                                options: ['Uncompressed', 'Nemesis', 'Kosinski', 'Kosinski-M', 'Comper'],
-                                store: obj.art,
-                                accessor: 'compression'
-                            }),
-                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4__ui__["b" /* File */], {
-                                store: obj.art,
-                                accessor: 'path'
-                            })
-                        ),
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                            __WEBPACK_IMPORTED_MODULE_4__ui__["d" /* Item */],
-                            { color: 'yellow' },
-                            'Mappings'
-                        ),
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                            'div',
-                            { className: 'options' },
-                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4__ui__["e" /* Select */], {
-                                label: 'Format',
-                                options: ['Sonic 1', 'Sonic 2', 'Sonic 3&K', 'Custom'],
-                                store: obj.mappings,
-                                accessor: 'format'
-                            }),
-                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4__ui__["b" /* File */], {
-                                store: obj.mappings,
-                                accessor: 'path'
-                            })
-                        ),
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                            __WEBPACK_IMPORTED_MODULE_4__ui__["d" /* Item */],
-                            { color: 'red' },
-                            'DPLCS'
-                        ),
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                            'div',
-                            { className: 'options' },
-                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4__ui__["e" /* Select */], {
-                                label: 'Enabled',
-                                options: ['Yes', 'No'],
-                                store: obj.dplcs,
-                                accessor: 'enabled'
-                            }),
-                            obj.dplcs.enabled == 'Yes' && __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                'div',
-                                null,
-                                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4__ui__["e" /* Select */], {
-                                    label: 'Format',
-                                    options: ['Sonic 1', 'Sonic 2', 'Sonic 3&K', 'Sonic CD', 'Custom...'],
-                                    store: obj.dplcs,
-                                    accessor: 'format'
-                                }),
-                                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4__ui__["b" /* File */], {
-                                    store: obj.dplcs,
-                                    accessor: 'path'
-                                })
-                            )
-                        ),
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                            'div',
-                            { className: 'actions' },
-                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                __WEBPACK_IMPORTED_MODULE_4__ui__["d" /* Item */],
-                                { color: 'red', inverted: true, onClick: obj.remove },
-                                'Delete Object'
-                            ),
-                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                'div',
-                                null,
-                                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                    __WEBPACK_IMPORTED_MODULE_4__ui__["d" /* Item */],
-                                    { color: 'green', inverted: true, onClick: obj.load },
-                                    'Load Object'
-                                ),
-                                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                    __WEBPACK_IMPORTED_MODULE_4__ui__["d" /* Item */],
-                                    { color: 'green', inverted: true, onClick: obj.save },
-                                    'Save To Object'
-                                )
-                            )
-                        )
-                    )
-                ))
+                __WEBPACK_IMPORTED_MODULE_2__store_project__["a" /* project */].objects.map(obj => __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4__object__["a" /* ObjectConfig */], { obj: obj, key: obj.key }))
             )
         );
     }
@@ -33904,10 +33913,10 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_brace___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_brace__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_brace_keybinding_vim__ = __webpack_require__(243);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_brace_keybinding_vim___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_brace_keybinding_vim__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__theme__ = __webpack_require__(245);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__syntax__ = __webpack_require__(252);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__theme__ = __webpack_require__(244);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__syntax__ = __webpack_require__(245);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__syntax___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__syntax__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_mobx__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_mobx__ = __webpack_require__(20);
 
 
 
@@ -33945,8 +33954,10 @@ let Editor = class Editor extends __WEBPACK_IMPORTED_MODULE_0_react__["Component
                 if (store && accessor) {
                     this.disposer = Object(__WEBPACK_IMPORTED_MODULE_5_mobx__["autorun"])(() => {
                         this.externalEdit = true;
+                        const pos = editor.getCursorPosition();
                         editor.setValue(store[accessor]);
                         editor.clearSelection();
+                        editor.moveCursorToPosition(pos);
                         this.externalEdit = false;
                     });
 
@@ -58686,8 +58697,7 @@ dom.importCssString(".normal-mode .ace_cursor{\
 
 
 /***/ }),
-/* 244 */,
-/* 245 */
+/* 244 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -58751,6 +58761,56 @@ ace.define('ace/theme/flex', ['require', 'exports', 'module', 'ace/lib/dom'], fu
 
     let dom = acequire('../lib/dom');
     dom.importCssString(exports.cssText, exports.cssClass);
+});
+
+/***/ }),
+/* 245 */
+/***/ (function(module, exports) {
+
+// https://ace.c9.io/#nav=higlighter&api=editor
+
+ace.define('ace/mode/flex_highlight_rules', ['require', 'exports', 'module', 'ace/lib/oop', 'ace/mode/text_highlight_rules'], function (acequire, exports, module) {
+    'use strict';
+
+    let oop = acequire('../lib/oop');
+    let TextHighlightRules = acequire('./text_highlight_rules').TextHighlightRules;
+
+    let FlexHighlightRules = function () {
+
+        this.$rules = {
+            start: [{ token: 'comment', regex: ';.*$' }, { token: 'keyword', regex: /(headerSize|mappingDefinition|dplcDefinition)/ }, { token: ['fn-bracket', 'number', 'fn-bracket'], regex: /(\()(\d+)(\))/ }]
+        };
+
+        this.normalizeRules();
+    };
+
+    FlexHighlightRules.metaData = { fileTypes: ['asm'],
+        name: 'Flex Definition Format',
+        scopeName: 'source' };
+
+    oop.inherits(FlexHighlightRules, TextHighlightRules);
+
+    exports.FlexHighlightRules = FlexHighlightRules;
+});
+
+ace.define('ace/mode/flex', ['require', 'exports', 'module', 'ace/lib/oop', 'ace/mode/text', 'ace/mode/flex_highlight_rules'], function (acequire, exports, module) {
+
+    let oop = acequire('../lib/oop');
+    let TextMode = acequire('./text').Mode;
+    let FlexHighlightRules = acequire('./flex_highlight_rules').FlexHighlightRules;
+
+    let Mode = function () {
+        this.HighlightRules = FlexHighlightRules;
+        this.$behaviour = this.$defaultBehaviour;
+    };
+    oop.inherits(Mode, TextMode);
+
+    (function () {
+        this.lineCommentStart = ';';
+        this.$id = 'ace/mode/flex';
+    }).call(Mode.prototype);
+
+    exports.Mode = Mode;
 });
 
 /***/ }),
@@ -58974,69 +59034,299 @@ let Mappings = Object(__WEBPACK_IMPORTED_MODULE_1_mobx_react__["observer"])(_cla
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return DPLCs; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_mobx_react__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_mobx_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_mobx_react__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__store_environment__ = __webpack_require__(45);
+var _class;
 
 
-let DPLCs = class DPLCs extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
+
+
+
+let DPLCs = Object(__WEBPACK_IMPORTED_MODULE_1_mobx_react__["observer"])(_class = class DPLCs extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 
     render() {
         return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-            'div',
+            'pre',
             null,
-            'dplcs (maybe move this into mappings)'
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'div',
+                null,
+                '(maybe move into mappings)'
+            ),
+            JSON.stringify(__WEBPACK_IMPORTED_MODULE_2__store_environment__["a" /* environment */].dplcs, null, 4)
         );
     }
 
-};
+}) || _class;
 
 /***/ }),
 /* 252 */
-/***/ (function(module, exports) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-// https://ace.c9.io/#nav=higlighter&api=editor
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ObjectConfig; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_mobx_react__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_mobx_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_mobx_react__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__ui__ = __webpack_require__(111);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__formats_definitions__ = __webpack_require__(217);
+var _class;
 
-ace.define('ace/mode/flex_highlight_rules', ['require', 'exports', 'module', 'ace/lib/oop', 'ace/mode/text_highlight_rules'], function (acequire, exports, module) {
-    'use strict';
 
-    let oop = acequire('../lib/oop');
-    let TextHighlightRules = acequire('./text_highlight_rules').TextHighlightRules;
 
-    let FlexHighlightRules = function () {
 
-        this.$rules = {
-            start: [{ token: 'comment', regex: ';.*$' }, { token: 'keyword', regex: /(headerSize|spriteDefinition)/ }, { token: ['fn-bracket', 'number', 'fn-bracket'], regex: /(\()(\d+)(\))/ }]
-        };
 
-        this.normalizeRules();
-    };
+const mappingList = [...Object.keys(__WEBPACK_IMPORTED_MODULE_3__formats_definitions__["b" /* mappingFormats */]), 'Custom'];
+const dplcList = [...Object.keys(__WEBPACK_IMPORTED_MODULE_3__formats_definitions__["a" /* dplcFormats */]), 'Custom'];
 
-    FlexHighlightRules.metaData = { fileTypes: ['asm'],
-        name: 'Flex Definition Format',
-        scopeName: 'source' };
+let ObjectConfig = Object(__WEBPACK_IMPORTED_MODULE_1_mobx_react__["observer"])(_class = class ObjectConfig extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 
-    oop.inherits(FlexHighlightRules, TextHighlightRules);
+    render() {
+        const { obj } = this.props;
 
-    exports.FlexHighlightRules = FlexHighlightRules;
-});
+        return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'div',
+            null,
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'div',
+                { className: 'row object-header' },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    __WEBPACK_IMPORTED_MODULE_2__ui__["d" /* Item */],
+                    { color: 'blue' },
+                    'Object'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__ui__["c" /* Input */], {
+                    store: obj,
+                    color: 'blue',
+                    accessor: 'name',
+                    placeholder: 'Object Name'
+                })
+            ),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'div',
+                { className: 'indent' },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    __WEBPACK_IMPORTED_MODULE_2__ui__["d" /* Item */],
+                    { color: 'magenta' },
+                    'Palettes'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    __WEBPACK_IMPORTED_MODULE_2__ui__["d" /* Item */],
+                    { color: 'green' },
+                    'Art'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'div',
+                    { className: 'options' },
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__ui__["e" /* Select */], {
+                        label: 'Compression',
+                        options: ['Uncompressed', 'Nemesis', 'Kosinski', 'Kosinski-M', 'Comper'],
+                        store: obj.art,
+                        accessor: 'compression'
+                    }),
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__ui__["b" /* File */], {
+                        store: obj.art,
+                        accessor: 'path'
+                    })
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    __WEBPACK_IMPORTED_MODULE_2__ui__["d" /* Item */],
+                    { color: 'yellow' },
+                    'Mappings'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'div',
+                    { className: 'options' },
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__ui__["e" /* Select */], {
+                        label: 'Format',
+                        options: mappingList,
+                        store: obj.mappings,
+                        accessor: 'format'
+                    }),
+                    obj.mappings.format == 'Custom' && __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'div',
+                        { className: 'custom' },
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            'div',
+                            { className: 'preset' },
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                'div',
+                                null,
+                                'Load preset'
+                            ),
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                'div',
+                                null,
+                                Object.keys(__WEBPACK_IMPORTED_MODULE_3__formats_definitions__["b" /* mappingFormats */]).map(format => __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                    'a',
+                                    {
+                                        href: '#',
+                                        key: format,
+                                        onClick: () => {
+                                            obj.mappings.customDefinition = __WEBPACK_IMPORTED_MODULE_3__formats_definitions__["b" /* mappingFormats */][format];
+                                        }
+                                    },
+                                    format
+                                ))
+                            )
+                        ),
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__ui__["a" /* Editor */], {
+                            store: obj.mappings,
+                            accessor: 'customDefinition'
+                        })
+                    ),
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__ui__["b" /* File */], {
+                        store: obj.mappings,
+                        accessor: 'path'
+                    })
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    __WEBPACK_IMPORTED_MODULE_2__ui__["d" /* Item */],
+                    { color: 'red' },
+                    'DPLCS'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'div',
+                    { className: 'options' },
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__ui__["e" /* Select */], {
+                        label: 'Enabled',
+                        options: ['Yes', 'No'],
+                        store: obj.dplcs,
+                        accessor: 'enabled'
+                    }),
+                    obj.dplcs.enabled == 'Yes' && __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'div',
+                        null,
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__ui__["e" /* Select */], {
+                            label: 'Format',
+                            options: dplcList,
+                            store: obj.dplcs,
+                            accessor: 'format'
+                        }),
+                        obj.dplcs.format == 'Custom' && __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            'div',
+                            { className: 'custom' },
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                'div',
+                                { className: 'preset' },
+                                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                    'div',
+                                    null,
+                                    'Load preset'
+                                ),
+                                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                    'div',
+                                    null,
+                                    Object.keys(__WEBPACK_IMPORTED_MODULE_3__formats_definitions__["a" /* dplcFormats */]).map(format => __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                        'a',
+                                        {
+                                            href: '#',
+                                            key: format,
+                                            onClick: () => {
+                                                obj.dplcs.customDefinition = __WEBPACK_IMPORTED_MODULE_3__formats_definitions__["a" /* dplcFormats */][format];
+                                            }
+                                        },
+                                        format
+                                    ))
+                                )
+                            ),
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__ui__["a" /* Editor */], {
+                                store: obj.dplcs,
+                                accessor: 'customDefinition'
+                            })
+                        ),
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__ui__["b" /* File */], {
+                            store: obj.dplcs,
+                            accessor: 'path'
+                        })
+                    )
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'div',
+                    { className: 'actions' },
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        __WEBPACK_IMPORTED_MODULE_2__ui__["d" /* Item */],
+                        { color: 'red', inverted: true, onClick: obj.remove },
+                        'Delete Object'
+                    ),
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'div',
+                        null,
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            __WEBPACK_IMPORTED_MODULE_2__ui__["d" /* Item */],
+                            { color: 'green', inverted: true, onClick: obj.load },
+                            'Load Object'
+                        ),
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            __WEBPACK_IMPORTED_MODULE_2__ui__["d" /* Item */],
+                            { color: 'green', inverted: true, onClick: obj.save },
+                            'Save To Object'
+                        )
+                    )
+                )
+            )
+        );
+    }
 
-ace.define('ace/mode/flex', ['require', 'exports', 'module', 'ace/lib/oop', 'ace/mode/text', 'ace/mode/flex_highlight_rules'], function (acequire, exports, module) {
+}) || _class;
 
-    let oop = acequire('../lib/oop');
-    let TextMode = acequire('./text').Mode;
-    let FlexHighlightRules = acequire('./flex_highlight_rules').FlexHighlightRules;
+/***/ }),
+/* 253 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-    let Mode = function () {
-        this.HighlightRules = FlexHighlightRules;
-        this.$behaviour = this.$defaultBehaviour;
-    };
-    oop.inherits(Mode, TextMode);
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = bufferToDPLCs;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__definitions__ = __webpack_require__(217);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__util__ = __webpack_require__(218);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__util_dialog__ = __webpack_require__(46);
 
-    (function () {
-        this.lineCommentStart = ';';
-        this.$id = 'ace/mode/flex';
-    }).call(Mode.prototype);
 
-    exports.Mode = Mode;
-});
+
+
+function bufferToDPLCs(buffer, format) {
+    const data = new Uint8Array(buffer);
+    let dplcs = [];
+
+    const headers = Object(__WEBPACK_IMPORTED_MODULE_1__util__["a" /* getHeaders */])(data);
+
+    const { headerSize, dplcSize, dplcDef } = Object(__WEBPACK_IMPORTED_MODULE_0__definitions__["c" /* parseDef */])(format);
+
+    headers.forEach(headerOffset => {
+
+        const dplcQty = Object(__WEBPACK_IMPORTED_MODULE_1__util__["d" /* readN */])(data, headerOffset, headerSize);
+        const dplcOffset = headerOffset + headerSize;
+        let sprites = [];
+
+        for (let i = 0; i < dplcQty; i++) {
+            // convert each line to a binary string to easily extract properties
+            const binStr = Object(__WEBPACK_IMPORTED_MODULE_1__util__["c" /* readBinary */])(data, dplcOffset + dplcSize * i, dplcSize);
+            const obj = {};
+            let index = 0;
+
+            dplcDef.forEach(({ name, length }) => {
+                // extract prop and convert to int
+                const binFragment = binStr.slice(index, index + length);
+                const value = parseInt(binFragment, 2);
+
+                if (name == 'size') {
+                    obj[name] = value + 1;
+                } else if (name == 'art') {
+                    obj[name] = value;
+                }
+
+                index += length;
+            });
+
+            sprites.push(obj);
+        }
+
+        dplcs.push(sprites);
+    });
+
+    return dplcs;
+}
 
 /***/ })
 /******/ ]);

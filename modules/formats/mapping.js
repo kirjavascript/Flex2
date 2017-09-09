@@ -1,5 +1,5 @@
-import { mapDefS2, parseDef } from './definitions';
-import { readWord, readN, readBinary, getHeaders } from './util';
+import { parseDef } from './definitions';
+import { readWord, readN, readBinary, getHeaders, parseSigned } from './util';
 import { errorMsg } from '#util/dialog';
 
 export function bufferToMappings(buffer, format) {
@@ -8,7 +8,7 @@ export function bufferToMappings(buffer, format) {
 
     const headers = getHeaders(data);
 
-    const { headerSize, mappingSize, mappingDef } = parseDef(mapDefS2);
+    const { headerSize, mappingSize, mappingDef } = parseDef(format);
 
     headers.forEach((headerOffset) => {
 
@@ -24,9 +24,13 @@ export function bufferToMappings(buffer, format) {
 
             mappingDef.forEach(({name, length}) => {
                 // extract prop and convert to int
-                const value = parseInt(binStr.slice(index, index + length), 2);
+                const binFragment = binStr.slice(index, index + length);
+                const value = parseInt(binFragment, 2);
 
-                if (['top', 'left', 'palette', 'art'].includes(name)) {
+                if (['top', 'left'].includes(name)) {
+                    obj[name] = parseSigned(binFragment);
+                }
+                else if (['palette', 'art'].includes(name)) {
                     obj[name] = value;
                 }
                 else if (['width', 'height'].includes(name)) {

@@ -28,7 +28,7 @@
   align-items: center;
   justify-content: center; }
 
-.row, .project-config .actions {
+.row, .project-config .custom .preset, .project-config .actions {
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -56,7 +56,9 @@ input, .select .Dropdown-placeholder {
   color: #ABB2BF;
   padding: 5px;
   width: 150px;
-  background-color: #282C34; }
+  margin-top: -1px;
+  background-color: #282C34;
+  z-index: 1; }
 
 .select .Dropdown-option:hover {
   background-color: #4E5462; }
@@ -417,6 +419,12 @@ input, .select .Dropdown-placeholder {
     margin: 10px; }
     .project-config .options .select {
       margin-bottom: 10px; }
+  .project-config .custom {
+    padding-bottom: 10px; }
+    .project-config .custom .preset {
+      margin-bottom: 10px; }
+      .project-config .custom .preset a {
+        margin-left: 5px; }
   .project-config .actions {
     margin: 10px 10px 5px 10px;
     align-items: flex-end; }
@@ -445,6 +453,9 @@ body {
   color: #ABB2BF;
   font-size: 14px;
   font-family: Hack Regular; }
+
+a {
+  color: #61AFEF; }
 
 .nuke {
   opacity: 0.5;

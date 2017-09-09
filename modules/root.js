@@ -28,12 +28,12 @@ render(
     document.body.appendChild(document.createElement('div'))
 );
 
-document.addEventListener('dragover',function(event){
-    event.preventDefault();
+document.addEventListener('dragover', (e) => {
+    e.preventDefault();
     return false;
 },false);
 
-document.addEventListener('drop',function(event){
-    event.preventDefault();
+document.addEventListener('drop', (e) => {
+    e.preventDefault();
     return false;
 },false);

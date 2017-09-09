@@ -10,12 +10,14 @@
             },
             "mappings": {
                 "path": "../../sonic/boom/objects/sonic/map_sonic.bin",
-                "format": "Sonic 1"
+                "format": "Sonic 2",
+                "customDefinition": "; Sonic 2 Mapping Definition\n\nheaderSize(2)           ; bytes\nmappingDefinition(\n    TTTT TTTT           ; relative signed top edge position of sprite\n    ????                ; always zero (ignore)\n    WW                  ; width of mapping (tiles -1)\n    HH                  ; height of mapping (tiles -1)\n    P                   ; priority flag\n    CC                  ; palette line\n    Y                   ; v flip\n    X                   ; h flip\n    AAA AAAA AAAA       ; art tile offset\n    2222222222222222    ; two player data\n    LLLL LLLL LLLL LLLL ; relative signed left edge position of sprite\n)"
             },
             "dplcs": {
                 "enabled": "Yes",
-                "path": "",
-                "format": "Sonic 2"
+                "path": "../../sonic/boom/objects/sonic/dplc_sonic.bin",
+                "format": "Sonic 2/3&K",
+                "customDefinition": "; Sonic 2/3&K DPLC Definition\n\nheaderSize(2)           ; bytes\ndplcDefinition(\n    N                   ; number of tiles (-1)\n    AAA                 ; art tile offset\n)"
             }
         }
     ]

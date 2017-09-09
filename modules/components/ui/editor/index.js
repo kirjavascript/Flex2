@@ -38,8 +38,10 @@ export class Editor extends Component {
             if (store && accessor) {
                 this.disposer = autorun(() => {
                     this.externalEdit = true;
+                    const pos = editor.getCursorPosition();
                     editor.setValue(store[accessor]);
                     editor.clearSelection();
+                    editor.moveCursorToPosition(pos);
                     this.externalEdit = false;
                 });
 

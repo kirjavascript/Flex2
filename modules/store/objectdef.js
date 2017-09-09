@@ -1,5 +1,6 @@
 import { observable, computed, action, autorun, toJS } from 'mobx';
 import { environment } from '#store/environment';
+import { mappingFormats, dplcFormats } from '#formats/definitions';
 
 export class ObjectDef {
 
@@ -11,14 +12,35 @@ export class ObjectDef {
     @observable mappings = {
         path: '',
         format: 'Sonic 1',
+        customDefinition: '',
     };
     @observable dplcs = {
-        enabled: false,
+        enabled: 'Yes',
         path: '',
         format: 'Sonic 1',
+        customDefinition: '',
     };
+
     @computed get key() {
         return Math.random().toString(35).slice(2);
+    }
+    @computed get mappingDefinition() {
+        const { format, customDefinition } = this.mappings;
+        if (format == 'Custom') {
+            return customDefinition;
+        }
+        else {
+            return mappingFormats[format];
+        }
+    }
+    @computed get dplcDefinition() {
+        const { format, customDefinition } = this.dplcs;
+        if (format == 'Custom') {
+            return customDefinition;
+        }
+        else {
+            return dplcFormats[format];
+        }
     }
 
     constructor(parent, obj = void 0) {

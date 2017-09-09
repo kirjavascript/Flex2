@@ -5,6 +5,7 @@ import { workspace } from '#store/workspace';
 import { errorMsg } from '#util/dialog';
 import { bufferToTiles } from '#formats/art';
 import { bufferToMappings } from '#formats/mapping';
+import { bufferToDPLCs } from '#formats/dplc';
 
 class Environment {
 
@@ -24,6 +25,8 @@ class Environment {
 
     @observable dplcs = [];
 
+    @observable dplcConfig = { enabled: false };
+
     @computed get palettesWeb() {
         return this.palettes.map((line) => {
             return line.map((color) => {
@@ -32,19 +35,36 @@ class Environment {
         });
     }
 
+    @computed get mappingsNormalized() {
+        // has mappings after applying DPLCs
+        return this.mappings;
+    }
+
     @action loadObject = (obj) => {
         // load art
-        // const artPath = workspace.absolutePath(obj.art.path);
-        // readFile(artPath, (err, buffer) => {
-        //     if (err) return errorMsg('Error Reading Art File', err);
-        //     this.tiles.replace(bufferToTiles(buffer));
-        // });
+        const artPath = workspace.absolutePath(obj.art.path);
+        readFile(artPath, (err, buffer) => {
+            if (err) return errorMsg('Error Reading Art File', err);
+            this.tiles.replace(bufferToTiles(buffer));
+        });
         // load mappings
         const mappingPath = workspace.absolutePath(obj.mappings.path);
         readFile(mappingPath, (err, buffer) => {
             if (err) return errorMsg('Error Reading Mapping File', err);
-            this.mappings.replace(bufferToMappings(buffer));
+            this.mappings.replace(bufferToMappings(buffer, obj.mappingDefinition));
         });
+        // load DPLCs
+        this.dplcConfig.enabled = obj.dplcs.enabled == 'Yes';
+        if (this.dplcConfig.enabled) {
+            const dplcPath = workspace.absolutePath(obj.dplcs.path);
+            readFile(dplcPath, (err, buffer) => {
+                if (err) return errorMsg('Error Reading DPLC File', err);
+                this.dplcs.replace(bufferToDPLCs(buffer, obj.dplcDefinition));
+            });
+        }
+        else {
+            this.dplcs.replace([]);
+        }
     };
 
     @action saveObject = (obj) => {

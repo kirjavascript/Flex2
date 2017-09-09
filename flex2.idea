@@ -1,6 +1,7 @@
 desktop version
 project files
 dynamic UI
+custom mapping formats
 ==
 
 UNDO (dont save to file)
@@ -19,6 +20,8 @@ sprites has a long list
 draggable reordering
 recent projects
 mouse select/drag sprites
+throttle file writing for project save
+collapse project objects
 
 // keyboard shortcuts that only work in certain components` (higher-order)
 // zoom in mappings view
@@ -28,5 +31,6 @@ divide tile index by 2 for sonic 2 2 player mappings
 // format decides how assets are saved
 
 // add transparency toggle support
+@computed for normalized mappings + dplcs
 support DPLCS / support formats / custom
 this.buffer = w/e in <Tile/>

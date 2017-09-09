@@ -51,7 +51,9 @@ input {
         color: $white;
         padding: 5px;
         width: 150px;
+        margin-top: -1px;
         background-color: $black;
+        z-index: 1;
     }
     .Dropdown-option:hover {
         background-color: $grey;

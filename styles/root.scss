@@ -25,6 +25,10 @@ body {
     font-family: Hack Regular;
 }
 
+a {
+    color: $blue;
+}
+
 .nuke {
     opacity: 0.5;
     transform: scale(1.9);

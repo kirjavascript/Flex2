@@ -35,6 +35,18 @@
         }
     }
 
+    .custom {
+        padding-bottom: 10px;
+
+        .preset {
+            @extend .row;
+            a {
+                margin-left: 5px;
+            }
+            margin-bottom: 10px;
+        }
+    }
+
     .actions {
         @extend .row;
         margin: 10px 10px 5px 10px;

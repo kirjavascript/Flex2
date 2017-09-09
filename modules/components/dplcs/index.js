@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
+import { observer } from 'mobx-react';
+import { environment } from '#store/environment';
 
+@observer
 export class DPLCs extends Component {
 
     render() {
-        return <div>
-            dplcs
-            (maybe move this into mappings)
-        </div>;
+        return <pre>
+            <div>(maybe move into mappings)</div>
+            {JSON.stringify(environment.dplcs, null, 4)}
+        </pre>;
     }
 
 }
