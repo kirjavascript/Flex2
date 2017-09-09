@@ -12,6 +12,7 @@ $baseSize: 200px;
     width: $baseSize;
     flex-shrink: 0;
     margin: 5px;
+    overflow: hidden;
 
     .index {
         position: absolute;

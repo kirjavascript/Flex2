@@ -447,7 +447,8 @@ input, .select .Dropdown-placeholder {
   height: 200px;
   width: 200px;
   flex-shrink: 0;
-  margin: 5px; }
+  margin: 5px;
+  overflow: hidden; }
   .sprite .index {
     position: absolute;
     right: 5px;
