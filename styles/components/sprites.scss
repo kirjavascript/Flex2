@@ -1,28 +1,32 @@
 $baseSize: 200px;
 
+.sprites {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
 .sprite {
     position: relative;
     height: $baseSize;
     width: $baseSize;
-    border: 1px solid $blue;
-    display: inline-block;
+    flex-shrink: 0;
     margin: 5px;
-
-
-    .mapping {
-        position: absolute;
-        margin-left: $baseSize / 2;
-        margin-top: $baseSize / 2;
-        display: flex;
-        flex-direction: column;
-        flex-wrap: wrap;
-    }
 
     .index {
         position: absolute;
         right: 5px;
         top: 5px;
         font-size: 10px;
+    }
+
+    .blank {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 10px;
+        font-weight: bold;
     }
 
 }

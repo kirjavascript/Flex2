@@ -55,17 +55,17 @@ export class Tile extends Component {
         // diff the new pixels
         for (let i = 0, j = 0; i < data.length; i++, j+=4) {
             if (
+                palette[data[i]] !== this.props.palette[this.props.data[i]] || // object relations
                 this.buffer.data[j] !== palette[data[i]][0] ||
                 this.buffer.data[j+1] !== palette[data[i]][1] ||
                 this.buffer.data[j+2] !== palette[data[i]][2]
             ) {
-                break;
+                return this.renderCanvas(newProps);
             }
             else if (i === data.length - 1) {
                 return;
             }
         }
-        this.renderCanvas(newProps);
     }
 
     shouldComponentUpdate() {

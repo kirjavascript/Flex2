@@ -1,55 +1,49 @@
 import React, { Component } from 'react';
 import { environment } from '#store/environment';
 import { observer } from 'mobx-react';
-import { Tile } from '../art/tile';
+import { Mapping } from '../mappings/mapping';
+import SVARS from 'sass-variables-loader!#styles/variables.scss';
 
 @observer
 export class Sprites extends Component {
 
     render() {
-        const { mappings, tileBuffers, palettes } = environment;
-        const scale = 4;
+        const { mappings, tileBuffers, palettes, config } = environment;
+        const { currentSprite } = config;
 
         return <div>
             <div>(import sheet here)</div>
 
-            {mappings.map((mappingList, spriteIndex) => (
-                <div key={spriteIndex} className="sprite">
-                    <div className="index">
-                        0x{spriteIndex.toString(16).toUpperCase()}
+            <div className="sprites">
+                {mappings.map((mappingList, spriteIndex) => (
+                    <div
+                        key={spriteIndex}
+                        className="sprite"
+                        onClick={() => {config.currentSprite = spriteIndex;}}
+                        style={{
+                            border: `1px solid ${SVARS[currentSprite == spriteIndex ? 'magenta' : 'blue']}`,
+                        }}
+                    >
+                        <div className="index">
+                            0x{spriteIndex.toString(16).toUpperCase()}
+                        </div>
+                        {!mappingList.length && (
+                            <div className="blank">
+                                [BLANK]
+                            </div>
+                        )}
+                        <div>
+                            {mappingList.map((mapping, mappingIndex) => {
+                                return <Mapping
+                                    key={mappingIndex}
+                                    data={mapping}
+                                    tileBuffer={tileBuffers[spriteIndex]}
+                                />;
+                            })}
+                        </div>
                     </div>
-                    {mappingList.map((mapping, mappingIndex) => {
-                        const { top, left, width, height, art, palette, vflip, hflip } = mapping;
-
-                        return <div
-                            key={mappingIndex}
-                            className="mapping"
-                            style={{
-                                top: top * scale,
-                                left: left * scale,
-                                width: width * scale * 8,
-                                height: height * scale * 8,
-                                transform: `scale(${hflip?-1:1},${vflip?-1:1})`,
-                            }}
-                        >
-                            {Array.from({length: width * height})
-                                .map((_, tileIndex) => {
-                                    const buffer = tileBuffers[spriteIndex];
-                                    const index = art + tileIndex;
-                                    const tile = buffer
-                                        && (buffer.length > index)
-                                        && buffer[art + tileIndex];
-
-                                    return !!tile && <Tile
-                                        key={tileIndex}
-                                        data={tile}
-                                        palette={palettes[palette]}
-                                    />;
-                                })}
-                        </div>;
-                    })}
-                </div>
-            ))};
+                ))};
+            </div>
 
         </div>;
     }

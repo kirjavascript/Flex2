@@ -11183,16 +11183,7 @@ let Environment = (_class = class Environment {
     enumerable: true,
     initializer: function () {
         return obj => {
-            // this.tiles[0] = [
-            //     3,3,3,3,3,3,3,3,
-            //     3,3,3,3,3,3,3,3,
-            //     3,3,3,3,3,3,3,3,
-            //     3,3,3,3,3,3,3,3,
-            //     3,3,3,3,3,3,3,3,
-            //     3,3,3,3,3,3,3,3,
-            //     3,3,3,3,3,3,3,3,
-            //     3,3,3,3,3,3,3,3,
-            // ];
+            this.tiles[0] = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3];
             // this.palettes[0][0] = [0, 0, 0];
             // this.paletteRender();
             // update config to reflect dplc definition?
@@ -58975,13 +58966,13 @@ let Tile = class Tile extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 
         // diff the new pixels
         for (let i = 0, j = 0; i < data.length; i++, j += 4) {
-            if (this.buffer.data[j] !== palette[data[i]][0] || this.buffer.data[j + 1] !== palette[data[i]][1] || this.buffer.data[j + 2] !== palette[data[i]][2]) {
-                break;
+            if (palette[data[i]] !== this.props.palette[this.props.data[i]] || // object relations
+            this.buffer.data[j] !== palette[data[i]][0] || this.buffer.data[j + 1] !== palette[data[i]][1] || this.buffer.data[j + 2] !== palette[data[i]][2]) {
+                return this.renderCanvas(newProps);
             } else if (i === data.length - 1) {
                 return;
             }
         }
-        this.renderCanvas(newProps);
     }
 
     shouldComponentUpdate() {
@@ -59015,8 +59006,11 @@ let Tile = class Tile extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__store_environment__ = __webpack_require__(45);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_mobx_react__ = __webpack_require__(15);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_mobx_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_mobx_react__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__art_tile__ = __webpack_require__(248);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__mappings_mapping__ = __webpack_require__(254);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_sass_variables_loader_styles_variables_scss__ = __webpack_require__(49);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_sass_variables_loader_styles_variables_scss___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_sass_variables_loader_styles_variables_scss__);
 var _class;
+
 
 
 
@@ -59026,8 +59020,8 @@ var _class;
 let Sprites = Object(__WEBPACK_IMPORTED_MODULE_2_mobx_react__["observer"])(_class = class Sprites extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 
     render() {
-        const { mappings, tileBuffers, palettes } = __WEBPACK_IMPORTED_MODULE_1__store_environment__["a" /* environment */];
-        const scale = 4;
+        const { mappings, tileBuffers, palettes, config } = __WEBPACK_IMPORTED_MODULE_1__store_environment__["a" /* environment */];
+        const { currentSprite } = config;
 
         return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
             'div',
@@ -59037,46 +59031,46 @@ let Sprites = Object(__WEBPACK_IMPORTED_MODULE_2_mobx_react__["observer"])(_clas
                 null,
                 '(import sheet here)'
             ),
-            mappings.map((mappingList, spriteIndex) => __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 'div',
-                { key: spriteIndex, className: 'sprite' },
-                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                { className: 'sprites' },
+                mappings.map((mappingList, spriteIndex) => __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'div',
-                    { className: 'index' },
-                    '0x',
-                    spriteIndex.toString(16).toUpperCase()
-                ),
-                mappingList.map((mapping, mappingIndex) => {
-                    const { top, left, width, height, art, palette, vflip, hflip } = mapping;
-
-                    return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                        'div',
-                        {
-                            key: mappingIndex,
-                            className: 'mapping',
-                            style: {
-                                top: top * scale,
-                                left: left * scale,
-                                width: width * scale * 8,
-                                height: height * scale * 8,
-                                transform: `scale(${hflip ? -1 : 1},${vflip ? -1 : 1})`
-                            }
+                    {
+                        key: spriteIndex,
+                        className: 'sprite',
+                        onClick: () => {
+                            config.currentSprite = spriteIndex;
                         },
-                        Array.from({ length: width * height }).map((_, tileIndex) => {
-                            const buffer = tileBuffers[spriteIndex];
-                            const index = art + tileIndex;
-                            const tile = buffer && buffer.length > index && buffer[art + tileIndex];
-
-                            return !!tile && __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__art_tile__["a" /* Tile */], {
-                                key: tileIndex,
-                                data: tile,
-                                palette: palettes[palette]
+                        style: {
+                            border: `1px solid ${__WEBPACK_IMPORTED_MODULE_4_sass_variables_loader_styles_variables_scss___default.a[currentSprite == spriteIndex ? 'magenta' : 'blue']}`
+                        }
+                    },
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'div',
+                        { className: 'index' },
+                        '0x',
+                        spriteIndex.toString(16).toUpperCase()
+                    ),
+                    !mappingList.length && __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'div',
+                        { className: 'blank' },
+                        '[BLANK]'
+                    ),
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'div',
+                        null,
+                        mappingList.map((mapping, mappingIndex) => {
+                            return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__mappings_mapping__["a" /* Mapping */], {
+                                key: mappingIndex,
+                                data: mapping,
+                                tileBuffer: tileBuffers[spriteIndex]
                             });
                         })
-                    );
-                })
-            )),
-            ';'
+                    )
+                )),
+                ';'
+            )
         );
     }
 
@@ -59412,6 +59406,60 @@ function bufferToDPLCs(buffer, format) {
 
     return dplcs;
 }
+
+/***/ }),
+/* 254 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Mapping; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__art_tile__ = __webpack_require__(248);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__store_environment__ = __webpack_require__(45);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_mobx_react__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_mobx_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_mobx_react__);
+var _class;
+
+
+
+
+
+
+let Mapping = Object(__WEBPACK_IMPORTED_MODULE_3_mobx_react__["observer"])(_class = class Mapping extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
+
+    render() {
+        const { data, tileBuffer } = this.props;
+        const { top, left, width, height, art, palette, vflip, hflip } = data;
+        const { tileBuffers, palettes } = __WEBPACK_IMPORTED_MODULE_2__store_environment__["a" /* environment */];
+        const scale = 4;
+
+        return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'div',
+            {
+                className: 'mapping',
+                style: {
+                    top: top * scale,
+                    left: left * scale,
+                    width: width * scale * 8,
+                    height: height * scale * 8,
+                    transform: `scale(${hflip ? -1 : 1},${vflip ? -1 : 1})`
+                }
+            },
+            Array.from({ length: width * height }).map((_, tileIndex) => {
+                const index = art + tileIndex;
+                const tile = tileBuffer && tileBuffer.length > index && tileBuffer[art + tileIndex];
+
+                return !!tile && __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__art_tile__["a" /* Tile */], {
+                    key: tileIndex,
+                    data: tile,
+                    palette: palettes[palette]
+                });
+            })
+        );
+    }
+
+}) || _class;
 
 /***/ })
 /******/ ]);
