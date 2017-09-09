@@ -11082,14 +11082,24 @@ let Environment = (_class = class Environment {
         _initDefineProp(this, 'saveObject', _descriptor7, this);
     }
 
-    get dplcTiles() {}
-
-    // TODO: don't use this - problem is with tile render diffing (diff against buffer)
-    // @action paletteRender = (callback) => {
-    //     // force a rerender
-    //     callback && callback(this.palettes);
-    //     this.palettes.replace(toJS(this.palettes));
-    // };
+    // all tiles, or DPLC buffer if enabled
+    get tileBuffers() {
+        if (this.config.dplcsEnabled) {
+            let buffers = [];
+            this.dplcs.map(dplcList => {
+                let tiles = [];
+                dplcList.map(({ art, size }) => {
+                    Array.from({ length: size }, (_, i) => {
+                        tiles.push(this.tiles[art + i]);
+                    });
+                });
+                buffers.push(tiles);
+            });
+            return buffers;
+        } else {
+            return this.mappings.map(() => this.tiles);
+        }
+    }
 
     get palettesWeb() {
         return this.palettes.map(line => {
@@ -11105,7 +11115,7 @@ let Environment = (_class = class Environment {
         return {
             currentSprite: 0,
             transparency: true,
-            dplcEnabled: false
+            dplcsEnabled: false
         };
     }
 }), _descriptor2 = _applyDecoratedDescriptor(_class.prototype, 'palettes', [__WEBPACK_IMPORTED_MODULE_1_mobx__["observable"]], {
@@ -11132,7 +11142,7 @@ let Environment = (_class = class Environment {
     initializer: function () {
         return [];
     }
-}), _applyDecoratedDescriptor(_class.prototype, 'dplcTiles', [__WEBPACK_IMPORTED_MODULE_1_mobx__["computed"]], Object.getOwnPropertyDescriptor(_class.prototype, 'dplcTiles'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'palettesWeb', [__WEBPACK_IMPORTED_MODULE_1_mobx__["computed"]], Object.getOwnPropertyDescriptor(_class.prototype, 'palettesWeb'), _class.prototype), _descriptor6 = _applyDecoratedDescriptor(_class.prototype, 'loadObject', [__WEBPACK_IMPORTED_MODULE_1_mobx__["action"]], {
+}), _applyDecoratedDescriptor(_class.prototype, 'tileBuffers', [__WEBPACK_IMPORTED_MODULE_1_mobx__["computed"]], Object.getOwnPropertyDescriptor(_class.prototype, 'tileBuffers'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'palettesWeb', [__WEBPACK_IMPORTED_MODULE_1_mobx__["computed"]], Object.getOwnPropertyDescriptor(_class.prototype, 'palettesWeb'), _class.prototype), _descriptor6 = _applyDecoratedDescriptor(_class.prototype, 'loadObject', [__WEBPACK_IMPORTED_MODULE_1_mobx__["action"]], {
     enumerable: true,
     initializer: function () {
         return obj => {
@@ -11157,8 +11167,8 @@ let Environment = (_class = class Environment {
                 this.mappings.replace([]);
             }
             // load DPLCs
-            this.config.dplcEnabled = obj.dplcs.enabled == 'Yes';
-            if (this.config.dplcEnabled && obj.dplcs.path) {
+            this.config.dplcsEnabled = obj.dplcs.enabled == 'Yes';
+            if (this.config.dplcsEnabled && obj.dplcs.path) {
                 const dplcPath = __WEBPACK_IMPORTED_MODULE_3__store_workspace__["a" /* workspace */].absolutePath(obj.dplcs.path);
                 Object(__WEBPACK_IMPORTED_MODULE_0_fs__["readFile"])(dplcPath, (err, buffer) => {
                     if (err) return Object(__WEBPACK_IMPORTED_MODULE_4__util_dialog__["a" /* errorMsg */])('Error Reading DPLC File', err);
@@ -11173,8 +11183,17 @@ let Environment = (_class = class Environment {
     enumerable: true,
     initializer: function () {
         return obj => {
-            this.tiles[0] = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3];
-            this.palettes[0][0] = [0, 0, 0];
+            // this.tiles[0] = [
+            //     3,3,3,3,3,3,3,3,
+            //     3,3,3,3,3,3,3,3,
+            //     3,3,3,3,3,3,3,3,
+            //     3,3,3,3,3,3,3,3,
+            //     3,3,3,3,3,3,3,3,
+            //     3,3,3,3,3,3,3,3,
+            //     3,3,3,3,3,3,3,3,
+            //     3,3,3,3,3,3,3,3,
+            // ];
+            // this.palettes[0][0] = [0, 0, 0];
             // this.paletteRender();
             // update config to reflect dplc definition?
             //
@@ -11186,6 +11205,7 @@ let Environment = (_class = class Environment {
 const environment = new Environment();
 Object(__WEBPACK_IMPORTED_MODULE_2__storage__["a" /* storage */])(environment, 'environment');
 
+window.env = environment;
 
 /***/ }),
 /* 46 */
@@ -30913,7 +30933,7 @@ let ObjectDef = (_class = class ObjectDef {
     enumerable: true,
     initializer: function () {
         return {
-            enabled: 'Yes',
+            enabled: 'No',
             path: '',
             format: 'Sonic 1',
             customDefinition: ''
@@ -33569,9 +33589,10 @@ let Select = Object(__WEBPACK_IMPORTED_MODULE_1_mobx_react__["observer"])(_class
     constructor(props) {
         super(props);
 
-        this.onChange = ({ value, label }) => {
+        this.onChange = ({ label }) => {
             const { store, accessor } = this.props;
-            store[accessor] = value;
+            // value is sometimes incorrect so
+            store[accessor] = this.options.find(d => d.label == label).value;
         };
 
         this.options = this.props.options.map(option => {
@@ -33587,6 +33608,7 @@ let Select = Object(__WEBPACK_IMPORTED_MODULE_1_mobx_react__["observer"])(_class
         const _props = this.props,
               { label, store, accessor } = _props,
               otherProps = _objectWithoutProperties(_props, ['label', 'store', 'accessor']);
+        const value = this.options.find(d => d.value == store[accessor]).label;
 
         return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
             'div',
@@ -33595,7 +33617,7 @@ let Select = Object(__WEBPACK_IMPORTED_MODULE_1_mobx_react__["observer"])(_class
             ' \u2003',
             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2_react_dropdown___default.a, {
                 options: this.options,
-                value: store[accessor],
+                value: value,
                 onChange: this.onChange
             })
         );
@@ -58858,7 +58880,9 @@ let Palettes = Object(__WEBPACK_IMPORTED_MODULE_2_mobx_react__["observer"])(_cla
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_mobx_react__ = __webpack_require__(15);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_mobx_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_mobx_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__tile__ = __webpack_require__(248);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__ui__ = __webpack_require__(111);
 var _class;
+
 
 
 
@@ -58871,7 +58895,12 @@ let Art = Object(__WEBPACK_IMPORTED_MODULE_2_mobx_react__["observer"])(_class = 
         return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
             'div',
             { className: 'art' },
-            'TODO: transparency toggle',
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4__ui__["e" /* Select */], {
+                label: 'Transparency',
+                store: __WEBPACK_IMPORTED_MODULE_1__store_environment__["a" /* environment */].config,
+                accessor: 'transparency',
+                options: [{ label: 'Enabled', value: true }, { label: 'Disabled', value: false }]
+            }),
             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 'div',
                 { className: 'tile-list' },
@@ -58926,6 +58955,7 @@ let Tile = class Tile extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
             }
         }, this.renderCanvas = (props = this.props) => {
             const { data, palette } = props;
+            if (!data) return;
             const { transparency } = __WEBPACK_IMPORTED_MODULE_1__store_environment__["a" /* environment */].config;
 
             for (let i = 0, j = 0; i < data.length; i++, j += 4) {
@@ -58939,33 +58969,20 @@ let Tile = class Tile extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
         }, _temp;
     }
 
-    // componentWillReceiveProps(newProps) {
-    //     const { data, palette } = newProps;
-    //     // console.log('props');
+    componentWillReceiveProps(newProps) {
+        const { data, palette } = newProps;
+        if (!data) return;
 
-    //     // diff the new pixels
-    //     // for (let i = 0, j = 0; i < data.length; i++, j+=4) {
-    //     //     if (
-    //     //         this.buffer.data[j] !== palette[data[i]][0] ||
-    //     //         this.buffer.data[j+1] !== palette[data[i]][1] ||
-    //     //         this.buffer.data[j+2] !== palette[data[i]][2]
-    //     //     ) {
-    //     //         break;
-    //     //     }
-    //     //     else if (i === data.length - 1) {
-    //     //         return;
-    //     //     }
-    //     // }
-    //     // for (let i = 0; i < newProps.data.length; i++) {
-    //     //     if (newProps.palette[newProps.data[i]] !== palette[data[i]]) {
-    //     //         break;
-    //     //     }
-    //     //     else if (i === newProps.data.length - 1) {
-    //     //         return;
-    //     //     }
-    //     // }
-    //     this.renderCanvas(newProps);
-    // }
+        // diff the new pixels
+        for (let i = 0, j = 0; i < data.length; i++, j += 4) {
+            if (this.buffer.data[j] !== palette[data[i]][0] || this.buffer.data[j + 1] !== palette[data[i]][1] || this.buffer.data[j + 2] !== palette[data[i]][2]) {
+                break;
+            } else if (i === data.length - 1) {
+                return;
+            }
+        }
+        this.renderCanvas(newProps);
+    }
 
     shouldComponentUpdate() {
         return false;
@@ -58995,19 +59012,75 @@ let Tile = class Tile extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Sprites; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__store_environment__ = __webpack_require__(45);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_mobx_react__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_mobx_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_mobx_react__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__art_tile__ = __webpack_require__(248);
+var _class;
 
 
-let Sprites = class Sprites extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
+
+
+
+
+let Sprites = Object(__WEBPACK_IMPORTED_MODULE_2_mobx_react__["observer"])(_class = class Sprites extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
 
     render() {
+        const { mappings, tileBuffers, palettes } = __WEBPACK_IMPORTED_MODULE_1__store_environment__["a" /* environment */];
+        const scale = 4;
+
         return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
             'div',
             null,
-            'sprites (import sheet here)'
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'div',
+                null,
+                '(import sheet here)'
+            ),
+            mappings.map((mappingList, spriteIndex) => __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'div',
+                { key: spriteIndex, className: 'sprite' },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'div',
+                    { className: 'index' },
+                    '0x',
+                    spriteIndex.toString(16).toUpperCase()
+                ),
+                mappingList.map((mapping, mappingIndex) => {
+                    const { top, left, width, height, art, palette, vflip, hflip } = mapping;
+
+                    return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'div',
+                        {
+                            key: mappingIndex,
+                            className: 'mapping',
+                            style: {
+                                top: top * scale,
+                                left: left * scale,
+                                width: width * scale * 8,
+                                height: height * scale * 8,
+                                transform: `scale(${hflip ? -1 : 1},${vflip ? -1 : 1})`
+                            }
+                        },
+                        Array.from({ length: width * height }).map((_, tileIndex) => {
+                            const buffer = tileBuffers[spriteIndex];
+                            const index = art + tileIndex;
+                            const tile = buffer && buffer.length > index && buffer[art + tileIndex];
+
+                            return !!tile && __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__art_tile__["a" /* Tile */], {
+                                key: tileIndex,
+                                data: tile,
+                                palette: palettes[palette]
+                            });
+                        })
+                    );
+                })
+            )),
+            ';'
         );
     }
 
-};
+}) || _class;
 
 /***/ }),
 /* 250 */

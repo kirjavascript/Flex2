@@ -5,6 +5,7 @@
 @import './components/project-menu.scss';
 @import './components/project-config.scss';
 @import './components/art.scss';
+@import './components/sprites.scss';
 
 html {
     user-select: none;
@@ -27,6 +28,7 @@ body {
 
 a {
     color: $blue;
+    cursor: default;
 }
 
 .nuke {

@@ -1,0 +1,28 @@
+$baseSize: 200px;
+
+.sprite {
+    position: relative;
+    height: $baseSize;
+    width: $baseSize;
+    border: 1px solid $blue;
+    display: inline-block;
+    margin: 5px;
+
+
+    .mapping {
+        position: absolute;
+        margin-left: $baseSize / 2;
+        margin-top: $baseSize / 2;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+    }
+
+    .index {
+        position: absolute;
+        right: 5px;
+        top: 5px;
+        font-size: 10px;
+    }
+
+}

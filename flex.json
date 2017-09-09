@@ -11,7 +11,7 @@
             "mappings": {
                 "path": "../../sonic/boom/objects/sonic/map_sonic.bin",
                 "format": "Sonic 2",
-                "customDefinition": "; Sonic 2 Mapping Definition\n\nheaderSize(2)           ; bytes\nmappingDefinition(\n    TTTT TTTT           ; relative signed top edge position of sprite\n    ????                ; always zero (ignore)\n    WW                  ; width of mapping (tiles -1)\n    HH                  ; height of mapping (tiles -1)\n    P                   ; priority flag\n    CC                  ; palette line\n    Y                   ; v flip\n    X                   ; h flip\n    AAA AAAA AAAA       ; art tile offset\n    2222222222222222    ; two player data\n    LLLL LLLL LLLL LLLL ; relative signed left edge position of sprite\n)"
+                "customDefinition": "; Sonic 1 Mapping Definition\n\nheaderSize(1)           ; bytes\nmappingDefinition(\n    TTTT TTTT           ; relative signed top edge position of sprite\n    ????                ; always zero (ignore)\n    WW                  ; width of mapping (tiles -1)\n    HH                  ; height of mapping (tiles -1)\n    P                   ; priority flag\n    CC                  ; palette line\n    Y                   ; v flip\n    X                   ; h flip\n    AAA AAAA AAAA       ; art tile offset\n    LLLL LLLL           ; relative signed left edge position of sprite\n)"
             },
             "dplcs": {
                 "enabled": "Yes",
@@ -23,16 +23,16 @@
         {
             "name": "",
             "art": {
-                "path": "../static/images/nuke.png",
-                "compression": "Uncompressed"
+                "path": "../../sonic/boom/objects/kkz/art_plant.bin",
+                "compression": "Nemesis"
             },
             "mappings": {
-                "path": "",
-                "format": "Sonic 1",
+                "path": "../../sonic/boom/objects/kkz/map_plant.bin",
+                "format": "Sonic 2",
                 "customDefinition": ""
             },
             "dplcs": {
-                "enabled": "Yes",
+                "enabled": "No",
                 "path": "",
                 "format": "Sonic 1",
                 "customDefinition": ""

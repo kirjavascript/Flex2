@@ -27,6 +27,7 @@ export class Tile extends Component {
 
     renderCanvas = (props = this.props) => {
         const { data, palette } = props;
+        if (!data) return;
         const { transparency } = environment.config;
 
         for (let i = 0, j = 0; i < data.length; i++, j+=4) {
@@ -47,33 +48,25 @@ export class Tile extends Component {
     }
 
 
-    // componentWillReceiveProps(newProps) {
-    //     const { data, palette } = newProps;
-    //     // console.log('props');
+    componentWillReceiveProps(newProps) {
+        const { data, palette } = newProps;
+        if (!data) return;
 
-    //     // diff the new pixels
-    //     // for (let i = 0, j = 0; i < data.length; i++, j+=4) {
-    //     //     if (
-    //     //         this.buffer.data[j] !== palette[data[i]][0] ||
-    //     //         this.buffer.data[j+1] !== palette[data[i]][1] ||
-    //     //         this.buffer.data[j+2] !== palette[data[i]][2]
-    //     //     ) {
-    //     //         break;
-    //     //     }
-    //     //     else if (i === data.length - 1) {
-    //     //         return;
-    //     //     }
-    //     // }
-    //     // for (let i = 0; i < newProps.data.length; i++) {
-    //     //     if (newProps.palette[newProps.data[i]] !== palette[data[i]]) {
-    //     //         break;
-    //     //     }
-    //     //     else if (i === newProps.data.length - 1) {
-    //     //         return;
-    //     //     }
-    //     // }
-    //     this.renderCanvas(newProps);
-    // }
+        // diff the new pixels
+        for (let i = 0, j = 0; i < data.length; i++, j+=4) {
+            if (
+                this.buffer.data[j] !== palette[data[i]][0] ||
+                this.buffer.data[j+1] !== palette[data[i]][1] ||
+                this.buffer.data[j+2] !== palette[data[i]][2]
+            ) {
+                break;
+            }
+            else if (i === data.length - 1) {
+                return;
+            }
+        }
+        this.renderCanvas(newProps);
+    }
 
     shouldComponentUpdate() {
         return false;

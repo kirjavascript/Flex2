@@ -5,9 +5,10 @@ import Dropdown from 'react-dropdown';
 @observer
 export class Select extends Component {
 
-    onChange = ({value, label}) => {
+    onChange = ({label}) => {
         const { store, accessor } = this.props;
-        store[accessor] = value;
+        // value is sometimes incorrect so
+        store[accessor] = this.options.find((d) => d.label == label).value;
     }
 
     constructor(props) {
@@ -25,12 +26,13 @@ export class Select extends Component {
 
     render() {
         const { label, store, accessor, ...otherProps } = this.props;
+        const value = this.options.find((d) => d.value == store[accessor]).label;
 
         return <div className="row select">
             {label} &emsp;
             <Dropdown
                 options={this.options}
-                value={store[accessor]}
+                value={value}
                 onChange={this.onChange}
             />
         </div>;

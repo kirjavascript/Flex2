@@ -12,7 +12,7 @@ class Environment {
     @observable config = {
         currentSprite: 0,
         transparency: true,
-        dplcEnabled: false,
+        dplcsEnabled: false,
     };
 
     @observable palettes = [
@@ -31,8 +31,24 @@ class Environment {
 
     @observable dplcs = [];
 
-    @computed get dplcTiles() {
-
+    // all tiles, or DPLC buffer if enabled
+    @computed get tileBuffers() {
+        if (this.config.dplcsEnabled) {
+            let buffers = [];
+            this.dplcs.map((dplcList) => {
+                let tiles = [];
+                dplcList.map(({art, size}) => {
+                    Array.from({length: size}, (_, i) => {
+                        tiles.push(this.tiles[art + i]);
+                    });
+                });
+                buffers.push(tiles);
+            });
+            return buffers;
+        }
+        else {
+            return this.mappings.map(() => this.tiles);
+        }
     }
 
     @computed get palettesWeb() {
@@ -67,8 +83,8 @@ class Environment {
             this.mappings.replace([]);
         }
         // load DPLCs
-        this.config.dplcEnabled = obj.dplcs.enabled == 'Yes';
-        if (this.config.dplcEnabled && obj.dplcs.path) {
+        this.config.dplcsEnabled = obj.dplcs.enabled == 'Yes';
+        if (this.config.dplcsEnabled && obj.dplcs.path) {
             const dplcPath = workspace.absolutePath(obj.dplcs.path);
             readFile(dplcPath, (err, buffer) => {
                 if (err) return errorMsg('Error Reading DPLC File', err);
@@ -81,28 +97,21 @@ class Environment {
     };
 
     @action saveObject = (obj) => {
-        this.tiles[0] = [
-            3,3,3,3,3,3,3,3,
-            3,3,3,3,3,3,3,3,
-            3,3,3,3,3,3,3,3,
-            3,3,3,3,3,3,3,3,
-            3,3,3,3,3,3,3,3,
-            3,3,3,3,3,3,3,3,
-            3,3,3,3,3,3,3,3,
-            3,3,3,3,3,3,3,3,
-        ];
-        this.palettes[0][0] = [0, 0, 0];
+        // this.tiles[0] = [
+        //     3,3,3,3,3,3,3,3,
+        //     3,3,3,3,3,3,3,3,
+        //     3,3,3,3,3,3,3,3,
+        //     3,3,3,3,3,3,3,3,
+        //     3,3,3,3,3,3,3,3,
+        //     3,3,3,3,3,3,3,3,
+        //     3,3,3,3,3,3,3,3,
+        //     3,3,3,3,3,3,3,3,
+        // ];
+        // this.palettes[0][0] = [0, 0, 0];
         // this.paletteRender();
         // update config to reflect dplc definition?
         //
     };
-
-    // TODO: don't use this - problem is with tile render diffing (diff against buffer)
-    // @action paletteRender = (callback) => {
-    //     // force a rerender
-    //     callback && callback(this.palettes);
-    //     this.palettes.replace(toJS(this.palettes));
-    // };
 
 }
 
@@ -110,3 +119,4 @@ class Environment {
 const environment = new Environment();
 storage(environment, 'environment');
 export { environment };
+window.env = environment;
