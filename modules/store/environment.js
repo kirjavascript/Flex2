@@ -9,6 +9,12 @@ import { bufferToDPLCs } from '#formats/dplc';
 
 class Environment {
 
+    @observable config = {
+        currentSprite: 0,
+        transparency: true,
+        dplcEnabled: false,
+    };
+
     @observable palettes = [
         // has to be a decimal representation of rrggbb values
         [[0,0,0],[0,0,0],[34,34,170],[34,68,204],[68,68,238],[102,102,238],[238,238,238],[170,170,170],[136,136,136],[68,68,68],[238,170,136],[170,102,68],[238,0,0],[136,0,0],[238,170,0],[238,136,0]],
@@ -25,7 +31,9 @@ class Environment {
 
     @observable dplcs = [];
 
-    @observable dplcConfig = { enabled: false };
+    @computed get dplcTiles() {
+
+    }
 
     @computed get palettesWeb() {
         return this.palettes.map((line) => {
@@ -35,27 +43,32 @@ class Environment {
         });
     }
 
-    @computed get mappingsNormalized() {
-        // has mappings after applying DPLCs
-        return this.mappings;
-    }
-
     @action loadObject = (obj) => {
         // load art
-        const artPath = workspace.absolutePath(obj.art.path);
-        readFile(artPath, (err, buffer) => {
-            if (err) return errorMsg('Error Reading Art File', err);
-            this.tiles.replace(bufferToTiles(buffer));
-        });
+        if (obj.art.path) {
+            const artPath = workspace.absolutePath(obj.art.path);
+            readFile(artPath, (err, buffer) => {
+                if (err) return errorMsg('Error Reading Art File', err);
+                this.tiles.replace(bufferToTiles(buffer));
+            });
+        }
+        else {
+            this.tiles.replace([]);
+        }
         // load mappings
-        const mappingPath = workspace.absolutePath(obj.mappings.path);
-        readFile(mappingPath, (err, buffer) => {
-            if (err) return errorMsg('Error Reading Mapping File', err);
-            this.mappings.replace(bufferToMappings(buffer, obj.mappingDefinition));
-        });
+        if (obj.mappings.path) {
+            const mappingPath = workspace.absolutePath(obj.mappings.path);
+            readFile(mappingPath, (err, buffer) => {
+                if (err) return errorMsg('Error Reading Mapping File', err);
+                this.mappings.replace(bufferToMappings(buffer, obj.mappingDefinition));
+            });
+        }
+        else {
+            this.mappings.replace([]);
+        }
         // load DPLCs
-        this.dplcConfig.enabled = obj.dplcs.enabled == 'Yes';
-        if (this.dplcConfig.enabled) {
+        this.config.dplcEnabled = obj.dplcs.enabled == 'Yes';
+        if (this.config.dplcEnabled && obj.dplcs.path) {
             const dplcPath = workspace.absolutePath(obj.dplcs.path);
             readFile(dplcPath, (err, buffer) => {
                 if (err) return errorMsg('Error Reading DPLC File', err);
@@ -68,25 +81,28 @@ class Environment {
     };
 
     @action saveObject = (obj) => {
-        // this.tiles[0] = [
-        //     3,3,3,3,3,3,3,3,
-        //     3,3,3,3,3,3,3,3,
-        //     3,3,3,3,3,3,3,3,
-        //     3,3,3,3,3,3,3,3,
-        //     3,3,3,3,3,3,3,3,
-        //     3,3,3,3,3,3,3,3,
-        //     3,3,3,3,3,3,3,3,
-        //     3,3,3,3,3,3,3,3,
-        // ];
-        // this.palettes[0][0] = [0, 0, 0];
+        this.tiles[0] = [
+            3,3,3,3,3,3,3,3,
+            3,3,3,3,3,3,3,3,
+            3,3,3,3,3,3,3,3,
+            3,3,3,3,3,3,3,3,
+            3,3,3,3,3,3,3,3,
+            3,3,3,3,3,3,3,3,
+            3,3,3,3,3,3,3,3,
+            3,3,3,3,3,3,3,3,
+        ];
+        this.palettes[0][0] = [0, 0, 0];
         // this.paletteRender();
+        // update config to reflect dplc definition?
+        //
     };
 
-    @action paletteRender = (callback) => {
-        // force a rerender
-        callback && callback(this.palettes);
-        this.palettes.replace(toJS(this.palettes));
-    };
+    // TODO: don't use this - problem is with tile render diffing (diff against buffer)
+    // @action paletteRender = (callback) => {
+    //     // force a rerender
+    //     callback && callback(this.palettes);
+    //     this.palettes.replace(toJS(this.palettes));
+    // };
 
 }
 

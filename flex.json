@@ -19,6 +19,24 @@
                 "format": "Sonic 2/3&K",
                 "customDefinition": "; Sonic 2/3&K DPLC Definition\n\nheaderSize(2)           ; bytes\ndplcDefinition(\n    N                   ; number of tiles (-1)\n    AAA                 ; art tile offset\n)"
             }
+        },
+        {
+            "name": "",
+            "art": {
+                "path": "../static/images/nuke.png",
+                "compression": "Uncompressed"
+            },
+            "mappings": {
+                "path": "",
+                "format": "Sonic 1",
+                "customDefinition": ""
+            },
+            "dplcs": {
+                "enabled": "Yes",
+                "path": "",
+                "format": "Sonic 1",
+                "customDefinition": ""
+            }
         }
     ]
 }

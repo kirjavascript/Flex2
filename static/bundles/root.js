@@ -8138,7 +8138,7 @@ module.exports = DOMLazyTree;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__project__ = __webpack_require__(104);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_path__ = __webpack_require__(106);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_path___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_path__);
-var _desc, _value, _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7;
+var _desc, _value, _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6;
 
 function _initDefineProp(target, property, descriptor, context) {
     if (!descriptor) return;
@@ -8192,17 +8192,15 @@ let Workspace = (_class = class Workspace {
     constructor() {
         _initDefineProp(this, 'projectPath', _descriptor, this);
 
-        _initDefineProp(this, 'config', _descriptor2, this);
+        _initDefineProp(this, 'newProject', _descriptor2, this);
 
-        _initDefineProp(this, 'newProject', _descriptor3, this);
+        _initDefineProp(this, 'openProject', _descriptor3, this);
 
-        _initDefineProp(this, 'openProject', _descriptor4, this);
+        _initDefineProp(this, 'closeProject', _descriptor4, this);
 
-        _initDefineProp(this, 'closeProject', _descriptor5, this);
+        _initDefineProp(this, 'relativePath', _descriptor5, this);
 
-        _initDefineProp(this, 'relativePath', _descriptor6, this);
-
-        _initDefineProp(this, 'absolutePath', _descriptor7, this);
+        _initDefineProp(this, 'absolutePath', _descriptor6, this);
     }
 
 }, (_descriptor = _applyDecoratedDescriptor(_class.prototype, 'projectPath', [__WEBPACK_IMPORTED_MODULE_0_mobx__["observable"]], {
@@ -8210,15 +8208,7 @@ let Workspace = (_class = class Workspace {
     initializer: function () {
         return '';
     }
-}), _descriptor2 = _applyDecoratedDescriptor(_class.prototype, 'config', [__WEBPACK_IMPORTED_MODULE_0_mobx__["observable"]], {
-    enumerable: true,
-    initializer: function () {
-        return {
-            transparency: false,
-            vimMode: false
-        };
-    }
-}), _descriptor3 = _applyDecoratedDescriptor(_class.prototype, 'newProject', [__WEBPACK_IMPORTED_MODULE_0_mobx__["action"]], {
+}), _descriptor2 = _applyDecoratedDescriptor(_class.prototype, 'newProject', [__WEBPACK_IMPORTED_MODULE_0_mobx__["action"]], {
     enumerable: true,
     initializer: function () {
         return ({ name, path }) => {
@@ -8226,7 +8216,7 @@ let Workspace = (_class = class Workspace {
             __WEBPACK_IMPORTED_MODULE_2__project__["a" /* project */].new({ name, path });
         };
     }
-}), _descriptor4 = _applyDecoratedDescriptor(_class.prototype, 'openProject', [__WEBPACK_IMPORTED_MODULE_0_mobx__["action"]], {
+}), _descriptor3 = _applyDecoratedDescriptor(_class.prototype, 'openProject', [__WEBPACK_IMPORTED_MODULE_0_mobx__["action"]], {
     enumerable: true,
     initializer: function () {
         return path => {
@@ -8236,21 +8226,21 @@ let Workspace = (_class = class Workspace {
             __WEBPACK_IMPORTED_MODULE_2__project__["a" /* project */].open();
         };
     }
-}), _descriptor5 = _applyDecoratedDescriptor(_class.prototype, 'closeProject', [__WEBPACK_IMPORTED_MODULE_0_mobx__["action"]], {
+}), _descriptor4 = _applyDecoratedDescriptor(_class.prototype, 'closeProject', [__WEBPACK_IMPORTED_MODULE_0_mobx__["action"]], {
     enumerable: true,
     initializer: function () {
         return () => {
             this.projectPath = '';
         };
     }
-}), _descriptor6 = _applyDecoratedDescriptor(_class.prototype, 'relativePath', [__WEBPACK_IMPORTED_MODULE_0_mobx__["action"]], {
+}), _descriptor5 = _applyDecoratedDescriptor(_class.prototype, 'relativePath', [__WEBPACK_IMPORTED_MODULE_0_mobx__["action"]], {
     enumerable: true,
     initializer: function () {
         return filepath => {
             return __WEBPACK_IMPORTED_MODULE_3_path___default.a.relative(__WEBPACK_IMPORTED_MODULE_3_path___default.a.basename(this.projectPath), filepath);
         };
     }
-}), _descriptor7 = _applyDecoratedDescriptor(_class.prototype, 'absolutePath', [__WEBPACK_IMPORTED_MODULE_0_mobx__["action"]], {
+}), _descriptor6 = _applyDecoratedDescriptor(_class.prototype, 'absolutePath', [__WEBPACK_IMPORTED_MODULE_0_mobx__["action"]], {
     enumerable: true,
     initializer: function () {
         return filepath => {
@@ -11021,7 +11011,7 @@ module.exports = ReactBrowserEventEmitter;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__formats_art__ = __webpack_require__(215);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__formats_mapping__ = __webpack_require__(216);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__formats_dplc__ = __webpack_require__(253);
-var _desc, _value, _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8;
+var _desc, _value, _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7;
 
 function _initDefineProp(target, property, descriptor, context) {
     if (!descriptor) return;
@@ -11077,22 +11067,29 @@ function _initializerWarningHelper(descriptor, context) {
 
 let Environment = (_class = class Environment {
     constructor() {
-        _initDefineProp(this, 'palettes', _descriptor, this);
+        _initDefineProp(this, 'config', _descriptor, this);
 
-        _initDefineProp(this, 'tiles', _descriptor2, this);
+        _initDefineProp(this, 'palettes', _descriptor2, this);
 
-        _initDefineProp(this, 'mappings', _descriptor3, this);
+        _initDefineProp(this, 'tiles', _descriptor3, this);
 
-        _initDefineProp(this, 'dplcs', _descriptor4, this);
+        _initDefineProp(this, 'mappings', _descriptor4, this);
 
-        _initDefineProp(this, 'dplcConfig', _descriptor5, this);
+        _initDefineProp(this, 'dplcs', _descriptor5, this);
 
         _initDefineProp(this, 'loadObject', _descriptor6, this);
 
         _initDefineProp(this, 'saveObject', _descriptor7, this);
-
-        _initDefineProp(this, 'paletteRender', _descriptor8, this);
     }
+
+    get dplcTiles() {}
+
+    // TODO: don't use this - problem is with tile render diffing (diff against buffer)
+    // @action paletteRender = (callback) => {
+    //     // force a rerender
+    //     callback && callback(this.palettes);
+    //     this.palettes.replace(toJS(this.palettes));
+    // };
 
     get palettesWeb() {
         return this.palettes.map(line => {
@@ -11102,59 +11099,66 @@ let Environment = (_class = class Environment {
         });
     }
 
-    get mappingsNormalized() {
-        // has mappings after applying DPLCs
-        return this.mappings;
+}, (_descriptor = _applyDecoratedDescriptor(_class.prototype, 'config', [__WEBPACK_IMPORTED_MODULE_1_mobx__["observable"]], {
+    enumerable: true,
+    initializer: function () {
+        return {
+            currentSprite: 0,
+            transparency: true,
+            dplcEnabled: false
+        };
     }
-
-}, (_descriptor = _applyDecoratedDescriptor(_class.prototype, 'palettes', [__WEBPACK_IMPORTED_MODULE_1_mobx__["observable"]], {
+}), _descriptor2 = _applyDecoratedDescriptor(_class.prototype, 'palettes', [__WEBPACK_IMPORTED_MODULE_1_mobx__["observable"]], {
     enumerable: true,
     initializer: function () {
         return [
         // has to be a decimal representation of rrggbb values
         [[0, 0, 0], [0, 0, 0], [34, 34, 170], [34, 68, 204], [68, 68, 238], [102, 102, 238], [238, 238, 238], [170, 170, 170], [136, 136, 136], [68, 68, 68], [238, 170, 136], [170, 102, 68], [238, 0, 0], [136, 0, 0], [238, 170, 0], [238, 136, 0]], [[0, 0, 0], [34, 0, 34], [68, 0, 68], [102, 0, 102], [136, 0, 136], [170, 0, 170], [204, 0, 204], [238, 0, 238], [204, 0, 238], [170, 0, 204], [136, 0, 170], [102, 0, 136], [68, 0, 102], [34, 0, 68], [0, 0, 34], [238, 0, 0]], [[0, 0, 0], [34, 34, 0], [68, 68, 0], [102, 102, 0], [136, 136, 0], [170, 170, 0], [204, 204, 0], [238, 238, 0], [238, 204, 0], [204, 170, 0], [170, 136, 0], [136, 102, 0], [102, 68, 0], [68, 34, 0], [34, 0, 0], [0, 238, 0]], [[0, 0, 0], [0, 34, 34], [0, 68, 68], [0, 102, 102], [0, 136, 136], [0, 170, 170], [0, 204, 204], [0, 238, 238], [0, 238, 204], [0, 204, 170], [0, 170, 136], [0, 136, 102], [0, 102, 68], [0, 68, 34], [0, 34, 0], [0, 0, 238]]];
     }
-}), _descriptor2 = _applyDecoratedDescriptor(_class.prototype, 'tiles', [__WEBPACK_IMPORTED_MODULE_1_mobx__["observable"]], {
+}), _descriptor3 = _applyDecoratedDescriptor(_class.prototype, 'tiles', [__WEBPACK_IMPORTED_MODULE_1_mobx__["observable"]], {
     enumerable: true,
     initializer: function () {
         return [
             // each tile is a length 16 array of palette line indexes
         ];
     }
-}), _descriptor3 = _applyDecoratedDescriptor(_class.prototype, 'mappings', [__WEBPACK_IMPORTED_MODULE_1_mobx__["observable"]], {
+}), _descriptor4 = _applyDecoratedDescriptor(_class.prototype, 'mappings', [__WEBPACK_IMPORTED_MODULE_1_mobx__["observable"]], {
     enumerable: true,
     initializer: function () {
         return [];
     }
-}), _descriptor4 = _applyDecoratedDescriptor(_class.prototype, 'dplcs', [__WEBPACK_IMPORTED_MODULE_1_mobx__["observable"]], {
+}), _descriptor5 = _applyDecoratedDescriptor(_class.prototype, 'dplcs', [__WEBPACK_IMPORTED_MODULE_1_mobx__["observable"]], {
     enumerable: true,
     initializer: function () {
         return [];
     }
-}), _descriptor5 = _applyDecoratedDescriptor(_class.prototype, 'dplcConfig', [__WEBPACK_IMPORTED_MODULE_1_mobx__["observable"]], {
-    enumerable: true,
-    initializer: function () {
-        return { enabled: false };
-    }
-}), _applyDecoratedDescriptor(_class.prototype, 'palettesWeb', [__WEBPACK_IMPORTED_MODULE_1_mobx__["computed"]], Object.getOwnPropertyDescriptor(_class.prototype, 'palettesWeb'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'mappingsNormalized', [__WEBPACK_IMPORTED_MODULE_1_mobx__["computed"]], Object.getOwnPropertyDescriptor(_class.prototype, 'mappingsNormalized'), _class.prototype), _descriptor6 = _applyDecoratedDescriptor(_class.prototype, 'loadObject', [__WEBPACK_IMPORTED_MODULE_1_mobx__["action"]], {
+}), _applyDecoratedDescriptor(_class.prototype, 'dplcTiles', [__WEBPACK_IMPORTED_MODULE_1_mobx__["computed"]], Object.getOwnPropertyDescriptor(_class.prototype, 'dplcTiles'), _class.prototype), _applyDecoratedDescriptor(_class.prototype, 'palettesWeb', [__WEBPACK_IMPORTED_MODULE_1_mobx__["computed"]], Object.getOwnPropertyDescriptor(_class.prototype, 'palettesWeb'), _class.prototype), _descriptor6 = _applyDecoratedDescriptor(_class.prototype, 'loadObject', [__WEBPACK_IMPORTED_MODULE_1_mobx__["action"]], {
     enumerable: true,
     initializer: function () {
         return obj => {
             // load art
-            const artPath = __WEBPACK_IMPORTED_MODULE_3__store_workspace__["a" /* workspace */].absolutePath(obj.art.path);
-            Object(__WEBPACK_IMPORTED_MODULE_0_fs__["readFile"])(artPath, (err, buffer) => {
-                if (err) return Object(__WEBPACK_IMPORTED_MODULE_4__util_dialog__["a" /* errorMsg */])('Error Reading Art File', err);
-                this.tiles.replace(Object(__WEBPACK_IMPORTED_MODULE_5__formats_art__["a" /* bufferToTiles */])(buffer));
-            });
+            if (obj.art.path) {
+                const artPath = __WEBPACK_IMPORTED_MODULE_3__store_workspace__["a" /* workspace */].absolutePath(obj.art.path);
+                Object(__WEBPACK_IMPORTED_MODULE_0_fs__["readFile"])(artPath, (err, buffer) => {
+                    if (err) return Object(__WEBPACK_IMPORTED_MODULE_4__util_dialog__["a" /* errorMsg */])('Error Reading Art File', err);
+                    this.tiles.replace(Object(__WEBPACK_IMPORTED_MODULE_5__formats_art__["a" /* bufferToTiles */])(buffer));
+                });
+            } else {
+                this.tiles.replace([]);
+            }
             // load mappings
-            const mappingPath = __WEBPACK_IMPORTED_MODULE_3__store_workspace__["a" /* workspace */].absolutePath(obj.mappings.path);
-            Object(__WEBPACK_IMPORTED_MODULE_0_fs__["readFile"])(mappingPath, (err, buffer) => {
-                if (err) return Object(__WEBPACK_IMPORTED_MODULE_4__util_dialog__["a" /* errorMsg */])('Error Reading Mapping File', err);
-                this.mappings.replace(Object(__WEBPACK_IMPORTED_MODULE_6__formats_mapping__["a" /* bufferToMappings */])(buffer, obj.mappingDefinition));
-            });
+            if (obj.mappings.path) {
+                const mappingPath = __WEBPACK_IMPORTED_MODULE_3__store_workspace__["a" /* workspace */].absolutePath(obj.mappings.path);
+                Object(__WEBPACK_IMPORTED_MODULE_0_fs__["readFile"])(mappingPath, (err, buffer) => {
+                    if (err) return Object(__WEBPACK_IMPORTED_MODULE_4__util_dialog__["a" /* errorMsg */])('Error Reading Mapping File', err);
+                    this.mappings.replace(Object(__WEBPACK_IMPORTED_MODULE_6__formats_mapping__["a" /* bufferToMappings */])(buffer, obj.mappingDefinition));
+                });
+            } else {
+                this.mappings.replace([]);
+            }
             // load DPLCs
-            this.dplcConfig.enabled = obj.dplcs.enabled == 'Yes';
-            if (this.dplcConfig.enabled) {
+            this.config.dplcEnabled = obj.dplcs.enabled == 'Yes';
+            if (this.config.dplcEnabled && obj.dplcs.path) {
                 const dplcPath = __WEBPACK_IMPORTED_MODULE_3__store_workspace__["a" /* workspace */].absolutePath(obj.dplcs.path);
                 Object(__WEBPACK_IMPORTED_MODULE_0_fs__["readFile"])(dplcPath, (err, buffer) => {
                     if (err) return Object(__WEBPACK_IMPORTED_MODULE_4__util_dialog__["a" /* errorMsg */])('Error Reading DPLC File', err);
@@ -11169,27 +11173,11 @@ let Environment = (_class = class Environment {
     enumerable: true,
     initializer: function () {
         return obj => {
-            // this.tiles[0] = [
-            //     3,3,3,3,3,3,3,3,
-            //     3,3,3,3,3,3,3,3,
-            //     3,3,3,3,3,3,3,3,
-            //     3,3,3,3,3,3,3,3,
-            //     3,3,3,3,3,3,3,3,
-            //     3,3,3,3,3,3,3,3,
-            //     3,3,3,3,3,3,3,3,
-            //     3,3,3,3,3,3,3,3,
-            // ];
-            // this.palettes[0][0] = [0, 0, 0];
+            this.tiles[0] = [3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3];
+            this.palettes[0][0] = [0, 0, 0];
             // this.paletteRender();
-        };
-    }
-}), _descriptor8 = _applyDecoratedDescriptor(_class.prototype, 'paletteRender', [__WEBPACK_IMPORTED_MODULE_1_mobx__["action"]], {
-    enumerable: true,
-    initializer: function () {
-        return callback => {
-            // force a rerender
-            callback && callback(this.palettes);
-            this.palettes.replace(Object(__WEBPACK_IMPORTED_MODULE_1_mobx__["toJS"])(this.palettes));
+            // update config to reflect dplc definition?
+            //
         };
     }
 })), _class);
@@ -58908,6 +58896,10 @@ let Art = Object(__WEBPACK_IMPORTED_MODULE_2_mobx_react__["observer"])(_class = 
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return Tile; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__store_environment__ = __webpack_require__(45);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_mobx__ = __webpack_require__(20);
+
+
 
 
 let Tile = class Tile extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
@@ -58919,41 +58911,61 @@ let Tile = class Tile extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
                 this.node = node;
                 this.ctx = node.getContext('2d');
                 this.ctx.imageSmoothingEnabled = false;
+                this.buffer = this.ctx.getImageData(0, 0, 8, 8);
                 // set alpha
-                let buffer = this.ctx.getImageData(0, 0, 8, 8);
-                buffer.data.fill(255);
-                this.ctx.putImageData(buffer, 0, 0);
+                this.buffer.data.fill(255);
+                this.ctx.putImageData(this.buffer, 0, 0);
                 this.renderCanvas();
+                // rerender if transparency changes (no diffing)
+                this.disposer = Object(__WEBPACK_IMPORTED_MODULE_2_mobx__["autorun"])(() => {
+                    __WEBPACK_IMPORTED_MODULE_1__store_environment__["a" /* environment */].config.transparency;
+                    this.renderCanvas();
+                });
+            } else {
+                this.disposer();
             }
         }, this.renderCanvas = (props = this.props) => {
             const { data, palette } = props;
-
-            let buffer = this.ctx.getImageData(0, 0, 8, 8);
+            const { transparency } = __WEBPACK_IMPORTED_MODULE_1__store_environment__["a" /* environment */].config;
 
             for (let i = 0, j = 0; i < data.length; i++, j += 4) {
-                buffer.data[j] = palette[data[i]][0];
-                buffer.data[j + 1] = palette[data[i]][1];
-                buffer.data[j + 2] = palette[data[i]][2];
-                // j+3 is alpha
+                this.buffer.data[j] = palette[data[i]][0];
+                this.buffer.data[j + 1] = palette[data[i]][1];
+                this.buffer.data[j + 2] = palette[data[i]][2];
+                this.buffer.data[j + 3] = transparency && data[i] == 0 ? 0 : 255;
             }
 
-            this.ctx.putImageData(buffer, 0, 0);
+            this.ctx.putImageData(this.buffer, 0, 0);
         }, _temp;
     }
 
-    componentWillReceiveProps(newProps) {
-        const { data, palette } = this.props;
+    // componentWillReceiveProps(newProps) {
+    //     const { data, palette } = newProps;
+    //     // console.log('props');
 
-        // diff the new pixels
-        for (let i = 0; i < newProps.data.length; i++) {
-            if (newProps.palette[newProps.data[i]] !== palette[data[i]]) {
-                break;
-            } else if (i === newProps.data.length - 1) {
-                return;
-            }
-        }
-        this.renderCanvas(newProps);
-    }
+    //     // diff the new pixels
+    //     // for (let i = 0, j = 0; i < data.length; i++, j+=4) {
+    //     //     if (
+    //     //         this.buffer.data[j] !== palette[data[i]][0] ||
+    //     //         this.buffer.data[j+1] !== palette[data[i]][1] ||
+    //     //         this.buffer.data[j+2] !== palette[data[i]][2]
+    //     //     ) {
+    //     //         break;
+    //     //     }
+    //     //     else if (i === data.length - 1) {
+    //     //         return;
+    //     //     }
+    //     // }
+    //     // for (let i = 0; i < newProps.data.length; i++) {
+    //     //     if (newProps.palette[newProps.data[i]] !== palette[data[i]]) {
+    //     //         break;
+    //     //     }
+    //     //     else if (i === newProps.data.length - 1) {
+    //     //         return;
+    //     //     }
+    //     // }
+    //     this.renderCanvas(newProps);
+    // }
 
     shouldComponentUpdate() {
         return false;

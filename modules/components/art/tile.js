@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { environment } from '#store/environment';
+import { autorun } from 'mobx';
 
 export class Tile extends Component {
 
@@ -7,44 +9,71 @@ export class Tile extends Component {
             this.node = node;
             this.ctx = node.getContext('2d');
             this.ctx.imageSmoothingEnabled = false;
+            this.buffer = this.ctx.getImageData(0, 0, 8, 8);
             // set alpha
-            let buffer = this.ctx.getImageData(0, 0, 8, 8);
-            buffer.data.fill(255);
-            this.ctx.putImageData(buffer, 0, 0);
+            this.buffer.data.fill(255);
+            this.ctx.putImageData(this.buffer, 0, 0);
             this.renderCanvas();
+            // rerender if transparency changes (no diffing)
+            this.disposer = autorun(() => {
+                environment.config.transparency;
+                this.renderCanvas();
+            });
+        }
+        else {
+            this.disposer();
         }
     };
 
     renderCanvas = (props = this.props) => {
         const { data, palette } = props;
-
-        let buffer = this.ctx.getImageData(0, 0, 8, 8);
+        const { transparency } = environment.config;
 
         for (let i = 0, j = 0; i < data.length; i++, j+=4) {
-            buffer.data[j] = palette[data[i]][0];
-            buffer.data[j+1] = palette[data[i]][1];
-            buffer.data[j+2] = palette[data[i]][2];
-            // j+3 is alpha
+            this.buffer.data[j] = palette[data[i]][0];
+            this.buffer.data[j+1] = palette[data[i]][1];
+            this.buffer.data[j+2] = palette[data[i]][2];
+            this.buffer.data[j+3] = do {
+                if (transparency && data[i] == 0) {
+                    0;
+                }
+                else {
+                    255;
+                }
+            };
         }
 
-        this.ctx.putImageData(buffer, 0, 0);
+        this.ctx.putImageData(this.buffer, 0, 0);
     }
 
 
-    componentWillReceiveProps(newProps) {
-        const { data, palette } = this.props;
+    // componentWillReceiveProps(newProps) {
+    //     const { data, palette } = newProps;
+    //     // console.log('props');
 
-        // diff the new pixels
-        for (let i = 0; i < newProps.data.length; i++) {
-            if (newProps.palette[newProps.data[i]] !== palette[data[i]]) {
-                break;
-            }
-            else if (i === newProps.data.length - 1) {
-                return;
-            }
-        }
-        this.renderCanvas(newProps);
-    }
+    //     // diff the new pixels
+    //     // for (let i = 0, j = 0; i < data.length; i++, j+=4) {
+    //     //     if (
+    //     //         this.buffer.data[j] !== palette[data[i]][0] ||
+    //     //         this.buffer.data[j+1] !== palette[data[i]][1] ||
+    //     //         this.buffer.data[j+2] !== palette[data[i]][2]
+    //     //     ) {
+    //     //         break;
+    //     //     }
+    //     //     else if (i === data.length - 1) {
+    //     //         return;
+    //     //     }
+    //     // }
+    //     // for (let i = 0; i < newProps.data.length; i++) {
+    //     //     if (newProps.palette[newProps.data[i]] !== palette[data[i]]) {
+    //     //         break;
+    //     //     }
+    //     //     else if (i === newProps.data.length - 1) {
+    //     //         return;
+    //     //     }
+    //     // }
+    //     this.renderCanvas(newProps);
+    // }
 
     shouldComponentUpdate() {
         return false;
