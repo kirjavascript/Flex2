@@ -29,11 +29,15 @@ export class Sprite extends Component {
             )}
             <div>
                 {mappings.reverse().map((mapping, mappingIndex) => {
-                    return <Mapping
+                    return <div
                         key={mappingIndex}
-                        data={mapping}
-                        tileBuffer={buffer}
-                    />;
+                        style={{zIndex: mappingIndex}}
+                    >
+                        <Mapping
+                            data={mapping}
+                            tileBuffer={buffer}
+                        />
+                    </div>;
                 })}
             </div>
         </div>;

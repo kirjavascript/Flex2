@@ -35,12 +35,12 @@ export class Tile extends Component {
                         return `${((i%8)+1)*scale}px ${((0|i/8)+1)*scale}px ${color}`;
                     }).join`,`,
                 }}/>
-                {false && !data.length && <div style={{
-                    marginLeft: scale,
-                    marginTop: scale,
-                    color: SVARS['red'],
-                    fontSize: 5 * scale,
-                }}>⚠️</div>}
+                {!data.length && <div style={{
+                    width: 8 * scale,
+                    height: 8 * scale,
+                    backgroundColor: SVARS['red'],
+                    opacity: .3,
+                }}/>}
             </div>
         );
     }
