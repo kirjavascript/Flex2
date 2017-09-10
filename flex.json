@@ -60,7 +60,7 @@
             "palettes": [],
             "art": {
                 "path": "../../sonic/boom/objects/other/art_monitor.bin",
-                "compression": "Uncompressed"
+                "compression": "Nemesis"
             },
             "mappings": {
                 "path": "../../sonic/boom/objects/other/map_monitor.bin",

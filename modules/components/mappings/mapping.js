@@ -29,7 +29,7 @@ export class Mapping extends Component {
                         && (tileBuffer.length > index)
                         && tileBuffer[art + tileIndex];
 
-                    return !!tile && <Tile
+                    return <Tile
                         key={tileIndex}
                         data={tile}
                         paletteLine={palette}

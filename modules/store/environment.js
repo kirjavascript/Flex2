@@ -9,8 +9,6 @@ import { bufferToDPLCs } from '#formats/dplc';
 import { buffersToColors } from '#formats/palette';
 import { arrayMove } from 'react-sortable-hoc';
 
-const blankTile = Array(64).fill(0);
-
 class Environment {
 
     @observable config = {
@@ -42,7 +40,7 @@ class Environment {
                 this.dplcs[index].forEach(({art, size}) => {
                     Array.from({length: size}, (_, i) => {
                         if (this.tiles.length <= art + i) {
-                            buffer.push(blankTile);
+                            buffer.push([]);
                         }
                         else {
                             buffer.push(this.tiles[art + i]);

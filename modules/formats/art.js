@@ -2,7 +2,7 @@ import { decompress, compress } from '#formats/compression';
 
 export function bufferToTiles(buffer, compression) {
     let tiles = [];
-    const data = decompress(new Int8Array(buffer), compression);
+    const data = decompress(buffer, compression);
 
     const tileQty = data.length/0x20;
 
