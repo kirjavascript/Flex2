@@ -6373,6 +6373,8 @@ if (typeof __MOBX_DEVTOOLS_GLOBAL_HOOK__ === "object") {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__formats_art__ = __webpack_require__(261);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__formats_mapping__ = __webpack_require__(262);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__formats_dplc__ = __webpack_require__(263);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_react_sortable_hoc__ = __webpack_require__(296);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8_react_sortable_hoc___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8_react_sortable_hoc__);
 var _desc, _value, _class, _descriptor, _descriptor2, _descriptor3, _descriptor4, _descriptor5, _descriptor6, _descriptor7, _descriptor8;
 
 function _initDefineProp(target, property, descriptor, context) {
@@ -6427,6 +6429,7 @@ function _initializerWarningHelper(descriptor, context) {
 
 
 
+
 const blankTile = Array(64).fill(0);
 
 let Environment = (_class = class Environment {
@@ -6445,7 +6448,7 @@ let Environment = (_class = class Environment {
 
         _initDefineProp(this, 'saveObject', _descriptor7, this);
 
-        _initDefineProp(this, 'action', _descriptor8, this);
+        _initDefineProp(this, 'swapSprite', _descriptor8, this);
     }
 
     // all tiles, or DPLC buffer if enabled
@@ -6560,11 +6563,12 @@ let Environment = (_class = class Environment {
             //
         };
     }
-}), _descriptor8 = _applyDecoratedDescriptor(_class.prototype, 'action', [__WEBPACK_IMPORTED_MODULE_1_mobx__["action"]], {
+}), _descriptor8 = _applyDecoratedDescriptor(_class.prototype, 'swapSprite', [__WEBPACK_IMPORTED_MODULE_1_mobx__["action"]], {
     enumerable: true,
     initializer: function () {
-        return callback => {
-            callback(this);
+        return (oldIndex, newIndex) => {
+            this.dplcs.replace(Object(__WEBPACK_IMPORTED_MODULE_8_react_sortable_hoc__["arrayMove"])(this.dplcs, oldIndex, newIndex));
+            this.mappings.replace(Object(__WEBPACK_IMPORTED_MODULE_8_react_sortable_hoc__["arrayMove"])(this.mappings, oldIndex, newIndex));
         };
     }
 })), _class);
@@ -60584,12 +60588,10 @@ let Palettes = Object(__WEBPACK_IMPORTED_MODULE_2_mobx_react__["observer"])(_cla
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__store_environment__ = __webpack_require__(19);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_mobx_react__ = __webpack_require__(7);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_mobx_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_mobx_react__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__tile__ = __webpack_require__(142);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__ui__ = __webpack_require__(60);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_react_virtualized__ = __webpack_require__(489);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_mobx__ = __webpack_require__(18);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__tile__ = __webpack_require__(142);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__ui__ = __webpack_require__(60);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_react_virtualized__ = __webpack_require__(489);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_mobx__ = __webpack_require__(18);
 
 
 
@@ -60598,15 +60600,13 @@ let Palettes = Object(__WEBPACK_IMPORTED_MODULE_2_mobx_react__["observer"])(_cla
 
 
 
-
-// @observer
 let Art = class Art extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
     constructor(...args) {
         var _temp;
 
         return _temp = super(...args), this.onListRef = node => {
             if (node) {
-                this.disposer = Object(__WEBPACK_IMPORTED_MODULE_6_mobx__["autorun"])(() => {
+                this.disposer = Object(__WEBPACK_IMPORTED_MODULE_5_mobx__["autorun"])(() => {
                     __WEBPACK_IMPORTED_MODULE_1__store_environment__["a" /* environment */].tiles.forEach(tile => {});
                     this.forceUpdate();
                     // node.forceUpdateGrid();
@@ -60625,7 +60625,7 @@ let Art = class Art extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
         return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
             'div',
             { className: 'art' },
-            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4__ui__["e" /* Select */], {
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__ui__["e" /* Select */], {
                 label: 'Transparency',
                 store: __WEBPACK_IMPORTED_MODULE_1__store_environment__["a" /* environment */].config,
                 accessor: 'transparency',
@@ -60635,13 +60635,13 @@ let Art = class Art extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
                 'div',
                 { className: 'autoWrapper' },
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                    __WEBPACK_IMPORTED_MODULE_5_react_virtualized__["a" /* AutoSizer */],
+                    __WEBPACK_IMPORTED_MODULE_4_react_virtualized__["a" /* AutoSizer */],
                     null,
                     ({ height, width }) => {
                         const itemsPerRow = Math.floor(width / baseSize);
                         const rowCount = Math.ceil(tiles.length / itemsPerRow);
 
-                        return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_5_react_virtualized__["b" /* List */], {
+                        return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4_react_virtualized__["b" /* List */], {
                             ref: this.onListRef,
                             width: width,
                             height: height,
@@ -60659,12 +60659,12 @@ let Art = class Art extends __WEBPACK_IMPORTED_MODULE_0_react__["Component"] {
                                     {
                                         key: index,
                                         style: style,
-                                        className: 'tileRow'
+                                        className: 'listRow'
                                     },
                                     Array.from({ length: itemsPerRow }, (_, i) => {
                                         if (tiles.length <= startIndex + i) return;
 
-                                        return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__tile__["a" /* Tile */], {
+                                        return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__tile__["a" /* Tile */], {
                                             key: startIndex + i,
                                             data: tiles[startIndex + i],
                                             paletteLine: 0,
@@ -60704,9 +60704,6 @@ var _class;
 
 
 
-// react-virtuallised collection
-// @computed sprite?
-
 const SortableItem = Object(__WEBPACK_IMPORTED_MODULE_4_react_sortable_hoc__["SortableElement"])(Object(__WEBPACK_IMPORTED_MODULE_2_mobx_react__["observer"])(({ value }) => __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__sprite__["a" /* Sprite */], {
     spriteIndex: value.spriteIndex,
     mappingList: value.mappingList
@@ -60715,7 +60712,11 @@ const SortableItem = Object(__WEBPACK_IMPORTED_MODULE_4_react_sortable_hoc__["So
 const SortableList = Object(__WEBPACK_IMPORTED_MODULE_4_react_sortable_hoc__["SortableContainer"])(Object(__WEBPACK_IMPORTED_MODULE_2_mobx_react__["observer"])(({ items }) => {
     return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
         'div',
-        { className: 'sprites' },
+        { className: 'sprites', ref: node => {
+                node && node.querySelectorAll('.sprite').forEach(n => {
+                    // console.log(n.getBoundingClientRect());
+                });
+            } },
         items.map((value, index) => __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(SortableItem, {
             key: `item-${index}`,
             index: index,
@@ -60731,14 +60732,11 @@ let Sprites = Object(__WEBPACK_IMPORTED_MODULE_2_mobx_react__["observer"])(_clas
     constructor(...args) {
         var _temp;
 
-        return _temp = super(...args), this.onSortEnd = ({ oldIndex, newIndex }) => {
-            const { mappings, dplcs } = __WEBPACK_IMPORTED_MODULE_1__store_environment__["a" /* environment */];
-            // refactor to moveSprite
-            __WEBPACK_IMPORTED_MODULE_1__store_environment__["a" /* environment */].action(() => {
-                dplcs.replace(Object(__WEBPACK_IMPORTED_MODULE_4_react_sortable_hoc__["arrayMove"])(dplcs, oldIndex, newIndex));
-                mappings.replace(Object(__WEBPACK_IMPORTED_MODULE_4_react_sortable_hoc__["arrayMove"])(mappings, oldIndex, newIndex));
-                __WEBPACK_IMPORTED_MODULE_1__store_environment__["a" /* environment */].config.currentSprite = newIndex;
-            });
+        return _temp = super(...args), this.getContainer = () => {
+            return document.querySelector('.spriteSortContainer');
+        }, this.onSortEnd = ({ oldIndex, newIndex }) => {
+            __WEBPACK_IMPORTED_MODULE_1__store_environment__["a" /* environment */].swapSprite(oldIndex, newIndex);
+            __WEBPACK_IMPORTED_MODULE_1__store_environment__["a" /* environment */].config.currentSprite = newIndex;
         }, _temp;
     }
 
@@ -60747,7 +60745,7 @@ let Sprites = Object(__WEBPACK_IMPORTED_MODULE_2_mobx_react__["observer"])(_clas
 
         return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
             'div',
-            null,
+            { className: 'spriteList' },
             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 'div',
                 null,
@@ -60755,22 +60753,14 @@ let Sprites = Object(__WEBPACK_IMPORTED_MODULE_2_mobx_react__["observer"])(_clas
             ),
             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 'div',
-                null,
+                { className: 'spriteSortContainer' },
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(SortableList, {
                     axis: 'xy',
                     helperClass: 'sortable-float',
                     items: __WEBPACK_IMPORTED_MODULE_1__store_environment__["a" /* environment */].mappings,
-                    onSortEnd: this.onSortEnd
+                    onSortEnd: this.onSortEnd,
+                    getContainer: this.getContainer
                 })
-            ),
-            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                'div',
-                { className: 'sprites' },
-                false && mappings.map((mappingList, spriteIndex) => __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__sprite__["a" /* Sprite */], {
-                    key: spriteIndex,
-                    spriteIndex: spriteIndex,
-                    mappingList: mappingList
-                }))
             )
         );
     }

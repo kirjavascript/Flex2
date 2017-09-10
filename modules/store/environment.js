@@ -6,6 +6,7 @@ import { errorMsg } from '#util/dialog';
 import { bufferToTiles } from '#formats/art';
 import { bufferToMappings } from '#formats/mapping';
 import { bufferToDPLCs } from '#formats/dplc';
+import { arrayMove } from 'react-sortable-hoc';
 
 const blankTile = Array(64).fill(0);
 
@@ -120,8 +121,9 @@ class Environment {
         //
     };
 
-    @action action = (callback) => {
-        callback(this);
+    @action swapSprite = (oldIndex, newIndex) => {
+        this.dplcs.replace(arrayMove(this.dplcs, oldIndex, newIndex));
+        this.mappings.replace(arrayMove(this.mappings, oldIndex, newIndex));
     };
 
 }

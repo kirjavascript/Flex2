@@ -1,9 +1,21 @@
 $baseSize: 200px;
 
+.spriteList {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.spriteSortContainer {
+    width: 100%;
+    overflow: scroll;
+    flex-grow: 1;
+}
+
 .sprites {
     display: flex;
-    justify-content: center;
     flex-wrap: wrap;
+    justify-content: center;
 }
 
 .sprite {

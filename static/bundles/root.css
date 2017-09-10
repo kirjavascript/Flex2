@@ -446,13 +446,23 @@ input, .select .Dropdown-placeholder {
     width: 100%; }
     .art .autoWrapper .ReactVirtualized__List:focus {
       outline: none; }
-    .art .autoWrapper .tileRow {
+    .art .autoWrapper .listRow {
       display: flex; }
+
+.spriteList {
+  height: 100%;
+  display: flex;
+  flex-direction: column; }
+
+.spriteSortContainer {
+  width: 100%;
+  overflow: scroll;
+  flex-grow: 1; }
 
 .sprites {
   display: flex;
-  justify-content: center;
-  flex-wrap: wrap; }
+  flex-wrap: wrap;
+  justify-content: center; }
 
 .sprite {
   position: relative;

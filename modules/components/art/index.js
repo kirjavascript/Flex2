@@ -1,13 +1,11 @@
 import React, { Component } from 'react';
 import { environment } from '#store/environment';
-import { observer } from 'mobx-react';
 import { Tile } from './tile';
-import { Item, Input, File, Select, Editor } from '#ui';
+import { Select } from '#ui';
 
 import { AutoSizer, List } from 'react-virtualized';
 import { autorun } from 'mobx';
 
-// @observer
 export class Art extends Component {
 
     onListRef = (node) => {
@@ -62,7 +60,7 @@ export class Art extends Component {
                                       <div
                                           key={index}
                                           style={style}
-                                          className="tileRow"
+                                          className="listRow"
                                       >
                                             {Array.from({length: itemsPerRow}, (_, i) => {
                                                 if (tiles.length <= startIndex + i) return;

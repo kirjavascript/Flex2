@@ -4,9 +4,6 @@ import { observer } from 'mobx-react';
 import { Sprite } from './sprite';
 import {SortableContainer, SortableElement, arrayMove} from 'react-sortable-hoc';
 
-// react-virtuallised collection
-// @computed sprite?
-
 const SortableItem = SortableElement(observer(({value}) => (
     <Sprite
         spriteIndex={value.spriteIndex}
@@ -16,7 +13,11 @@ const SortableItem = SortableElement(observer(({value}) => (
 
 const SortableList = SortableContainer(observer(({items}) => {
     return (
-        <div className="sprites">
+        <div className="sprites" ref={(node) => {
+            node && node.querySelectorAll('.sprite').forEach((n) => {
+                // console.log(n.getBoundingClientRect());
+            });
+        }}>
             {items.map((value, index) => (
                 <SortableItem
                     key={`item-${index}`}
@@ -34,40 +35,29 @@ const SortableList = SortableContainer(observer(({items}) => {
 @observer
 export class Sprites extends Component {
 
-    onSortEnd = ({oldIndex, newIndex}) => {
-        const { mappings, dplcs } = environment;
-        // refactor to moveSprite
-        environment.action(() => {
-            dplcs.replace(arrayMove(dplcs, oldIndex, newIndex));
-            mappings.replace(arrayMove(mappings, oldIndex, newIndex));
-            environment.config.currentSprite = newIndex;
-        });
+    getContainer = () => {
+        return document.querySelector('.spriteSortContainer');
     };
 
+    onSortEnd = ({oldIndex, newIndex}) => {
+        environment.swapSprite(oldIndex, newIndex);
+        environment.config.currentSprite = newIndex;
+    };
 
     render() {
         const { mappings } = environment;
 
-        return <div>
+        return <div className="spriteList">
             <div>(import sheet here)</div>
 
-            <div>
+            <div className="spriteSortContainer">
                 <SortableList
                     axis="xy"
                     helperClass="sortable-float"
                     items={environment.mappings}
                     onSortEnd={this.onSortEnd}
+                    getContainer={this.getContainer}
                 />
-            </div>
-
-            <div className="sprites">
-                {false && mappings.map((mappingList, spriteIndex) => (
-                    <Sprite
-                        key={spriteIndex}
-                        spriteIndex={spriteIndex}
-                        mappingList={mappingList}
-                    />
-                ))}
             </div>
 
         </div>;
