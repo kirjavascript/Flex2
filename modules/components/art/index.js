@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { environment } from '#store/environment';
 import { Tile } from './tile';
 import { Select } from '#ui';
-
 import { AutoSizer, List } from 'react-virtualized';
 import { autorun } from 'mobx';
 
@@ -54,7 +53,6 @@ export class Art extends Component {
 
                                 const startIndex = index * itemsPerRow;
 
-                                const scale = 4;
                                 const { tiles } = environment;
                                 return (
                                       <div

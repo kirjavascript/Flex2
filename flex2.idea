@@ -29,5 +29,3 @@ divide tile index by 2 for sonic 2 2 player mappings
 
 // definition saved in json, load changes UI to object view and changes to intermediate format
 // format decides how assets are saved
-
-tile with background border thing

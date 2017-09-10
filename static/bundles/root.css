@@ -460,17 +460,19 @@ input, .select .Dropdown-placeholder {
   flex-grow: 1; }
 
 .sprites {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 210px);
   justify-content: center; }
 
 .sprite {
   position: relative;
   height: 200px;
   width: 200px;
-  flex-shrink: 0;
   margin: 5px;
   overflow: hidden; }
+  .sprite:after {
+    content: '';
+    margin: auto; }
   .sprite .index {
     position: absolute;
     right: 5px;

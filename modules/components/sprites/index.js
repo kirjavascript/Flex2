@@ -2,22 +2,19 @@ import React, { Component } from 'react';
 import { environment } from '#store/environment';
 import { observer } from 'mobx-react';
 import { Sprite } from './sprite';
-import {SortableContainer, SortableElement, arrayMove} from 'react-sortable-hoc';
+import { SortableContainer, SortableElement } from 'react-sortable-hoc';
+import { AsyncRender } from '#util/async-render';
 
-const SortableItem = SortableElement(observer(({value}) => (
+const SortableItem = AsyncRender(SortableElement(observer(({value}) => (
     <Sprite
         spriteIndex={value.spriteIndex}
         mappingList={value.mappingList}
     />
-)));
+))));
 
 const SortableList = SortableContainer(observer(({items}) => {
     return (
-        <div className="sprites" ref={(node) => {
-            node && node.querySelectorAll('.sprite').forEach((n) => {
-                // console.log(n.getBoundingClientRect());
-            });
-        }}>
+        <div className="sprites">
             {items.map((value, index) => (
                 <SortableItem
                     key={`item-${index}`}
@@ -26,11 +23,13 @@ const SortableList = SortableContainer(observer(({items}) => {
                         mappingList: value,
                         spriteIndex: index,
                     }}
+                    delay={index}
                 />
             ))}
         </div>
     );
 }), {withRef: true});
+
 
 @observer
 export class Sprites extends Component {
@@ -48,7 +47,6 @@ export class Sprites extends Component {
         const { mappings } = environment;
 
         return <div className="spriteList">
-            <div>(import sheet here)</div>
 
             <div className="spriteSortContainer">
                 <SortableList

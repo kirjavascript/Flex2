@@ -11,13 +11,13 @@
             "mappings": {
                 "path": "../../sonic/boom/objects/sonic/map_sonic.bin",
                 "format": "Sonic 2",
-                "customDefinition": "; Sonic 1 Mapping Definition\n\nheaderSize(1)           ; bytes\nmappingDefinition(\n    TTTT TTTT           ; relative signed top edge position of sprite\n    ????                ; always zero (ignore)\n    WW                  ; width of mapping (tiles -1)\n    HH                  ; height of mapping (tiles -1)\n    P                   ; priority flag\n    CC                  ; palette line\n    Y                   ; v flip\n    X                   ; h flip\n    AAA AAAA AAAA       ; art tile offset\n    LLLL LLLL           ; relative signed left edge position of sprite\n)"
+                "customDefinition": ""
             },
             "dplcs": {
                 "enabled": "Yes",
                 "path": "../../sonic/boom/objects/sonic/dplc_sonic.bin",
                 "format": "Sonic 2/3&K",
-                "customDefinition": "; Sonic 2/3&K DPLC Definition\n\nheaderSize(2)           ; bytes\ndplcDefinition(\n    N                   ; number of tiles (-1)\n    AAA                 ; art tile offset\n)"
+                "customDefinition": ""
             }
         },
         {

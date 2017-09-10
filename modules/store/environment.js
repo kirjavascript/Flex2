@@ -115,13 +115,10 @@ class Environment {
             3,3,3,3,3,3,3,3,
             3,3,3,3,3,3,3,3,
         ];
-        // this.palettes[0][0] = [0, 0, 0];
-        // this.paletteRender();
-        // update config to reflect dplc definition?
-        //
     };
 
     @action swapSprite = (oldIndex, newIndex) => {
+        this.config.dplcsEnabled &&
         this.dplcs.replace(arrayMove(this.dplcs, oldIndex, newIndex));
         this.mappings.replace(arrayMove(this.mappings, oldIndex, newIndex));
     };

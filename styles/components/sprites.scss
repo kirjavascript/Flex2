@@ -13,8 +13,8 @@ $baseSize: 200px;
 }
 
 .sprites {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 210px);
     justify-content: center;
 }
 
@@ -22,9 +22,12 @@ $baseSize: 200px;
     position: relative;
     height: $baseSize;
     width: $baseSize;
-    flex-shrink: 0;
     margin: 5px;
     overflow: hidden;
+    &:after {
+        content: '';
+        margin: auto;
+    }
 
     .index {
         position: absolute;

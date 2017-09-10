@@ -47,6 +47,12 @@ export class ObjectDef {
         // if rehydrating...
         if (obj) {
             Object.assign(this, obj);
+            if (this.mappings.format != 'Custom') {
+                this.mappings.customDefinition = '';
+            }
+            if (this.dplcs.format != 'Custom') {
+                this.dplcs.customDefinition = '';
+            }
         }
 
         this.parent = parent;
