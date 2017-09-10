@@ -8,32 +8,31 @@ import SVARS from 'sass-variables-loader!#styles/variables.scss';
 export class Sprite extends Component {
 
     render() {
-        const { mappings, tileBuffers, palettes, config } = environment;
+        const { config } = environment;
         const { currentSprite } = config;
 
-        const { spriteIndex, mappingList } = this.props;
+        const { index, mappings, buffer } = this.props.data;
 
-            // onClick={() => {config.currentSprite = spriteIndex;}}
         return <div
             className="sprite"
             style={{
-                border: `1px solid ${SVARS[currentSprite == spriteIndex ? 'magenta' : 'blue']}`,
+                border: `1px solid ${SVARS[currentSprite == index ? 'magenta' : 'blue']}`,
             }}
         >
             <div className="index">
-                0x{spriteIndex.toString(16).toUpperCase()}
+                0x{index.toString(16).toUpperCase()}
             </div>
-            {!mappingList.length && (
+            {!mappings.length && (
                 <div className="blank">
                     [BLANK]
                 </div>
             )}
             <div>
-                {mappingList.reverse().map((mapping, mappingIndex) => {
+                {mappings.reverse().map((mapping, mappingIndex) => {
                     return <Mapping
                         key={mappingIndex}
                         data={mapping}
-                        tileBuffer={tileBuffers[spriteIndex]}
+                        tileBuffer={buffer}
                     />;
                 })}
             </div>

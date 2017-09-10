@@ -5,6 +5,7 @@ import { mappingFormats, dplcFormats } from '#formats/definitions';
 export class ObjectDef {
 
     @observable name = '';
+    @observable palettes = [];
     @observable art = {
         path: '',
         compression: 'Uncompressed',

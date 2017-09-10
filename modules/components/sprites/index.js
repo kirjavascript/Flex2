@@ -6,10 +6,7 @@ import { SortableContainer, SortableElement } from 'react-sortable-hoc';
 import { AsyncRender } from '#util/async-render';
 
 const SortableItem = AsyncRender(SortableElement(observer(({value}) => (
-    <Sprite
-        spriteIndex={value.spriteIndex}
-        mappingList={value.mappingList}
-    />
+    <Sprite data={value}/>
 ))));
 
 const SortableList = SortableContainer(observer(({items}) => {
@@ -19,10 +16,7 @@ const SortableList = SortableContainer(observer(({items}) => {
                 <SortableItem
                     key={`item-${index}`}
                     index={index}
-                    value={{
-                        mappingList: value,
-                        spriteIndex: index,
-                    }}
+                    value={value}
                     delay={index}
                 />
             ))}
@@ -44,7 +38,7 @@ export class Sprites extends Component {
     };
 
     render() {
-        const { mappings } = environment;
+        const { sprites } = environment;
 
         return <div className="spriteList">
 
@@ -52,7 +46,7 @@ export class Sprites extends Component {
                 <SortableList
                     axis="xy"
                     helperClass="sortable-float"
-                    items={environment.mappings}
+                    items={sprites}
                     onSortEnd={this.onSortEnd}
                     getContainer={this.getContainer}
                 />

@@ -34,29 +34,35 @@ class Environment {
 
     @observable dplcs = [];
 
-    // all tiles, or DPLC buffer if enabled
-    @computed get tileBuffers() {
-        if (this.config.dplcsEnabled) {
-            let buffers = [];
-            this.dplcs.map((dplcList) => {
-                let tiles = [];
-                dplcList.map(({art, size}) => {
+    @computed get sprites() {
+        return this.mappings.map((mappingList, index) => {
+            let buffer = [];
+
+            if (this.config.dplcsEnabled && this.dplcs.length > index) {
+                this.dplcs[index].forEach(({art, size}) => {
                     Array.from({length: size}, (_, i) => {
                         if (this.tiles.length <= art + i) {
-                            tiles.push(blankTile);
+                            buffer.push(blankTile);
                         }
                         else {
-                            tiles.push(this.tiles[art + i]);
+                            buffer.push(this.tiles[art + i]);
                         }
                     });
                 });
-                buffers.push(tiles);
-            });
-            return buffers;
-        }
-        else {
-            return this.mappings.map(() => this.tiles);
-        }
+            }
+            else {
+                buffer = this.tiles;
+            }
+
+            return {
+                index, buffer,
+                mappings: mappingList,
+            };
+        });
+    }
+
+    @computed get currentSprite() {
+        return this.sprites[this.config.currentSprite] || this.sprites[0];
     }
 
     @computed get palettesWeb() {
@@ -124,7 +130,6 @@ class Environment {
     };
 
 }
-
 
 const environment = new Environment();
 storage(environment, 'environment');

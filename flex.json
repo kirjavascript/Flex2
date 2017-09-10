@@ -4,6 +4,7 @@
     "objects": [
         {
             "name": "Sonic",
+            "palettes": [],
             "art": {
                 "path": "../../sonic/boom/objects/sonic/art_sonic.bin",
                 "compression": "Uncompressed"
@@ -22,6 +23,7 @@
         },
         {
             "name": "Germinator",
+            "palettes": [],
             "art": {
                 "path": "../../sonic/boom/objects/kkz/art_plant.bin",
                 "compression": "Nemesis"
@@ -40,6 +42,7 @@
         },
         {
             "name": "Monitors",
+            "palettes": [],
             "art": {
                 "path": "../../sonic/boom/objects/other/art_monitor.bin",
                 "compression": "Uncompressed"

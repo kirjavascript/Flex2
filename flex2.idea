@@ -5,6 +5,7 @@ custom mapping formats
 ==
 
 UNDO (dont save to file)
+documentation tab
 autoupdate / new version information
 asm parser with regex
 spriteplotter
@@ -13,15 +14,11 @@ mapping_tool
 DPLC Editor
 load files in another thread(?)
 angled guidelines / rotate sprite view
-
-palettes / sprites / dplcs tab? (!)
-dplcs lists them individually
-sprites has a long list
-draggable reordering
-recent projects
-mouse select/drag sprites
 throttle file writing for project save
 collapse project objects
+
+dplcs lists them individually
+mouse select/drag sprites
 
 // gg scrollTo(0)
 // zoom in mappings view
@@ -29,3 +26,5 @@ divide tile index by 2 for sonic 2 2 player mappings
 
 // definition saved in json, load changes UI to object view and changes to intermediate format
 // format decides how assets are saved
+
+palettes
