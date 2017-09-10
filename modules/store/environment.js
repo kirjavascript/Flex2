@@ -6,6 +6,7 @@ import { errorMsg } from '#util/dialog';
 import { bufferToTiles } from '#formats/art';
 import { bufferToMappings } from '#formats/mapping';
 import { bufferToDPLCs } from '#formats/dplc';
+import { buffersToColors } from '#formats/palette';
 import { arrayMove } from 'react-sortable-hoc';
 
 const blankTile = Array(64).fill(0);
@@ -19,11 +20,10 @@ class Environment {
     };
 
     @observable palettes = [
-        // has to be a decimal representation of rrggbb values
-        [[0,0,0],[0,0,0],[34,34,170],[34,68,204],[68,68,238],[102,102,238],[238,238,238],[170,170,170],[136,136,136],[68,68,68],[238,170,136],[170,102,68],[238,0,0],[136,0,0],[238,170,0],[238,136,0]],
-        [[0,0,0],[34,0,34],[68,0,68],[102,0,102],[136,0,136],[170,0,170],[204,0,204],[238,0,238],[204,0,238],[170,0,204],[136,0,170],[102,0,136],[68,0,102],[34,0,68],[0,0,34],[238,0,0]],
-        [[0,0,0],[34,34,0],[68,68,0],[102,102,0],[136,136,0],[170,170,0],[204,204,0],[238,238,0],[238,204,0],[204,170,0],[170,136,0],[136,102,0],[102,68,0],[68,34,0],[34,0,0],[0,238,0]],
-        [[0,0,0],[0,34,34],[0,68,68],[0,102,102],[0,136,136],[0,170,170],[0,204,204],[0,238,238],[0,238,204],[0,204,170],[0,170,136],[0,136,102],[0,102,68],[0,68,34],[0,34,0],[0,0,238]],
+        ['#000','#000','#22a','#24c','#44e','#66e','#eee','#aaa','#888','#444','#ea8','#a64','#e00','#800','#ea0','#e80'],
+        ['#000','#202','#404','#606','#808','#a0a','#c0c','#e0e','#c0e','#a0c','#80a','#608','#406','#204','#002','#e00'],
+        ['#000','#220','#440','#660','#880','#aa0','#cc0','#ee0','#ec0','#ca0','#a80','#860','#640','#420','#200','#0e0'],
+        ['#000','#022','#044','#066','#088','#0aa','#0cc','#0ee','#0ec','#0ca','#0a8','#086','#064','#042','#020','#00e']
     ];
 
     @observable tiles = [
@@ -65,21 +65,13 @@ class Environment {
         return this.sprites[this.config.currentSprite] || this.sprites[0];
     }
 
-    @computed get palettesWeb() {
-        return this.palettes.map((line) => {
-            return line.map((color) => {
-                return '#' + color.map((d) => d.toString(16).padStart(2, '0')).join``;
-            });
-        });
-    }
-
     @action loadObject = (obj) => {
         // load art
         if (obj.art.path) {
             const artPath = workspace.absolutePath(obj.art.path);
             readFile(artPath, (err, buffer) => {
                 if (err) return errorMsg('Error Reading Art File', err);
-                this.tiles.replace(bufferToTiles(buffer));
+                this.tiles.replace(bufferToTiles(buffer, obj.art.compression));
             });
         }
         else {
@@ -108,6 +100,31 @@ class Environment {
         else {
             this.dplcs.replace([]);
         }
+
+        // load palettes
+        Promise
+            .all(
+                obj.palettes.map(({path, length}) => {
+                    const palettePath = workspace.absolutePath(path);
+                    return new Promise((resolve, reject) => {
+                        readFile(palettePath, (err, buffer) => {
+                            if (err) reject(err);
+                            resolve({buffer, length});
+                        });
+                    });
+                })
+            )
+            .then((all) => {
+                buffersToColors(all)
+                    .forEach((line, i) => {
+                        this.palettes[i] = line;
+                    });
+            })
+            .catch((err) => {
+                errorMsg('Error Reading Palette File', err.message);
+            });
+
+        // merge palettes
     };
 
     @action saveObject = (obj) => {

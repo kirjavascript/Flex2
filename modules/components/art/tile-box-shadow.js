@@ -6,8 +6,8 @@ import { observer } from 'mobx-react';
 export class Tile extends Component {
 
     render() {
-        const { data, paletteLine, scale = 4 } = this.props;
-        const { palettesWeb, config } = environment;
+        const { data, paletteLine = 0, scale = 4 } = this.props;
+        const { palettes, config } = environment;
         const { transparency } = config;
 
         return (
@@ -28,7 +28,7 @@ export class Tile extends Component {
                                 'transparent';
                             }
                             else {
-                                palettesWeb[paletteLine][pixel];
+                                palettes[paletteLine][pixel];
                             }
                         };
                         return `${((i%8)+1)*scale}px ${((0|i/8)+1)*scale}px ${color}`;

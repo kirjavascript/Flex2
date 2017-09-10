@@ -417,7 +417,7 @@ input, .select .Dropdown-placeholder {
     margin-left: 5px; }
   .project-config .options {
     margin: 10px; }
-    .project-config .options .select {
+    .project-config .options .select, .project-config .options .file {
       margin-bottom: 10px; }
   .project-config .custom {
     padding-bottom: 10px; }

@@ -4,7 +4,12 @@
     "objects": [
         {
             "name": "Sonic",
-            "palettes": [],
+            "palettes": [
+                {
+                    "path": "../../sonic/boom/objects/sonic/palette.bin",
+                    "length": 1
+                }
+            ],
             "art": {
                 "path": "../../sonic/boom/objects/sonic/art_sonic.bin",
                 "compression": "Uncompressed"
@@ -12,7 +17,8 @@
             "mappings": {
                 "path": "../../sonic/boom/objects/sonic/map_sonic.bin",
                 "format": "Sonic 2",
-                "customDefinition": ""
+                "customDefinition": "",
+                "accessor": ""
             },
             "dplcs": {
                 "enabled": "Yes",
@@ -23,7 +29,16 @@
         },
         {
             "name": "Germinator",
-            "palettes": [],
+            "palettes": [
+                {
+                    "path": "../../sonic/boom/objects/sonic/palette.bin",
+                    "length": 1
+                },
+                {
+                    "path": "../../sonic/boom/levels/kkz/palette.bin",
+                    "length": 3
+                }
+            ],
             "art": {
                 "path": "../../sonic/boom/objects/kkz/art_plant.bin",
                 "compression": "Nemesis"

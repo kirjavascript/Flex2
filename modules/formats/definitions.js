@@ -29,7 +29,7 @@ mappingDefinition(
     Y                   ; v flip
     X                   ; h flip
     AAA AAAA AAAA       ; art tile offset
-    2222222222222222    ; two player data
+    2222 2222 2222 2222 ; two player data
     LLLL LLLL LLLL LLLL ; relative signed left edge position of sprite
 )`,
 

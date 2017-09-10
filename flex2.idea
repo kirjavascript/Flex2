@@ -7,7 +7,7 @@ custom mapping formats
 UNDO (dont save to file)
 documentation tab
 autoupdate / new version information
-asm parser with regex
+asm parser with regex (save label to json)
 spriteplotter
 rotsprite
 mapping_tool
@@ -16,6 +16,21 @@ load files in another thread(?)
 angled guidelines / rotate sprite view
 throttle file writing for project save
 collapse project objects
+
+23:46 <%snkenjoi> flamewing: I just realised, you can easily check for DPLC optimisations by just adding the addr to the qty and comparing it to the next address
+23:47 <%MainMemory> snkenjoi: recently I made optimized dplcs by putting all the used tile indexes into an array, sorted, and did a loop increasing the tile number until it hit 16 tiles or a non-matching element in the array
+23:48 <%MainMemory> I also used the array to switch the mapping pieces to work with the dplcs
+delete unused art is slow, needs rewrite
+sprite rotation http://forums.sonicretro.org/index.php?showtopic=8848&st=0&p=159754&#entry159754
+convert to/from dplc
+mappings updated to support custom formats
+export/import sprite sheet
+DPLC auto optimisation in edit raw
+visual dplc editing
+00:18 <&flamewing> How about making the load art a drop down where you select the type of art to import?
+intermediate state
+SCD 23:39 <+flamewing> Mappings is S1; DPLC is S2 -> ?scd flag
+stacking order
 
 dplcs lists them individually
 mouse select/drag sprites

@@ -20,14 +20,13 @@ export class File extends Component {
             properties: ['openFile'],
         }, (paths) => {
             if (paths) {
-                store[accessor] = workspace.relativePath(paths[0]);
+                this.update(paths[0]);
             }
         });
     }
 
     onEmpty = () => {
-        const { store, accessor } = this.props;
-        store[accessor] = '';
+        this.update(void 0);
     };
 
     onDragOver = () => {
@@ -39,13 +38,28 @@ export class File extends Component {
     onDrop = (e) => {
         e.preventDefault();
 
-        const { store, accessor } = this.props;
         const { path } = e.dataTransfer.files[0];
-        store[accessor] = workspace.relativePath(path);
-
+        this.update(path);
         this.onDragLeave();
         return false;
     }
+
+    update = (path) => {
+        const { store, accessor } = this.props;
+        if (store && accessor) {
+            store[accessor] = do {
+                if (path) {
+                    workspace.relativePath(path);
+                }
+                else {
+                    store.accessor = '';
+                }
+            };
+        }
+
+        this.props.onChange &&
+        this.props.onChange(workspace.relativePath(path));
+    };
 
     render() {
         const { label, store, accessor, ...otherProps } = this.props;
@@ -53,7 +67,7 @@ export class File extends Component {
 
         return <div className="file" {...otherProps}>
             { do {
-                if (store[accessor]) {
+                if (accessor && store[accessor]) {
                     <div className="row">
                         Path
                         <div>

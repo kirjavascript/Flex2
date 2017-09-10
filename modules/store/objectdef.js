@@ -25,6 +25,11 @@ export class ObjectDef {
     @computed get key() {
         return Math.random().toString(35).slice(2);
     }
+    @computed get linesLeft() {
+        return this.palettes.reduce((a, c) => {
+            return a - c.length;
+        }, 4);
+    }
     @computed get mappingDefinition() {
         const { format, customDefinition } = this.mappings;
         if (format == 'Custom') {

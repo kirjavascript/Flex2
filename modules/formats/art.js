@@ -1,6 +1,9 @@
-export function bufferToTiles(buffer) {
+import { decompress, compress } from '#formats/compression';
+
+export function bufferToTiles(buffer, compression) {
     let tiles = [];
-    const data = new Uint8Array(buffer);
+    const data = decompress(new Int8Array(buffer), compression);
+
     const tileQty = data.length/0x20;
 
     for (let i = 0; i < tileQty; i++) {

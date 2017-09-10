@@ -41,6 +41,7 @@ export class Sprites extends Component {
         const { sprites } = environment;
 
         return <div className="spriteList">
+            import sprites
 
             <div className="spriteSortContainer">
                 <SortableList

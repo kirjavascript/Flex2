@@ -7,7 +7,7 @@ export class Palettes extends Component {
 
     render() {
         return <div>
-            {environment.palettesWeb.map((line, i) => {
+            {environment.palettes.map((line, i) => {
                 return <div key={i}>
                     {line.map((color, i) => {
                         return <div

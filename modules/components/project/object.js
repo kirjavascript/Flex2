@@ -2,8 +2,11 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { Item, Input, File, Select, Editor } from '#ui';
 import { mappingFormats, dplcFormats } from '#formats/definitions';
+import { compressionFormats } from '#formats/compression';
+const compressionList = Object.keys(compressionFormats);
 const mappingList = [...Object.keys(mappingFormats), 'Custom'];
 const dplcList = [...Object.keys(dplcFormats), 'Custom'];
+const paletteLengths = '1234'.split``.map((d) => ({label: d, value: +d}));
 
 @observer
 export class ObjectConfig extends Component {
@@ -22,24 +25,15 @@ export class ObjectConfig extends Component {
                         accessor="name"
                         placeholder="Object Name"
                     />
-               </div>
+                </div>
                 <div className="indent">
-                    <Item color="magenta">
-                        Palettes
-                    </Item>
                     <Item color="green">
                         Art
                     </Item>
                     <div className="options">
                         <Select
                             label="Compression"
-                            options={[
-                                'Uncompressed',
-                                'Nemesis',
-                                'Kosinski',
-                                'Kosinski-M',
-                                'Comper',
-                            ]}
+                            options={compressionList}
                             store={obj.art}
                             accessor="compression"
                         />
@@ -143,6 +137,46 @@ export class ObjectConfig extends Component {
                                 />
                             </div>
                         )}
+                    </div>
+
+                    <Item color="magenta">
+                        Palettes
+                    </Item>
+                    <div className="options">
+                        {obj.palettes.map((palette, i) => {
+                            const {path, length} = palette;
+
+                            return <div key={i}>
+                                <div className="file row">
+                                    Path
+                                    <div>
+                                        {path}
+                                        <span
+                                            onClick={() => {
+                                                obj.palettes.splice(i, 1);
+                                            }}
+                                            className="clear"
+                                        >
+                                            &nbsp;(clear)
+                                        </span>
+                                    </div>
+                                </div>
+                                <Select
+                                    label="Lines"
+                                    options={paletteLengths}
+                                    store={palette}
+                                    accessor="length"
+                                />
+                            </div>;
+                        })}
+                        {obj.linesLeft > 0 && <File
+                            onChange={(path) => {
+                                obj.palettes.push({
+                                    path,
+                                    length: 1,
+                                });
+                            }}
+                        />}
                     </div>
                     <div className="actions">
                         <Item color="red" inverted onClick={obj.remove}>

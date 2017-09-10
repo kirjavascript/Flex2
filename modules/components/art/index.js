@@ -26,15 +26,6 @@ export class Art extends Component {
         const { tiles } = environment;
 
         return <div className="art">
-            <Select
-                label="Transparency"
-                store={environment.config}
-                accessor="transparency"
-                options={[
-                    {label: 'Enabled', value: true},
-                    {label: 'Disabled', value: false},
-                ]}
-            />
 
             <div className="autoWrapper">
                 <AutoSizer>
