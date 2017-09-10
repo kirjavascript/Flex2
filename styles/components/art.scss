@@ -7,3 +7,19 @@
 .tile {
     image-rendering: pixelated;
 }
+
+.art {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    .autoWrapper {
+        flex-grow: 1;
+        width: 100%;
+        .ReactVirtualized__List:focus {
+            outline: none;
+        }
+        .tileRow {
+            display: flex;
+        }
+    }
+}

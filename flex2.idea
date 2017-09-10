@@ -23,6 +23,7 @@ mouse select/drag sprites
 throttle file writing for project save
 collapse project objects
 
+// gg scrollTo(0)
 // zoom in mappings view
 divide tile index by 2 for sonic 2 2 player mappings
 

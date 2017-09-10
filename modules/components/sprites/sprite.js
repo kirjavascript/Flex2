@@ -13,9 +13,9 @@ export class Sprite extends Component {
 
         const { spriteIndex, mappingList } = this.props;
 
+            // onClick={() => {config.currentSprite = spriteIndex;}}
         return <div
             className="sprite"
-            onClick={() => {config.currentSprite = spriteIndex;}}
             style={{
                 border: `1px solid ${SVARS[currentSprite == spriteIndex ? 'magenta' : 'blue']}`,
             }}

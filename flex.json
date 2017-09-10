@@ -21,13 +21,31 @@
             }
         },
         {
-            "name": "",
+            "name": "Germinator",
             "art": {
                 "path": "../../sonic/boom/objects/kkz/art_plant.bin",
                 "compression": "Nemesis"
             },
             "mappings": {
                 "path": "../../sonic/boom/objects/kkz/map_plant.bin",
+                "format": "Sonic 2",
+                "customDefinition": ""
+            },
+            "dplcs": {
+                "enabled": "No",
+                "path": "",
+                "format": "Sonic 1",
+                "customDefinition": ""
+            }
+        },
+        {
+            "name": "Monitors",
+            "art": {
+                "path": "../../sonic/boom/objects/other/art_monitor.bin",
+                "compression": "Uncompressed"
+            },
+            "mappings": {
+                "path": "../../sonic/boom/objects/other/map_monitor.bin",
                 "format": "Sonic 2",
                 "customDefinition": ""
             },

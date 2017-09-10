@@ -437,6 +437,18 @@ input, .select .Dropdown-placeholder {
 .tile {
   image-rendering: pixelated; }
 
+.art {
+  height: 100%;
+  display: flex;
+  flex-direction: column; }
+  .art .autoWrapper {
+    flex-grow: 1;
+    width: 100%; }
+    .art .autoWrapper .ReactVirtualized__List:focus {
+      outline: none; }
+    .art .autoWrapper .tileRow {
+      display: flex; }
+
 .sprites {
   display: flex;
   justify-content: center;

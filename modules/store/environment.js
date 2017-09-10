@@ -7,6 +7,8 @@ import { bufferToTiles } from '#formats/art';
 import { bufferToMappings } from '#formats/mapping';
 import { bufferToDPLCs } from '#formats/dplc';
 
+const blankTile = Array(64).fill(0);
+
 class Environment {
 
     @observable config = {
@@ -39,7 +41,12 @@ class Environment {
                 let tiles = [];
                 dplcList.map(({art, size}) => {
                     Array.from({length: size}, (_, i) => {
-                        tiles.push(this.tiles[art + i]);
+                        if (this.tiles.length <= art + i) {
+                            tiles.push(blankTile);
+                        }
+                        else {
+                            tiles.push(this.tiles[art + i]);
+                        }
                     });
                 });
                 buffers.push(tiles);
@@ -111,6 +118,10 @@ class Environment {
         // this.paletteRender();
         // update config to reflect dplc definition?
         //
+    };
+
+    @action action = (callback) => {
+        callback(this);
     };
 
 }

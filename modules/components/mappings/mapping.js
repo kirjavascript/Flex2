@@ -9,7 +9,7 @@ export class Mapping extends Component {
     render() {
         const { data, tileBuffer } = this.props;
         const { top, left, width, height, art, palette, vflip, hflip } = data;
-        const { tileBuffers, palettes } = environment;
+        const { tileBuffers } = environment;
         const scale = 4;
 
         return <div
@@ -32,7 +32,8 @@ export class Mapping extends Component {
                     return !!tile && <Tile
                         key={tileIndex}
                         data={tile}
-                        palette={palettes[palette]}
+                        paletteLine={palette}
+                        scale={scale}
                     />;
                 })}
         </div>;
