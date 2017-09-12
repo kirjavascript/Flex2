@@ -10,7 +10,7 @@ export function buffersToColors(list) {
                 data[i+1].toString(16).padStart(2, '0'),
             ];
             const [g, r] = [...gr];
-            colors.push(`#${r}${r}${g}${g}${b}${b}`);
+            colors.push(`#${r}${g}${b}`);
 
         }
     });

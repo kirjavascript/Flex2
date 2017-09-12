@@ -4,6 +4,9 @@ import 'brace/keybinding/vim';
 import './theme';
 import './syntax';
 import { autorun } from 'mobx';
+import { resolve }  from 'path';
+import { access } from 'fs';
+const { app } = require('electron').remote;
 
 export class Editor extends Component {
 
@@ -30,8 +33,12 @@ export class Editor extends Component {
                 wrap: true,
             });
 
-            // editor.setKeyboardHandler('ace/keyboard/vim');
-            // editor.setKeyboardHandler(null);
+            // enable vim mode
+            access(resolve(app.getPath('home'), './.vimrc'), (err) => {
+                if (!err) {
+                    editor.setKeyboardHandler('ace/keyboard/vim');
+                }
+            });
 
             const { store, accessor } = this.props;
 

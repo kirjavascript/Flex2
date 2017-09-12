@@ -15,10 +15,17 @@ export function AsyncRender(SyncComponent) {
         constructor(props) {
             super(props);
 
-            setTimeout(() => {
-                !this.unmounting &&
-                this.setState({display: true});
-            }, this.props.delay);
+            if (this.props.exclude) {
+                this.state = { display: true };
+            }
+            else {
+                this.state = { display: false };
+                setTimeout(() => {
+                    !this.unmounting &&
+                    this.setState({display: true});
+                }, this.props.delay);
+            }
+
         }
 
         render() {

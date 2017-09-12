@@ -16,7 +16,7 @@ export class ObjectDef {
         customDefinition: '',
     };
     @observable dplcs = {
-        enabled: 'No',
+        enabled: false,
         path: '',
         format: 'Sonic 1',
         customDefinition: '',

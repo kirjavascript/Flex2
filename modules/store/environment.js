@@ -1,4 +1,5 @@
 import { readFile } from 'fs';
+import { extname } from 'path';
 import { observable, computed, action, autorun, toJS } from 'mobx';
 import { storage } from './storage';
 import { workspace } from '#store/workspace';
@@ -7,6 +8,7 @@ import { bufferToTiles } from '#formats/art';
 import { bufferToMappings } from '#formats/mapping';
 import { bufferToDPLCs } from '#formats/dplc';
 import { buffersToColors } from '#formats/palette';
+import { asmToBin } from '#formats/asm';
 import { arrayMove } from 'react-sortable-hoc';
 
 class Environment {
@@ -78,16 +80,24 @@ class Environment {
         // load mappings
         if (obj.mappings.path) {
             const mappingPath = workspace.absolutePath(obj.mappings.path);
+            const isAsm = extname(obj.mappings.path) == '.asm';
+
             readFile(mappingPath, (err, buffer) => {
-                if (err) return errorMsg('Error Reading Mapping File', err);
-                this.mappings.replace(bufferToMappings(buffer, obj.mappingDefinition));
+
+                if (isAsm) {
+                    asmToBin(buffer);
+                }
+
+            //     if (err) return errorMsg('Error Reading Mapping File', err);
+            //     this.mappings.replace([]); // so sprites can load async
+            //     this.mappings.replace(bufferToMappings(buffer, obj.mappingDefinition));
             });
         }
         else {
             this.mappings.replace([]);
         }
         // load DPLCs
-        this.config.dplcsEnabled = obj.dplcs.enabled == 'Yes';
+        this.config.dplcsEnabled = obj.dplcs.enabled == true;
         if (this.config.dplcsEnabled && obj.dplcs.path) {
             const dplcPath = workspace.absolutePath(obj.dplcs.path);
             readFile(dplcPath, (err, buffer) => {

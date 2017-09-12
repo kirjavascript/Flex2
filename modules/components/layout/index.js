@@ -18,22 +18,22 @@ export class Layout extends Component {
 
         return node._visible && do {
             if (component == 'project') {
-                <ProjectConfig/>;
+                <ProjectConfig node={node}/>;
             }
             else if (component == 'palettes') {
-                <Palettes/>;
+                <Palettes node={node}/>;
             }
             else if (component == 'art') {
-                <Art/>;
+                <Art node={node}/>;
             }
             else if (component == 'sprites') {
-                <Sprites/>;
+                <Sprites node={node}/>;
             }
             else if (component == 'mappings') {
-                <Mappings/>;
+                <Mappings node={node}/>;
             }
             else if (component == 'dplcs') {
-                <DPLCs/>;
+                <DPLCs node={node}/>;
             }
         };
     }

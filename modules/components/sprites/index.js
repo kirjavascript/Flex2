@@ -18,6 +18,7 @@ const SortableList = SortableContainer(observer(({items}) => {
                     index={index}
                     value={value}
                     delay={index}
+                    exclude={index < 10}
                 />
             ))}
         </div>

@@ -1,0 +1,32 @@
+.palettes {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    .index {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4px;
+        font-family: Hack Bold;
+    }
+
+    .line {
+        display: flex;
+        flex-direction: row;
+        flex-grow: 1;
+    }
+
+    .color {
+        display: inline-block;
+        flex-grow: 1;
+    }
+
+    &.vert {
+        flex-direction: row;
+
+        .line {
+            flex-direction: column;
+        }
+    }
+}

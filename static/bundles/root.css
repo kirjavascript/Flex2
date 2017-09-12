@@ -494,6 +494,28 @@ input, .select .Dropdown-placeholder {
   flex-direction: column;
   flex-wrap: wrap; }
 
+.palettes {
+  display: flex;
+  flex-direction: column;
+  height: 100%; }
+  .palettes .index {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    font-family: Hack Bold; }
+  .palettes .line {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1; }
+  .palettes .color {
+    display: inline-block;
+    flex-grow: 1; }
+  .palettes.vert {
+    flex-direction: row; }
+    .palettes.vert .line {
+      flex-direction: column; }
+
 html {
   user-select: none;
   overflow: hidden;

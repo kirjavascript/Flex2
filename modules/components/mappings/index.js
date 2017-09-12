@@ -9,6 +9,7 @@ export class Mappings extends Component {
     render() {
         return <pre>
             zoom
+            import sprite over active frame
 
             <Select
                 label="Transparency"

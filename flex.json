@@ -3,6 +3,25 @@
     "name": "Sonic Boom",
     "objects": [
         {
+            "name": "",
+            "palettes": [],
+            "art": {
+                "path": "../../FlexMapper/s1/Sonic.bin",
+                "compression": "Uncompressed"
+            },
+            "mappings": {
+                "path": "../../FlexMapper/s1/Sonic.asm",
+                "format": "Sonic 1",
+                "customDefinition": ""
+            },
+            "dplcs": {
+                "enabled": false,
+                "path": "../../FlexMapper/s1/Sonic dynamic pattern load cues.asm",
+                "format": "Sonic 1",
+                "customDefinition": ""
+            }
+        },
+        {
             "name": "Sonic",
             "palettes": [
                 {
@@ -17,11 +36,10 @@
             "mappings": {
                 "path": "../../sonic/boom/objects/sonic/map_sonic.bin",
                 "format": "Sonic 2",
-                "customDefinition": "",
-                "accessor": ""
+                "customDefinition": ""
             },
             "dplcs": {
-                "enabled": "Yes",
+                "enabled": true,
                 "path": "../../sonic/boom/objects/sonic/dplc_sonic.bin",
                 "format": "Sonic 2/3&K",
                 "customDefinition": ""
@@ -49,7 +67,7 @@
                 "customDefinition": ""
             },
             "dplcs": {
-                "enabled": "No",
+                "enabled": false,
                 "path": "",
                 "format": "Sonic 1",
                 "customDefinition": ""
@@ -68,7 +86,7 @@
                 "customDefinition": ""
             },
             "dplcs": {
-                "enabled": "No",
+                "enabled": false,
                 "path": "",
                 "format": "Sonic 1",
                 "customDefinition": ""

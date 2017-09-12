@@ -90,13 +90,13 @@ export class ObjectConfig extends Component {
                         <Select
                             label="Enabled"
                             options={[
-                                'Yes',
-                                'No',
+                                {label: 'Yes', value: true},
+                                {label: 'No', value: false},
                             ]}
                             store={obj.dplcs}
                             accessor="enabled"
                         />
-                        {obj.dplcs.enabled == 'Yes' && (
+                        {obj.dplcs.enabled && (
                             <div>
                                 <Select
                                     label="Format"
@@ -104,7 +104,6 @@ export class ObjectConfig extends Component {
                                     store={obj.dplcs}
                                     accessor="format"
                                 />
-
                                 {obj.dplcs.format == 'Custom' && (
                                     <div className="custom">
                                         <div className="preset">

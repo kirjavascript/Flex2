@@ -16,12 +16,17 @@ $baseSize: 200px;
     display: grid;
     grid-template-columns: repeat(auto-fill, 210px);
     justify-content: center;
+    // display: flex;
+    // flex-direction: row;
+    // flex-wrap: wrap;
+    // justify-content: center;
 }
 
 .sprite {
     position: relative;
     height: $baseSize;
     width: $baseSize;
+    // flex-shrink: 0;
     margin: 5px;
     overflow: hidden;
     &:after {

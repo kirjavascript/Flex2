@@ -1,28 +1,48 @@
 import React, { Component } from 'react';
 import { environment } from '#store/environment';
 import { observer } from 'mobx-react';
+import { observable } from 'mobx';
 
 @observer
 export class Palettes extends Component {
 
+    state = { vert: false };
+
+    componentWillMount() {
+        this.props.node.setEventListener('resize', (e) => {
+            const { width, height } = e.rect;
+
+            requestAnimationFrame(() => {
+                this.setState({vert: width < height});
+            });
+        });
+    }
+
     render() {
-        return <div>
-            {environment.palettes.map((line, i) => {
-                return <div key={i}>
-                    {line.map((color, i) => {
-                        return <div
-                            key={i}
-                            style={{
-                                display: 'inline-block',
-                                backgroundColor: color,
-                                width: 20,
-                                height: 20,
-                            }}
-                        />;
-                    })}
-                </div>;
-            })}
-        </div>;
+        const { vert } = this.state;
+        const { palettes } = environment;
+        return (
+            <div className={`palettes ${vert&&'vert'}`}>
+                {palettes.map((line, lineIndex) => {
+                    return <div key={lineIndex} className="line">
+                        <div className="index">
+                            {lineIndex}
+                        </div>
+                        {line.map((color, colorIndex) => {
+                            return <div
+                                key={colorIndex}
+                                className="color"
+                                style={{
+                                    backgroundColor: color,
+                                    textAlign: 'center',
+                                }}
+                            >
+                            </div>;
+                        })}
+                    </div>;
+                })}
+            </div>
+        );
     }
 
 }
