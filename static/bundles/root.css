@@ -516,6 +516,21 @@ input, .select .Dropdown-placeholder {
     .palettes.vert .line {
       flex-direction: column; }
 
+.sortable-float-palette, .sortable-float-palette-vert {
+  display: flex;
+  flex-direction: row; }
+  .sortable-float-palette .color, .sortable-float-palette-vert .color {
+    flex-grow: 1; }
+  .sortable-float-palette .index, .sortable-float-palette-vert .index {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    font-family: Hack Bold; }
+
+.sortable-float-palette-vert {
+  flex-direction: column; }
+
 html {
   user-select: none;
   overflow: hidden;

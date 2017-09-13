@@ -4,7 +4,12 @@
     "objects": [
         {
             "name": "sonic 1",
-            "palettes": [],
+            "palettes": [
+                {
+                    "path": "../../sonic/development/S1hive2005_AS/pallet/sonic.bin",
+                    "length": 1
+                }
+            ],
             "art": {
                 "path": "../../FlexMapper/s1/Sonic.bin",
                 "compression": "Uncompressed"

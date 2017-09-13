@@ -134,8 +134,6 @@ class Environment {
             .catch((err) => {
                 errorMsg('Error Reading Palette File', err.message);
             });
-
-        // merge palettes
     };
 
     @action saveObject = (obj) => {
@@ -155,6 +153,10 @@ class Environment {
         this.config.dplcsEnabled &&
         this.dplcs.replace(arrayMove(this.dplcs, oldIndex, newIndex));
         this.mappings.replace(arrayMove(this.mappings, oldIndex, newIndex));
+    };
+
+    @action swapPalette = (oldIndex, newIndex) => {
+        this.palettes.replace(arrayMove(this.palettes, oldIndex, newIndex));
     };
 
 }

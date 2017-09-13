@@ -30,3 +30,23 @@
         }
     }
 }
+
+.sortable-float-palette {
+    display: flex;
+    flex-direction: row;
+    .color {
+        flex-grow: 1;
+    }
+    .index {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4px;
+        font-family: Hack Bold;
+    }
+}
+
+.sortable-float-palette-vert {
+    @extend .sortable-float-palette;
+    flex-direction: column;
+}
