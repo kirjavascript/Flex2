@@ -34,7 +34,7 @@ export function readBinary(data, index, size) {
     }).join``;
 }
 
-export function parseSigned(value) {
+export function parseSigned(value) { // takes binary string
     // no radix as this only makes sense for base-2
     if (+value[0]) {
         // if negative

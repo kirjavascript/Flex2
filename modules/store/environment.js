@@ -81,16 +81,14 @@ class Environment {
         if (obj.mappings.path) {
             const mappingPath = workspace.absolutePath(obj.mappings.path);
             const isAsm = extname(obj.mappings.path) == '.asm';
-
             readFile(mappingPath, (err, buffer) => {
-
-                if (isAsm) {
-                    asmToBin(buffer);
-                }
-
-            //     if (err) return errorMsg('Error Reading Mapping File', err);
-            //     this.mappings.replace([]); // so sprites can load async
-            //     this.mappings.replace(bufferToMappings(buffer, obj.mappingDefinition));
+                if (err) return errorMsg('Error Reading Mapping File', err);
+                this.mappings.replace([]); // so sprites can load async
+                const newMappings = bufferToMappings(
+                    isAsm ? asmToBin(buffer) : buffer,
+                    obj.mappingDefinition,
+                );
+                this.mappings.replace(newMappings);
             });
         }
         else {
@@ -100,9 +98,14 @@ class Environment {
         this.config.dplcsEnabled = obj.dplcs.enabled == true;
         if (this.config.dplcsEnabled && obj.dplcs.path) {
             const dplcPath = workspace.absolutePath(obj.dplcs.path);
+            const isAsm = extname(obj.dplcs.path) == '.asm';
             readFile(dplcPath, (err, buffer) => {
                 if (err) return errorMsg('Error Reading DPLC File', err);
-                this.dplcs.replace(bufferToDPLCs(buffer, obj.dplcDefinition));
+                const newDPLCs = bufferToDPLCs(
+                    isAsm ? asmToBin(buffer) : buffer,
+                    obj.dplcDefinition,
+                );
+                this.dplcs.replace(newDPLCs);
             });
         }
         else {

@@ -3,7 +3,7 @@
     "name": "Sonic Boom",
     "objects": [
         {
-            "name": "",
+            "name": "sonic 1",
             "palettes": [],
             "art": {
                 "path": "../../FlexMapper/s1/Sonic.bin",
@@ -15,7 +15,7 @@
                 "customDefinition": ""
             },
             "dplcs": {
-                "enabled": false,
+                "enabled": true,
                 "path": "../../FlexMapper/s1/Sonic dynamic pattern load cues.asm",
                 "format": "Sonic 1",
                 "customDefinition": ""

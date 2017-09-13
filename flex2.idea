@@ -20,6 +20,7 @@ divide tile index by 2 for sonic 2 2 player mappings
 update dplc status on save
 add flex.json to sonic 2 disassembly
 create new file
+limit sprites view / import active sprites detect tiles
 
 23:46 <%snkenjoi> flamewing: I just realised, you can easily check for DPLC optimisations by just adding the addr to the qty and comparing it to the next address
 23:47 <%MainMemory> snkenjoi: recently I made optimized dplcs by putting all the used tile indexes into an array, sorted, and did a loop increasing the tile number until it hit 16 tiles or a non-matching element in the array
