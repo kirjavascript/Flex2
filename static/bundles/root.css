@@ -494,6 +494,9 @@ input, .select .Dropdown-placeholder {
   flex-direction: column;
   flex-wrap: wrap; }
 
+.paletteWrap {
+  height: 100%; }
+
 .palettes {
   display: flex;
   flex-direction: column;

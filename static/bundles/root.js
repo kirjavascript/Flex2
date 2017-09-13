@@ -72829,7 +72829,10 @@ let Palettes = Object(__WEBPACK_IMPORTED_MODULE_2_mobx_react__["observer"])(_cla
 
         return _temp = super(...args), this.state = { vert: false }, this.onRef = node => {
             if (node) {
-                this.node = node;
+                requestAnimationFrame(() => {
+                    const { width, height } = node.getBoundingClientRect();
+                    this.setState({ vert: width < height });
+                });
             }
         }, this.onSortEnd = ({ oldIndex, newIndex }) => {
             __WEBPACK_IMPORTED_MODULE_1__store_environment__["a" /* environment */].swapPalette(oldIndex, newIndex);
@@ -72849,17 +72852,20 @@ let Palettes = Object(__WEBPACK_IMPORTED_MODULE_2_mobx_react__["observer"])(_cla
     render() {
         const { vert } = this.state;
         const { palettes } = __WEBPACK_IMPORTED_MODULE_1__store_environment__["a" /* environment */];
-        return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(SortableList, {
-            onRef: this.onRef,
-            axis: vert ? 'x' : 'y',
-            lockAxis: vert ? 'x' : 'y',
-            helperClass: `sortable-float-palette${vert ? '-vert' : ''}`,
-            items: palettes,
-            lockToContainerEdges: true,
-            useDragHandle: true,
-            vert: vert,
-            onSortEnd: this.onSortEnd
-        });
+        return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'div',
+            { ref: this.onRef, className: 'paletteWrap' },
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(SortableList, {
+                axis: vert ? 'x' : 'y',
+                lockAxis: vert ? 'x' : 'y',
+                helperClass: `sortable-float-palette${vert ? '-vert' : ''}`,
+                items: palettes,
+                lockToContainerEdges: true,
+                useDragHandle: true,
+                vert: vert,
+                onSortEnd: this.onSortEnd
+            })
+        );
     }
 
 }) || _class;

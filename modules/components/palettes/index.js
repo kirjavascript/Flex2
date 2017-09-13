@@ -45,6 +45,15 @@ export class Palettes extends Component {
 
     state = { vert: false };
 
+    onRef = (node) => {
+        if (node) {
+            requestAnimationFrame(() => {
+                const { width, height } = node.getBoundingClientRect();
+                this.setState({vert: width < height});
+            });
+        }
+    };
+
     componentWillMount() {
         this.props.node.setEventListener('resize', (e) => {
             const { width, height } = e.rect;
@@ -55,12 +64,6 @@ export class Palettes extends Component {
         });
     }
 
-    onRef = (node) => {
-        if (node) {
-            this.node = node;
-        }
-    };
-
     onSortEnd = ({ oldIndex, newIndex }) => {
         environment.swapPalette(oldIndex, newIndex);
     };
@@ -69,17 +72,18 @@ export class Palettes extends Component {
         const { vert } = this.state;
         const { palettes } = environment;
         return (
-            <SortableList
-                onRef={this.onRef}
-                axis={vert ? 'x' : 'y'}
-                lockAxis={vert ? 'x' : 'y'}
-                helperClass={`sortable-float-palette${vert?'-vert':''}`}
-                items={palettes}
-                lockToContainerEdges={true}
-                useDragHandle={true}
-                vert={vert}
-                onSortEnd={this.onSortEnd}
-            />
+            <div ref={this.onRef} className="paletteWrap">
+                <SortableList
+                    axis={vert ? 'x' : 'y'}
+                    lockAxis={vert ? 'x' : 'y'}
+                    helperClass={`sortable-float-palette${vert?'-vert':''}`}
+                    items={palettes}
+                    lockToContainerEdges={true}
+                    useDragHandle={true}
+                    vert={vert}
+                    onSortEnd={this.onSortEnd}
+                />
+           </div>
         );
     }
 
