@@ -1,4 +1,5 @@
 $baseSize: 200px;
+$margin: 5px;
 
 .spriteList {
     height: 100%;
@@ -9,17 +10,25 @@ $baseSize: 200px;
 .spriteSortContainer {
     width: 100%;
     overflow: scroll;
+    overflow-x: hidden;
     flex-grow: 1;
 }
 
 .sprites {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, 210px);
-    justify-content: center;
+    // display: grid;
+    // grid-template-columns: repeat(auto-fill, 210px);
+    // justify-content: center;
+
     // display: flex;
     // flex-direction: row;
     // flex-wrap: wrap;
     // justify-content: center;
+
+    position: relative;
+
+    .bbox {
+        position: absolute;
+    }
 }
 
 .sprite {
@@ -27,7 +36,7 @@ $baseSize: 200px;
     height: $baseSize;
     width: $baseSize;
     // flex-shrink: 0;
-    margin: 5px;
+    margin: $margin;
     overflow: hidden;
     &:after {
         content: '';

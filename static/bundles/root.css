@@ -457,12 +457,13 @@ input, .select .Dropdown-placeholder {
 .spriteSortContainer {
   width: 100%;
   overflow: scroll;
+  overflow-x: hidden;
   flex-grow: 1; }
 
 .sprites {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, 210px);
-  justify-content: center; }
+  position: relative; }
+  .sprites .bbox {
+    position: absolute; }
 
 .sprite {
   position: relative;

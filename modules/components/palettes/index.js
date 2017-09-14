@@ -44,24 +44,31 @@ const SortableList = SortableContainer(observer(({items, vert}) => {
 export class Palettes extends Component {
 
     state = { vert: false };
+    mounted = false;
 
     onRef = (node) => {
         if (node) {
             requestAnimationFrame(() => {
                 const { width, height } = node.getBoundingClientRect();
+                this.mounted &&
                 this.setState({vert: width < height});
             });
         }
     };
 
     componentWillMount() {
+        this.mounted = true;
         this.props.node.setEventListener('resize', (e) => {
             const { width, height } = e.rect;
 
             requestAnimationFrame(() => {
+                this.mounted &&
                 this.setState({vert: width < height});
             });
         });
+    }
+    componentWillUnmount() {
+        this.mounted = false;
     }
 
     onSortEnd = ({ oldIndex, newIndex }) => {

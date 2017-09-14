@@ -19,26 +19,28 @@ export class Sprite extends Component {
                 border: `1px solid ${SVARS[currentSprite == index ? 'magenta' : 'blue']}`,
             }}
         >
-            <div className="index">
-                0x{index.toString(16).toUpperCase()}
-            </div>
-            {!mappings.length && (
-                <div className="blank">
-                    [BLANK]
-                </div>
-            )}
             <div>
-                {mappings.reverse().map((mapping, mappingIndex) => {
-                    return <div
-                        key={mappingIndex}
-                        style={{zIndex: mappingIndex}}
-                    >
-                        <Mapping
-                            data={mapping}
-                            tileBuffer={buffer}
-                        />
-                    </div>;
-                })}
+                <div className="index">
+                    0x{index.toString(16).toUpperCase()}
+                </div>
+                {!mappings.length && (
+                    <div className="blank">
+                        [BLANK]
+                    </div>
+                )}
+                <div>
+                    {mappings.reverse().map((mapping, mappingIndex) => {
+                        return <div
+                            key={mappingIndex}
+                            style={{zIndex: mappingIndex}}
+                        >
+                            <Mapping
+                                data={mapping}
+                                tileBuffer={buffer}
+                            />
+                        </div>;
+                    })}
+                </div>
             </div>
         </div>;
     }
