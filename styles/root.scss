@@ -45,10 +45,10 @@ a {
 
 ::-webkit-scrollbar {
     &:vertical {
-        width: 10px;
+        width: $scrollbarWidth;
     }
     &:horizontal {
-        height: 10px;
+        height: $scrollbarWidth;
     }
     background-color: $black;
 }

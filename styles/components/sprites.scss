@@ -15,15 +15,6 @@ $margin: 5px;
 }
 
 .sprites {
-    // display: grid;
-    // grid-template-columns: repeat(auto-fill, 210px);
-    // justify-content: center;
-
-    // display: flex;
-    // flex-direction: row;
-    // flex-wrap: wrap;
-    // justify-content: center;
-
     position: relative;
 
     .bbox {
@@ -35,7 +26,6 @@ $margin: 5px;
     position: relative;
     height: $baseSize;
     width: $baseSize;
-    // flex-shrink: 0;
     margin: $margin;
     overflow: hidden;
     &:after {

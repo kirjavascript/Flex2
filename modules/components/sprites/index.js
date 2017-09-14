@@ -3,9 +3,10 @@ import { environment } from '#store/environment';
 import { observer } from 'mobx-react';
 import { Sprite } from './sprite';
 import { SortableContainer, SortableElement } from 'react-sortable-hoc';
-import SVARS from 'sass-variables-loader!#styles/components/sprites.scss';
+import SpriteVARS from 'sass-variables-loader!#styles/components/sprites.scss';
+import { scrollbarWidth } from 'sass-variables-loader!#styles/variables.scss';
 
-const { baseSize, margin } = SVARS;
+const { baseSize, margin } = SpriteVARS;
 const realBaseSize = parseInt(baseSize) + (parseInt(margin) * 2);
 
 const SortableItem = SortableElement(observer(class extends Component {
@@ -36,7 +37,7 @@ const SortableList = SortableContainer(observer(({items, width, height, scroll})
 
     const itemsPerRow = Math.floor(width / realBaseSize);
     const rowCount = Math.ceil(items.length / itemsPerRow);
-    const remainder = -5 + (width % realBaseSize) / 2; // 5 is scrollbar width /2
+    const remainder = -(parseInt(scrollbarWidth)/2) + (width % realBaseSize) / 2;
 
     const baseIndex = (0|(scroll / realBaseSize)) * itemsPerRow;
     const itemQty = (itemsPerRow * (height / realBaseSize)) + (itemsPerRow * 2);
@@ -103,6 +104,7 @@ export class Sprites extends Component {
         this.onScroll = (e) => {
             this.mounted &&
             this.setState({scroll: e.target.scrollTop});
+            e.target.blur();
         };
     }
 
