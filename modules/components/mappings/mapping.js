@@ -7,10 +7,8 @@ import { observer } from 'mobx-react';
 export class Mapping extends Component {
 
     render() {
-        const { data, tileBuffer } = this.props;
+        const { data, tileBuffer, scale = 4, baseSize } = this.props;
         const { top, left, width, height, art, palette, vflip, hflip } = data;
-        const { tileBuffers } = environment;
-        const scale = 4;
 
         return <div
             className="mapping"

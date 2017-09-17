@@ -28,6 +28,12 @@ $margin: 5px;
     width: $baseSize;
     margin: $margin;
     overflow: hidden;
+
+    .mapping {
+        margin-left: $baseSize / 2;
+        margin-top: $baseSize / 2;
+    }
+
     &:after {
         content: '';
         margin: auto;

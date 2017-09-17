@@ -471,6 +471,9 @@ input, .select .Dropdown-placeholder {
   width: 200px;
   margin: 5px;
   overflow: hidden; }
+  .sprite .mapping {
+    margin-left: 100px;
+    margin-top: 100px; }
   .sprite:after {
     content: '';
     margin: auto; }
@@ -489,11 +492,26 @@ input, .select .Dropdown-placeholder {
 
 .mapping {
   position: absolute;
-  margin-left: 100px;
-  margin-top: 100px;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap; }
+
+.mappings {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-x: hidden; }
+
+.mappingContainer {
+  position: relative;
+  height: 600px;
+  width: 600px;
+  background-image: url(../images/t.png);
+  outline: 2px solid #4E5462; }
+  .mappingContainer .mapping {
+    margin-left: 300px;
+    margin-top: 300px; }
 
 .paletteWrap {
   height: 100%; }

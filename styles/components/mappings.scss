@@ -1,8 +1,30 @@
+$baseSize: 600px;
+
 .mapping {
+    // also used in sprites.scss
     position: absolute;
-    margin-left: $baseSize / 2;
-    margin-top: $baseSize / 2;
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
+}
+
+.mappings {
+    padding: $basePadding;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+}
+
+.mappingContainer {
+    position: relative;
+    height: $baseSize;
+    width: $baseSize;
+    background-image: url(../images/t.png);
+    outline: 2px solid $grey;
+
+    .mapping {
+        margin-left: $baseSize / 2;
+        margin-top: $baseSize / 2;
+    }
 }

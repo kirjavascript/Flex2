@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { environment } from '#store/environment';
 import { observer } from 'mobx-react';
-import { Mapping } from '../mappings/mapping';
+import { Mapping } from '#components/mappings/mapping';
 import SVARS from '!!sass-variables-loader!#styles/variables.scss';
 
 @observer

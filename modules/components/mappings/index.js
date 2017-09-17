@@ -3,11 +3,31 @@ import { observer } from 'mobx-react';
 import { environment } from '#store/environment';
 import { Select } from '#ui';
 
+import { Mapping } from './mapping';
+
 @observer
 export class Mappings extends Component {
 
     render() {
-        return <pre>
+
+        const { buffer, index, mappings } = environment.currentSprite;
+
+        return <div className="mappings">
+            <div className="mappingContainer">
+                {mappings.reverse().map((mapping, mappingIndex) => {
+                    return <div
+                        key={mappingIndex}
+                        style={{zIndex: mappingIndex}}
+                    >
+                        <Mapping
+                            data={mapping}
+                            tileBuffer={buffer}
+                            scale={4}
+                        />
+                    </div>;
+                })}
+            </div>
+
             zoom
             import sprite over active frame
 
@@ -20,8 +40,7 @@ export class Mappings extends Component {
                     {label: 'Disabled', value: false},
                 ]}
             />
-            {JSON.stringify(environment.mappings, null, 4)}
-        </pre>;
+        </div>;
     }
 
 }
