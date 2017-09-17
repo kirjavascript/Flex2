@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import SVARS from 'sass-variables-loader!#styles/variables.scss';
+import SVARS from '!!sass-variables-loader!#styles/variables.scss';
 import { observer } from 'mobx-react';
 
 @observer

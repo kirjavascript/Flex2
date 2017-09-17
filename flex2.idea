@@ -1,6 +1,6 @@
 desktop version
 project files
-dynamic UI layout
+sexy flexible UI layout
 custom mapping formats
 .vimrc support
 ==
@@ -15,7 +15,7 @@ collapse project objects
 divide tile index by 2 for sonic 2 2 player mappings
 update dplc status on save
 add flex.json to sonic 2 disassembly
-create new file
+create new file | newFactory={(path)=>{}}
 // when saving, if 0 appears anywhere in the header use its offset for blank sprites
 limit sprites view / import active sprites detect tiles / just use one axis?
 (pgup/pgdn sprites accelerator)

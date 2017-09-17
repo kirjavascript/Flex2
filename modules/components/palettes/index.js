@@ -3,6 +3,8 @@ import { environment } from '#store/environment';
 import { observer } from 'mobx-react';
 import { observable } from 'mobx';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
+import { hexToMDHex } from '#formats/palette';
+import ColorPicker from 'rc-color-picker';
 
 const Handle = SortableHandle(({lineIndex}) => <div className="index">
     {lineIndex}
@@ -20,6 +22,17 @@ const SortableItem = SortableElement(observer(({line, lineIndex}) => (
                     textAlign: 'center',
                 }}
             >
+                <ColorPicker
+                    animation="slide-up"
+                    color={color}
+                    enableAlpha={false}
+                    mode="RGB"
+                    onChange={({color}) => {
+                        environment.palettes[lineIndex][colorIndex] = hexToMDHex(color);
+                    }}
+                >
+                    <div className="picker"/>
+                </ColorPicker>
             </div>;
         })}
     </div>

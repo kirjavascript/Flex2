@@ -1,6 +1,6 @@
 {
     "description": "Flex 2 Project File",
-    "name": "Sonic Boom",
+    "name": "",
     "objects": [
         {
             "name": "sonic 1",
@@ -27,7 +27,7 @@
             }
         },
         {
-            "name": "Sonic",
+            "name": "Sonic 2",
             "palettes": [
                 {
                     "path": "../../sonic/boom/objects/sonic/palette.bin",
@@ -95,6 +95,32 @@
                 "path": "",
                 "format": "Sonic 1",
                 "customDefinition": ""
+            }
+        },
+        {
+            "name": "sonic 3",
+            "palettes": [
+                {
+                    "path": "../../FlexMapper/s3k/samples_1/Pal-Sonic.bin",
+                    "length": 1
+                }
+            ],
+            "art": {
+                "path": "../../FlexMapper/s3k/samples_1/Art-Sonic.bin",
+                "compression": "Uncompressed"
+            },
+            "mappings": {
+                "path": "../../FlexMapper/s3k/samples_1/optimized/Map-Sonic.bin",
+                "format": "Sonic 3&K",
+                "customDefinition": "",
+                "accessor": ""
+            },
+            "dplcs": {
+                "enabled": true,
+                "path": "../../FlexMapper/s3k/samples_1/optimized/DPLC-Sonic.bin",
+                "format": "Sonic 2/3&K",
+                "customDefinition": "",
+                "accessor": ""
             }
         }
     ]

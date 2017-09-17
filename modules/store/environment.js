@@ -83,7 +83,6 @@ class Environment {
             const isAsm = extname(obj.mappings.path) == '.asm';
             readFile(mappingPath, (err, buffer) => {
                 if (err) return errorMsg('Error Reading Mapping File', err);
-                this.mappings.replace([]); // so sprites can load async
                 const newMappings = bufferToMappings(
                     isAsm ? asmToBin(buffer) : buffer,
                     obj.mappingDefinition,

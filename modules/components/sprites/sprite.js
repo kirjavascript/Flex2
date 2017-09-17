@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { environment } from '#store/environment';
 import { observer } from 'mobx-react';
 import { Mapping } from '../mappings/mapping';
-import SVARS from 'sass-variables-loader!#styles/variables.scss';
+import SVARS from '!!sass-variables-loader!#styles/variables.scss';
 
 @observer
 export class Sprite extends Component {

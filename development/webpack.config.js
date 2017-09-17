@@ -14,7 +14,7 @@ module.exports = (env={}, args={}) => {
         module: {
             loaders: [
                 {
-                    test: /\.js$/,
+                    test: /\.jsx?$/,
                     exclude: /node_modules/,
                     use: [
                         {
@@ -50,7 +50,7 @@ module.exports = (env={}, args={}) => {
         plugins: [
         ],
         resolve: {
-            extensions: ['.js', '.json'],
+            extensions: ['.js', '.json', '.jsx'],
             alias: {
                 '#store': __dirname + '/../modules/store',
                 '#components': __dirname + '/../modules/components',

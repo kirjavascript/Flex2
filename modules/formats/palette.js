@@ -17,3 +17,11 @@ export function buffersToColors(list) {
 
     return chunk(colors, 16).splice(0, 4);
 }
+
+export function hexToMDHex(color) {
+    return '#' + color.slice(1)
+        .match(/../g).map((c) => parseInt(c, 16)) // toArr
+        .map((c) => Math.round(c / 0x22) * 0x22) // round
+        .map((c) => Math.min(c, 0xEE).toString(16)[0]) // simplify
+        .join``;
+}

@@ -3,10 +3,9 @@ import { environment } from '#store/environment';
 import { observer } from 'mobx-react';
 import { Sprite } from './sprite';
 import { SortableContainer, SortableElement } from 'react-sortable-hoc';
-import SpriteVARS from 'sass-variables-loader!#styles/components/sprites.scss';
-import { scrollbarWidth } from 'sass-variables-loader!#styles/variables.scss';
+import { baseSize, margin } from '!!sass-variables-loader!#styles/components/sprites.scss';
+import { scrollbarWidth } from '!!sass-variables-loader!#styles/variables.scss';
 
-const { baseSize, margin } = SpriteVARS;
 const realBaseSize = parseInt(baseSize) + (parseInt(margin) * 2);
 
 const SortableItem = SortableElement(observer(class extends Component {
@@ -24,7 +23,7 @@ const SortableItem = SortableElement(observer(class extends Component {
 
 }));
 
-const SortableItemFast = SortableElement(({value, bbox: { x, y }}) => (
+const SortableItemFast = SortableElement(({bbox: { x, y }}) => (
     <div className="bbox" style={{
         left: x || 0,
         top: y || 0,
@@ -53,7 +52,7 @@ const SortableList = SortableContainer(observer(({items, width, height, scroll})
                 return do {
                     if (index >= baseIndex && index < baseIndex + itemQty) {
                         <SortableItem
-                            key={`item-${index}`}
+                            key={`sprite-${index}`}
                             index={index}
                             value={value}
                             bbox={{x, y}}
@@ -61,7 +60,7 @@ const SortableList = SortableContainer(observer(({items, width, height, scroll})
                     }
                     else {
                         <SortableItemFast
-                            key={`item-${index}`}
+                            key={`sprite-${index}`}
                             index={index}
                             bbox={{x, y}}
                         />;
@@ -132,6 +131,7 @@ export class Sprites extends Component {
 
         return <div className="spriteList">
             import sprites
+            export sheet
 
             <div className="spriteSortContainer" ref={this.onContainerRef}>
                 <SortableList

@@ -11,7 +11,9 @@ export class ProjectConfig extends Component {
     render() {
         return <div className="project-config">
 
-                <h1>{project.name}</h1>
+                {!!project.name && (
+                    <h1>{project.name}</h1>
+                )}
 
                 <div className="row">
                     <Input
