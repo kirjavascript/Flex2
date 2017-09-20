@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { environment } from '#store/environment';
-import { Select } from '#ui';
-import { magenta, blue } from '!!sass-variables-loader!#styles/variables.scss';
+import { Select, Slider } from '#ui';
 
 import { Mapping } from './mapping';
+import { Selection } from './selection';
+import { mappingState } from './state';
 
 @observer
 export class Mappings extends Component {
@@ -12,7 +13,7 @@ export class Mappings extends Component {
     render() {
 
         const { buffer, index, mappings } = environment.currentSprite;
-        const scale = 4;
+        const { scale, baseSize } = mappingState;
 
         return <div className="mappings">
             <div className="mappingContainer">
@@ -29,52 +30,22 @@ export class Mappings extends Component {
                     </div>;
                 })}
 
-                <svg width={600} height={600}>
-                    <defs>
-                        <g id="inner-select">
-                            {mappings.reverse().map(({left, top, width, height}, mappingIndex) => {
-                                return (
-                                    <rect
-                                        key={mappingIndex}
-                                        x={(left*scale) + 300}
-                                        y={(top*scale) + 300}
-                                        width={width*scale*8}
-                                        height={height*scale*8}
-                                        opacity={0.6}
-                                    />
-                                );
-                            })}
-                        </g>
-                    </defs>
-                    <mask id="inner-select-mask">
-                        <rect x="0" y="0" width="100%" height="100%" fill="white"/>
-                        <use xlinkHref="#inner-select" fill="black" />
-                    </mask>
-                    <g mask="url(#inner-select-mask)">
-                        {mappings.reverse().map(({left, top, width, height}, mappingIndex) => {
-                            const extraPixels = 5;
-                            const baseWidth = width * scale * 8;
-                            const baseHeight = height * scale * 8;
-                            const x = (left * scale) + 300 - (extraPixels / 2);
-                            const y = (top * scale) + 300 - (extraPixels / 2);
+                <svg width={baseSize} height={baseSize}>
+                    {false && <Selection
+                        offset={6}
+                        width={4}
+                    />}
 
-                            return (
-                                <rect
-                                    key={mappingIndex}
-                                    x={x}
-                                    y={y}
-                                    width={baseWidth + extraPixels}
-                                    height={baseHeight + extraPixels}
-                                    fill={magenta}
-                                />
-                            );
-                        })}
-                    </g>
+                    <Selection
+                        color="magenta"
+                        opacity={0.2}
+                    />
                 </svg>
             </div>
-            <pre>
-                {JSON.stringify(mappings, null, 4)}
-            </pre>
+            <Slider
+                store={mappingState}
+                accessor="scale"
+            />
 
             zoom
             import sprite over active frame
@@ -88,6 +59,10 @@ export class Mappings extends Component {
                     {label: 'Disabled', value: false},
                 ]}
             />
+
+            <pre>
+                {JSON.stringify(mappings, null, 4)}
+            </pre>
         </div>;
     }
 

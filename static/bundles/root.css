@@ -508,7 +508,8 @@ input, .select .Dropdown-placeholder {
   height: 600px;
   width: 600px;
   background-image: url(../images/t.png);
-  outline: 2px solid #4E5462; }
+  outline: 2px solid #4E5462;
+  overflow: hidden; }
   .mappingContainer .mapping {
     margin-left: 300px;
     margin-top: 300px; }

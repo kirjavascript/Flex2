@@ -3,3 +3,4 @@ export { Input } from './input';
 export { File } from './file';
 export { Select } from './select';
 export { Editor } from './editor';
+export { Slider } from './slider';

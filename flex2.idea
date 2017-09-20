@@ -11,7 +11,7 @@ spriteplotter
 rotsprite
 angled guidelines / rotate sprite view
 throttle file writing for project save
-collapse project objects
+collapse project objects / have index
 divide tile index by 2 for sonic 2 2 player mappings
 update dplc status on save
 add flex.json to sonic 2 disassembly

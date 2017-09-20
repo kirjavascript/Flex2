@@ -22,6 +22,7 @@ $baseSize: 600px;
     width: $baseSize;
     background-image: url(../images/t.png);
     outline: 2px solid $grey;
+    overflow: hidden;
 
     .mapping {
         margin-left: $baseSize / 2;
