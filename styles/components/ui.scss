@@ -75,3 +75,44 @@ input {
         background-color: $grey;
     }
 }
+
+.slider {
+    margin: 10px 0;
+    position: relative;
+    width: 600px;
+
+    input {
+        background: none;
+        box-shadow: none;
+        padding: 0 0px;
+        margin: 0;
+        width: 100%;
+        max-width: none;
+        -webkit-appearance: none;
+        height: 10px;
+        border: none;
+        background-color: $grey;
+    }
+
+    input::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        background: $white;
+        border: none;
+        width: 15px;
+        height: 10px;
+    }
+
+    input::-moz-range-track {
+        border-radius: 8px;
+        height: 10px;
+        border: none;
+        background-color: $grey;
+    }
+    input::-moz-range-thumb {
+        background: $white;
+        border: none;
+        width: 15px;
+        height: 10px;
+    }
+
+}

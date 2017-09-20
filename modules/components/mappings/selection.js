@@ -15,6 +15,7 @@ export class Selection extends Component {
 
     render() {
         const { color = 'blue', opacity = 0, offset = 0, width = 6 } = this.props;
+        const { x, y } = mappingState;
 
         return <g>
                 <defs>
@@ -46,20 +47,20 @@ class SelectionLayer extends Component {
     render() {
         const { extra, color, opacity, ...otherProps } = this.props;
         const { buffer, index, mappings } = environment.currentSprite;
-        const { scale, baseSize } = mappingState;
+        const { scale, baseSize, x, y } = mappingState;
 
         return <g {...otherProps}>
             {mappings.map(({left, top, width, height}, mappingIndex) => {
                 const baseWidth = width * scale * 8;
                 const baseHeight = height * scale * 8;
-                const x = (left * scale) + (baseSize / 2) - (extra / 2);
-                const y = (top * scale) + (baseSize / 2) - (extra / 2);
+                const rx = (left * scale) + (baseSize / 2) - (extra / 2);
+                const ry = (top * scale) + (baseSize / 2) - (extra / 2);
 
                 return (
                     <rect
                         key={mappingIndex}
-                        x={x}
-                        y={y}
+                        x={rx + x}
+                        y={ry + y}
                         width={baseWidth + extra}
                         height={baseHeight + extra}
                         fill={SVARS[color]}

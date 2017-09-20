@@ -17,7 +17,7 @@ export class Slider extends Component {
         const { store, accessor, ...otherProps } = this.props;
         const value = store[accessor];
 
-        return <div>
+        return <div className="slider">
             <input
                 type="range"
                 min="1"

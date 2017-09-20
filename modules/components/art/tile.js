@@ -19,8 +19,8 @@ export class Tile extends Component {
                 }}
             >
                 <div style={{
-                    width: scale,
-                    height: scale,
+                    width: scale + 'px',
+                    height: scale + 'px',
                     marginLeft: -scale,
                     marginTop: -scale,
                     boxShadow: data && data.map((pixel, i) => {

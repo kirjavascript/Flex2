@@ -2,25 +2,47 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { environment } from '#store/environment';
 import { Select, Slider } from '#ui';
-
+import clamp from 'lodash/clamp';
 import { Mapping } from './mapping';
 import { Selection } from './selection';
 import { mappingState } from './state';
+import { Axes } from './axis';
+import { DragSelect, attachDragSelectToNode } from './drag-select';
 
 @observer
 export class Mappings extends Component {
 
+    onZoom = (e) => {
+        const { scale } = mappingState;
+        const { deltaY } = e.nativeEvent;
+        mappingState.scale = clamp(scale + (deltaY > 0 ? -1 : 1), 1, 20);
+        e.preventDefault();
+    };
+
+    /*
+     * right + outside = drag
+     * right + inside = toggle
+     * left + inside = move
+     */
+
     render() {
 
         const { buffer, index, mappings } = environment.currentSprite;
-        const { scale, baseSize } = mappingState;
+        const { scale, baseSize, x, y } = mappingState;
 
         return <div className="mappings">
-            <div className="mappingContainer">
+            <div
+                className="mappingContainer"
+                onWheel={this.onZoom}
+                ref={attachDragSelectToNode}
+            >
                 {mappings.reverse().map((mapping, mappingIndex) => {
                     return <div
                         key={mappingIndex}
-                        style={{zIndex: mappingIndex}}
+                        style={{
+                            zIndex: mappingIndex,
+                            transform: `translate(${x}px,${y}px)`
+                        }}
                     >
                         <Mapping
                             data={mapping}
@@ -31,6 +53,7 @@ export class Mappings extends Component {
                 })}
 
                 <svg width={baseSize} height={baseSize}>
+                    <Axes/>
                     {false && <Selection
                         offset={6}
                         width={4}
@@ -40,15 +63,21 @@ export class Mappings extends Component {
                         color="magenta"
                         opacity={0.2}
                     />
+
+                    <DragSelect/>
                 </svg>
             </div>
+
             <Slider
-                store={mappingState}
-                accessor="scale"
+                store={environment.config}
+                accessor="currentSprite"
+                min="0"
+                max={environment.sprites.length-1}
             />
 
-            zoom
             import sprite over active frame
+            current slide slider
+            reset pan/zoom
 
             <Select
                 label="Transparency"

@@ -76,6 +76,38 @@ input, .select .Dropdown-placeholder {
 .file .dragging {
   background-color: #4E5462; }
 
+.slider {
+  margin: 10px 0;
+  position: relative;
+  width: 600px; }
+  .slider input, .slider .select .Dropdown-placeholder, .select .slider .Dropdown-placeholder {
+    background: none;
+    box-shadow: none;
+    padding: 0 0px;
+    margin: 0;
+    width: 100%;
+    max-width: none;
+    -webkit-appearance: none;
+    height: 10px;
+    border: none;
+    background-color: #4E5462; }
+  .slider input::-webkit-slider-thumb, .slider .select .Dropdown-placeholder::-webkit-slider-thumb, .select .slider .Dropdown-placeholder::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    background: #ABB2BF;
+    border: none;
+    width: 15px;
+    height: 10px; }
+  .slider input::-moz-range-track, .slider .select .Dropdown-placeholder::-moz-range-track, .select .slider .Dropdown-placeholder::-moz-range-track {
+    border-radius: 8px;
+    height: 10px;
+    border: none;
+    background-color: #4E5462; }
+  .slider input::-moz-range-thumb, .slider .select .Dropdown-placeholder::-moz-range-thumb, .select .slider .Dropdown-placeholder::-moz-range-thumb {
+    background: #ABB2BF;
+    border: none;
+    width: 15px;
+    height: 10px; }
+
 .flexlayout__layout {
   left: 0;
   top: 0;
