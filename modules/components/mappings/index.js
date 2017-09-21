@@ -32,7 +32,7 @@ export class Mappings extends Component {
                 <svg width={600} height={600}>
                     <defs>
                         <g id="inner-select">
-                            {mappings.reverse().map(({left, top, width, height}, mappingIndex) => {
+                            {mappings.map(({left, top, width, height}, mappingIndex) => {
                                 return (
                                     <rect
                                         key={mappingIndex}
@@ -51,7 +51,7 @@ export class Mappings extends Component {
                         <use xlinkHref="#inner-select" fill="black" />
                     </mask>
                     <g mask="url(#inner-select-mask)">
-                        {mappings.reverse().map(({left, top, width, height}, mappingIndex) => {
+                        {mappings.map(({left, top, width, height}, mappingIndex) => {
                             const extraPixels = 5;
                             const baseWidth = width * scale * 8;
                             const baseHeight = height * scale * 8;

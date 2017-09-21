@@ -83955,7 +83955,7 @@ let Mappings = Object(__WEBPACK_IMPORTED_MODULE_1_mobx_react__["observer"])(_cla
                         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                             'g',
                             { id: 'inner-select' },
-                            mappings.reverse().map(({ left, top, width, height }, mappingIndex) => {
+                            mappings.map(({ left, top, width, height }, mappingIndex) => {
                                 return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('rect', {
                                     key: mappingIndex,
                                     x: left * scale + 300,
@@ -83976,7 +83976,7 @@ let Mappings = Object(__WEBPACK_IMPORTED_MODULE_1_mobx_react__["observer"])(_cla
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                         'g',
                         { mask: 'url(#inner-select-mask)' },
-                        mappings.reverse().map(({ left, top, width, height }, mappingIndex) => {
+                        mappings.map(({ left, top, width, height }, mappingIndex) => {
                             const extraPixels = 5;
                             const baseWidth = width * scale * 8;
                             const baseHeight = height * scale * 8;
