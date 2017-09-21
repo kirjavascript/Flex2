@@ -5,6 +5,10 @@ import { mappingState } from './state';
 import { select, event, mouse } from 'd3-selection';
 import { drag } from 'd3-drag';
 
+const LEFT = 0;
+const MIDDLE = 1;
+const RIGHT = 2;
+
 export function attachDragSelectToNode(node) {
     if (node) {
         select(node)
@@ -13,35 +17,62 @@ export function attachDragSelectToNode(node) {
                     .filter(() => true)
                     .on('start', () => {
                         const { dx, dy, sourceEvent: { button } } = event;
-                        if (button == 2) {
+                        if (button == LEFT) {
                             const [x, y] = mouse(node);
                             mappingState.select.active = true;
                             mappingState.select.x0 = x;
                             mappingState.select.y0 = y;
                             mappingState.select.x1 = x;
                             mappingState.select.y1 = y;
+                            setSelectedMappings(node);
                         }
                     })
                     .on('drag', () => {
                         const { dx, dy, sourceEvent: { button } } = event;
-                        if (button == 2) {
+                        if (button == LEFT) {
                             const [x, y] = mouse(node);
                             mappingState.select.x1 = x;
                             mappingState.select.y1 = y;
+                            setSelectedMappings(node);
                         }
-                        else if (button == 1) {
+                        else if (button == MIDDLE) {
                             mappingState.x += dx;
                             mappingState.y += dy;
                         }
                     })
                     .on('end', () => {
                         const { dx, dy, sourceEvent: { button } } = event;
-                        if (button == 2) {
+                        if (button == LEFT) {
+                            setSelectedMappings(node);
                             mappingState.select.active = false;
                         }
                     })
             );
     }
+}
+
+function setSelectedMappings(node) {
+    const {x, y, width, height} = mappingState.selectBBox;
+    const indicies = Array.from(node.querySelectorAll('.mapping'))
+        .reverse()
+        .reduce((a, mapping, i) => {
+            const bbox = mapping.getBoundingClientRect();
+            return do {
+                if (
+                    x + 300 < bbox.left &&
+                    x + width + 300 > bbox.left + bbox.width &&
+                    y < bbox.top &&
+                    y + height > bbox.top + bbox.height
+                ) (
+                    [... a, i]
+                );
+                else (
+                    a
+                );
+            };
+        }, []);
+
+    mappingState.selectedIndicies.replace(indicies);
 }
 
 @observer

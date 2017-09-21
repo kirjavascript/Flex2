@@ -5,7 +5,7 @@ custom mapping formats
 .vimrc support
 ==
 
-UNDO (dont save to file)
+UNDO .flexhistory (clear on reload)
 documentation tab
 spriteplotter
 rotsprite
@@ -19,6 +19,11 @@ create new file | newFactory={(path)=>{}}
 // when saving, if 0 appears anywhere in the header use its offset for blank sprites
 limit sprites view / import active sprites detect tiles / just use one axis?
 (pgup/pgdn sprites accelerator)
+
+                    <div dangerouslySetInnerHTML={{__html: `
+<webview src="https://www.github.com/kirjavascript/flex2" style="display:inline-flex; width:640px; height:480px" useragent="Mozilla/5.0 (Linux; <Android Version>; <Build Tag etc.>) AppleWebKit/<WebKit Rev> (KHTML, like Gecko) Chrome/<Chrome Rev> Mobile Safari/<WebKit Rev>"></webview>
+
+                    `}}/>
 
 23:46 <%snkenjoi> flamewing: I just realised, you can easily check for DPLC optimisations by just adding the addr to the qty and comparing it to the next address
 23:47 <%MainMemory> snkenjoi: recently I made optimized dplcs by putting all the used tile indexes into an array, sorted, and did a loop increasing the tile number until it hit 16 tiles or a non-matching element in the array

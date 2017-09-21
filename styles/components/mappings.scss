@@ -27,5 +27,8 @@ $baseSize: 600px;
     .mapping {
         margin-left: $baseSize / 2;
         margin-top: $baseSize / 2;
+        &:hover {
+            background-color: $magenta;
+        }
     }
 }

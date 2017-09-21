@@ -57,6 +57,7 @@ class SelectionLayer extends Component {
                 const ry = (top * scale) + (baseSize / 2) - (extra / 2);
 
                 return (
+                    ~mappingState.selectedIndicies.indexOf(mappingIndex) ?
                     <rect
                         key={mappingIndex}
                         x={rx + x}
@@ -65,7 +66,7 @@ class SelectionLayer extends Component {
                         height={baseHeight + extra}
                         fill={SVARS[color]}
                         opacity={opacity}
-                    />
+                    /> : false
                 );
             })}
         </g>;
