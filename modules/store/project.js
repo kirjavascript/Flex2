@@ -6,6 +6,7 @@ import { ObjectDef } from '#store/objectdef';
 import { errorMsg } from '#util/dialog';
 
 let booted = false;
+let disableWrite = false;
 
 export class Project {
 
@@ -28,6 +29,7 @@ export class Project {
     };
 
     @action open = () => {
+        disableWrite = true;
         readFile(
             workspace.projectPath,
             'utf8',
@@ -49,6 +51,7 @@ export class Project {
                     workspace.projectPath = '';
                     errorMsg('File Read Error', e.message);
                 }
+                disableWrite = false;
             },
         );
     };
@@ -60,7 +63,7 @@ export class Project {
             autorun(() => {
                 const data = stringify(project);
 
-                if (workspace.projectPath) {
+                if (workspace.projectPath && !disableWrite) {
                     // needs to be sync to ensure no data corruption
                     writeFileSync(
                         workspace.projectPath,

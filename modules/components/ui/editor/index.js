@@ -6,6 +6,7 @@ import './syntax';
 import { autorun } from 'mobx';
 import { resolve }  from 'path';
 import { access } from 'fs';
+import { uuid } from '#util/uuid';
 const { app } = require('electron').remote;
 
 export class Editor extends Component {
@@ -13,7 +14,7 @@ export class Editor extends Component {
     constructor(props) {
         super(props);
 
-        this.id = 'editor-' + Math.random().toString(35).slice(2);
+        this.id = uuid();
     }
 
     onRef = (node) => {
