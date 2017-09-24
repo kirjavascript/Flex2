@@ -3,9 +3,10 @@ import { render } from 'react-dom';
 import { observer } from 'mobx-react';
 
 import { workspace } from '#store/workspace';
-
 import { ProjectExplorer } from '#components/project/menu';
 import { Layout } from '#components/layout';
+
+import './keyboard';
 
 @observer
 class Root extends React.Component {

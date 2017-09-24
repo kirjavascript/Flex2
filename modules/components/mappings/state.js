@@ -1,4 +1,5 @@
 import { observable, computed, action, autorun, toJS } from 'mobx';
+import { environment } from '#store/environment';
 
 class MappingState {
 
@@ -39,6 +40,23 @@ class MappingState {
             return void 0;
         }
     }
+
+    @action selectAll = () => {
+        const indicies = environment.currentSprite.mappings.map((d, i) => i);
+        this.selectedIndicies.replace(indicies);
+    };
+
+    @action selectNone = () => {
+        this.selectedIndicies.replace([]);
+    };
+
+    // clipboard
+
+    @observable clipboard = {
+        // type?
+        // mappings: [],
+        // dplcs: [],
+    };
 
 }
 
