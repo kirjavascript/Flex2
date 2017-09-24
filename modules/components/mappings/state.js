@@ -1,18 +1,30 @@
 import { observable, computed, action, autorun, toJS } from 'mobx';
+import { environment } from '#store/environment';
 
 class MappingState {
+
+    // viewing
 
     baseSize = 600;
     @observable scale = 4;
     @observable x = 0;
     @observable y = 0;
 
+    @action resetPanAndZoom = () => {
+        this.scale = 4;
+        this.x = 0;
+        this.y = 0;
+    };
+
+    // selections
+
+    @observable selectedIndicies = [];
+
     @observable select = {
         active: false,
         x0: 0, y0: 0,
         x1: 0, y1: 0,
     };
-    @observable selectedIndicies = [];
 
     @computed get selectBBox() {
         const { active, x0, x1, y0, y1 } = this.select;
@@ -28,6 +40,23 @@ class MappingState {
             return void 0;
         }
     }
+
+    @action selectAll = () => {
+        const indicies = environment.currentSprite.mappings.map((d, i) => i);
+        this.selectedIndicies.replace(indicies);
+    };
+
+    @action selectNone = () => {
+        this.selectedIndicies.replace([]);
+    };
+
+    // clipboard
+
+    @observable clipboard = {
+        // type?
+        // mappings: [],
+        // dplcs: [],
+    };
 
 }
 

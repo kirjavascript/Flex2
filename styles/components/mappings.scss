@@ -28,7 +28,9 @@ $baseSize: 600px;
         margin-left: $baseSize / 2;
         margin-top: $baseSize / 2;
         &:hover {
-            background-color: $magenta;
+            outline: 3px solid $red;
+            opacity: .5;
+            filter: blur(1px);
         }
     }
 }

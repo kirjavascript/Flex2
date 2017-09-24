@@ -30,8 +30,9 @@ export function storage(obj, name) {
     }
 
     window.addEventListener('beforeunload', () => {
-        saveData &&
-        localStorage.setItem(name, JSON.stringify(obj));
+        if (saveData) {
+            localStorage.setItem(name, JSON.stringify(obj));
+        }
     });
 
 }
