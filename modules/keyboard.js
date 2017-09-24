@@ -18,5 +18,5 @@ Mousetrap.bind('mod+d', () => {
  * [] = nav sprite
  * {} = nav tile
  * arrows = move piece(s)
- * shift = *8
+ * shift = *8 (applies when dragging too?)
  */
