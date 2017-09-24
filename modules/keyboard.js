@@ -13,3 +13,10 @@ Mousetrap.bind('mod+d', () => {
 });
 
 // cut, paste
+
+/*
+ * [] = nav sprite
+ * {} = nav tile
+ * arrows = move piece(s)
+ * shift = *8
+ */
