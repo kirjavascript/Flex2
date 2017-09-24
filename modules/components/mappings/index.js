@@ -20,9 +20,9 @@ export class Mappings extends Component {
     };
 
     /*
-     * right + outside = drag
-     * right + inside = toggle
-     * left + inside = move
+     * left + outside = select
+     * left + inside = drag
+     * doubleclick = toggle ?
      */
 
     render() {
