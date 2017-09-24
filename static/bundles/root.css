@@ -546,7 +546,9 @@ input, .select .Dropdown-placeholder {
     margin-left: 300px;
     margin-top: 300px; }
     .mappingContainer .mapping:hover {
-      background-color: #C678DD; }
+      outline: 3px solid #E06C75;
+      opacity: .5;
+      filter: blur(1px); }
 
 .paletteWrap {
   height: 100%; }

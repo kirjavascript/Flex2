@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { environment } from '#store/environment';
-import { Select, Slider } from '#ui';
+import { Item, Select, Slider } from '#ui';
 import clamp from 'lodash/clamp';
 import { Mapping } from './mapping';
 import { Selection } from './selection';
@@ -75,8 +75,11 @@ export class Mappings extends Component {
                 max={environment.sprites.length-1}
             />
 
+            <Item onClick={mappingState.resetPanAndZoom} color="orange" inverted>
+                Reset Pan/Zoom
+            </Item>
+
             import sprite over active frame
-            current slide slider
             reset pan/zoom
 
             <Select

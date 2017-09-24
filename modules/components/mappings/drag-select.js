@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { blue } from '!!sass-variables-loader!#styles/variables.scss';
 import { observer } from 'mobx-react';
+import { environment } from '#store/environment';
 import { mappingState } from './state';
 import { select, event, mouse } from 'd3-selection';
 import { drag } from 'd3-drag';
@@ -35,7 +36,7 @@ export function attachDragSelectToNode(node) {
                             mappingState.select.y1 = y;
                             setSelectedMappings(node);
                         }
-                        else if (button == MIDDLE) {
+                        else if (button == RIGHT) {
                             mappingState.x += dx;
                             mappingState.y += dy;
                         }
@@ -52,25 +53,26 @@ export function attachDragSelectToNode(node) {
 }
 
 function setSelectedMappings(node) {
-    const {x, y, width, height} = mappingState.selectBBox;
-    const indicies = Array.from(node.querySelectorAll('.mapping'))
-        .reverse()
-        .reduce((a, mapping, i) => {
-            const bbox = mapping.getBoundingClientRect();
-            return do {
-                if (
-                    x + 300 < bbox.left &&
-                    x + width + 300 > bbox.left + bbox.width &&
-                    y < bbox.top &&
-                    y + height > bbox.top + bbox.height
-                ) (
-                    [... a, i]
-                );
-                else (
-                    a
-                );
-            };
-        }, []);
+    const { scale, baseSize, x: offsetX, y: offsetY } = mappingState;
+    const { x, y, width, height } = mappingState.selectBBox;
+
+    const indicies = environment.currentSprite.mappings.reduce((acc, mapping, index) => {
+        const { top: my, left: mx, width: mw, height: mh } = mapping;
+
+        return do {
+            if (
+                x - (baseSize/2) - offsetX < (mx * scale) &&
+                x + width - (baseSize/2) - offsetX > (mx * scale) + (mw * scale * 8) &&
+                y - (baseSize/2) - offsetY < (my * scale) &&
+                y + height - (baseSize/2) - offsetY > (my * scale) + (mh * scale * 8)
+            ) (
+                [...acc, index]
+            );
+            else (
+                acc
+            );
+        };
+    }, []);
 
     mappingState.selectedIndicies.replace(indicies);
 }

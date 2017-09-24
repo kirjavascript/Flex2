@@ -2,17 +2,28 @@ import { observable, computed, action, autorun, toJS } from 'mobx';
 
 class MappingState {
 
+    // viewing
+
     baseSize = 600;
     @observable scale = 4;
     @observable x = 0;
     @observable y = 0;
+
+    @action resetPanAndZoom = () => {
+        this.scale = 4;
+        this.x = 0;
+        this.y = 0;
+    };
+
+    // selections
+
+    @observable selectedIndicies = [];
 
     @observable select = {
         active: false,
         x0: 0, y0: 0,
         x1: 0, y1: 0,
     };
-    @observable selectedIndicies = [];
 
     @computed get selectBBox() {
         const { active, x0, x1, y0, y1 } = this.select;

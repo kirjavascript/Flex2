@@ -36,7 +36,5 @@ DPLC auto optimisation in edit raw
 visual dplc editing
 SCD 23:39 <+flamewing> Mappings is S1; DPLC is S2 -> ?scd flag
 
-dplcs lists them individually
-mouse select/drag sprites (purple outline)
-zoom in mappings view
-DPLC Editor
+dplcs lists them individually / DPLC Editor
+copy/paste mappings
