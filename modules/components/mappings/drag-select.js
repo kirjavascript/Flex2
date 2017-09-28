@@ -53,7 +53,7 @@ export function attachDragSelectToNode(node) {
 }
 
 function setSelectedMappings(node) {
-    const { scale, baseSize, x: offsetX, y: offsetY } = mappingState;
+    const { scale, x: offsetX, y: offsetY } = mappingState;
     const { x, y, width, height } = mappingState.selectBBox;
 
     const indicies = environment.currentSprite.mappings.reduce((acc, mapping, index) => {
@@ -61,10 +61,10 @@ function setSelectedMappings(node) {
 
         return do {
             if (
-                x - (baseSize/2) - offsetX < (mx * scale) &&
-                x + width - (baseSize/2) - offsetX > (mx * scale) + (mw * scale * 8) &&
-                y - (baseSize/2) - offsetY < (my * scale) &&
-                y + height - (baseSize/2) - offsetY > (my * scale) + (mh * scale * 8)
+                x - offsetX < (mx * scale) &&
+                x + width - offsetX > (mx * scale) + (mw * scale * 8) &&
+                y - offsetY < (my * scale) &&
+                y + height - offsetY > (my * scale) + (mh * scale * 8)
             ) (
                 [...acc, index]
             );

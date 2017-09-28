@@ -1,5 +1,3 @@
-$baseSize: 600px;
-
 .mapping {
     // also used in sprites.scss
     position: absolute;
@@ -9,7 +7,6 @@ $baseSize: 600px;
 }
 
 .mappings {
-    padding: $basePadding;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -18,19 +15,27 @@ $baseSize: 600px;
 
 .mappingContainer {
     position: relative;
-    height: $baseSize;
-    width: $baseSize;
     background-image: url(../images/t.png);
-    outline: 2px solid $grey;
     overflow: hidden;
 
     .mapping {
-        margin-left: $baseSize / 2;
-        margin-top: $baseSize / 2;
         &:hover {
             outline: 3px solid $red;
             opacity: .5;
             filter: blur(1px);
         }
     }
+}
+
+.hud {
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: 15px;
+    text-align: right;
+    font-size: 12px;
+    span {
+        font-weight: 200;
+    }
+
 }

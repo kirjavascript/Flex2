@@ -5,7 +5,7 @@ custom mapping formats
 .vimrc support
 ==
 
-UNDO .flexhistory (clear on reload)
+UNDO .flexhistory (clear on reload / debounce)
 documentation tab
 spriteplotter
 rotsprite
@@ -38,3 +38,19 @@ SCD 23:39 <+flamewing> Mappings is S1; DPLC is S2 -> ?scd flag
 
 dplcs lists them individually / DPLC Editor
 copy/paste mappings
+HUD in mappings
+
+replicate flex1 behaviour
+unload stuff
+flip x/y
+set priority
+change palette
+guidelines
+delete unused art (get buffers list)
+delete frame
+dupe frame / mappings
+add frame
+drag
+grid: 8
+priority
+export to png

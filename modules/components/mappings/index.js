@@ -7,6 +7,7 @@ import { Mapping } from './mapping';
 import { Selection } from './selection';
 import { mappingState } from './state';
 import { Axes } from './axis';
+import { HUD } from './hud';
 import { DragSelect, attachDragSelectToNode } from './drag-select';
 
 @observer
@@ -19,6 +20,18 @@ export class Mappings extends Component {
         e.preventDefault();
     };
 
+    componentWillMount() {
+        this.props.node.setEventListener('resize', (e) => {
+            requestAnimationFrame(() => {
+                const { width } = e.rect;
+                const baseWidth = e.rect.width - 10;
+                mappingState.baseWidth = baseWidth;
+                mappingState.x = (baseWidth / 2)|0;
+                mappingState.y = 300;
+            });
+        });
+    }
+
     /*
      * left + outside = select
      * left + inside = drag
@@ -28,20 +41,24 @@ export class Mappings extends Component {
     render() {
 
         const { buffer, index, mappings } = environment.currentSprite;
-        const { scale, baseSize, x, y } = mappingState;
+        const { scale, x, y, baseWidth } = mappingState;
 
-        return <div className="mappings">
+        return <div className="mappings" ref={this.onRef}>
             <div
                 className="mappingContainer"
                 onWheel={this.onZoom}
                 ref={attachDragSelectToNode}
+                style={{
+                    width: '100%',
+                    height: 600,
+                }}
             >
                 {mappings.reverse().map((mapping, mappingIndex) => {
                     return <div
                         key={mappingIndex}
                         style={{
                             zIndex: mappingIndex,
-                            transform: `translate(${x}px,${y}px)`
+                            transform: `translate(${x}px,${y}px)`,
                         }}
                     >
                         <Mapping
@@ -52,7 +69,9 @@ export class Mappings extends Component {
                     </div>;
                 })}
 
-                <svg width={baseSize} height={baseSize}>
+                <HUD/>
+
+                <svg width={baseWidth} height={600}>
                     <Axes/>
                     {false && <Selection
                         offset={6}
@@ -73,9 +92,14 @@ export class Mappings extends Component {
                 accessor="currentSprite"
                 min="0"
                 max={environment.sprites.length-1}
+                style={{width: baseWidth}}
             />
 
-            <Item onClick={mappingState.resetPanAndZoom} color="orange" inverted>
+            <Item
+                onClick={mappingState.resetPanAndZoom}
+                color="orange"
+                prefix="="
+                inverted>
                 Reset Pan/Zoom
             </Item>
 

@@ -4,11 +4,11 @@ import Mousetrap from 'mousetrap';
 
 // mod = ctrl / cmd
 
-Mousetrap.bind('mod+a', () => {
+Mousetrap.bind('mod + a', () => {
     mappingState.selectAll();
 });
 
-Mousetrap.bind('mod+d', () => {
+Mousetrap.bind('mod + d', () => {
     mappingState.selectNone();
 });
 

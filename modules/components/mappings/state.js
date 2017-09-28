@@ -5,16 +5,24 @@ class MappingState {
 
     // viewing
 
-    baseSize = 600;
+    @observable baseWidth = 600;
     @observable scale = 4;
-    @observable x = 0;
-    @observable y = 0;
+    @observable x = 300;
+    @observable y = 300;
 
     @action resetPanAndZoom = () => {
         this.scale = 4;
-        this.x = 0;
-        this.y = 0;
+        this.x = 0|(this.baseWidth / 2);
+        this.y = 300;
     };
+
+    // misc
+
+    @computed get activeMappings() {
+        return this.selectedIndicies.map((index) => (
+            environment.currentSprite.mappings[index]
+        ));
+    }
 
     // selections
 

@@ -47,14 +47,14 @@ class SelectionLayer extends Component {
     render() {
         const { extra, color, opacity, ...otherProps } = this.props;
         const { buffer, index, mappings } = environment.currentSprite;
-        const { scale, baseSize, x, y } = mappingState;
+        const { scale, x, y } = mappingState;
 
         return <g {...otherProps}>
             {mappings.map(({left, top, width, height}, mappingIndex) => {
                 const baseWidth = width * scale * 8;
                 const baseHeight = height * scale * 8;
-                const rx = (left * scale) + (baseSize / 2) - (extra / 2);
-                const ry = (top * scale) + (baseSize / 2) - (extra / 2);
+                const rx = (left * scale) - (extra / 2);
+                const ry = (top * scale) - (extra / 2);
 
                 return (
                     ~mappingState.selectedIndicies.indexOf(mappingIndex) ?

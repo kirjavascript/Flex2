@@ -80,6 +80,7 @@ export class Palettes extends Component {
             });
         });
     }
+
     componentWillUnmount() {
         this.mounted = false;
     }

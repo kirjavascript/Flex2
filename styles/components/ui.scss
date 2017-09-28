@@ -77,9 +77,8 @@ input {
 }
 
 .slider {
-    margin: 10px 0;
+    margin: 0;
     position: relative;
-    width: 600px;
 
     input {
         background: none;
@@ -96,19 +95,6 @@ input {
 
     input::-webkit-slider-thumb {
         -webkit-appearance: none;
-        background: $white;
-        border: none;
-        width: 15px;
-        height: 10px;
-    }
-
-    input::-moz-range-track {
-        border-radius: 8px;
-        height: 10px;
-        border: none;
-        background-color: $grey;
-    }
-    input::-moz-range-thumb {
         background: $white;
         border: none;
         width: 15px;
