@@ -1,5 +1,7 @@
 import { observable, computed, action, autorun, toJS } from 'mobx';
 import { environment } from '#store/environment';
+import range from 'lodash/range';
+import flatten from 'lodash/flatten';
 
 class MappingState {
 
@@ -92,7 +94,12 @@ class MappingState {
         }, []);
     }
 
+    @computed get hasActive() {
+        return !!this.activeMappings.length;
+    }
+
     @action mutateActive = (callback) => {
+        if (!this.hasActive) return;
         this.activeMappings.forEach(callback);
     };
 
@@ -111,6 +118,61 @@ class MappingState {
 
         return {x, y};
     }
+
+    @action deleteUnusedDPLCs = () => {
+        const { currentSprite: { mappings, dplcs }, config } = environment;
+
+        if (config.dplcsEnabled) {
+            // get list of tiles used by mappings
+            const mappingTiles = [];
+            mappings.forEach(({art, width, height}) => {
+                const qty = width * height;
+                mappingTiles.push(range(art, art + qty));
+            });
+
+            const tiles = flatten(mappingTiles);
+
+            // get list of tiles loaded by each dplc
+            const dplcTiles = dplcs.reduce((a, c) => {
+                a.tiles.push(range(a.lastIndex, a.lastIndex + c.size));
+                a.lastIndex += c.size;
+                return a;
+            }, {lastIndex: 0, tiles: []}).tiles;
+
+            // get which dplcs can be deleted
+            const dplcStatus = dplcTiles.map((arr) => {
+                return !arr.some((d) => tiles.includes(d));
+            });
+
+            const artDiffs = mappings.map((d) => 0);
+
+            dplcs.forEach((dplc, i) => {
+
+                // if the dplc isn't used...
+                if (dplcStatus[i]) {
+                    dplc.rip = true;
+                    const dplcStartIndex = dplcTiles[i][0];
+
+                    mappings.forEach((mapping, i) => {
+                        // if art index comes after the dplc index we have to shift it by the size of the dplc
+                        if (mapping.art > dplcStartIndex) {
+                            // don't mutate to ensure calculations are correct
+                            artDiffs[i] -= dplc.size;
+                        }
+                    });
+                }
+
+            });
+
+            // apply diffs to mapping art indices
+            artDiffs.forEach((diff, i) => {
+                mappings[i].art += diff;
+            });
+
+            // finally, removed dplcs flagged as rip
+            dplcs.replace(dplcs.filter((d) => !d.rip));
+        }
+    };
 
 }
 

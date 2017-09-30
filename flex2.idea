@@ -48,20 +48,18 @@ mappings: view raw data
 /*
  * {} = nav tile
 
-add mapping
-delete unused art (get buffers list)
+add new mapping (!)
+delete unused art (get buffers list when has dplcs)
 num = toggle mapping piece on / off ?
 dupe frame / mappings
-grid: 8
 export to png
-delete mappings - DPLC support
-delete unused DPLCs when deleting mappings
+dplcs no way no way
 */
 
-    // clipboard
+// clipboard
 
-    @observable clipboard = {
-        // type?
-        // mappings: [],
-        // dplcs: [],
-    };
+@observable clipboard = {
+    // type?
+    // mappings: [],
+    // dplcs: [],
+};

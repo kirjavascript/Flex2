@@ -53,6 +53,7 @@ class Environment {
             return {
                 index, buffer,
                 mappings: mappingList,
+                dplcs: this.dplcs[index],
             };
         });
     }
@@ -60,7 +61,7 @@ class Environment {
     @computed get currentSprite() {
         return this.sprites[this.config.currentSprite]
             || this.sprites[0]
-            || { mappings: [], buffer: [], index: 0 };
+            || { mappings: [], buffer: [], index: 0, dplcs: [], };
     }
 
     @action loadObject = (obj) => {

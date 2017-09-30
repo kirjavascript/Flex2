@@ -13,11 +13,11 @@ export class DPLCs extends Component {
         return do {
             if (config.dplcsEnabled) {
                 <pre>
+                    {JSON.stringify(environment.dplcs[config.currentSprite], null, 4)}
                     <Sprite data={currentSprite}/>
                     {currentSprite.buffer.map((tile, i) => (
                         <Tile data={tile} key={i} />
                     ))}
-                    {JSON.stringify(environment.dplcs, null, 4)}
                 </pre>;
             }
             else {

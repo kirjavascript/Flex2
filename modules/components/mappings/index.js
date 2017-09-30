@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { environment } from '#store/environment';
 import { Item, Slider } from '#ui';
+import Masonry from 'react-masonry-component';
 import clamp from 'lodash/clamp';
 import { Mapping } from './mapping';
 import { Selection } from './selection';
@@ -12,7 +13,6 @@ import { DragSelect, attachDragSelectToNode } from './drag-select';
 import { attachDragMoveToNode } from './drag-move';
 import { commands } from '#controls/commands';
 import { Guidelines } from './guidelines';
-let Masonry = require('react-masonry-component');
 
 @observer
 export class Mappings extends Component {
@@ -103,7 +103,7 @@ export class Mappings extends Component {
             <Masonry
                 className="commands"
                 style={{
-                    width: (0|(baseWidth / 220)) * 220,
+                    width: Math.max((0|(baseWidth / 220)) * 220, 220),
                 }}
             >
                 {commands.map((group, i) => (

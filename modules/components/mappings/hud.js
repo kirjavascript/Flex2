@@ -39,8 +39,6 @@ export class HUD extends Component {
                             activeMappings.map((map) => map.priority ? '1' : '0')
                         }]`}
                     </span>
-                    <br/>
-                    palette line ?
                 </div>
             )}
             DPLCs: <span className="blue">
