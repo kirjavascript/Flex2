@@ -24,6 +24,7 @@ export class Slider extends Component {
                 max="20"
                 step="1"
                 value={value}
+                className="mousetrap"
                 onChange={this.onChange}
                 {...otherProps}/>
         </div>;

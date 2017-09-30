@@ -24,6 +24,10 @@ class MappingState {
         ));
     }
 
+    @action mutateActive = (callback) => {
+        this.activeMappings.forEach(callback);
+    };
+
     // selections
 
     @observable selectedIndicies = [];

@@ -2,14 +2,16 @@ desktop version
 project files
 sexy flexible UI layout
 custom mapping formats
-.vimrc support
+undo / redo
+vim keybindings
 ==
 
-UNDO .flexhistory (clear on reload / debounce)
+package.json version json loader
 documentation tab
 spriteplotter
 rotsprite
 angled guidelines / rotate sprite view
+import sprite over active frame
 throttle file writing for project save
 collapse project objects / have index
 divide tile index by 2 for sonic 2 2 player mappings
@@ -38,19 +40,3 @@ SCD 23:39 <+flamewing> Mappings is S1; DPLC is S2 -> ?scd flag
 
 dplcs lists them individually / DPLC Editor
 copy/paste mappings
-HUD in mappings
-
-replicate flex1 behaviour
-unload stuff
-flip x/y
-set priority
-change palette
-guidelines
-delete unused art (get buffers list)
-delete frame
-dupe frame / mappings
-add frame
-drag
-grid: 8
-priority
-export to png

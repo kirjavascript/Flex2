@@ -2,6 +2,7 @@ import { readFile } from 'fs';
 import { extname } from 'path';
 import { observable, computed, action, autorun, toJS } from 'mobx';
 import { storage } from './storage';
+import { initHistory } from './history';
 import { workspace } from '#store/workspace';
 import { errorMsg } from '#util/dialog';
 import { bufferToTiles } from '#formats/art';
@@ -62,7 +63,9 @@ class Environment {
     }
 
     @computed get currentSprite() {
-        return this.sprites[this.config.currentSprite] || this.sprites[0];
+        return this.sprites[this.config.currentSprite]
+            || this.sprites[0]
+            || { mappings: [], buffer: [], index: 0 };
     }
 
     @action loadObject = (obj) => {
@@ -158,9 +161,26 @@ class Environment {
         this.palettes.replace(arrayMove(this.palettes, oldIndex, newIndex));
     };
 
+    @action doAction = (callback) => { callback(this); };
+
 }
 
 const environment = new Environment();
 storage(environment, 'environment');
-export { environment };
 window.env = environment;
+
+autorun(() => {
+    const { mappings, config } = environment;
+
+    // force currentSprite to lie within bounds
+    if (config.currentSprite < 0 || mappings.length == 0) {
+        config.currentSprite = 0;
+    }
+    else if (config.currentSprite >= mappings.length) {
+        config.currentSprite = mappings.length -1;
+    }
+});
+
+initHistory();
+
+export { environment };

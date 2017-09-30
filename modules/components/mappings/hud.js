@@ -3,7 +3,7 @@ import { environment } from '#store/environment';
 import { observer } from 'mobx-react';
 import { mappingState } from './state';
 
-const numFmt = (num) => `0x${num.toString(16)}`;
+const numFmt = (num) => `0x${(+num).toString(16).toUpperCase()}`;
 
 @observer
 export class HUD extends Component {
@@ -16,6 +16,8 @@ export class HUD extends Component {
             sprite: <span className="blue">
                 {numFmt(currentSprite)}/{numFmt(mappings.length)}
             </span>
+            <br/>
+            mappings:
             <br/>
             DPLCs: <span className="blue">
                 {dplcsEnabled ? '✔' : '✗'}

@@ -103,8 +103,6 @@ export class Mappings extends Component {
                 Reset Pan/Zoom
             </Item>
 
-            import sprite over active frame
-            reset pan/zoom
 
             <Select
                 label="Transparency"
