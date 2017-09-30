@@ -5,10 +5,7 @@ import { environment } from '#store/environment';
 import { mappingState } from './state';
 import { select, event, mouse } from 'd3-selection';
 import { drag } from 'd3-drag';
-
-const LEFT = 0;
-const MIDDLE = 1;
-const RIGHT = 2;
+import { LEFT, RIGHT, MIDDLE } from './buttons';
 
 export function attachDragSelectToNode(node) {
     if (node) {

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { environment } from '#store/environment';
-import { Item, Select, Slider } from '#ui';
+import { Item, Slider } from '#ui';
 import clamp from 'lodash/clamp';
 import { Mapping } from './mapping';
 import { Selection } from './selection';
@@ -9,6 +9,10 @@ import { mappingState } from './state';
 import { Axes } from './axis';
 import { HUD } from './hud';
 import { DragSelect, attachDragSelectToNode } from './drag-select';
+import { attachDragMoveToNode } from './drag-move';
+import { commands } from '#controls/commands';
+import { Guidelines } from './guidelines';
+let Masonry = require('react-masonry-component');
 
 @observer
 export class Mappings extends Component {
@@ -32,12 +36,6 @@ export class Mappings extends Component {
         });
     }
 
-    /*
-     * left + outside = select
-     * left + inside = drag
-     * doubleclick = toggle ?
-     */
-
     render() {
 
         const { buffer, index, mappings } = environment.currentSprite;
@@ -47,11 +45,11 @@ export class Mappings extends Component {
             <div
                 className="mappingContainer"
                 onWheel={this.onZoom}
-                ref={attachDragSelectToNode}
                 style={{
                     width: '100%',
                     height: 600,
                 }}
+                ref={attachDragMoveToNode}
             >
                 {mappings.reverse().map((mapping, mappingIndex) => {
                     return <div
@@ -59,6 +57,12 @@ export class Mappings extends Component {
                         style={{
                             zIndex: mappingIndex,
                             transform: `translate(${x}px,${y}px)`,
+                        }}
+                        className="mapping-wrapper"
+                        data-index={mappings.length - 1 - mappingIndex}
+                        onDoubleClick={(e) => {
+                            const realIndex = mappings.length - 1 - mappingIndex;
+                            mappingState.selectToggle(realIndex);
                         }}
                     >
                         <Mapping
@@ -70,13 +74,14 @@ export class Mappings extends Component {
                 })}
 
                 <HUD/>
+                <Guidelines/>
 
-                <svg width={baseWidth} height={600}>
+                <svg
+                    width={baseWidth}
+                    height={600}
+                    ref={attachDragSelectToNode}
+                >
                     <Axes/>
-                    {false && <Selection
-                        offset={6}
-                        width={4}
-                    />}
 
                     <Selection
                         color="magenta"
@@ -95,24 +100,27 @@ export class Mappings extends Component {
                 style={{width: baseWidth}}
             />
 
-            <Item
-                onClick={mappingState.resetPanAndZoom}
-                color="orange"
-                prefix="="
-                inverted>
-                Reset Pan/Zoom
-            </Item>
-
-
-            <Select
-                label="Transparency"
-                store={environment.config}
-                accessor="transparency"
-                options={[
-                    {label: 'Enabled', value: true},
-                    {label: 'Disabled', value: false},
-                ]}
-            />
+            <Masonry
+                className="commands"
+                style={{
+                    width: (0|(baseWidth / 220)) * 220,
+                }}
+            >
+                {commands.map((group, i) => (
+                    <div key={i} className="group">
+                        {group.map(({name, map, func, color}) => (
+                            <Item
+                                onClick={func}
+                                key={name}
+                                color={color || 'blue'}
+                                prefix={name}
+                                inverted>
+                                {map}
+                            </Item>
+                        ))}
+                    </div>
+                ))}
+            </Masonry>
 
             <pre>
                 {JSON.stringify(mappings, null, 4)}

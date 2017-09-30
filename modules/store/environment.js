@@ -8,7 +8,7 @@ import { errorMsg } from '#util/dialog';
 import { bufferToTiles } from '#formats/art';
 import { bufferToMappings } from '#formats/mapping';
 import { bufferToDPLCs } from '#formats/dplc';
-import { buffersToColors } from '#formats/palette';
+import { buffersToColors, defaultPalettes } from '#formats/palette';
 import { asmToBin } from '#formats/asm';
 import { arrayMove } from 'react-sortable-hoc';
 
@@ -20,12 +20,7 @@ class Environment {
         dplcsEnabled: false,
     };
 
-    @observable palettes = [
-        ['#000','#000','#22a','#24c','#44e','#66e','#eee','#aaa','#888','#444','#ea8','#a64','#e00','#800','#ea0','#e80'],
-        ['#000','#202','#404','#606','#808','#a0a','#c0c','#e0e','#c0e','#a0c','#80a','#608','#406','#204','#002','#e00'],
-        ['#000','#220','#440','#660','#880','#aa0','#cc0','#ee0','#ec0','#ca0','#a80','#860','#640','#420','#200','#0e0'],
-        ['#000','#022','#044','#066','#088','#0aa','#0cc','#0ee','#0ec','#0ca','#0a8','#086','#064','#042','#020','#00e']
-    ];
+    @observable palettes = defaultPalettes;
 
     @observable tiles = [
         // each tile is a length 16 array of palette line indexes
@@ -159,6 +154,10 @@ class Environment {
 
     @action swapPalette = (oldIndex, newIndex) => {
         this.palettes.replace(arrayMove(this.palettes, oldIndex, newIndex));
+    };
+
+    @action resetPalettes = () => {
+        this.palettes.replace(defaultPalettes);
     };
 
     @action doAction = (callback) => { callback(this); };

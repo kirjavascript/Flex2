@@ -40,3 +40,28 @@ SCD 23:39 <+flamewing> Mappings is S1; DPLC is S2 -> ?scd flag
 
 dplcs lists them individually / DPLC Editor
 copy/paste mappings
+mappings: view raw data
+
+
+// cut, paste
+
+/*
+ * {} = nav tile
+
+add mapping
+delete unused art (get buffers list)
+num = toggle mapping piece on / off ?
+dupe frame / mappings
+grid: 8
+export to png
+delete mappings - DPLC support
+delete unused DPLCs when deleting mappings
+*/
+
+    // clipboard
+
+    @observable clipboard = {
+        // type?
+        // mappings: [],
+        // dplcs: [],
+    };

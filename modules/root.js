@@ -6,7 +6,7 @@ import { workspace } from '#store/workspace';
 import { ProjectExplorer } from '#components/project/menu';
 import { Layout } from '#components/layout';
 
-import './keyboard';
+import './controls/keyboard';
 
 @observer
 class Root extends React.Component {

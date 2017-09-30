@@ -60,7 +60,7 @@ const addHistory = debounce(() => {
         past.shift();
     }
 
-}, 250);
+}, 200);
 
 export function undo() {
     timeTravelling = true;
