@@ -42,12 +42,14 @@
     top: 15px;
     left: 15px;
     box-shadow: 2px 2px 4px $black;
-    padding: 10px;
+    padding: 5px;
     .mapping {
         position: relative;
+        margin: 5px;
+        border: 1px solid $grey;
     }
     .group {
-        display: inline-block;
+        display: flex;
     }
 }
 
