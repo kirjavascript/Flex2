@@ -5,9 +5,10 @@ custom mapping formats
 undo / redo
 vim keybindings
 ==
+documentation tab / about tab + add version check here
+for_window [title="Flex 2"] floating enable border normal
+==
 
-package.json version json loader
-documentation tab
 spriteplotter
 rotsprite
 angled guidelines / rotate sprite view
@@ -16,6 +17,7 @@ collapse project objects / have index
 divide tile index by 2 for sonic 2 2 player mappings
 update dplc status on save
 add flex.json to sonic 2 disassembly
+save final layout format
 create new file | newFactory={(path)=>{}}
 // when saving, if 0 appears anywhere in the header use its offset for blank sprites
 limit sprites view / import active sprites detect tiles / just use one axis?
@@ -34,9 +36,10 @@ SCD 23:39 <+flamewing> Mappings is S1; DPLC is S2 -> ?scd flag
 
 ====
 
+delete unused art (get buffers list when has dplcs)
 dplcs lists them individually / DPLC Editor
 copy/paste mappings
-mappings: view raw data
+mappings: view raw data (toggle)
 
 // cut, paste
 // clipboard
@@ -50,12 +53,14 @@ mappings: view raw data
 /*
  * {} = nav tile
 
-delete unused art (get buffers list when has dplcs)
 num = toggle mapping piece on / off ?
-dupe frame / mappings
+reorder mapping pieces / reorder selection (maybe do this in raw editor)
 export to png formats/png
 dplcs no way no way
 */
 
 add new mapping (!)
 check if dplcs exist already
+
+vm = view mappings
+vr = view raw

@@ -2,6 +2,7 @@ import { environment } from '#store/environment';
 import { mappingState } from '#components/mappings/state';
 import { undo, redo } from '#store/history';
 import { getDistance } from './distance';
+import { toJS } from 'mobx';
 
 /*
  * mod = ctrl / cmd
@@ -99,6 +100,16 @@ export const commands = [
                 environment.config.currentSprite++;
             },
         },
+        {
+            map: 'c', name: 'Clone Sprite', color: 'green',
+            func: () => {
+                const { currentSprite, dplcsEnabled } = environment.config;
+                const { mappings, dplcs } = environment.currentSprite;
+                environment.mappings.splice(currentSprite+1, 0, toJS(mappings));
+                dplcsEnabled &&
+                environment.dplcs.splice(currentSprite+1, 0, toJS(dplcs));
+            },
+        },
     ],
 
     [
@@ -161,12 +172,12 @@ export const commands = [
     ],
     [
         {
-            map: ']', name: 'Next Sprite', color: 'yellow',
-            func: () => { environment.config.currentSprite++; },
+            map: ']', name: 'Next Sprite', color: 'yellow', hasShift: true,
+            func: () => { environment.config.currentSprite += getDistance(); },
         },
         {
-            map: '[', name: 'Previous Sprite', color: 'yellow',
-            func: () => { environment.config.currentSprite--; },
+            map: '[', name: 'Previous Sprite', color: 'yellow', hasShift: true,
+            func: () => { environment.config.currentSprite -= getDistance(); },
         },
         {
             map: 'home', name: 'First Sprite', color: 'yellow',

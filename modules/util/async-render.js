@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+// unused
+
 export function AsyncRender(SyncComponent) {
     return class extends Component {
         state = {

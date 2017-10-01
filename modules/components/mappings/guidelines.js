@@ -55,18 +55,14 @@ export class Guidelines extends Component {
                     left: x,
                 }}
                 ref={this.onRefX}
-            >
-                <div/>
-            </div>
+            />
             <div
                 className="y"
                 style={{
                     top: y,
                 }}
                 ref={this.onRefY}
-            >
-                <div/>
-            </div>
+            />
         </div>;
     }
 

@@ -18,9 +18,9 @@
     background-image: url(../images/t.png);
     overflow: hidden;
 
-    .mapping {
+    .mapping-wrapper .mapping {
         &:hover {
-            outline: 3px solid $red;
+            outline: 3px solid $blue;
             opacity: .5;
             filter: blur(1px);
         }
@@ -33,6 +33,21 @@
     }
     .item {
         width: 200px;
+    }
+}
+
+.add-mapping {
+    position: absolute;
+    background-color: $black;
+    top: 15px;
+    left: 15px;
+    box-shadow: 2px 2px 4px $black;
+    padding: 10px;
+    .mapping {
+        position: relative;
+    }
+    .group {
+        display: inline-block;
     }
 }
 
@@ -51,26 +66,17 @@
 
 .guidelines {
     .x {
-        width: 5px;
         height: 100%;
         position: absolute;
         cursor: ew-resize;
-        div {
-            height: 100%;
-            width: 1px;
-            background-color: black;
-        }
+        border-left: 1px solid black;
+        width: 5px;
     }
-
     .y {
         height: 5px;
         width: 100%;
         position: absolute;
         cursor: ns-resize;
-        div {
-            width: 100%;
-            height: 1px;
-            background-color: black;
-        }
+        border-top: 1px solid black;
     }
 }

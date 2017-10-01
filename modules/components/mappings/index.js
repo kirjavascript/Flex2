@@ -1,18 +1,19 @@
 import React, { Component } from 'react';
-import { observer } from 'mobx-react';
-import { environment } from '#store/environment';
-import { Item, Slider } from '#ui';
 import Masonry from 'react-masonry-component';
 import clamp from 'lodash/clamp';
+import { observer } from 'mobx-react';
+import { environment } from '#store/environment';
+import { commands } from '#controls/commands';
+import { mappingState } from './state';
+import { Item, Slider } from '#ui';
 import { Mapping } from './mapping';
 import { Selection } from './selection';
-import { mappingState } from './state';
 import { Axes } from './axis';
 import { HUD } from './hud';
+import { Guidelines } from './guidelines';
+import { AddMapping } from './add-mapping';
 import { DragSelect, attachDragSelectToNode } from './drag-select';
 import { attachDragMoveToNode } from './drag-move';
-import { commands } from '#controls/commands';
-import { Guidelines } from './guidelines';
 
 @observer
 export class Mappings extends Component {
@@ -48,14 +49,15 @@ export class Mappings extends Component {
         const { scale, x, y, baseWidth } = mappingState;
 
         return <div className="mappings" ref={this.onRef}>
+
             <div
-                className="mappingContainer"
                 onWheel={this.onZoom}
+                ref={attachDragMoveToNode}
+                className="mappingContainer"
                 style={{
                     width: '100%',
                     height: 600,
                 }}
-                ref={attachDragMoveToNode}
             >
                 {mappings.reverse().map((mapping, mappingIndex) => {
                     return <div
@@ -81,6 +83,7 @@ export class Mappings extends Component {
 
                 <HUD/>
                 <Guidelines/>
+                <AddMapping/>
 
                 <svg
                     width={baseWidth}
@@ -97,8 +100,6 @@ export class Mappings extends Component {
                     <DragSelect/>
                 </svg>
             </div>
-
-                {environment.config.currentTile}
 
             <Slider
                 store={environment.config}
@@ -122,7 +123,8 @@ export class Mappings extends Component {
                                 key={name}
                                 color={color || 'blue'}
                                 prefix={name}
-                                inverted>
+                                inverted
+                            >
                                 {map}
                             </Item>
                         ))}
