@@ -16,6 +16,7 @@ class Environment {
 
     @observable config = {
         currentSprite: 0,
+        currentTile: 0,
         transparency: true,
         dplcsEnabled: false,
     };
@@ -34,7 +35,9 @@ class Environment {
         return this.mappings.map((mappingList, index) => {
             let buffer = [];
 
-            if (this.config.dplcsEnabled && this.dplcs.length > index) {
+            const dplcsAvailable = this.config.dplcsEnabled && this.dplcs.length > index;
+
+            if (dplcsAvailable) {
                 this.dplcs[index].forEach(({art, size}) => {
                     Array.from({length: size}, (_, i) => {
                         if (this.tiles.length <= art + i) {
@@ -53,7 +56,7 @@ class Environment {
             return {
                 index, buffer,
                 mappings: mappingList,
-                dplcs: this.dplcs[index],
+                dplcs: dplcsAvailable && this.dplcs[index],
             };
         });
     }

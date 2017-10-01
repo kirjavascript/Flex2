@@ -21,6 +21,7 @@
         "eslint-loader": "^1.5.0",
         "eslint-plugin-react": "^6.3.0",
         "import-glob-loader": "^1.1.0",
+        "json-loader": "^0.5.7",
         "raw-loader": "^0.5.1",
         "sass.js": "^0.10.6",
         "webpack": "^3.5.5"

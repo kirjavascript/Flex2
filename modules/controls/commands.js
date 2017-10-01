@@ -90,7 +90,7 @@ export const commands = [
     ],
     [
         {
-            map: 'o', name: 'Add New Sprite', color: 'green',
+            map: 'n s', name: 'Add New Sprite', color: 'green',
             func: () => {
                 const { currentSprite, dplcsEnabled } = environment.config;
                 environment.mappings.splice(currentSprite+1, 0, []);

@@ -33,6 +33,10 @@ module.exports = (env={}, args={}) => {
                     ]
                 },
                 {
+                    test: /\.json$/,
+                    loader: 'json-loader'
+                },
+                {
                     test: /\.js$/,
                     enforce: 'pre',
                     loader: 'eslint-loader',

@@ -24,14 +24,20 @@ export class Mappings extends Component {
         e.preventDefault();
     };
 
+    onRef = (node) => {
+        if (node) {
+            requestAnimationFrame(() => {
+                const { width } = node.getBoundingClientRect();
+                mappingState.setWidth(width);
+            });
+        }
+    };
+
     componentWillMount() {
         this.props.node.setEventListener('resize', (e) => {
             requestAnimationFrame(() => {
-                const { width } = e.rect;
                 const baseWidth = e.rect.width - 10;
-                mappingState.baseWidth = baseWidth;
-                mappingState.x = (baseWidth / 2)|0;
-                mappingState.y = 300;
+                mappingState.setWidth(baseWidth);
             });
         });
     }
@@ -92,6 +98,8 @@ export class Mappings extends Component {
                 </svg>
             </div>
 
+                {environment.config.currentTile}
+
             <Slider
                 store={environment.config}
                 accessor="currentSprite"
@@ -121,10 +129,6 @@ export class Mappings extends Component {
                     </div>
                 ))}
             </Masonry>
-
-            <pre>
-                {JSON.stringify(mappings, null, 4)}
-            </pre>
         </div>;
     }
 

@@ -6,6 +6,7 @@ import { workspace } from '#store/workspace';
 import { ProjectExplorer } from '#components/project/menu';
 import { Layout } from '#components/layout';
 
+import '#util/check-version';
 import './controls/keyboard';
 
 @observer

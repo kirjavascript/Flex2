@@ -12,7 +12,6 @@ spriteplotter
 rotsprite
 angled guidelines / rotate sprite view
 import sprite over active frame
-throttle file writing for project save
 collapse project objects / have index
 divide tile index by 2 for sonic 2 2 player mappings
 update dplc status on save
@@ -21,41 +20,25 @@ create new file | newFactory={(path)=>{}}
 // when saving, if 0 appears anywhere in the header use its offset for blank sprites
 limit sprites view / import active sprites detect tiles / just use one axis?
 (pgup/pgdn sprites accelerator)
+art editor ??
 
-                    <div dangerouslySetInnerHTML={{__html: `
-<webview src="https://www.github.com/kirjavascript/flex2" style="display:inline-flex; width:640px; height:480px" useragent="Mozilla/5.0 (Linux; <Android Version>; <Build Tag etc.>) AppleWebKit/<WebKit Rev> (KHTML, like Gecko) Chrome/<Chrome Rev> Mobile Safari/<WebKit Rev>"></webview>
-
-                    `}}/>
-
-23:46 <%snkenjoi> flamewing: I just realised, you can easily check for DPLC optimisations by just adding the addr to the qty and comparing it to the next address
 23:47 <%MainMemory> snkenjoi: recently I made optimized dplcs by putting all the used tile indexes into an array, sorted, and did a loop increasing the tile number until it hit 16 tiles or a non-matching element in the array
-23:48 <%MainMemory> I also used the array to switch the mapping pieces to work with the dplcs
+
 delete unused art
 sprite rotation http://forums.sonicretro.org/index.php?showtopic=8848&st=0&p=159754&#entry159754
 convert to/from dplc
-export/import sprite sheet
+export/import sprite sheet (load raw image -> option to load palette)
 DPLC auto optimisation in edit raw
 visual dplc editing
 SCD 23:39 <+flamewing> Mappings is S1; DPLC is S2 -> ?scd flag
+
+====
 
 dplcs lists them individually / DPLC Editor
 copy/paste mappings
 mappings: view raw data
 
-
 // cut, paste
-
-/*
- * {} = nav tile
-
-add new mapping (!)
-delete unused art (get buffers list when has dplcs)
-num = toggle mapping piece on / off ?
-dupe frame / mappings
-export to png
-dplcs no way no way
-*/
-
 // clipboard
 
 @observable clipboard = {
@@ -63,3 +46,16 @@ dplcs no way no way
     // mappings: [],
     // dplcs: [],
 };
+
+/*
+ * {} = nav tile
+
+delete unused art (get buffers list when has dplcs)
+num = toggle mapping piece on / off ?
+dupe frame / mappings
+export to png formats/png
+dplcs no way no way
+*/
+
+add new mapping (!)
+check if dplcs exist already

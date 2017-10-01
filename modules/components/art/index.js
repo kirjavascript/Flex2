@@ -20,12 +20,25 @@ export class Art extends Component {
         }
     };
 
+    mousedown = false;
+    onMouseDown = () => { this.mousedown = true; };
+    onMouseUp = () => { this.mousedown = false; };
+
+    setTile = (index) => {
+        environment.config.currentTile = index;
+    };
+
     render() {
         const scale = 4;
         const baseSize = scale * 8;
         const { tiles } = environment;
 
-        return <div className="art">
+        return <div
+            className="art"
+            onMouseDown={this.onMouseDown}
+            onMouseUp={this.onMouseUp}
+            onMouseLeave={this.onMouseUp}
+        >
 
             <div className="autoWrapper">
                 <AutoSizer>
@@ -59,6 +72,13 @@ export class Art extends Component {
                                                     data={tiles[startIndex + i]}
                                                     paletteLine={0}
                                                     scale={scale}
+                                                    onMouseDown={() => {
+                                                        this.setTile(startIndex + i);
+                                                    }}
+                                                    onMouseEnter={() => {
+                                                        this.mousedown &&
+                                                        this.setTile(startIndex + i);
+                                                    }}
                                                 />;
                                             })}
                                       </div>

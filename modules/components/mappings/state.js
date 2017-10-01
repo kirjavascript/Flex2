@@ -18,6 +18,12 @@ class MappingState {
         this.y = 300;
     };
 
+    @action setWidth = (width) => {
+        this.baseWidth = width;
+        this.x = (width / 2)|0;
+        this.y = 300;
+    };
+
     // guidelines
 
     @observable guidelines = {
@@ -169,7 +175,7 @@ class MappingState {
                 mappings[i].art += diff;
             });
 
-            // finally, removed dplcs flagged as rip
+            // finally, remove dplcs flagged as rip
             dplcs.replace(dplcs.filter((d) => !d.rip));
         }
     };

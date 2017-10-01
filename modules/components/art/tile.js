@@ -7,7 +7,7 @@ import SVARS from '!!sass-variables-loader!#styles/variables.scss';
 export class Tile extends Component {
 
     render() {
-        const { data, paletteLine = 0, scale = 4 } = this.props;
+        const { data, paletteLine = 0, scale = 4, ...otherProps } = this.props;
         const { palettes, config } = environment;
         const { transparency } = config;
 
@@ -17,6 +17,7 @@ export class Tile extends Component {
                     width: 8 * scale,
                     height: 8 * scale,
                 }}
+                {...otherProps}
             >
                 <div style={{
                     width: scale + 'px',

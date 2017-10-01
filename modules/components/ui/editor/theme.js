@@ -1,4 +1,4 @@
-import { blue, grey, white, white2, black, green, red, yellow2 } from '!!sass-variables-loader!#styles/variables.scss';
+import { blue, grey, white, white2, black, green, red, orange } from '!!sass-variables-loader!#styles/variables.scss';
 
 ace.define('ace/theme/flex',['require','exports','module','ace/lib/dom'], function(acequire, exports, module) {
 
@@ -50,7 +50,7 @@ ace.define('ace/theme/flex',['require','exports','module','ace/lib/dom'], functi
         }
 
         .ace-flex .ace_number {
-            color: ${yellow2};
+            color: ${orange};
         }
     `;
 

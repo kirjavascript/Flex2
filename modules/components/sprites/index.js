@@ -131,8 +131,6 @@ export class Sprites extends Component {
         const { width, height, scroll } = this.state;
 
         return <div className="spriteList">
-            import sprites
-            export sheet
 
             <div className="spriteSortContainer" ref={this.onContainerRef}>
                 <SortableList
