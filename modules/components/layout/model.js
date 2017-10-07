@@ -43,11 +43,6 @@ const DEFAULT_LAYOUT = {
                         'name': 'Mappings',
                         'component':'mappings',
                     },
-                    {
-                        'type': 'tab',
-                        'name': 'DPLCs',
-                        'component':'dplcs',
-                    },
                 ]
             },
         ]

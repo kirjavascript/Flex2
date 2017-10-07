@@ -14,6 +14,7 @@ const baseConfig = {
     palette: 0,
     top: 0,
     left: 0,
+    priority: false,
 };
 
 

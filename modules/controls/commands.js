@@ -14,6 +14,11 @@ import { toJS } from 'mobx';
  * double left = toggle
  * right + outside = pan
  * wheel = zoom
+ *
+ * Raw;
+ *
+ * esc = blur
+ * up/down = add/subtract
  */
 
 export const commands = [

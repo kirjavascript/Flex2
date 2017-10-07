@@ -8,7 +8,6 @@ import { Palettes } from '#components/palettes';
 import { Art } from '#components/art';
 import { Sprites } from '#components/sprites';
 import { Mappings } from '#components/mappings';
-import { DPLCs } from '#components/dplcs';
 
 export class Layout extends Component {
 
@@ -31,9 +30,6 @@ export class Layout extends Component {
             }
             else if (component == 'mappings') {
                 <Mappings node={node}/>;
-            }
-            else if (component == 'dplcs') {
-                <DPLCs node={node}/>;
             }
         };
     }

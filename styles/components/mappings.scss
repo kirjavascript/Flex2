@@ -61,15 +61,17 @@
 }
 
 .raw-mapping-data {
-    opacity: 0.8;
     position: absolute;
     z-index: 2;
     background-color: $black;
-    top: 15px;
     left: 15px;
     right: 15px;
     box-shadow: 2px 2px 4px $black;
     padding: 15px;
+}
+
+.raw-dplc-data {
+    margin-top: 15px;
 }
 
 .mapping-data {
@@ -96,16 +98,25 @@
     .properties {
         display: flex;
         align-items: center;
-        justify-content: flex-end;
+        justify-content: flex-start;
         flex-wrap: wrap;
+        flex: 20;
     }
     .handle {
         path {
             fill: $grey;
         }
+        flex: 2;
     }
     .item {
         width: 50px;
+        text-align: center;
+    }
+    .dplc-tiles {
+        margin: 0 15px;
+        display: flex;
+        flex-wrap: wrap;
+        flex: 10;
     }
 }
 
