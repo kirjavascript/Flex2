@@ -166,6 +166,7 @@ export const commands = [
         },
     ],
 
+
     [
         {
             map: 'mod+z', name: 'Undo', color: 'magenta',
@@ -176,6 +177,17 @@ export const commands = [
             func: () => { redo(); },
         },
     ],
+
+
+    [
+        {
+            map: 'r', name: 'Raw Editor', color: 'red',
+            func: () => {
+                mappingState.rawEditor.active = !mappingState.rawEditor.active;
+            },
+        },
+    ],
+
     [
         {
             map: ']', name: 'Next Sprite', color: 'yellow', hasShift: true,

@@ -11,6 +11,7 @@ import { Axes } from './axis';
 import { HUD } from './hud';
 import { Guidelines } from './guidelines';
 import { NewMapping } from './new-mapping';
+import { RawEditor } from './raw-editor';
 import { DragSelect, attachDragSelectToNode } from './drag-select';
 import { attachDragMoveToNode } from './drag-move';
 
@@ -48,6 +49,7 @@ export class Mappings extends Component {
         const { scale, x, y, baseWidth } = mappingState;
 
         return <div className="mappings" ref={this.onRef}>
+
 
             <div
                 onWheel={this.onZoom}
@@ -107,6 +109,8 @@ export class Mappings extends Component {
                 max={environment.sprites.length-1}
                 style={{width: baseWidth}}
             />
+
+            <RawEditor/>
 
             <Masonry
                 className="commands"

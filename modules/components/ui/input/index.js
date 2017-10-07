@@ -6,15 +6,19 @@ import { observer } from 'mobx-react';
 export class Input extends Component {
 
     onChange = (e) => {
-        const { store, accessor } = this.props;
-        store[accessor] = e.target.value;
+        const { store, accessor, assert = (d) => d } = this.props;
+
+        store[accessor] = assert(e.target.value);
     }
 
     render() {
-        const { label, store, accessor, color, ...otherProps } = this.props;
+        const { label, store, accessor, color, assert, ...otherProps } = this.props;
 
         return <div>
-            {label} &emsp;
+            {label && <span>
+                {label}
+                &emsp;
+            </span>}
             <input
                 style={color && {color: SVARS[color]}}
                 value={store[accessor]}

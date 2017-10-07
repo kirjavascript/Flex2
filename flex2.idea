@@ -5,22 +5,24 @@ custom mapping formats
 undo / redo
 vim keybindings
 ==
+raw editor doesn't clean up anything
 SCD 23:39 <+flamewing> Mappings is S1; DPLC is S2 -> ?scd flag
 documentation tab / about tab + add version check here
 for_window [title="Flex 2"] floating enable border normal
 ==
 
+add flex.json to sonic 2 disassembly
+save final layout format
 spriteplotter
 sprite rotation http://forums.sonicretro.org/index.php?showtopic=8848&st=0&p=159754&#entry159754
 import sprite over active frame
 collapse project objects / have index
 divide tile index by 2 for sonic 2 2 player mappings
 update dplc status on save
-add flex.json to sonic 2 disassembly
-save final layout format
 create new file | newFactory={(path)=>{}}
 // when saving, if 0 appears anywhere in the header use its offset for blank sprites
 when saving asm, use the object name as the label name :D
+build command
 limit sprites view / import active sprites detect tiles / just use one axis?
 art editor ??
 counts for commands
@@ -32,25 +34,15 @@ counts for commands
 convert to/from dplc
 export/import sprite sheet (load raw image -> option to load palette) image importing nearest match (color approx)
 DPLC auto optimisation in edit raw
-visual dplc editing
 
+delete unused art (get buffers list when has dplcs)
 readysonic sprites
 crackers
 draw directly on sprite
 <MutableTile/>
 dplcs no way no way
+dplcs lists them individually / DPLC Editor / dedupe+delete unused buttons
 
 ====
 
-delete unused art (get buffers list when has dplcs)
-dplcs lists them individually / DPLC Editor / dedupe+delete unused buttons
-mappings: view raw data (toggle)
-
-/*
-num = toggle mapping piece on / off ?
-reorder mapping pieces / reorder selection (maybe do this in raw editor)
 export to png formats/png
-*/
-
-raw comes from bottom
-vr = view raw

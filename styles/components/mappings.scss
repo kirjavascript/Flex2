@@ -53,10 +53,60 @@
         display: flex;
     }
 }
+
 .new-floating-piece .mapping {
     z-index: 2;
     border: 1px solid transparent;
     background: rgba(97, 175, 239, 0.3);
+}
+
+.raw-mapping-data {
+    opacity: 0.8;
+    position: absolute;
+    z-index: 2;
+    background-color: $black;
+    top: 15px;
+    left: 15px;
+    right: 15px;
+    box-shadow: 2px 2px 4px $black;
+    padding: 15px;
+}
+
+.mapping-data {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    border: 1px solid $grey;
+    padding: 5px;
+    z-index: 3;
+    margin-bottom: 15px;
+
+    input, .Dropdown-menu {
+        width: 32px;
+        text-align: center;
+    }
+    .datum {
+        margin: 5px;
+        .label {
+            font-size: 10px;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+    }
+    .properties {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+    }
+    .handle {
+        path {
+            fill: $grey;
+        }
+    }
+    .item {
+        width: 50px;
+    }
 }
 
 

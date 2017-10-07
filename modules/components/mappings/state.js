@@ -100,6 +100,12 @@ class MappingState {
         }
     };
 
+    // raw editor
+
+    @observable rawEditor = {
+        active: false,
+    };
+
     // new mappings
 
     @observable newMapping = {
@@ -123,7 +129,7 @@ class MappingState {
             // check if dplc already exists
             const seenIndex = dplcs.reduce((a, {size, art}, index) => {
                 if (a !== void 0) return a;
-                if (size == newDPLC.size && art == newDPLC.art) {
+                else if (size == newDPLC.size && art == newDPLC.art) {
                     return index;
                 }
             }, void 0);

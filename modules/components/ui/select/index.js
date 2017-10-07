@@ -15,8 +15,8 @@ export class Select extends Component {
         super(props);
 
         this.options = this.props.options.map((option) => {
-            if (typeof option == 'string') {
-                return {label: option, value: option};
+            if (typeof option !== 'object') {
+                return {label: String(option), value: option};
             }
             else {
                 return option;
@@ -29,10 +29,13 @@ export class Select extends Component {
         const value = this.options.find((d) => d.value == store[accessor]).label;
 
         return <div className="row select">
-            {label} &emsp;
+            {label && <span>
+                {label}
+                &emsp;
+            </span>}
             <Dropdown
                 options={this.options}
-                value={value}
+                value={String(value)}
                 onChange={this.onChange}
             />
         </div>;
