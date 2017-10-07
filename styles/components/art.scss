@@ -7,6 +7,10 @@
 .tile {
     image-rendering: pixelated;
 }
+.tile-nodata {
+    background-color: $red;
+    opacity: .3;
+}
 
 .art {
     height: 100%;

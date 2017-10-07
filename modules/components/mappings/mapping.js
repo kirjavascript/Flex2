@@ -6,11 +6,18 @@ import { observer } from 'mobx-react';
 @observer
 export class Mapping extends Component {
 
+    onRef = (node) => {
+        if (node && this.props.wrapRef) {
+            this.props.wrapRef(node);
+        }
+    }
+
     render() {
-        const { data, tileBuffer, scale = 4 } = this.props;
+        const { wrapRef, data, tileBuffer, scale = 4, ...otherProps } = this.props;
         const { top, left, width, height, art, palette, vflip, hflip } = data;
 
         return <div
+            ref={this.onRef}
             className="mapping"
             style={{
                 top: top * scale,
@@ -19,6 +26,7 @@ export class Mapping extends Component {
                 height: height * scale * 8,
                 transform: `scale(${hflip?-1:1},${vflip?-1:1})`,
             }}
+            {...otherProps}
         >
             {Array.from({length: width * height})
                 .map((_, tileIndex) => {

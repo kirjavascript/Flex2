@@ -36,12 +36,15 @@ export class Tile extends Component {
                         return `${((i%8)+1)*scale}px ${((0|i/8)+1)*scale}px ${color}`;
                     }).join`,`,
                 }}/>
-                {!data.length && <div style={{
-                    width: 8 * scale,
-                    height: 8 * scale,
-                    backgroundColor: SVARS['red'],
-                    opacity: .3,
-                }}/>}
+                {!data.length && (
+                    <div
+                        style={{
+                            width: 8 * scale,
+                            height: 8 * scale,
+                        }}
+                        className="tile-nodata"
+                    />
+                )}
             </div>
         );
     }

@@ -5,13 +5,13 @@ custom mapping formats
 undo / redo
 vim keybindings
 ==
+SCD 23:39 <+flamewing> Mappings is S1; DPLC is S2 -> ?scd flag
 documentation tab / about tab + add version check here
 for_window [title="Flex 2"] floating enable border normal
 ==
 
 spriteplotter
-rotsprite
-angled guidelines / rotate sprite view
+sprite rotation http://forums.sonicretro.org/index.php?showtopic=8848&st=0&p=159754&#entry159754
 import sprite over active frame
 collapse project objects / have index
 divide tile index by 2 for sonic 2 2 player mappings
@@ -20,47 +20,37 @@ add flex.json to sonic 2 disassembly
 save final layout format
 create new file | newFactory={(path)=>{}}
 // when saving, if 0 appears anywhere in the header use its offset for blank sprites
+when saving asm, use the object name as the label name :D
 limit sprites view / import active sprites detect tiles / just use one axis?
-(pgup/pgdn sprites accelerator)
 art editor ??
+counts for commands
+// cut, paste clipboard
 
 23:47 <%MainMemory> snkenjoi: recently I made optimized dplcs by putting all the used tile indexes into an array, sorted, and did a loop increasing the tile number until it hit 16 tiles or a non-matching element in the array
+20:07:22 <&nibblr> Kirjava, you said lil-g to beta test
 
-delete unused art
-sprite rotation http://forums.sonicretro.org/index.php?showtopic=8848&st=0&p=159754&#entry159754
 convert to/from dplc
-export/import sprite sheet (load raw image -> option to load palette)
+export/import sprite sheet (load raw image -> option to load palette) image importing nearest match (color approx)
 DPLC auto optimisation in edit raw
 visual dplc editing
-SCD 23:39 <+flamewing> Mappings is S1; DPLC is S2 -> ?scd flag
+
+readysonic sprites
+crackers
+draw directly on sprite
+<MutableTile/>
+dplcs no way no way
 
 ====
 
 delete unused art (get buffers list when has dplcs)
-dplcs lists them individually / DPLC Editor
-copy/paste mappings
+dplcs lists them individually / DPLC Editor / dedupe+delete unused buttons
 mappings: view raw data (toggle)
 
-// cut, paste
-// clipboard
-
-@observable clipboard = {
-    // type?
-    // mappings: [],
-    // dplcs: [],
-};
-
 /*
- * {} = nav tile
-
 num = toggle mapping piece on / off ?
 reorder mapping pieces / reorder selection (maybe do this in raw editor)
 export to png formats/png
-dplcs no way no way
 */
 
-add new mapping (!)
-check if dplcs exist already
-
-vm = view mappings
+raw comes from bottom
 vr = view raw

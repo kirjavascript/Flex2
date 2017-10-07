@@ -91,13 +91,19 @@ export const commands = [
     ],
     [
         {
-            map: 'n s', name: 'Add New Sprite', color: 'green',
+            map: 'n s', name: 'New Sprite', color: 'green',
             func: () => {
                 const { currentSprite, dplcsEnabled } = environment.config;
                 environment.mappings.splice(currentSprite+1, 0, []);
                 dplcsEnabled &&
                 environment.dplcs.splice(currentSprite+1, 0, []);
                 environment.config.currentSprite++;
+            },
+        },
+        {
+            map: 'n m', name: 'New Mapping', color: 'green',
+            func: () => {
+                mappingState.newMapping.active = !mappingState.newMapping.active;
             },
         },
         {
@@ -214,7 +220,6 @@ export const commands = [
         },
         {
             map: 'u m', name: 'Unload Mappings', color: 'red',
-
             func: () => { environment.mappings.replace([]); },
         },
         {

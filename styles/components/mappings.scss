@@ -36,13 +36,14 @@
     }
 }
 
-.add-mapping {
+.new-mapping {
     position: absolute;
     background-color: $black;
     top: 15px;
     left: 15px;
     box-shadow: 2px 2px 4px $black;
     padding: 5px;
+    z-index: 1;
     .mapping {
         position: relative;
         margin: 5px;
@@ -52,6 +53,12 @@
         display: flex;
     }
 }
+.new-floating-piece .mapping {
+    z-index: 2;
+    border: 1px solid transparent;
+    background: rgba(97, 175, 239, 0.3);
+}
+
 
 .hud {
     position: absolute;

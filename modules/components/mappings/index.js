@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Masonry from 'react-masonry-component';
-import clamp from 'lodash/clamp';
 import { observer } from 'mobx-react';
 import { environment } from '#store/environment';
 import { commands } from '#controls/commands';
@@ -11,7 +10,7 @@ import { Selection } from './selection';
 import { Axes } from './axis';
 import { HUD } from './hud';
 import { Guidelines } from './guidelines';
-import { AddMapping } from './add-mapping';
+import { NewMapping } from './new-mapping';
 import { DragSelect, attachDragSelectToNode } from './drag-select';
 import { attachDragMoveToNode } from './drag-move';
 
@@ -21,7 +20,7 @@ export class Mappings extends Component {
     onZoom = (e) => {
         const { scale } = mappingState;
         const { deltaY } = e.nativeEvent;
-        mappingState.scale = clamp(scale + (deltaY > 0 ? -1 : 1), 1, 20);
+        mappingState.setZoom(scale + (deltaY > 0 ? -1 : 1));
         e.preventDefault();
     };
 
@@ -83,7 +82,7 @@ export class Mappings extends Component {
 
                 <HUD/>
                 <Guidelines/>
-                <AddMapping/>
+                <NewMapping/>
 
                 <svg
                     width={baseWidth}

@@ -27,8 +27,7 @@ export class Selection extends Component {
                     />
                 </defs>
                 <mask id={`${this.id}-mask`}>
-
-                   <rect x="0" y="0" width="100%" height="100%" fill="white"/>
+                    <rect x="0" y="0" width="100%" height="100%" fill="white"/>
                     <use xlinkHref={`#${this.id}`} fill="black" />
                 </mask>
                 <SelectionLayer
