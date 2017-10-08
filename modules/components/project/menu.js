@@ -53,40 +53,38 @@ export class ProjectExplorer extends Component {
     };
 
     render() {
-        return <div>
-            <div className="project-menu">
-                { do {
-                    if (this.menu == 'new') {
-                        <div>
-                            <input
-                                type="text"
-                                onChange={this.updateProjectName}
-                                value={this.newProjectName}
-                                placeholder="Project Name..."
-                            />
-                            {this.newProjectName && (
-                                <div className="menu-item" onClick={this.createNew}>
-                                    Create '{this.newProjectName}'
-                                </div>
-                            )}
-                            <div className="menu-item" onClick={this.resetMenu}>
-                                Cancel
+        return <div className="project-menu">
+            { do {
+                if (this.menu == 'new') {
+                    <div>
+                        <input
+                            type="text"
+                            onChange={this.updateProjectName}
+                            value={this.newProjectName}
+                            placeholder="Project Name..."
+                        />
+                        {this.newProjectName && (
+                            <div className="menu-item" onClick={this.createNew}>
+                                Create '{this.newProjectName}'
                             </div>
-                        </div>;
-                    }
-                    else {
-                        <div>
-                            <div className="menu-item" onClick={this.newProject}>
-                                New Project
-                            </div>
-                            <div className="menu-item" onClick={this.openProject}>
-                                Open Project
-                            </div>
-                        </div>;
-                    }
-                }}
-            </div>
-        </div>;
+                        )}
+                        <div className="menu-item" onClick={this.resetMenu}>
+                            Cancel
+                        </div>
+                    </div>;
+                }
+                else {
+                    <div>
+                        <div className="menu-item" onClick={this.newProject}>
+                            New Project
+                        </div>
+                        <div className="menu-item" onClick={this.openProject}>
+                            Open Project
+                        </div>
+                    </div>;
+                }
+            }}
+        </div> ;
     }
 
 }

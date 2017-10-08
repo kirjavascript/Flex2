@@ -13,14 +13,7 @@ import './controls/keyboard';
 class Root extends React.Component {
 
     render() {
-        return do {
-            if (!workspace.projectPath) {
-                <ProjectExplorer/>;
-            }
-            else {
-                <Layout/>;
-            }
-        };
+        return <Layout/>;
     }
 
 }

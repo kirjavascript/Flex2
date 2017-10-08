@@ -3,7 +3,7 @@ import { model, saveModel } from './model';
 
 import FlexLayout from 'flexlayout-react';
 
-import { ProjectConfig } from '#components/project/config';
+import { Project } from '#components/project';
 import { Palettes } from '#components/palettes';
 import { Art } from '#components/art';
 import { Sprites } from '#components/sprites';
@@ -17,7 +17,7 @@ export class Layout extends Component {
 
         return node._visible && do {
             if (component == 'project') {
-                <ProjectConfig node={node}/>;
+                <Project node={node}/>;
             }
             else if (component == 'palettes') {
                 <Palettes node={node}/>;
