@@ -11,33 +11,37 @@ documentation tab / about tab + add version check here
 for_window [title="Flex 2"] floating enable border normal
 ==
 
-add flex.json to sonic 2 disassembly
-save final layout format
-spriteplotter
 sprite rotation http://forums.sonicretro.org/index.php?showtopic=8848&st=0&p=159754&#entry159754
-import sprite over active frame
-collapse project objects / have index
-divide tile index by 2 for sonic 2 2 player mappings
-update dplc status on save
-create new file | newFactory={(path)=>{}}
-// when saving, if 0 appears anywhere in the header use its offset for blank sprites
-when saving asm, use the object name as the label name :D
-build command
 limit sprites view / import active sprites detect tiles / just use one axis?
-counts for commands
-// cut, paste clipboard
-
-23:47 <%MainMemory> snkenjoi: recently I made optimized dplcs by putting all the used tile indexes into an array, sorted, and did a loop increasing the tile number until it hit 16 tiles or a non-matching element in the array
-20:07:22 <&nibblr> Kirjava, you said lil-g to beta test
-draw directly on sprite / edit art / <MutableTile/>
-convert to/from dplc
-export/import sprite sheet (load raw image -> option to load palette) image importing nearest match (color approx)
-DPLC auto optimisation in edit raw
-
-delete unused art (get buffers list when has dplcs)
-readysonic sprites
-crackers
 
 ====
 
-export to png formats/png
+add flex.json to sonic 2 disassembly
+check version
+collapse project objects / have index
+readysonic test
+counts for commands
+extra formats: crackers / chaotix?
+build command
+lil-g to beta test
+
+====
+
+when saving, if 0 appears anywhere in the header use its offset for blank sprites
+when saving asm, use the object name as the label name :D
+update dplc status on save
+divide tile index by 2 for sonic 2 2 player mappings
+create new file | newFactory={(path)=>{}}
+
+====
+
+convert to/from dplc
+DPLC auto optimisation in edit raw (putting all the used tile indexes into an array, sorted, and did a loop increasing the tile number until it hit 16 tiles or a non-matching element in the array)
+delete unused art (get buffers list when has dplcs)
+
+====
+
+// cut, paste clipboard
+draw directly on sprite / edit art / <MutableTile/>
+import sprite over active frame
+export/import sprite sheet (load raw image -> option to load palette) image importing nearest match (color approx)

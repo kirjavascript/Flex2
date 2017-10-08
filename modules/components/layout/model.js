@@ -1,52 +1,71 @@
 import FlexLayout from 'flexlayout-react';
 
 const DEFAULT_LAYOUT = {
-    global: {
-        splitterSize: 6,
-        tabEnableClose: false,
-        tabEnableRename: false,
-        // enableEdgeDock: false,
-        tabSetEnableMaximize: false,
+    'global': {
+        'splitterSize': 6,
+        'tabEnableClose': false,
+        'tabEnableRename': false,
+        'tabSetEnableMaximize': false
     },
-    borders: [],
-    layout: {
+    'layout': {
         'type': 'row',
-        'weight': 100,
+        'id': '#1',
         'children': [
             {
                 'type': 'tabset',
-                'weight': 100,
-                'selected': 0,
+                'weight': 11.4,
+                'id': '#13',
                 'children': [
                     {
                         'type': 'tab',
-                        'name': 'Project',
-                        'component':'project',
+                        'name': 'Art',
+                        'component': 'art',
+                        'id': '#5'
                     },
                     {
                         'type': 'tab',
                         'name': 'Palettes',
-                        'component':'palettes',
-                    },
+                        'component': 'palettes',
+                        'id': '#4'
+                    }
+                ]
+            },
+            {
+                'type': 'tabset',
+                'weight': 67,
+                'selected': 0,
+                'id': '#2',
+                'children': [
                     {
                         'type': 'tab',
-                        'name': 'Art',
-                        'component':'art',
-                    },
-                    {
-                        'type': 'tab',
-                        'name': 'Sprites',
-                        'component':'sprites',
+                        'name': 'Project',
+                        'component': 'project',
+                        'id': '#3'
                     },
                     {
                         'type': 'tab',
                         'name': 'Mappings',
-                        'component':'mappings',
-                    },
-                ]
+                        'component': 'mappings',
+                        'id': '#7'
+                    }
+                ],
+                'active': true
             },
+            {
+                'type': 'tabset',
+                'weight': 20,
+                'id': '#10',
+                'children': [
+                    {
+                        'type': 'tab',
+                        'name': 'Sprites',
+                        'component': 'sprites',
+                        'id': '#6'
+                    }
+                ]
+            }
         ]
-    }
+    },
 };
 
 const savedLayout = localStorage.getItem('layout');

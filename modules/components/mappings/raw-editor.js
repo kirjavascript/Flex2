@@ -14,7 +14,7 @@ const isNumber = (num) => {
 };
 
 const isPositiveNumber = (num) => {
-    return Math.abs(isNumber(num));
+    return Math.max(0, isNumber(num));
 };
 
 const isDPLCSize = (num) => {

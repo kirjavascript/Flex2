@@ -21,6 +21,7 @@ class Environment {
         dplcsEnabled: false,
     };
 
+    // palettes must use colours of the form #NNN
     @observable palettes = defaultPalettes;
 
     @observable tiles = [

@@ -1,6 +1,7 @@
 import { environment } from '#store/environment';
 import { mappingState } from '#components/mappings/state';
 import { undo, redo } from '#store/history';
+import { exportPNG } from '#formats/png';
 import { getDistance } from './distance';
 import { toJS } from 'mobx';
 
@@ -119,6 +120,12 @@ export const commands = [
                 environment.mappings.splice(currentSprite+1, 0, toJS(mappings));
                 dplcsEnabled &&
                 environment.dplcs.splice(currentSprite+1, 0, toJS(dplcs));
+            },
+        },
+        {
+            map: 'e', name: 'Export PNG', color: 'green',
+            func: () => {
+                exportPNG();
             },
         },
     ],
