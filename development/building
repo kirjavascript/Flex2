@@ -1,0 +1,9 @@
+electron-packager . Flex2 --platform=linux --arch=x64 --ignore="(modules|development|_test|styles|yarn.lock)" --asar --overwrite
+--platform=win32 --arch=x64
+--platform=linux --arch=x64
+--platform=darwin --arch=x64
+--all
+--icon app/index.ico
+https://www.christianengvall.se/electron-packager-tutorial/
+
+move into an /app folder

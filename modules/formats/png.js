@@ -81,7 +81,7 @@ export function exportPNG() {
 
     dialog.showSaveDialog({
         title: 'Export Sprite',
-        defaultPath: `0x${environment.config.currentSprite.toString(16)}.png`,
+        defaultPath: `0x${environment.config.currentSprite.toString(16).toUpperCase()}.png`,
         filters: [{name: 'PNG Image File', extensions: ['png']}],
     }, (filename) => {
         if (filename) {

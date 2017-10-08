@@ -11,11 +11,6 @@ documentation tab / about tab + add version check here
 for_window [title="Flex 2"] floating enable border normal
 ==
 
-sprite rotation http://forums.sonicretro.org/index.php?showtopic=8848&st=0&p=159754&#entry159754
-limit sprites view / import active sprites detect tiles / just use one axis?
-
-====
-
 add flex.json to sonic 2 disassembly
 check version in documentation tab
 collapse project objects / have index
@@ -41,12 +36,3 @@ delete unused art (get buffers list when has dplcs)
 
 draw directly on sprite / edit art / <MutableTile/>
 import sprite over active frame
-export/import sprite sheet (load raw image -> option to load palette) image importing nearest match (color approx)
-
-10:57:40 < varek> closest colors https://www.npmjs.com/package/compute-cosine-similarity
-10:57:41 < purple1> Title: compute-cosine-similarity
-10:57:56 < Cake> dope
-10:58:07 < varek> const s = similarity ([r1,g1,b1],[r2,g2,b2])
-
-choose palette line
-fill bg?

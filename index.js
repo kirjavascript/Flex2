@@ -1,5 +1,4 @@
 const { app, BrowserWindow } = require('electron');
-const flexDevTools = require('./development');
 let mainWindow = null;
 
 app.on('window-all-closed', function() {
@@ -33,6 +32,7 @@ app.on('ready', function() {
 
     // development...
 
-    flexDevTools(app, mainWindow);
+    process.argv.includes('--dev') &&
+    require('./development')(app, mainWindow);
 
 });

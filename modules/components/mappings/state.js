@@ -127,15 +127,12 @@ class MappingState {
                 art: piece.art,
             };
             // check if dplc already exists
-            const seenIndex = dplcs.reduce((a, {size, art}, index) => {
-                if (a !== void 0) return a;
-                else if (size == newDPLC.size && art == newDPLC.art) {
-                    return index;
-                }
-            }, void 0);
+            const seenIndex = dplcs.findIndex(({size, art}) => (
+                size == newDPLC.size && art == newDPLC.art
+            ));
 
             // if it does exist
-            if (seenIndex !== void 0) {
+            if (seenIndex != -1) {
                 art = dplcs.reduce((a, c, i) => {
                     if (i >= seenIndex) return a;
                     else {

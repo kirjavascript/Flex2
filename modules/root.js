@@ -1,25 +1,13 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { observer } from 'mobx-react';
-
-import { workspace } from '#store/workspace';
-import { ProjectExplorer } from '#components/project/menu';
 import { Layout } from '#components/layout';
 
 import '#util/check-version';
 import './controls/keyboard';
-
-@observer
-class Root extends React.Component {
-
-    render() {
-        return <Layout/>;
-    }
-
-}
+import './components/import';
 
 render(
-    <Root/>,
+    <Layout/>,
     document.body.appendChild(document.createElement('div'))
 );
 

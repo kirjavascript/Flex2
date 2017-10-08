@@ -1,5 +1,6 @@
 import { environment } from '#store/environment';
 import { mappingState } from '#components/mappings/state';
+import { importState } from '#components/import/state';
 import { undo, redo } from '#store/history';
 import { exportPNG } from '#formats/png';
 import { getDistance } from './distance';
@@ -36,7 +37,7 @@ export const commands = [
     ],
     [
         {
-            map: 'h', name: 'Horizontal Flip', color: 'green',
+            map: 'h', name: 'Horizontal Flip', color: 'orange',
             func: (e) => {
                 const { x } = mappingState.center || {};
                 mappingState.mutateActive((mapping) => {
@@ -47,7 +48,7 @@ export const commands = [
             },
         },
         {
-            map: 'v', name: 'Vertical Flip', color: 'green',
+            map: 'v', name: 'Vertical Flip', color: 'orange',
             func: (e) => {
                 const { y } = mappingState.center || {};
                 mappingState.mutateActive((mapping) => {
@@ -122,32 +123,23 @@ export const commands = [
                 environment.dplcs.splice(currentSprite+1, 0, toJS(dplcs));
             },
         },
-        {
-            map: 'e', name: 'Export PNG', color: 'green',
-            func: () => {
-                exportPNG();
-            },
-        },
     ],
 
     [
         {
-            map: 'f', name: 'Toggle Priority', color: 'orange',
-            func: (e) => {
-                mappingState.mutateActive((mapping) => {
-                    mapping.priority = !mapping.priority;
-                });
+            map: 'e', name: 'Export PNG', color: 'blue',
+            func: () => {
+                exportPNG();
             },
         },
         {
-            map: 'p', name: 'Shift Palette', color: 'orange',
-            func: (e) => {
-                mappingState.mutateActive((mapping) => {
-                    mapping.palette = (mapping.palette+1) % 4;
-                });
+            map: 'i', name: 'Import Spritesheet', color: 'blue',
+            func: () => {
+                importState.newImport();
             },
         },
     ],
+
 
 
     [
@@ -178,15 +170,22 @@ export const commands = [
         },
     ],
 
-
     [
         {
-            map: 'mod+z', name: 'Undo', color: 'magenta',
-            func: () => { undo(); },
+            map: 'f', name: 'Toggle Priority', color: 'orange',
+            func: (e) => {
+                mappingState.mutateActive((mapping) => {
+                    mapping.priority = !mapping.priority;
+                });
+            },
         },
         {
-            map: 'mod+r', name: 'Redo', color: 'magenta',
-            func: () => { redo(); },
+            map: 'p', name: 'Shift Palette', color: 'orange',
+            func: (e) => {
+                mappingState.mutateActive((mapping) => {
+                    mapping.palette = (mapping.palette+1) % 4;
+                });
+            },
         },
     ],
 
@@ -199,6 +198,19 @@ export const commands = [
             },
         },
     ],
+
+
+    [
+        {
+            map: 'mod+z', name: 'Undo', color: 'magenta',
+            func: () => { undo(); },
+        },
+        {
+            map: 'mod+r', name: 'Redo', color: 'magenta',
+            func: () => { redo(); },
+        },
+    ],
+
 
     [
         {
