@@ -11,14 +11,21 @@ const numFmt = (num) => (
 export class HUD extends Component {
 
     render() {
-        const { x, y, select: { active }, center, activeMappings, selectedIndicies } = mappingState;
-        const { config: { currentSprite, dplcsEnabled }, mappings, tiles } = environment;
+        const { x, y, select: { active }, center, activeMappings, selectedIndicies, newMapping } = mappingState;
+        const { config: { currentSprite, dplcsEnabled, currentTile }, mappings, tiles } = environment;
 
         return <div className="hud">
             sprite: <span className="blue">
                 {numFmt(currentSprite)}/{numFmt(mappings.length)}
             </span>
             <br/>
+            {newMapping.active && (
+                <div>
+                    tile: <span className="blue">
+                        {numFmt(currentTile)}/{numFmt(tiles.length)}
+                    </span>
+                </div>
+            )}
             {center && (
                 <div>
                     centre: <span className="blue">

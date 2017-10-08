@@ -32,6 +32,14 @@ class Environment {
 
     @observable dplcs = [];
 
+    @computed get palettesRGB() {
+        return this.palettes.map((palette) => (
+            palette.map((color) => (
+                color.slice(1).split``.map((d) => parseInt(`${d}${d}`, 16))
+            ))
+        ));
+    }
+
     @computed get sprites() {
         return this.mappings.map((mappingList, index) => {
             let buffer = [];

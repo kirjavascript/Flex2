@@ -4,7 +4,7 @@ import { writeFile } from 'fs';
 import { errorMsg } from '#util/dialog';
 
 export function exportPNG() {
-    const { currentSprite: { buffer, mappings }, palettes } = environment;
+    const { currentSprite: { buffer, mappings }, palettesRGB } = environment;
 
     if (!mappings.length) return;
 
@@ -35,11 +35,7 @@ export function exportPNG() {
     const mappingCtx = mappingCanvas.getContext('2d');
 
     mappings.reverse().forEach((mapping) => {
-        // convert palette from web to rgb
-        const palette = palettes[mapping.palette]
-            .map((color) => (
-                color.slice(1).split``.map((d) => parseInt(`${d}${d}`, 16))
-            ));
+        const palette = palettesRGB[mapping.palette];
 
         mappingCanvas.width = mapping.width * 8;
         mappingCanvas.height = mapping.height * 8;

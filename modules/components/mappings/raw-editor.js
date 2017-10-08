@@ -160,12 +160,15 @@ const SortableDPLCItem = SortableElement(observer(({dplc, dplcIndex}) => (
                 />
             </div>
             <div className="dplc-tiles">
-                {Array.from({length: dplc.size}).map((_, i) => (
-                    <Tile
-                        key={i}
-                        data={environment.tiles[dplc.art+i]}
-                    />
-   ))}
+                {Array.from({length: dplc.size}).map((_, i) => {
+                    const data = environment.tiles.length > dplc.art + i ? environment.tiles[dplc.art+i] : void 0;
+                    return (
+                        <Tile
+                            key={i}
+                            data={data}
+                        />
+                    );
+                })}
             </div>
         </div>
         <Item

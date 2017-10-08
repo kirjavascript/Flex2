@@ -13,7 +13,7 @@ fetch('https://raw.githubusercontent.com/kirjavascript/Flex2/master/package.json
         const githubVersion = semvarToInt(version);
 
         if (githubVersion > currentVersion) {
-            document.title = `Flex 2 - version (${version}) now available`;
+            document.title = `Flex 2 - new version (${version}) available`;
         }
     })
     .catch((err) => {
