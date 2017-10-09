@@ -3,15 +3,17 @@ const { dialog } = require('electron').remote;
 import { writeFile } from 'fs';
 import { errorMsg } from '#util/dialog';
 
-export function exportPNG() {
+export function exportPNG(debug = false) {
     const { currentSprite: { buffer, mappings }, palettesRGB } = environment;
 
     if (!mappings.length) return;
 
     const canvas = document.createElement('canvas');
-    // canvas.className = 'canvas-debug';
-    // canvas.style.width = '200px';
-    // document.body.appendChild(canvas);
+    if (debug) {
+        canvas.className = 'canvas-debug';
+        canvas.style.width = '200px';
+        document.body.appendChild(canvas);
+    }
     const ctx = canvas.getContext('2d');
     let tileBuffer = ctx.getImageData(0, 0, 8, 8);
 
