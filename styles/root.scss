@@ -44,16 +44,6 @@ a {
     z-index: -1;
 }
 
-.canvas-debug {
-    z-index: 10;
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    background-image: url(../images/t.png);
-    image-rendering: pixelated;
-    border: 5px solid $grey;
-}
-
 ::-webkit-scrollbar {
     &:vertical {
         width: $scrollbarWidth;
@@ -70,7 +60,7 @@ a {
     background-color: $grey;
 }
 ::-webkit-scrollbar-corner {
-    display: none;
+    background-color: $black;
 }
 ::-webkit-scrollbar-resizer {
     display: none;

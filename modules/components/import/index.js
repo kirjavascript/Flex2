@@ -18,11 +18,12 @@ class Importer extends React.Component {
             >
                 Cancel Import
             </Item>
-            importer
 
-            <canvas
-                ref={importState.canvasRef}
-            />
+            <div className="container">
+                <canvas
+                    ref={importState.canvasRef}
+                />
+            </div>
         </div>;
     }
 }

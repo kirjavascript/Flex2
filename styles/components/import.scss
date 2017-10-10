@@ -4,7 +4,23 @@
     left: 0;
     bottom: 0;
     right: 0;
-    // background-image: url(../images/t.png);
     background-color: $black;
     z-index: 10;
+
+    .container {
+        overflow: auto;
+        position: absolute;
+        top: 50px;
+        left: 15px;
+        right: 15px;
+        bottom: 15px;
+        border: 1px solid $grey;
+        background-image: url(../images/t.png);
+
+        canvas {
+            transform: scale(4);
+            transform-origin: 0% 0%;
+            image-rendering: pixelated;
+        }
+    }
 }
