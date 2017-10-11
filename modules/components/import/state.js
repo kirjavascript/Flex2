@@ -67,10 +67,10 @@ class ImportState {
         const buffer = ctx.getImageData(0, 0, width, height);
 
         removeBackground(buffer);
-        colorMatch(buffer, 0);
+        // colorMatch(buffer, 0);
         ctx.putImageData(buffer, 0, 0);
 
-        getSprite(buffer, width, height, 2);
+        const { x, y, width: w, height: h } = getSprite(buffer, width, height, 2);
 
         // do while
 
@@ -78,8 +78,8 @@ class ImportState {
 
         ctx.putImageData(buffer, 0, 0);
 
-        // ctx.fillStyle = 'green';
-        // ctx.fillRect(x, y, w, h);
+        ctx.fillStyle = 'green';
+        ctx.fillRect(x, y, w, h);
 
     };
 
