@@ -2,6 +2,7 @@
   "ecmaVersion": 7,
   "libs": ["browser"],
   "plugins": {
+    "jsx": {},
     "node": {},
     "modules": {},
     "es_modules": {}
