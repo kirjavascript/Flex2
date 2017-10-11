@@ -1,6 +1,6 @@
 {
   "ecmaVersion": 7,
-  "libs": ["browser"],
+  "libs": ["browser", "react"],
   "plugins": {
     "jsx": {},
     "node": {},
