@@ -1,8 +1,9 @@
 import { observable, computed, action, autorun, toJS } from 'mobx';
-import { environment } from '#store/environment';
 const { dialog } = require('electron').remote;
 import { errorMsg } from '#util/dialog';
-import { closest } from 'color-diff';
+import { removeBackground } from './remove-background';
+import { colorMatch } from './color-match';
+import { getSprite } from './get-sprite';
 
 class ImportState {
 
@@ -64,169 +65,26 @@ class ImportState {
         const { ctx, canvas } = this;
         const { width, height } = canvas;
         const buffer = ctx.getImageData(0, 0, width, height);
-        let t0 = performance.now();
 
-        // get top left pixel
-        const [r, g, b, a] = ctx.getImageData(0, 0, 1, 1).data;
-        // strip background colour
-        if (a > 0x80) {
-            // tfw lambdas are five times slower than a for loop...
-            for (let i = 0, j = 0; i < (width * height); i++, j+=4) {
-                if (
-                     r == buffer.data[j] &&
-                     g == buffer.data[j+1] &&
-                     b == buffer.data[j+2]
-                 ) {
-                    buffer.data[j+3] = 0;
-                }
-            }
-        }
-
-        // color matching
-        const colorConvert = nearestColor();
-        for (let i = 0, j = 0; i < (width * height); i++, j+=4) {
-            if (buffer.data[j+3] != 0) {
-                const {R, G, B} = colorConvert({
-                    R: buffer.data[j],
-                    G: buffer.data[j+1],
-                    B: buffer.data[j+2],
-                });
-                buffer.data[j] = R;
-                buffer.data[j+1] = G;
-                buffer.data[j+2] = B;
-            }
-        }
-
+        removeBackground(buffer);
+        colorMatch(buffer, 0);
         ctx.putImageData(buffer, 0, 0);
 
-        // get bboxes
+        getSprite(buffer, width, height, 2);
 
-        function getXY(pos) {
-            const x = (pos / 4) % width;
-            const y = (((pos / 4) - x) / width);
-            return [x, y];
-        }
+        // do while
 
-        function getPos(x, y) {
-            return ((y * width) + x) * 4;
-        }
-
-        function setPixel(pos) {
-            buffer.data[pos+3] = 0;
-        }
-
-        function checkMatch(pos) {
-            return buffer.data[pos+3] !== 0;
-        }
-
-        // get first pixel
-        let firstPos = -1;
-
-
-        for (let i = 0, j = 0; i < (width * height); i++, j+=4) {
-            if (buffer.data[j+3] > 0x80) {
-                firstPos = j;
-                break;
-            }
-        }
-
-        // if no pixels found...
-        if (firstPos == -1) return -1;
-
-        let [x, y] = getXY(firstPos);
-
-        // flood fill from initial pixel
-
-        let stack = [[x, y]];
-
-        while (stack.length) {
-            let reachLeft, reachRight;
-            let [x, y] = stack.pop();
-            let pos = getPos(x, y);
-
-            while (y-- >= 0 && checkMatch(pos)) {
-                pos -= width * 4;
-            }
-
-            pos += width * 4;
-            ++y;
-            reachLeft = false;
-            reachRight = false;
-
-            if (stack.length > 1000000) return;
-
-            while (y++ < height - 1 && checkMatch(pos)) {
-                setPixel(pos);
-
-                if (x > 0) {
-                    if (checkMatch(pos-4)) {
-                        if (!reachLeft) {
-                            stack.push([x - 1, y]);
-                            reachLeft = true;
-                        }
-                    }
-                    else if (reachLeft) {
-                        reachLeft = false;
-                    }
-                }
-
-                if (x < width - 1) {
-                    if (checkMatch(pos+4)) {
-                        if (!reachRight) {
-                            stack.push([x + 1, y]);
-                            reachRight = true;
-                        }
-                    }
-                    else if (reachRight) {
-                        reachRight = false;
-                    }
-                }
-
-                pos += width * 4;
-            }
-
-        }
-
+        // save bboxes from getSprite
 
         ctx.putImageData(buffer, 0, 0);
 
         // ctx.fillStyle = 'green';
-        // ctx.fillRect(10, 10, 100, 100);
+        // ctx.fillRect(x, y, w, h);
 
     };
 
 }
 
-function nearestColor(line = 0) {
-    const palette = environment.palettesRGB[line]
-        .slice(1) // ignore transparency
-        .map(([R, G, B]) => ({R, G, B}));
-
-    const cache = [];
-
-    return (color) => {
-        const preCalculated = cache.find((obj) => (
-            obj.color.R == color.R &&
-            obj.color.G == color.G &&
-            obj.color.B == color.B
-        ));
-
-        if (preCalculated) {
-            return preCalculated.result;
-        }
-        else {
-            const result = closest(color, palette);
-
-            cache.push({color, result});
-
-            return result;
-        }
-    };
-}
-
-// for fuzzyness - after removing, search again in and around the bbox
-// track min/max, first is min/max
-// once the search is complete, grab the bbox and unset the transparency again :)
 
 //start from top left
 //mappings dont have to be in a grid
