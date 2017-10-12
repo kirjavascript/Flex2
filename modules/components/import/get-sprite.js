@@ -1,6 +1,28 @@
-// extracts a single sprite from a sheet
+export function getSpriteBBoxes(buffer, width, height, fuzziness = 0) {
 
-export function getSprite(buffer, width, height, fuzziness = 0) {
+    const clone = new ImageData(
+        Uint8ClampedArray.from(buffer.data),
+        width,
+        height,
+    );
+
+    let bboxes = [];
+
+    // tracking the offset seems to give a 5x perf boost
+
+    ~function loop(startOffset = 0) {
+        const nextSprite = getSprite(clone, width, height, fuzziness, startOffset);
+        if (nextSprite != -1) {
+            bboxes.push(nextSprite);
+            loop(nextSprite.firstPos);
+            delete nextSprite.firstPos;
+        }
+    } ();
+
+    return bboxes;
+}
+
+export function getSprite(buffer, width, height, fuzziness = 0, startOffset = 0) {
 
     function getXY(pos) {
         const x = (pos / 4) % width;
@@ -83,7 +105,7 @@ export function getSprite(buffer, width, height, fuzziness = 0) {
     // get first pixel
     let firstPos = -1;
 
-    for (let i = 0, j = 0; i < (width * height); i++, j+=4) {
+    for (let j = startOffset; j < buffer.data.length; j+=4) {
         if (buffer.data[j+3] > 0x80) {
             firstPos = j;
             break;
@@ -134,6 +156,7 @@ export function getSprite(buffer, width, height, fuzziness = 0) {
         y: bbox.minY,
         width: bbox.maxX - bbox.minX,
         height: bbox.maxY - bbox.minY,
+        firstPos,
     };
 
 }

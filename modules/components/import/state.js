@@ -3,7 +3,7 @@ const { dialog } = require('electron').remote;
 import { errorMsg } from '#util/dialog';
 import { removeBackground } from './remove-background';
 import { colorMatch } from './color-match';
-import { getSprite } from './get-sprite';
+import { getSpriteBBoxes } from './get-sprite';
 
 class ImportState {
 
@@ -70,16 +70,17 @@ class ImportState {
         // colorMatch(buffer, 0);
         ctx.putImageData(buffer, 0, 0);
 
-        const { x, y, width: w, height: h } = getSprite(buffer, width, height, 2);
+        const t0 = performance.now();
+        const bboxes = getSpriteBBoxes(buffer, width, height, 5);
+        console.log(performance.now()-t0);
 
-        // do while
-
-        // save bboxes from getSprite
-
-        ctx.putImageData(buffer, 0, 0);
-
-        ctx.fillStyle = 'green';
-        ctx.fillRect(x, y, w, h);
+        // drawbboxes (do this with html)
+        ctx.strokeStyle = 'red';
+        ctx.strokeWidth = 1;
+        bboxes.forEach(({x, y, width, height}) => {
+            ctx.rect(x, y, width, height);
+            ctx.stroke();
+        });
 
     };
 

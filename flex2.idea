@@ -36,5 +36,6 @@ delete unused art (get buffers list when has dplcs)
 
 ====
 
+export spritesheet
 draw directly on sprite / edit art / <MutableTile/> (palette dropdown for picker)
 import sprite over active frame
