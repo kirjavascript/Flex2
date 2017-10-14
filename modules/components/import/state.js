@@ -4,6 +4,7 @@ import { errorMsg } from '#util/dialog';
 import { removeBackground } from './remove-background';
 import { colorMatch } from './color-match';
 import { getSpriteBBoxes } from './get-sprite';
+import { getBestOffsets } from './get-active-tiles';
 
 class ImportState {
 
@@ -118,11 +119,15 @@ class ImportState {
         const { canvas, ctx } = this;
         const { width, height, buffer } = this.currentSprite;
 
-        canvas.width = width+32;
-        canvas.height = height+32;
+        canvas.width = width+16;
+        canvas.height = height+16;
+
+        // draw sprite
         const coloredBuffer = colorMatch(buffer, this.paletteLine);
-        ctx.putImageData(coloredBuffer, 16, 16);
-        // spriteoffset
+        ctx.putImageData(coloredBuffer, 8, 8);
+
+
+        console.log(getBestOffsets(canvas, ctx));
 
     };
 
@@ -130,7 +135,7 @@ class ImportState {
         const { canvas, ctx } = this;
         const { width, height, buffer } = this.currentSprite;
         const coloredBuffer = colorMatch(buffer, this.paletteLine);
-        ctx.putImageData(coloredBuffer, 16, 16);
+        ctx.putImageData(coloredBuffer, 8, 8);
     };
 
     @action importOne = () => {
@@ -139,12 +144,21 @@ class ImportState {
 
     @action importAll = () => {
         // animate fast
+        // set index to 0
 
     };
 
     @action next = () => {
-        this.spriteIndex++;
-        // check length and deactivate
+        if (this.spriteIndex < this.sprites.length-1) {
+            this.spriteIndex++;
+        }
+        // else deactivate
+    };
+
+    @action prev = () => {
+        if (this.spriteIndex > 0) {
+            this.spriteIndex--;
+        }
     };
 
 }

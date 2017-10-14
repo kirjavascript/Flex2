@@ -24,18 +24,25 @@ export class ImportSprites extends React.Component {
                         Import Sprite
                     </Item>
                     <Item
-                        color="green"
-                        inverted
-                        onClick={importState.next}
-                    >
-                        Skip Sprite
-                    </Item>
-                    <Item
                         color="magenta"
                         inverted
                         onClick={importState.importAll}
                     >
                         Import All
+                    </Item>
+                    <Item
+                        color="yellow"
+                        inverted
+                        onClick={importState.next}
+                    >
+                        Next Sprite
+                    </Item>
+                    <Item
+                        color="yellow"
+                        inverted
+                        onClick={importState.prev}
+                    >
+                        Prev Sprite
                     </Item>
 
                     <div className="input">
