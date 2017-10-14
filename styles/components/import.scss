@@ -7,19 +7,56 @@
     background-color: $black;
     z-index: 10;
 
+    .menu {
+        margin: 0 15px;
+        width: 160px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+        .menu-section {
+            margin: 15px 0;
+        }
+        .input {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 5px;
+            span {
+                line-height: 20px;
+            }
+            input {
+                width: 50px;
+                text-align: center;
+            }
+        }
+    }
+
     .container {
         overflow: auto;
         position: absolute;
-        top: 50px;
-        left: 15px;
+        top: 15px;
+        left: 190px;
         right: 15px;
         bottom: 15px;
         border: 1px solid $grey;
         background-image: url(../images/t.png);
 
-        canvas {
+        .workspace {
+            position: relative;
+            width: 0;
+            height: 0;
             transform: scale(4);
             transform-origin: 0% 0%;
+        }
+
+        .bbox {
+            z-index: 2;
+            outline: 1px dashed $blue;
+            position: absolute;
+        }
+
+        canvas {
+            z-index: 1;
             image-rendering: pixelated;
         }
     }

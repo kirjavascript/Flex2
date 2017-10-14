@@ -1,25 +1,13 @@
 import React, { Component } from 'react';
 import { Motion, spring } from 'react-motion';
 import { SortableContainer, SortableElement, SortableHandle, arrayMove } from 'react-sortable-hoc';
-import clamp from 'lodash/clamp';
 import { mappingState } from './state';
 import { environment } from '#store/environment';
 import { observer } from 'mobx-react';
 import { Select, Input, Item } from '#ui';
 import { Tile } from '../art/tile';
+import { isNumber, isPositiveNumber, isDPLCSize } from '#util/assertions';
 
-const isNumber = (num) => {
-    const value = parseInt(num, 10);
-    return Number.isNaN(value) ? 0 : value;
-};
-
-const isPositiveNumber = (num) => {
-    return Math.max(0, isNumber(num));
-};
-
-const isDPLCSize = (num) => {
-    return clamp(isPositiveNumber(num), 1, 16);
-};
 
 const Handle = SortableHandle(() => <div className="handle">
     <svg viewBox="20 20 56 56" width="26" height="26">

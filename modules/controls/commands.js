@@ -17,7 +17,7 @@ import { toJS } from 'mobx';
  * right + outside = pan
  * wheel = zoom
  *
- * Raw;
+ * Number Inputs;
  *
  * esc = blur
  * up/down = add/subtract
@@ -222,11 +222,11 @@ export const commands = [
             func: () => { environment.config.currentSprite -= getDistance(); },
         },
         {
-            map: 'home', name: 'First Sprite', color: 'yellow',
+            map: '<', name: 'First Sprite', color: 'yellow',
             func: () => { environment.config.currentSprite = 0; },
         },
         {
-            map: 'end', name: 'Last Sprite', color: 'yellow',
+            map: '>', name: 'Last Sprite', color: 'yellow',
             func: () => { environment.config.currentSprite = Infinity; },
         },
     ],

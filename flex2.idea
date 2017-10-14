@@ -9,15 +9,13 @@ vim keybindings
 ==
 raw editor doesn't clean up anything
 SCD 23:39 <+flamewing> Mappings is S1; DPLC is S2 -> ?scd flag
-documentation tab / about tab + add version check here
 for_window [title="Flex 2"] floating enable border normal
 ==
 
 add flex.json to sonic 2 disassembly
+counts for commands
 check version in documentation tab
 collapse project objects / have index
-counts for commands
-build command
 lil-g to beta test
 
 ====
@@ -30,8 +28,8 @@ create new file | newFactory={(path)=>{}}
 
 ====
 
-convert to/from dplc
 DPLC auto optimisation in edit raw (putting all the used tile indexes into an array, sorted, and did a loop increasing the tile number until it hit 16 tiles or a non-matching element in the array)
+convert to/from dplc
 delete unused art (get buffers list when has dplcs)
 
 ====

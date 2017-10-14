@@ -11,6 +11,17 @@ class ImportState {
         active: false,
     };
 
+    @observable bboxes = [];
+    @observable fuzziness = 4;
+    @observable scale = 4;
+
+    @action reset = () => {
+        this.path = void 0;
+        this.canvas = void 0;
+        this.ctx = void 0;
+        this.bboxes.replace([]);
+    };
+
     @action newImport = () => {
 
         dialog.showOpenDialog({
@@ -30,12 +41,6 @@ class ImportState {
     @action cancel = () => {
         this.reset();
         this.config.active = false;
-    };
-
-    reset = () => {
-        this.path = void 0;
-        this.canvas = void 0;
-        this.ctx = void 0;
     };
 
     canvasRef = (node) => {
@@ -65,27 +70,22 @@ class ImportState {
         const { ctx, canvas } = this;
         const { width, height } = canvas;
         const buffer = ctx.getImageData(0, 0, width, height);
-
         removeBackground(buffer);
-        // colorMatch(buffer, 0);
         ctx.putImageData(buffer, 0, 0);
-
-        const t0 = performance.now();
-        const bboxes = getSpriteBBoxes(buffer, width, height, 5);
-        console.log(performance.now()-t0);
-
-        // drawbboxes (do this with html)
-        ctx.strokeStyle = 'red';
-        ctx.strokeWidth = 1;
-        bboxes.forEach(({x, y, width, height}) => {
-            ctx.rect(x, y, width, height);
-            ctx.stroke();
-        });
-
     };
 
-}
+    @action getBBoxes = () => {
+        const { ctx, canvas } = this;
+        const { width, height } = canvas;
+        const buffer = ctx.getImageData(0, 0, width, height);
+        this.bboxes.replace(
+            getSpriteBBoxes(buffer, width, height, this.fuzziness)
+        );
+    };
 
+        // colorMatch(buffer, 0);
+
+}
 
 //start from top left
 //mappings dont have to be in a grid
@@ -93,6 +93,8 @@ class ImportState {
 // generate palette: npm splashy
 //
 // place smallest (yet largest) mapping possible in middle based on w/h
+//
+// allow deleting boxes
 
 // extract bbox into its own new canvas layer
 
