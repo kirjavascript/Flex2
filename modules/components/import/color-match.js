@@ -29,17 +29,26 @@ function nearestColor(line = 0) {
 }
 
 export function colorMatch(buffer, line = 0) {
+
+    const clone = new ImageData(
+        Uint8ClampedArray.from(buffer.data),
+        buffer.width,
+        buffer.height,
+    );
+
     const colorConvert = nearestColor(line);
-    for (let j = 0; j < buffer.data.length; j+=4) {
-        if (buffer.data[j+3] != 0) {
+    for (let j = 0; j < clone.data.length; j+=4) {
+        if (clone.data[j+3] != 0) {
             const {R, G, B} = colorConvert({
-                R: buffer.data[j],
-                G: buffer.data[j+1],
-                B: buffer.data[j+2],
+                R: clone.data[j],
+                G: clone.data[j+1],
+                B: clone.data[j+2],
             });
-            buffer.data[j] = R;
-            buffer.data[j+1] = G;
-            buffer.data[j+2] = B;
+            clone.data[j] = R;
+            clone.data[j+1] = G;
+            clone.data[j+2] = B;
         }
     }
+
+    return clone;
 }

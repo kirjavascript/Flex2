@@ -12,6 +12,9 @@ class ImportState {
     };
 
     @observable bboxes = [];
+    @observable sprites = [];
+    @observable spriteIndex = 0;
+    @observable paletteLine = 0;
     @observable fuzziness = 4;
     @observable scale = 4;
 
@@ -19,7 +22,9 @@ class ImportState {
         this.path = void 0;
         this.canvas = void 0;
         this.ctx = void 0;
+        this.spriteIndex = 0;
         this.bboxes.replace([]);
+        this.sprites.replace([]);
     };
 
     @action newImport = () => {
@@ -43,8 +48,10 @@ class ImportState {
         this.config.active = false;
     };
 
+    // detect stuff
+
     canvasRef = (node) => {
-        if (!node) return this.reset();
+        if (!node) return;
 
         this.canvas = node;
         this.ctx = node.getContext('2d');
@@ -83,9 +90,67 @@ class ImportState {
         );
     };
 
-        // colorMatch(buffer, 0);
+    @action importSprites = () => {
+        const { ctx, canvas } = this;
+        const { width, height } = canvas;
+        const buffer = ctx.getImageData(0, 0, width, height);
+        const sprites = this.bboxes.map(({x, y, width, height}) => {
+            return {
+                width,
+                height,
+                buffer: ctx.getImageData(x, y, width, height),
+            };
+        });
+
+        this.sprites.replace(sprites);
+    };
+
+    // import stuff
+
+    @computed get currentSprite() {
+        return this.sprites[this.spriteIndex];
+    }
+
+    canvasRefImport = (node) => {
+        if (!node) return;
+        this.canvas = node;
+        this.ctx = node.getContext('2d');
+        const { canvas, ctx } = this;
+        const { width, height, buffer } = this.currentSprite;
+
+        canvas.width = width+32;
+        canvas.height = height+32;
+        const coloredBuffer = colorMatch(buffer, this.paletteLine);
+        ctx.putImageData(coloredBuffer, 16, 16);
+        // spriteoffset
+
+    };
+
+    @action changePalette = () => {
+        const { canvas, ctx } = this;
+        const { width, height, buffer } = this.currentSprite;
+        const coloredBuffer = colorMatch(buffer, this.paletteLine);
+        ctx.putImageData(coloredBuffer, 16, 16);
+    };
+
+    @action importOne = () => {
+
+    };
+
+    @action importAll = () => {
+        // animate fast
+
+    };
+
+    @action next = () => {
+        this.spriteIndex++;
+        // check length and deactivate
+    };
 
 }
+
+const importState = new ImportState();
+export { importState };
 
 //start from top left
 //mappings dont have to be in a grid
@@ -93,8 +158,6 @@ class ImportState {
 // generate palette: npm splashy
 //
 // place smallest (yet largest) mapping possible in middle based on w/h
-//
-// allow deleting boxes
 
 // extract bbox into its own new canvas layer
 
@@ -123,6 +186,3 @@ class ImportState {
 // 22:49:28 < djohe> flamewing you got an IRC PM
 // 22:49:39 < flamewing> When doing the sliding, you can probably do a compressed bitmap version with a single bit per tile
 // 22:50:21 < flamewing> And maybe with a whole lot of analysis, maybe even do some large lookup tables
-
-const importState = new ImportState();
-export { importState };

@@ -9,6 +9,9 @@ export class Input extends Component {
         const { store, accessor, assert = (d) => d } = this.props;
 
         store[accessor] = assert(e.target.value);
+
+        this.props.onChange &&
+        this.props.onChange(store[accessor]);
     }
 
     onKeyDown = (e) => {
@@ -21,16 +24,29 @@ export class Input extends Component {
             if (e.key == 'ArrowUp') {
                 store[accessor] = assert(store[accessor] + 1);
                 e.preventDefault();
+                this.props.onChange &&
+                this.props.onChange(store[accessor]);
             }
             else if (e.key == 'ArrowDown') {
                 store[accessor] = assert(store[accessor] - 1);
                 e.preventDefault();
+                this.props.onChange &&
+                this.props.onChange(store[accessor]);
             }
         }
     };
 
     render() {
-        const { label, store, accessor, color, assert, isNumber, ...otherProps } = this.props;
+        const {
+            label,
+            store,
+            accessor,
+            color,
+            assert,
+            isNumber,
+            onChange,
+            ...otherProps,
+        } = this.props;
 
         return <div>
             {label && <span>

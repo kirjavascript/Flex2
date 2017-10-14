@@ -20,3 +20,7 @@ export const fuzzyAssert = (num) => {
 export const zoomAssert = (num) => {
     return clamp(isPositiveNumber(num), 1, 20);
 };
+
+export const paletteLineAssert = (num) => {
+    return clamp(isPositiveNumber(num), 0, 3);
+};

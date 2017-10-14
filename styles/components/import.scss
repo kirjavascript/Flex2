@@ -45,7 +45,6 @@
             position: relative;
             width: 0;
             height: 0;
-            transform: scale(4);
             transform-origin: 0% 0%;
         }
 
@@ -58,6 +57,13 @@
         canvas {
             z-index: 1;
             image-rendering: pixelated;
+        }
+
+        .import-canvas {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%,-50%);
         }
     }
 }
