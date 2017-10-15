@@ -15,7 +15,7 @@ for_window [title="Flex 2"] floating enable border normal
 
 add flex.json to sonic 2 disassembly
 counts for commands
-check version in documentation tab
+check version in documentation tab (move code)
 collapse project objects / have index
 lil-g/gemini/mainmemory to beta test
 

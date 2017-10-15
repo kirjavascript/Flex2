@@ -3,6 +3,7 @@ import { environment } from '#store/environment';
 import range from 'lodash/range';
 import flatten from 'lodash/flatten';
 import clamp from 'lodash/clamp';
+import { getCenter } from '#util/get-center';
 
 class MappingState {
 
@@ -182,17 +183,7 @@ class MappingState {
     @computed get center() {
         if (!this.activeMappings.length) return void 0;
 
-        let [x, y] = [[], []];
-
-        this.activeMappings.forEach(({top, left, width, height}) => {
-            x.push(left + (width*8/2));
-            y.push(top + (height*8/2));
-        });
-
-        x = 0|(x.reduce((a, b) => a + b, 0)) / x.length;
-        y = 0|(y.reduce((a, b) => a + b, 0)) / y.length;
-
-        return {x, y};
+        return getCenter(this.activeMappings);
     }
 
     // DPLC stuff

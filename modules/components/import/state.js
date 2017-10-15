@@ -5,6 +5,7 @@ import { removeBackground } from './remove-background';
 import { colorMatch } from './color-match';
 import { getSpriteBBoxes } from './get-sprite';
 import { getMappings } from './generate-mappings';
+import { importSprite } from './import-sprite';
 
 class ImportState {
 
@@ -28,6 +29,7 @@ class ImportState {
         this.canvas = void 0;
         this.ctx = void 0;
         this.spriteIndex = 0;
+        this.auto = false;
         this.bboxes.replace([]);
         this.sprites.replace([]);
         this.mappings.replace([]);
@@ -119,6 +121,11 @@ class ImportState {
 
     canvasRefImport = (node) => {
         if (!node) return;
+        if (this.spriteIndex == -1) {
+            this.spriteIndex = 0;
+            return;
+        }
+
         this.canvas = node;
         this.ctx = node.getContext('2d');
         const { canvas, ctx, type } = this;
@@ -132,6 +139,12 @@ class ImportState {
         ctx.putImageData(coloredBuffer, 8, 8);
 
         this.mappings.replace(getMappings(canvas, ctx, type));
+
+        if (this.auto) {
+            requestAnimationFrame(() => {
+                this.importOne();
+            });
+        }
     };
 
     @action changePalette = () => {
@@ -147,21 +160,23 @@ class ImportState {
     }
 
     @action importOne = () => {
-
+        const { ctx, mappings, paletteLine } = this;
+        importSprite(ctx, mappings, paletteLine);
+        this.next();
     };
 
     @action importAll = () => {
-        // animate fast
-        // set index to 0
-        // set flag to check in canvas ref
-
+        this.auto = true;
+        this.spriteIndex = -1;
     };
 
     @action next = () => {
         if (this.spriteIndex < this.sprites.length-1) {
             this.spriteIndex++;
         }
-        // else deactivate
+        else {
+            this.cancel();
+        }
     };
 
     @action prev = () => {
