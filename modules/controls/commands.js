@@ -17,12 +17,30 @@ import { toJS } from 'mobx';
  * right + outside = pan
  * wheel = zoom
  *
- * Inputs;
+ * drawing mode;
+ * left = chosen pixel
+ * right = transparency
+ *
+ * Input / Select;
  *
  * esc = blur
  * up/down = add/subtract
  * wheel = add/subtract
  */
+
+export function getCommandLabel(name) {
+    return do {
+        if (name != '[mode]') {
+            name;
+        }
+        else if (mappingState.mode == 'drawing') {
+            'Mapping Mode';
+        }
+        else {
+            'Drawing Mode';
+        }
+    };
+}
 
 export const commands = [
 

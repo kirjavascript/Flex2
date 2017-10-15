@@ -202,6 +202,7 @@ let Dropdown = function (_Component) {
         'div',
                 {
                     className: baseClassName + '-placeholder',
+                    onWheel: this.props.onWheel,
                     style: this.props.color ? {
                         backgroundColor: placeHolderValue,
                         height: 15,

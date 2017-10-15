@@ -13,7 +13,9 @@ export function getSpriteBBoxes(buffer, width, height, fuzziness = 0) {
     ~function loop(startOffset = 0) {
         const nextSprite = getSprite(clone, width, height, fuzziness, startOffset);
         if (nextSprite != -1) {
-            bboxes.push(nextSprite);
+            if (nextSprite.width > 0 && nextSprite.height > 0) {
+                bboxes.push(nextSprite);
+            }
             loop(nextSprite.firstPos);
             delete nextSprite.firstPos;
         }

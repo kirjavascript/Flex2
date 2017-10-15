@@ -77,6 +77,16 @@ export class ImportSprites extends React.Component {
                     </div>
 
                     <div className="input">
+                        <span>Mappings</span>
+                        <span>{mappings.length}</span>
+                    </div>
+
+                    <div className="input">
+                        <span>Tiles</span>
+                        <span>{importState.tileQty}</span>
+                    </div>
+
+                    <div className="input">
                         <span>Sprite</span>
                         <span>{spriteIndex+1} / {sprites.length}</span>
                     </div>
@@ -84,6 +94,13 @@ export class ImportSprites extends React.Component {
                 </div>
 
                 <div className="menu-section">
+                    <Item
+                        color="orange"
+                        inverted
+                        onClick={importState.backToDetect}
+                    >
+                        Back
+                    </Item>
                     <Item
                         color="red"
                         inverted

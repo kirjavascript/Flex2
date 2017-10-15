@@ -13,6 +13,10 @@ export const isDPLCSize = (num) => {
     return clamp(isPositiveNumber(num), 1, 16);
 };
 
+export const isWidthHeight = (num) => {
+    return clamp(isPositiveNumber(num), 1, 4);
+};
+
 export const fuzzyAssert = (num) => {
     return clamp(isPositiveNumber(num), 0, 32);
 };

@@ -6,7 +6,7 @@ import { environment } from '#store/environment';
 import { observer } from 'mobx-react';
 import { Select, Input, Item } from '#ui';
 import { Tile } from '../art/tile';
-import { isNumber, isPositiveNumber, isDPLCSize } from '#util/assertions';
+import { isNumber, isPositiveNumber, isDPLCSize, isWidthHeight } from '#util/assertions';
 
 
 const Handle = SortableHandle(() => <div className="handle">
@@ -50,18 +50,20 @@ const SortableMappingItem = SortableElement(observer(({mapping, mappingIndex}) =
             </div>
             <div className="datum">
                 <div className="label">width</div>
-                <Select
+                <Input
                     store={mapping}
                     accessor="width"
-                    options={[1, 2, 3, 4]}
+                    assert={isWidthHeight}
+                    isNumber
                 />
             </div>
             <div className="datum">
                 <div className="label">height</div>
-                <Select
+                <Input
                     store={mapping}
                     accessor="height"
-                    options={[1, 2, 3, 4]}
+                    assert={isWidthHeight}
+                    isNumber
                 />
             </div>
             <div className="datum">

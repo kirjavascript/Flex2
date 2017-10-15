@@ -10,12 +10,12 @@ export class PaletteHUD extends Component {
     render() {
         const { palettes } = environment;
         const { drawIndex, drawPalette } = mappingState;
-        const palette = palettes[drawPalette];
+        const palette = palettes[drawPalette].slice(1);
         return <div className="hud">
             <Select
                 key={drawPalette}
                 options={palette.map((color, i) => ({
-                    value: i,
+                    value: i+1,
                     label: color,
                 }))}
                 label="colour"

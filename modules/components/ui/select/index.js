@@ -14,6 +14,20 @@ export class Select extends Component {
         this.props.onChange(store[accessor]);
     }
 
+    onWheel = (e) => {
+        const { store, accessor } = this.props;
+        const delta = e.nativeEvent.deltaY > 0 ? 1 : -1;
+        const index = delta + this.options.findIndex((d) => d.value == store[accessor]);
+
+        if (index >= 0 && index < this.options.length) {
+            store[accessor] = this.options[index].value;
+            this.props.onChange &&
+            this.props.onChange(store[accessor]);
+        }
+
+        e.preventDefault();
+    };
+
     constructor(props) {
         super(props);
 
@@ -41,6 +55,7 @@ export class Select extends Component {
                 value={String(value)}
                 onChange={this.onChange}
                 color={color}
+                onWheel={this.onWheel}
             />
         </div>;
     }

@@ -189,7 +189,7 @@ class MappingState {
 
     // drawing mode
 
-    @observable drawIndex = 0;
+    @observable drawIndex = 1; // skip index 0
     @observable drawPalette = 0;
 
     @action toggleMode = () => {

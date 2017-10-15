@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Masonry from 'react-masonry-component';
 import { observer } from 'mobx-react';
 import { environment } from '#store/environment';
-import { commands } from '#controls/commands';
+import { commands, getCommandLabel } from '#controls/commands';
 import { mappingState } from './state';
 import { Item, Slider } from '#ui';
 import { Mapping } from './mapping';
@@ -149,17 +149,7 @@ export class Mappings extends Component {
                                 onClick={func}
                                 key={name}
                                 color={color || 'blue'}
-                                prefix={do {
-                                    if (name != '[mode]') {
-                                        name;
-                                    }
-                                    else if (mode == 'drawing') {
-                                        'Mapping Mode';
-                                    }
-                                    else {
-                                        'Drawing Mode';
-                                    }
-                                }}
+                                prefix={getCommandLabel(name)}
                                 inverted
                             >
                                 {map}

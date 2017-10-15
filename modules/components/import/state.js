@@ -110,13 +110,24 @@ class ImportState {
             };
         });
 
+        this.spriteIndex = 0;
         this.sprites.replace(sprites);
+    };
+
+    @action backToDetect = () => {
+        this.sprites.replace([]);
     };
 
     // import stuff
 
     @computed get currentSprite() {
         return this.sprites[this.spriteIndex];
+    }
+
+    @computed get tileQty() {
+        return this.mappings.reduce((a, c) => {
+            return a + (c.width * c.height);
+        }, 0);
     }
 
     canvasRefImport = (node) => {

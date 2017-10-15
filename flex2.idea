@@ -6,6 +6,9 @@ sexy flexible UI layout
 custom mapping formats
 undo / redo
 vim keybindings
+draw directly on sprites
+import reduce mappings/tiles
+full access to dplc/mapping data
 influences; sonmaped, spriteplotter, soniksprite
 ==
 raw editor doesn't clean up anything
@@ -35,5 +38,4 @@ delete unused art (get buffers list when has dplcs)
 
 ====
 
-draw directly on sprite / edit art / <MutableTile/> (palette dropdown for picker with line (!))
-import sprite over active frame
+wheel for select
