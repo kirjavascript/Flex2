@@ -3067,12 +3067,6 @@ react-dom@^15.6.1:
     object-assign "^4.1.0"
     prop-types "^15.5.10"
 
-react-dropdown@^1.3.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/react-dropdown/-/react-dropdown-1.3.0.tgz#11cfce8e2e936b1a8ba2d4a700b1fe19f64c4792"
-  dependencies:
-    classnames "^2.2.3"
-
 react-masonry-component@^5.0.7:
   version "5.0.7"
   resolved "https://registry.yarnpkg.com/react-masonry-component/-/react-masonry-component-5.0.7.tgz#2984ef9749b34c57addec1a7323a6467c9a9ad10"

@@ -40,7 +40,6 @@
         "rc-color-picker": "^1.1.7",
         "react": "^15.6.1",
         "react-dom": "^15.6.1",
-        "react-dropdown": "^1.3.0",
         "react-masonry-component": "^5.0.7",
         "react-motion": "^0.5.2",
         "react-sortable-hoc": "^0.6.7",

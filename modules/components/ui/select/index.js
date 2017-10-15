@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import Dropdown from 'react-dropdown';
+import Dropdown from './dist';
 
 @observer
 export class Select extends Component {
@@ -28,7 +28,7 @@ export class Select extends Component {
     }
 
     render() {
-        const { label, store, accessor, onChange, ...otherProps } = this.props;
+        const { label, store, accessor, onChange, color, ...otherProps } = this.props;
         const value = this.options.find((d) => d.value == store[accessor]).label;
 
         return <div className="row select">
@@ -40,6 +40,7 @@ export class Select extends Component {
                 options={this.options}
                 value={String(value)}
                 onChange={this.onChange}
+                color={color}
             />
         </div>;
     }

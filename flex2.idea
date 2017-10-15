@@ -23,7 +23,7 @@ lil-g/gemini/mainmemory to beta test
 
 when saving, if 0 appears anywhere in the header use its offset for blank sprites
 when saving asm, use the object name as the label name :D
-update dplc status on save
+throw error if dplc mode doesn't match
 divide tile index by 2 for sonic 2 2 player mappings
 create new file | newFactory={(path)=>{}}
 
@@ -35,8 +35,5 @@ delete unused art (get buffers list when has dplcs)
 
 ====
 
-export spritesheet
-draw directly on sprite / edit art / <MutableTile/> (palette dropdown for picker)
+draw directly on sprite / edit art / <MutableTile/> (palette dropdown for picker with line (!))
 import sprite over active frame
-generate palette: npm splashy
-add wheel to number inputs

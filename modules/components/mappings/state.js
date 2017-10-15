@@ -13,6 +13,7 @@ class MappingState {
     @observable scale = 4;
     @observable x = 300;
     @observable y = 300;
+    @observable mode = 'mapping';
 
     @action resetPanAndZoom = () => {
         this.setZoom(4);
@@ -185,6 +186,15 @@ class MappingState {
 
         return getCenter(this.activeMappings);
     }
+
+    // drawing mode
+
+    @observable drawIndex = 0;
+    @observable drawPalette = 0;
+
+    @action toggleMode = () => {
+        this.mode = this.mode == 'mapping' ? 'drawing' : 'mapping';
+    };
 
     // DPLC stuff
 

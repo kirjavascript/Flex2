@@ -17,10 +17,11 @@ import { toJS } from 'mobx';
  * right + outside = pan
  * wheel = zoom
  *
- * Number Inputs;
+ * Inputs;
  *
  * esc = blur
  * up/down = add/subtract
+ * wheel = add/subtract
  */
 
 export const commands = [
@@ -199,6 +200,15 @@ export const commands = [
         },
     ],
 
+    [
+        {
+            map: 'q', name: '[mode]', color: 'green',
+            func: () => {
+                mappingState.toggleMode();
+            },
+        },
+    ],
+
 
     [
         {
@@ -247,8 +257,6 @@ export const commands = [
     ],
 
 
-
-
     [
         {
             map: 'u a', name: 'Unload Art', color: 'red',
@@ -256,11 +264,11 @@ export const commands = [
         },
         {
             map: 'u m', name: 'Unload Mappings', color: 'red',
-            func: () => { environment.mappings.replace([]); },
-        },
-        {
-            map: 'u d', name: 'Unload DPLCs', color: 'red',
-            func: () => { environment.dplcs.replace([]); },
+            func: () => {
+                environment.mappings.replace([]);
+                environment.config.dplcsEnabled &&
+                environment.dplcs.replace([]);
+            },
         },
         {
             map: 'u p', name: 'Unload Palettes', color: 'red',

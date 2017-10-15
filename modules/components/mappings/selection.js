@@ -14,7 +14,7 @@ export class Selection extends Component {
     }
 
     render() {
-        const { color = 'blue', opacity = 0, offset = 0, width = 6 } = this.props;
+        const { color = 'blue', opacity = 0, offset = 0, width = 6, all } = this.props;
         const { x, y } = mappingState;
 
         return <g>
@@ -24,6 +24,7 @@ export class Selection extends Component {
                         extra={offset}
                         color={null}
                         opacity={1 - opacity}
+                        all={all}
                     />
                 </defs>
                 <mask id={`${this.id}-mask`}>
@@ -35,6 +36,7 @@ export class Selection extends Component {
                     extra={offset + width}
                     color={color}
                     opacity={1}
+                    all={all}
                 />
         </g>;
     }
@@ -44,7 +46,7 @@ export class Selection extends Component {
 @observer
 class SelectionLayer extends Component {
     render() {
-        const { extra, color, opacity, ...otherProps } = this.props;
+        const { extra, color, opacity, all, ...otherProps } = this.props;
         const { buffer, index, mappings } = environment.currentSprite;
         const { scale, x, y } = mappingState;
 
@@ -56,7 +58,7 @@ class SelectionLayer extends Component {
                 const ry = (top * scale) - (extra / 2);
 
                 return (
-                    ~mappingState.selectedIndicies.indexOf(mappingIndex) ?
+                    all || ~mappingState.selectedIndicies.indexOf(mappingIndex) ?
                     <rect
                         key={mappingIndex}
                         x={rx + x}

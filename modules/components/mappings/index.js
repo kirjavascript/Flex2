@@ -9,6 +9,7 @@ import { Mapping } from './mapping';
 import { Selection } from './selection';
 import { Axes } from './axis';
 import { HUD } from './hud';
+import { PaletteHUD } from './hud-palette';
 import { Guidelines } from './guidelines';
 import { NewMapping } from './new-mapping';
 import { RawEditor } from './raw-editor';
@@ -46,11 +47,9 @@ export class Mappings extends Component {
     render() {
 
         const { buffer, index, mappings } = environment.currentSprite;
-        const { scale, x, y, baseWidth } = mappingState;
+        const { scale, x, y, baseWidth, mode } = mappingState;
 
         return <div className="mappings" ref={this.onRef}>
-
-
             <div
                 onWheel={this.onZoom}
                 ref={attachDragMoveToNode}
@@ -67,7 +66,7 @@ export class Mappings extends Component {
                             zIndex: mappingIndex,
                             transform: `translate(${x}px,${y}px)`,
                         }}
-                        className="mapping-wrapper"
+                        className={mode == 'mapping' && 'mapping-wrapper'}
                         data-index={mappings.length - 1 - mappingIndex}
                         onDoubleClick={(e) => {
                             const realIndex = mappings.length - 1 - mappingIndex;
@@ -82,9 +81,15 @@ export class Mappings extends Component {
                     </div>;
                 })}
 
-                <HUD/>
-                <Guidelines/>
-                <NewMapping/>
+                { do {
+                    if (mode == 'mapping') {
+                        <div>
+                            <HUD/>
+                            <Guidelines/>
+                            <NewMapping/>
+                        </div>;
+                    }
+                }}
 
                 <svg
                     width={baseWidth}
@@ -93,14 +98,33 @@ export class Mappings extends Component {
                 >
                     <Axes/>
 
-                    <Selection
-                        color="magenta"
-                        opacity={0.2}
-                    />
+                    { do {
+                        if (mode == 'drawing') {
+                            <g>
+                                <Selection
+                                    color="blue"
+                                    opacity={0}
+                                    all
+                                />
+                            </g>;
+                        }
+                        else {
+                            <g>
+                                <Selection
+                                    color="magenta"
+                                    opacity={0.2}
+                                />
 
-                    <DragSelect/>
+                                <DragSelect/>
+                            </g>;
+                        }
+                    }}
+
                 </svg>
+
             </div>
+
+            {mode == 'drawing' && <PaletteHUD/>}
 
             <Slider
                 store={environment.config}
@@ -125,7 +149,17 @@ export class Mappings extends Component {
                                 onClick={func}
                                 key={name}
                                 color={color || 'blue'}
-                                prefix={name}
+                                prefix={do {
+                                    if (name != '[mode]') {
+                                        name;
+                                    }
+                                    else if (mode == 'drawing') {
+                                        'Mapping Mode';
+                                    }
+                                    else {
+                                        'Drawing Mode';
+                                    }
+                                }}
                                 inverted
                             >
                                 {map}

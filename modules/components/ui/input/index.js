@@ -14,25 +14,33 @@ export class Input extends Component {
         this.props.onChange(store[accessor]);
     }
 
-    onKeyDown = (e) => {
+    mutateNum = (num = 1) => {
         const { store, accessor, isNumber, assert = (d) => d } = this.props;
+        store[accessor] = assert(store[accessor] + num);
+        this.props.onChange &&
+        this.props.onChange(store[accessor]);
+    };
 
+    onKeyDown = (e) => {
         if (e.key == 'Escape') {
             e.target.blur();
         }
-        else if (isNumber) {
+        else if (this.props.isNumber) {
             if (e.key == 'ArrowUp') {
-                store[accessor] = assert(store[accessor] + 1);
+                this.mutateNum(1);
                 e.preventDefault();
-                this.props.onChange &&
-                this.props.onChange(store[accessor]);
             }
             else if (e.key == 'ArrowDown') {
-                store[accessor] = assert(store[accessor] - 1);
+                this.mutateNum(-1);
                 e.preventDefault();
-                this.props.onChange &&
-                this.props.onChange(store[accessor]);
             }
+        }
+    };
+
+    onWheel = (e) => {
+        if (this.props.isNumber) {
+            this.mutateNum(e.nativeEvent.deltaY > 0 ? -1 : 1);
+            e.preventDefault();
         }
     };
 
@@ -58,6 +66,7 @@ export class Input extends Component {
                 value={store[accessor]}
                 onChange={this.onChange}
                 onKeyDown={this.onKeyDown}
+                onWheel={this.onWheel}
                 {...otherProps}
             />
         </div>;
