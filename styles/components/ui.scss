@@ -44,13 +44,14 @@ input {
 .select {
     .Dropdown-placeholder {
         @extend input;
+        width: 148px;
     }
     .Dropdown-menu {
         position: absolute;
         border: 1px solid $white2;
         color: $white;
         padding: 5px;
-        width: 150px;
+        width: 148px;
         margin-top: -1px;
         background-color: $black;
         z-index: 1;

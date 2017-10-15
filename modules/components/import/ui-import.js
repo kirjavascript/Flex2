@@ -9,7 +9,7 @@ import { zoomAssert, paletteLineAssert } from '#util/assertions';
 export class ImportSprites extends React.Component {
 
     render() {
-        const { scale, sprites, spriteIndex } = importState;
+        const { scale, sprites, spriteIndex, mappings, importWidth, importHeight } = importState;
 
         return <div className="importer">
 
@@ -45,6 +45,16 @@ export class ImportSprites extends React.Component {
                         Prev Sprite
                     </Item>
 
+                    <Select
+                        options={[
+                            {label: 'Reduce Mappings', value: 'mappings'},
+                            {label: 'Reduce Tiles', value: 'tiles'},
+                        ]}
+                        store={importState}
+                        accessor="type"
+                        onChange={importState.changeType}
+                    />
+
                     <div className="input">
                         <span>Palette</span>
                         <Input
@@ -66,7 +76,10 @@ export class ImportSprites extends React.Component {
                         />
                     </div>
 
-                    Sprite: {spriteIndex+1} / {sprites.length}
+                    <div className="input">
+                        <span>Sprite</span>
+                        <span>{spriteIndex+1} / {sprites.length}</span>
+                    </div>
 
                 </div>
 
@@ -87,16 +100,32 @@ export class ImportSprites extends React.Component {
                 <div
                     className="workspace"
                     style={{
-                        transform: `scale(${scale})`,
-                        width: `${100/scale}%`,
-                        height: `${100/scale}%`,
+                        width: 0,
+                        height: 0,
+                        left: '50%',
+                        top: '50%',
+                        transform: `
+                            scale(${scale})
+                            translate(-${importWidth/2}px,-${importHeight/2}px)
+                        `,
                     }}>
                     <canvas
                         key={`import-${spriteIndex}`}
                         ref={importState.canvasRefImport}
-                        style={{border: '1px solid red'}}
                         className="import-canvas"
                     />
+                    {mappings.map(({x, y, width, height}, i) => (
+                        <div
+                            style={{
+                                top: y,
+                                left: x,
+                                width: (8*width)-1,
+                                height: (8*height)-1,
+                            }}
+                            key={i}
+                            className="import-mapping"
+                        />
+                    ))}
                 </div>
             </div>
         </div>;

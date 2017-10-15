@@ -6,6 +6,7 @@ sexy flexible UI layout
 custom mapping formats
 undo / redo
 vim keybindings
+influences; sonmaped, spriteplotter, soniksprite
 ==
 raw editor doesn't clean up anything
 SCD 23:39 <+flamewing> Mappings is S1; DPLC is S2 -> ?scd flag
@@ -37,3 +38,5 @@ delete unused art (get buffers list when has dplcs)
 export spritesheet
 draw directly on sprite / edit art / <MutableTile/> (palette dropdown for picker)
 import sprite over active frame
+
+add wheel to number inputs

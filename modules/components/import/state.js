@@ -4,7 +4,7 @@ import { errorMsg } from '#util/dialog';
 import { removeBackground } from './remove-background';
 import { colorMatch } from './color-match';
 import { getSpriteBBoxes } from './get-sprite';
-import { getBestOffsets } from './get-active-tiles';
+import { getMappings } from './generate-mappings';
 
 class ImportState {
 
@@ -14,6 +14,10 @@ class ImportState {
 
     @observable bboxes = [];
     @observable sprites = [];
+    @observable mappings = [];
+    @observable type = 'mappings';
+    @observable importWidth = 0;
+    @observable importHeight = 0;
     @observable spriteIndex = 0;
     @observable paletteLine = 0;
     @observable fuzziness = 4;
@@ -26,6 +30,7 @@ class ImportState {
         this.spriteIndex = 0;
         this.bboxes.replace([]);
         this.sprites.replace([]);
+        this.mappings.replace([]);
     };
 
     @action newImport = () => {
@@ -116,19 +121,17 @@ class ImportState {
         if (!node) return;
         this.canvas = node;
         this.ctx = node.getContext('2d');
-        const { canvas, ctx } = this;
+        const { canvas, ctx, type } = this;
         const { width, height, buffer } = this.currentSprite;
 
-        canvas.width = width+16;
-        canvas.height = height+16;
+        canvas.width = this.importWidth = width+16;
+        canvas.height = this.importHeight = height+16;
 
         // draw sprite
         const coloredBuffer = colorMatch(buffer, this.paletteLine);
         ctx.putImageData(coloredBuffer, 8, 8);
 
-
-        console.log(getBestOffsets(canvas, ctx));
-
+        this.mappings.replace(getMappings(canvas, ctx, type));
     };
 
     @action changePalette = () => {
@@ -138,6 +141,11 @@ class ImportState {
         ctx.putImageData(coloredBuffer, 8, 8);
     };
 
+    @action changeType = () => {
+        const { canvas, ctx, type } = this;
+        this.mappings.replace(getMappings(canvas, ctx, type));
+    }
+
     @action importOne = () => {
 
     };
@@ -145,6 +153,7 @@ class ImportState {
     @action importAll = () => {
         // animate fast
         // set index to 0
+        // set flag to check in canvas ref
 
     };
 
@@ -166,20 +175,9 @@ class ImportState {
 const importState = new ImportState();
 export { importState };
 
-//start from top left
-//mappings dont have to be in a grid
-//https://github.com/sonicretro/SonLVL/blob/master/SpritePlotter.NET/Program.cs#L324
 // generate palette: npm splashy
 //
-// place smallest (yet largest) mapping possible in middle based on w/h
 
-// extract bbox into its own new canvas layer
-
-// get bbox -> packing algorithm -> remove empty maps -> shrink where possible
-//
-// bbox: find first pixel -> flood fill non transparent -> trackx/y for bbox
-//
-// 22:58:15 <%snkenjoi> there's always the option to best guess and then allow the user to clean up afterwards -> yes to all
 // 22:58:28 <%snkenjoi> so, present each sprite for adjustment
 // 22:58:40 < flamewing> I think that would be a good compromise, yeah
 // 22:59:14 <%snkenjoi> because it sounds otherwise this is going to be a bit hellish :)

@@ -9,6 +9,9 @@ export class Select extends Component {
         const { store, accessor } = this.props;
         // value is sometimes incorrect so
         store[accessor] = this.options.find((d) => d.label == label).value;
+
+        this.props.onChange &&
+        this.props.onChange(store[accessor]);
     }
 
     constructor(props) {
@@ -25,7 +28,7 @@ export class Select extends Component {
     }
 
     render() {
-        const { label, store, accessor, ...otherProps } = this.props;
+        const { label, store, accessor, onChange, ...otherProps } = this.props;
         const value = this.options.find((d) => d.value == store[accessor]).label;
 
         return <div className="row select">
