@@ -1,9 +1,8 @@
 {
     "name": "Flex2",
     "version": "0.0.1",
-    "main": "index.js",
     "scripts": {
-        "start": "electron . --dev",
+        "start": "electron ./static --dev",
         "crush": "webpack --config ./development/webpack.config.js -p"
     },
     "devDependencies": {

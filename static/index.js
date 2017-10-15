@@ -19,7 +19,7 @@ app.on('ready', function() {
     });
 
     mainWindow.setMenu(null);
-    mainWindow.loadURL('file://' + __dirname + '/static/index.html');
+    mainWindow.loadURL('file://' + __dirname + '/index.html');
 
     mainWindow.on('closed', function() {
         mainWindow = null;
@@ -33,6 +33,6 @@ app.on('ready', function() {
     // development...
 
     process.argv.includes('--dev') &&
-    require('./development')(app, mainWindow);
+    require('./../development')(app, mainWindow);
 
 });
