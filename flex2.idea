@@ -37,4 +37,5 @@ DPLC auto optimisation in edit raw (putting all the used tile indexes into an ar
 convert to/from dplc
 delete unused art (get buffers list when has dplcs)
 
-Import sprite over active frame
+Import sprite over active frame (fix flipping)
+cop out: undo the flips

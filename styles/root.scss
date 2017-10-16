@@ -44,6 +44,15 @@ a {
     z-index: -1;
 }
 
+.canvas-debug {
+    position: absolute;
+    z-index: 10;
+    bottom: 0;
+    left: 0;
+    image-rendering: pixelated;
+    background-color: white;
+}
+
 ::-webkit-scrollbar {
     &:vertical {
         width: $scrollbarWidth;

@@ -2,7 +2,7 @@ import { environment } from '#store/environment';
 import { mappingState } from '#components/mappings/state';
 import { importState } from '#components/import/state';
 import { undo, redo } from '#store/history';
-import { exportPNG } from '#formats/png';
+import { exportPNG, importImg } from '#formats/image';
 import { getDistance } from './distance';
 import { toJS } from 'mobx';
 
@@ -160,7 +160,13 @@ export const commands = [
             },
         },
         {
-            map: 'i', name: 'Import Spritesheet', color: 'blue',
+            map: 'i', name: 'Import Over Sprite', color: 'blue',
+            func: () => {
+                importImg();
+            },
+        },
+        {
+            map: 's', name: 'Import Spritesheet', color: 'blue',
             func: () => {
                 importState.newImport();
             },

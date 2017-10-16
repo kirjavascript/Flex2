@@ -231,7 +231,7 @@ export function getMappings(canvas, ctx, type) {
             mappings.length == fewestMappingsQty
         ));
 
-        return fewestMappingsList.reduce((a, c) => {
+        return fewestMappingsList.slice(1).reduce((a, c) => {
             if (c.offsets.length < a.offsets.length) {
                 return c;
             }

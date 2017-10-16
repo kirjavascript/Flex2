@@ -2,11 +2,12 @@ import { environment } from '#store/environment';
 const { dialog } = require('electron').remote;
 import { writeFile } from 'fs';
 import { errorMsg } from '#util/dialog';
+import { colorMatch } from '#components/import/color-match';
 
 export function exportPNG(debug = false) {
-    const { currentSprite: { buffer, mappings }, palettesRGB } = environment;
+    const { currentSprite: { buffer, mappings }, palettesRGB, sprites } = environment;
 
-    if (!mappings.length) return;
+    if (!mappings.length || !sprites.length) return;
 
     const canvas = document.createElement('canvas');
     if (debug) {
@@ -94,4 +95,114 @@ export function exportPNG(debug = false) {
         }
     });
 
+}
+
+export async function importImg(debug = true) {
+
+    // get path
+
+    const path = await (new Promise((resolve) => {
+        dialog.showOpenDialog({
+            title: 'Import Sprite',
+            properties: ['openFile'],
+            filters: [{name: 'Image File', extensions: ['bmp', 'jpg', 'jpeg', 'png', 'gif']}],
+        }, (paths) => {
+            if (paths) {
+                const [path] = paths;
+                resolve(path);
+            }
+            else {
+                resolve(null);
+            }
+        });
+    }));
+
+    if (!path) return;
+
+    // load image
+
+    const img = await (new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => { resolve(img); };
+        img.onerror = (e) => { resolve(null); };
+        img.src = path;
+    }));
+
+    if (!img) return errorMsg('Import Error', `Error loading ${path}`);
+
+    // get smallest X/Y
+
+    const { currentSprite: { buffer, mappings }, palettesRGB, sprites } = environment;
+
+    const minX = mappings.reduce((a, c) => c.left < a ? c.left : a, Infinity);
+    const minY = mappings.reduce((a, c) => c.top < a ? c.top : a, Infinity);
+
+    if (!mappings.length || !sprites.length) return;
+
+    // render image
+
+    const canvas = document.createElement('canvas');
+    if (debug) {
+        canvas.className = 'canvas-debug';
+        canvas.style.width = '200px';
+        document.body.appendChild(canvas);
+    }
+    canvas.width = img.width;
+    canvas.height = img.height;
+    const ctx = canvas.getContext('2d');
+    // ctx.drawImage(img, 0, 0);
+
+    // convert to tiles
+
+    mappings.forEach(({ top, left, palette, vflip, hflip, width, height, art }) => {
+        const x = left - minX;
+        const y = top - minY;
+        const paletteLine = palettesRGB[palette];
+
+        // handle flipping
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.scale(
+            hflip ? -1 : 1,
+            vflip ? -1 : 1,
+        );
+        ctx.drawImage(img, hflip ? - (canvas.width): 0, vflip ? - (canvas.height): 0);
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+
+        for (let i = 0; i < (width * height); i++) {
+            const offX = 0|(i / height);
+            const offY = (i % height);
+
+            const tileBuffer = colorMatch(ctx.getImageData(x + (8*offX), y + (8*offY), 8, 8), palette);
+
+            const bufferOffset = art + i;
+            if (bufferOffset < buffer.length) {
+                buffer[bufferOffset].replace(getPixels(tileBuffer, paletteLine));
+            }
+        }
+            // reset scale
+    });
+
+}
+
+function getPixels(tileBuffer, paletteLine) {
+    let pixels = [];
+    for (let j = 0; j < tileBuffer.data.length; j+=4) {
+        if (tileBuffer.data[j+3] == 0) {
+            pixels.push(0);
+        }
+        else {
+            for (let p = 1; p < paletteLine.length; p++) {
+                let [R, G, B] = paletteLine[p];
+                if (
+                    R == tileBuffer.data[j] &&
+                    G == tileBuffer.data[j+1] &&
+                    B == tileBuffer.data[j+2]
+                ) {
+                    pixels.push(p);
+                    break;
+                }
+            }
+        }
+    }
+    return pixels;
 }
