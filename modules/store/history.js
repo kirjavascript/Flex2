@@ -3,7 +3,7 @@ import debounce from 'lodash/debounce';
 import throttle from 'lodash/throttle';
 import { environment } from './environment';
 
-const maxHistory = 100;
+const maxHistory = 1000;
 let past = [];
 let now = void 0;
 let future = [];

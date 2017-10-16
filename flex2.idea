@@ -32,10 +32,9 @@ create new file | newFactory={(path)=>{}}
 
 ====
 
+Arrange tile by sprite order
 DPLC auto optimisation in edit raw (putting all the used tile indexes into an array, sorted, and did a loop increasing the tile number until it hit 16 tiles or a non-matching element in the array)
 convert to/from dplc
 delete unused art (get buffers list when has dplcs)
 
-====
-
-wheel for select
+Import sprite over active frame

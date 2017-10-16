@@ -132,12 +132,12 @@ let Dropdown = function (_Component) {
                     className: optionClass,
                     onMouseDown: this.setValue.bind(this, value, label),
                     onClick: this.setValue.bind(this, value, label),
-                    style: this.props.color ? {
+                    style: this.props.color && label[0] == '#' ? {
                         backgroundColor: label,
                         height: 15,
                     } : void 0,
                 },
-                this.props.color ? '' : label
+                this.props.color && label[0] == '#' ? '' : label
               );
         }
     }, {
@@ -203,12 +203,12 @@ let Dropdown = function (_Component) {
                 {
                     className: baseClassName + '-placeholder',
                     onWheel: this.props.onWheel,
-                    style: this.props.color ? {
+                    style: this.props.color && placeHolderValue[0] == '#' ? {
                         backgroundColor: placeHolderValue,
-                        height: 15,
-                    } : void 0,
+                        height: 14,
+                    } : this.props.color ? { height: 14 } : void 0,
                 },
-        this.props.color ? '' : placeHolderValue
+        this.props.color && placeHolderValue[0] == '#' ? '' : placeHolderValue
       );
             let menu = this.state.isOpen ? _react2.default.createElement(
         'div',

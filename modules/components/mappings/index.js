@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Masonry from 'react-masonry-component';
 import { observer } from 'mobx-react';
 import { environment } from '#store/environment';
+import classNames from 'classnames';
 import { commands, getCommandLabel } from '#controls/commands';
 import { mappingState } from './state';
 import { Item, Slider } from '#ui';
@@ -47,7 +48,7 @@ export class Mappings extends Component {
     render() {
 
         const { buffer, index, mappings } = environment.currentSprite;
-        const { scale, x, y, baseWidth, mode } = mappingState;
+        const { scale, x, y, baseWidth, mode, selectedIndicies } = mappingState;
 
         return <div className="mappings" ref={this.onRef}>
             <div
@@ -60,16 +61,19 @@ export class Mappings extends Component {
                 }}
             >
                 {mappings.reverse().map((mapping, mappingIndex) => {
+                    const realIndex = mappings.length - 1 - mappingIndex;
                     return <div
                         key={mappingIndex}
                         style={{
                             zIndex: mappingIndex,
                             transform: `translate(${x}px,${y}px)`,
                         }}
-                        className={mode == 'mapping' && 'mapping-wrapper'}
-                        data-index={mappings.length - 1 - mappingIndex}
+                        className={classNames({
+                            'mapping-wrapper': mode == 'mapping',
+                            'noselect': !selectedIndicies.includes(realIndex),
+                        })}
+                        data-index={realIndex}
                         onDoubleClick={(e) => {
-                            const realIndex = mappings.length - 1 - mappingIndex;
                             mappingState.selectToggle(realIndex);
                         }}
                     >

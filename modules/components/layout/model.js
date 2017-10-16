@@ -13,7 +13,7 @@ const DEFAULT_LAYOUT = {
         'children': [
             {
                 'type': 'tabset',
-                'weight': 11.4,
+                'weight': 14,
                 'id': '#13',
                 'children': [
                     {

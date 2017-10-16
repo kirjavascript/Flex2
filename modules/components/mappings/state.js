@@ -13,7 +13,6 @@ class MappingState {
     @observable scale = 4;
     @observable x = 300;
     @observable y = 300;
-    @observable mode = 'mapping';
 
     @action resetPanAndZoom = () => {
         this.setZoom(4);
@@ -35,7 +34,20 @@ class MappingState {
         this.guidelines.y = (y / this.scale) * newScale;
         this.guidelines.x = (x / this.scale) * newScale;
         // set scale
+        // this.x += 20;
+
         this.scale = newScale;
+    };
+
+    // drawing mode
+
+    @observable drawIndexLeft = 1;
+    @observable drawIndexRight = 0;
+    @observable drawPalette = 0;
+    @observable mode = 'mapping';
+
+    @action toggleMode = () => {
+        this.mode = this.mode == 'mapping' ? 'drawing' : 'mapping';
     };
 
     // guidelines
@@ -116,7 +128,13 @@ class MappingState {
     };
 
     @action placeNewMapping = () => {
+        if (!environment.mappings.length) {
+            this.newMapping.piece = void 0;
+            return;
+        }
+
         const { currentSprite: { mappings, dplcs }, config: { dplcsEnabled } } = environment;
+
         const { piece } = this.newMapping;
 
         const left = (piece.left - (this.x/this.scale))|0;
@@ -186,15 +204,6 @@ class MappingState {
 
         return getCenter(this.activeMappings);
     }
-
-    // drawing mode
-
-    @observable drawIndex = 1; // skip index 0
-    @observable drawPalette = 0;
-
-    @action toggleMode = () => {
-        this.mode = this.mode == 'mapping' ? 'drawing' : 'mapping';
-    };
 
     // DPLC stuff
 

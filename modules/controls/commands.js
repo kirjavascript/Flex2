@@ -133,6 +133,14 @@ export const commands = [
             },
         },
         {
+            map: 'n t', name: 'New Tile', color: 'green',
+            func: () => {
+                environment.tiles.push(
+                    Array.from({length: 64}).fill((0|Math.random()*15)+1)
+                );
+            },
+        },
+        {
             map: 'c', name: 'Clone Sprite', color: 'green',
             func: () => {
                 const { currentSprite, dplcsEnabled } = environment.config;

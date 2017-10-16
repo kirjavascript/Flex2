@@ -12,6 +12,9 @@ export function buffersToColors(list) {
     list.forEach(({buffer, length}) => {
         const data = Uint8Array.from(buffer);
         for (let i = 0; i < length * 32; i+=2) {
+            if (data.length <= i) {
+                throw new Error('Trying to load more palettes than exist');
+            }
             const [b, gr] = [
                 data[i].toString(16),
                 data[i+1].toString(16).padStart(2, '0'),

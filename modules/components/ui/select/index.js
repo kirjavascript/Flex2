@@ -15,9 +15,9 @@ export class Select extends Component {
     }
 
     onWheel = (e) => {
-        const { store, accessor } = this.props;
+        const { store, accessor, flipScroll } = this.props;
         const delta = e.nativeEvent.deltaY > 0 ? 1 : -1;
-        const index = delta + this.options.findIndex((d) => d.value == store[accessor]);
+        const index = (delta * (flipScroll ? -1 : 1))  + this.options.findIndex((d) => d.value == store[accessor]);
 
         if (index >= 0 && index < this.options.length) {
             store[accessor] = this.options[index].value;

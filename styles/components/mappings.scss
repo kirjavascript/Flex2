@@ -18,9 +18,9 @@
     background-image: url(../images/t.png);
     overflow: hidden;
 
-    .mapping-wrapper .mapping {
+    .mapping-wrapper.noselect .mapping {
         &:hover {
-            outline: 3px solid $blue;
+            background-color: $magenta;
             opacity: .5;
             filter: blur(1px);
         }

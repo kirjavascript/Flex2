@@ -165,6 +165,7 @@ export class ObjectConfig extends Component {
                                     options={paletteLengths}
                                     store={palette}
                                     accessor="length"
+                                    flipScroll
                                 />
                             </div>;
                         })}

@@ -5,3 +5,5 @@ electron-packager ./static Flex2 --platform=linux --arch=x64 --asar --overwrite
 --all
 --icon app/index.ico
 https://www.christianengvall.se/electron-packager-tutorial/
+
+create a shell script
