@@ -97,7 +97,7 @@ export function exportPNG(debug = false) {
 
 }
 
-export async function importImg(debug = true) {
+export async function importImg(debug = false) {
 
     // get path
 
@@ -150,38 +150,69 @@ export async function importImg(debug = true) {
     canvas.width = img.width;
     canvas.height = img.height;
     const ctx = canvas.getContext('2d');
-    // ctx.drawImage(img, 0, 0);
+    ctx.drawImage(img, 0, 0);
 
     // convert to tiles
 
-    mappings.forEach(({ top, left, palette, vflip, hflip, width, height, art }) => {
+    mappings.forEach(async ({ top, left, palette, vflip, hflip, width, height, art }) => {
         const x = left - minX;
         const y = top - minY;
         const paletteLine = palettesRGB[palette];
 
         // handle flipping
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.scale(
-            hflip ? -1 : 1,
-            vflip ? -1 : 1,
+        const flipCtx = await flipBuffer(
+            ctx.getImageData(x, y, width * 8, height * 8),
+            hflip,
+            vflip,
         );
-        ctx.drawImage(img, hflip ? - (canvas.width): 0, vflip ? - (canvas.height): 0);
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
 
         for (let i = 0; i < (width * height); i++) {
-            const offX = 0|(i / height);
-            const offY = (i % height);
+            const offX = (0|(i / height)) * 8;
+            const offY = (i % height) * 8;
 
-            const tileBuffer = colorMatch(ctx.getImageData(x + (8*offX), y + (8*offY), 8, 8), palette);
+            const tileBuffer = colorMatch(flipCtx.getImageData(offX, offY, 8, 8), palette);
 
             const bufferOffset = art + i;
             if (bufferOffset < buffer.length) {
                 buffer[bufferOffset].replace(getPixels(tileBuffer, paletteLine));
             }
         }
-            // reset scale
+
     });
 
+}
+
+function flipBuffer(buffer, hflip, vflip) {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+
+    return new Promise((resolve) => {
+        canvas.width = buffer.width;
+        canvas.height = buffer.height;
+        ctx.putImageData(buffer, 0, 0);
+
+        if (!hflip && !vflip) {
+            resolve(ctx);
+        }
+        else {
+            const img = new Image();
+
+            img.onload = () => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.scale(
+                    hflip ? -1 : 1,
+                    vflip ? -1 : 1,
+                );
+                ctx.drawImage(img, hflip ? - (canvas.width): 0, vflip ? - (canvas.height): 0);
+                resolve(ctx);
+            };
+            img.onerror = () => {
+                // throw new Error('Mapping fragment error');
+            };
+            img.src = canvas.toDataURL();
+        }
+
+    });
 }
 
 function getPixels(tileBuffer, paletteLine) {

@@ -96,6 +96,7 @@ const SortableMappingItem = SortableElement(observer(({mapping, mappingIndex}) =
                     store={mapping}
                     accessor="palette"
                     options={[0, 1, 2, 3]}
+                    flipScroll
                 />
             </div>
         </div>
