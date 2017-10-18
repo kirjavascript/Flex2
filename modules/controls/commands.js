@@ -185,7 +185,7 @@ export const commands = [
             },
         },
         {
-            map: 'd m', name: 'Delete Selected', color: 'red',
+            map: 'd m', name: 'Delete Mappings', color: 'red',
             func: () => {
                 const { selectedIndicies, hasActive } = mappingState;
                 const { currentSprite, dplcsEnabled } = environment;
@@ -199,6 +199,12 @@ export const commands = [
                     mappingState.selectedIndicies.replace([]);
                     mappingState.deleteUnusedDPLCs();
                 }
+            },
+        },
+        {
+            map: 'd u', name: 'Delete Unused Tiles', color: 'red',
+            func: () => {
+                mappingState.deleteUnusedTiles();
             },
         },
     ],

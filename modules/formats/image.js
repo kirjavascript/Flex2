@@ -142,11 +142,6 @@ export async function importImg(debug = false) {
     // render image
 
     const canvas = document.createElement('canvas');
-    if (debug) {
-        canvas.className = 'canvas-debug';
-        canvas.style.width = '200px';
-        document.body.appendChild(canvas);
-    }
     canvas.width = img.width;
     canvas.height = img.height;
     const ctx = canvas.getContext('2d');

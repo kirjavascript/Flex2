@@ -26,7 +26,7 @@ lil-g/gemini/mainmemory to beta test
 
 when saving, if 0 appears anywhere in the header use its offset for blank sprites
 when saving asm, use the object name as the label name :D
-throw error if dplc mode doesn't match
+throw error if dplc mode doesn't match (suggest converting)
 divide tile index by 2 for sonic 2 2 player mappings
 create new file | newFactory={(path)=>{}}
 
@@ -34,12 +34,9 @@ create new file | newFactory={(path)=>{}}
 
 Arrange tile by sprite order -> (check already used)
 DPLC auto optimisation in edit raw (putting all the used tile indexes into an array, sorted, and did a loop increasing the tile number until it hit 16 tiles or a non-matching element in the array)
-convert to/from dplc
-delete unused art (get buffers list when has dplcs)
-export sprite sheet
-splashy: generate palette
+instead of getting all the indicies in an array, see if art + size == art of next DPLC, and if size + size < 17 (!) (do when importing)
 
-Import sprite over active frame (fix flipping)
-cop out: undo the flips
-alternative: use temp canvas to flip it on?!
-flipBuffer(buffer, hflip, vflip)
+====
+
+try d3-zoom
+convert to/from dplc

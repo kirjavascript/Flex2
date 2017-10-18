@@ -1,4 +1,5 @@
-import { toJS } from 'mobx';
+import { autorun } from 'mobx';
+import debounce from 'lodash/debounce';
 
 let saveData = true;
 
@@ -29,6 +30,11 @@ export function storage(obj, name) {
         }
     }
 
+    // save during editing
+    // const save = debounce((data) => { localStorage.setItem(name, data); }, 1000);
+    // autorun(() => { save(JSON.stringify(obj)); });
+
+    // save on close
     window.addEventListener('beforeunload', () => {
         if (saveData) {
             localStorage.setItem(name, JSON.stringify(obj));
