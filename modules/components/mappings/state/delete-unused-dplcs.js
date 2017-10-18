@@ -57,10 +57,10 @@ function deleteDPLCs (dplcStatus, dplcTiles) {
 export function deleteUnusedDPLCs() {
     const { currentSprite: { mappings, dplcs }, config } = environment;
 
-    const dplcTiles = getDPLCTiles();
-    const mappingTiles = getMappingTiles();
-
     if (config.dplcsEnabled) {
+        const dplcTiles = getDPLCTiles();
+        const mappingTiles = getMappingTiles();
+
         // get list of tiles used by mappings
         const tiles = flatten(mappingTiles);
 
