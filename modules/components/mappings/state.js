@@ -34,8 +34,6 @@ class MappingState {
         this.guidelines.y = (y / this.scale) * newScale;
         this.guidelines.x = (x / this.scale) * newScale;
         // set scale
-        // this.x += 20;
-
         this.scale = newScale;
     };
 
