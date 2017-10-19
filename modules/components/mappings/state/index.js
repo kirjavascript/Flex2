@@ -5,6 +5,7 @@ import { getCenter } from '#util/get-center';
 import { placeNewMapping } from './place-new-mapping';
 import { deleteUnusedDPLCs } from './delete-unused-dplcs';
 import { deleteUnusedTiles } from './delete-unused-tiles';
+import { toggleDPLCs } from './toggle-dplcs';
 
 class MappingState {
 
@@ -36,7 +37,6 @@ class MappingState {
         this.guidelines.x = (x / this.scale) * newScale;
         // set scale
         this.scale = newScale;
-        true;
     };
 
     // drawing mode
@@ -160,6 +160,7 @@ class MappingState {
 
     @action deleteUnusedDPLCs = deleteUnusedDPLCs;
     @action deleteUnusedTiles = deleteUnusedTiles;
+    @action toggleDPLCs = toggleDPLCs;
 
 }
 

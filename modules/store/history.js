@@ -15,7 +15,7 @@ export function initHistory() {
 
         const { config, palettes, mappings, dplcs, tiles } = environment;
         // traverse everything we want to react to...
-        const { currentSprite } = config;
+        const { dplcsEnabled } = config;
         tiles.forEach((a) => {a.forEach((b) => {b;});});
         palettes.forEach((a) => {a.forEach((b) => {b;});});
         mappings.forEach((a) => {a.forEach((b) => Object.values(b));});
@@ -31,15 +31,15 @@ function getCurrent() {
     const { config, palettes, mappings, dplcs, tiles } = toJS(environment);
 
     return {
-        currentSprite: config.currentSprite,
+        dplcsEnabled: config.dplcsEnabled,
         palettes, mappings, tiles, dplcs,
     };
 }
 
 function setCurrent() {
-    const { currentSprite, palettes, mappings, tiles, dplcs } = now;
+    const { dplcsEnabled, palettes, mappings, tiles, dplcs } = now;
     environment.doAction(() => {
-        environment.config.currentSprite = currentSprite;
+        environment.config.dplcsEnabled = dplcsEnabled;
         environment.palettes.replace(palettes);
         environment.mappings.replace(mappings);
         environment.tiles.replace(tiles);
@@ -48,8 +48,6 @@ function setCurrent() {
 }
 
 const addHistory = debounce(() => {
-
-    const { config, palettes, mappings, dplcs, tiles } = environment;
 
     now && past.push(now);
 

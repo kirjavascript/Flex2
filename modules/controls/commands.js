@@ -30,19 +30,63 @@ import { toJS } from 'mobx';
 
 export function getCommandLabel(name) {
     return do {
-        if (name != '[mode]') {
-            name;
+        if (name == '[mode]') {
+            mappingState.mode == 'drawing' ? 'Mapping Mode' : 'Drawing Mode';
         }
-        else if (mappingState.mode == 'drawing') {
-            'Mapping Mode';
+        else if (name == '[dplcs]') {
+            environment.config.dplcsEnabled ? 'Disable DPLCs' : 'Enable DPLCs';
         }
         else {
-            'Drawing Mode';
+            name;
         }
     };
 }
 
 export const commands = [
+
+    [
+        {
+            map: 'n s', name: 'New Sprite', color: 'green',
+            func: () => {
+                const { currentSprite, dplcsEnabled } = environment.config;
+                environment.mappings.splice(currentSprite+1, 0, []);
+                dplcsEnabled &&
+                environment.dplcs.splice(currentSprite+1, 0, []);
+                environment.config.currentSprite++;
+            },
+        },
+        {
+            map: 'n m', name: 'New Mapping', color: 'green',
+            func: () => {
+                mappingState.newMapping.active = !mappingState.newMapping.active;
+            },
+        },
+        {
+            map: 'n t', name: 'New Tile', color: 'green',
+            func: () => {
+                environment.tiles.push(
+                    Array.from({length: 64}).fill((0|Math.random()*15)+1)
+                );
+            },
+        },
+        {
+            map: 'c s', name: 'Clone Sprite', color: 'green',
+            func: () => {
+                const { currentSprite, dplcsEnabled } = environment.config;
+                const { mappings, dplcs } = environment.currentSprite;
+                environment.mappings.splice(currentSprite+1, 0, toJS(mappings));
+                dplcsEnabled &&
+                environment.dplcs.splice(currentSprite+1, 0, toJS(dplcs));
+            },
+        },
+        {
+            map: 'c t', name: 'Clone Sprite & Tiles', color: 'green',
+            func: () => {
+                alert('todo');
+
+            },
+        },
+    ],
 
     [
         {
@@ -74,6 +118,22 @@ export const commands = [
                     mapping.vflip = !mapping.vflip;
                     const yOffset = mapping.top + (mapping.height * 8 / 2) - y;
                     mapping.top = - yOffset - (mapping.height * 8 / 2) + y;
+                });
+            },
+        },
+        {
+            map: 'f', name: 'Toggle Priority', color: 'orange',
+            func: (e) => {
+                mappingState.mutateActive((mapping) => {
+                    mapping.priority = !mapping.priority;
+                });
+            },
+        },
+        {
+            map: 'p', name: 'Shift Palette', color: 'orange',
+            func: (e) => {
+                mappingState.mutateActive((mapping) => {
+                    mapping.palette = (mapping.palette+1) % 4;
                 });
             },
         },
@@ -112,42 +172,6 @@ export const commands = [
                 mappingState.mutateActive((mapping) => {
                     mapping.top += getDistance();
                 });
-            },
-        },
-    ],
-    [
-        {
-            map: 'n s', name: 'New Sprite', color: 'green',
-            func: () => {
-                const { currentSprite, dplcsEnabled } = environment.config;
-                environment.mappings.splice(currentSprite+1, 0, []);
-                dplcsEnabled &&
-                environment.dplcs.splice(currentSprite+1, 0, []);
-                environment.config.currentSprite++;
-            },
-        },
-        {
-            map: 'n m', name: 'New Mapping', color: 'green',
-            func: () => {
-                mappingState.newMapping.active = !mappingState.newMapping.active;
-            },
-        },
-        {
-            map: 'n t', name: 'New Tile', color: 'green',
-            func: () => {
-                environment.tiles.push(
-                    Array.from({length: 64}).fill((0|Math.random()*15)+1)
-                );
-            },
-        },
-        {
-            map: 'c', name: 'Clone Sprite', color: 'green',
-            func: () => {
-                const { currentSprite, dplcsEnabled } = environment.config;
-                const { mappings, dplcs } = environment.currentSprite;
-                environment.mappings.splice(currentSprite+1, 0, toJS(mappings));
-                dplcsEnabled &&
-                environment.dplcs.splice(currentSprite+1, 0, toJS(dplcs));
             },
         },
     ],
@@ -209,43 +233,6 @@ export const commands = [
         },
     ],
 
-    [
-        {
-            map: 'f', name: 'Toggle Priority', color: 'orange',
-            func: (e) => {
-                mappingState.mutateActive((mapping) => {
-                    mapping.priority = !mapping.priority;
-                });
-            },
-        },
-        {
-            map: 'p', name: 'Shift Palette', color: 'orange',
-            func: (e) => {
-                mappingState.mutateActive((mapping) => {
-                    mapping.palette = (mapping.palette+1) % 4;
-                });
-            },
-        },
-    ],
-
-
-    [
-        {
-            map: 'r', name: 'Raw Editor', color: 'red',
-            func: () => {
-                mappingState.rawEditor.active = !mappingState.rawEditor.active;
-            },
-        },
-    ],
-
-    [
-        {
-            map: 'q', name: '[mode]', color: 'green',
-            func: () => {
-                mappingState.toggleMode();
-            },
-        },
-    ],
 
 
     [
@@ -256,6 +243,30 @@ export const commands = [
         {
             map: 'mod+r', name: 'Redo', color: 'magenta',
             func: () => { redo(); },
+        },
+    ],
+
+    [
+        {
+            map: 'r', name: 'Raw Editor', color: 'white',
+            func: () => {
+                mappingState.rawEditor.active = !mappingState.rawEditor.active;
+            },
+        },
+    ],
+
+    [
+        {
+            map: 'm', name: '[mode]', color: 'orange',
+            func: () => {
+                mappingState.toggleMode();
+            },
+        },
+        {
+            map: 'l', name: '[dplcs]', color: 'orange',
+            func: () => {
+                mappingState.toggleDPLCs();
+            },
         },
     ],
 
@@ -279,21 +290,6 @@ export const commands = [
         },
     ],
 
-    [
-        {
-            map: 't', name: 'Transparency', color: 'magenta',
-            func: () => { environment.config.transparency = !environment.config.transparency; },
-        },
-        {
-            map: '=', name: 'Reset Pan/Zoom', color: 'magenta',
-            func: () => { mappingState.resetPanAndZoom(); },
-        },
-        {
-            map: 'g', name: 'Guidelines', color: 'magenta',
-            func: () => { mappingState.guidelines.enabled = !mappingState.guidelines.enabled; },
-        },
-    ],
-
 
     [
         {
@@ -313,4 +309,20 @@ export const commands = [
             func: () => { environment.resetPalettes(); },
         },
     ],
+
+    [
+        {
+            map: 't', name: 'Transparency', color: 'magenta',
+            func: () => { environment.config.transparency = !environment.config.transparency; },
+        },
+        {
+            map: '=', name: 'Reset Pan/Zoom', color: 'magenta',
+            func: () => { mappingState.resetPanAndZoom(); },
+        },
+        {
+            map: 'g', name: 'Guidelines', color: 'magenta',
+            func: () => { mappingState.guidelines.enabled = !mappingState.guidelines.enabled; },
+        },
+    ],
+
 ];

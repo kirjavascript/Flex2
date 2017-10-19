@@ -1,10 +1,13 @@
 {
   "ecmaVersion": 7,
-  "libs": ["browser", "react"],
+  "libs": ["browser", "react", "ecma5", "ecma6"],
   "plugins": {
     "jsx": {},
     "node": {},
     "modules": {},
-    "es_modules": {}
+    "es_modules": {},
+    "webpack": {
+        "configPath": "./.tern.resolve.js"
+    }
   }
 }
