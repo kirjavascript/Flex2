@@ -1,24 +1,13 @@
 import React, { Component } from 'react';
 import { environment } from '#store/environment';
+import { mappingState } from '../mappings/state';
 import { Tile } from './tile';
-import { Select } from '#ui';
-import { AutoSizer, List } from 'react-virtualized';
-import { autorun } from 'mobx';
+import { observer } from 'mobx-react';
+import { scrollbarWidth } from '!!sass-variables-loader!#styles/variables.scss';
+import { DimensionsComponent } from '#util/dimensions-component';
 
-export class Art extends Component {
-
-    onListRef = (node) => {
-        if (node) {
-            this.disposer = autorun(() => {
-                environment.tiles.forEach((tile) => {});
-                this.forceUpdate();
-                // node.forceUpdateGrid();
-            });
-        }
-        else {
-            this.disposer();
-        }
-    };
+@observer
+export class Art extends DimensionsComponent {
 
     mousedown = false;
     onMouseDown = () => { this.mousedown = true; };
@@ -32,6 +21,14 @@ export class Art extends Component {
         const scale = 4;
         const baseSize = scale * 8;
         const { tiles } = environment;
+        const { width, height, scroll } = this.state;
+
+        const realItemsPerRow = Math.floor(width / baseSize);
+        const itemsPerRow = Math.max(1, realItemsPerRow);
+        const rowCount = Math.ceil(tiles.length / itemsPerRow);
+        const remainder = !realItemsPerRow ? 0 : -(parseInt(scrollbarWidth)/2) + (width % baseSize) / 2;
+        const baseIndex = (0|(scroll / baseSize)) * itemsPerRow;
+        const itemQty = (itemsPerRow * (height / baseSize)) + (itemsPerRow * 2);
 
         return <div
             className="art"
@@ -39,54 +36,40 @@ export class Art extends Component {
             onMouseUp={this.onMouseUp}
             onMouseLeave={this.onMouseUp}
         >
+            <div ref={this.onContainerRef} className="tile-container">
+                <div className="tile-list" style={{height: rowCount * baseSize || 0}}>
+                    {tiles.map((tile, index) => {
 
-            <div className="autoWrapper">
-                <AutoSizer>
-                    {({ height, width }) => {
-                        const itemsPerRow = Math.floor(width / baseSize);
-                        const rowCount = Math.ceil(tiles.length / itemsPerRow);
+                        const x = remainder + (index % itemsPerRow) * baseSize;
+                        const y = (0|(index / itemsPerRow)) * baseSize;
+                        const shouldRender = index >= baseIndex && index < baseIndex + itemQty;
 
-                        return <List
-                            ref={this.onListRef}
-                            width={width}
-                            height={height}
-                            rowCount={rowCount}
-                            rowHeight={baseSize}
-                            overscanRowCount={0}
-                            rowRenderer={({ index, key, style }) => {
-
-                                const startIndex = index * itemsPerRow;
-
-                                const { tiles } = environment;
-                                return (
-                                      <div
-                                          key={index}
-                                          style={style}
-                                          className="listRow"
-                                      >
-                                            {Array.from({length: itemsPerRow}, (_, i) => {
-                                                if (tiles.length <= startIndex + i) return;
-
-                                                return <Tile
-                                                    key={startIndex + i}
-                                                    data={tiles[startIndex + i]}
-                                                    paletteLine={0}
-                                                    scale={scale}
-                                                    onMouseDown={() => {
-                                                        this.setTile(startIndex + i);
-                                                    }}
-                                                    onMouseEnter={() => {
-                                                        this.mousedown &&
-                                                        this.setTile(startIndex + i);
-                                                    }}
-                                                />;
-                                            })}
-                                      </div>
-                                );
-                            }}
-                        />;
-                    }}
-                </AutoSizer>
+                        return shouldRender && (
+                            <Tile
+                                key={index}
+                                data={tile}
+                                paletteLine={0}
+                                scale={scale}
+                                onMouseDown={() => {
+                                    mappingState.newMapping.active = true;
+                                    this.setTile(index);
+                                }}
+                                onMouseEnter={() => {
+                                    this.mousedown &&
+                                    this.setTile(index);
+                                }}
+                                style={{
+                                    position: 'absolute',
+                                    top: y,
+                                    left: x,
+                                    width: scale * 8,
+                                    height: scale * 8,
+                                }}
+                                className={false ? 'tile-active' : ''}
+                            />
+                        );
+                    })}
+                </div>
             </div>
 
         </div>;

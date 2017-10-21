@@ -44,7 +44,6 @@
         "react-masonry-component": "^5.0.7",
         "react-motion": "^0.5.2",
         "react-sortable-hoc": "^0.6.7",
-        "react-virtualized": "^9.9.0",
         "victory": "^0.22.2"
     }
 }

@@ -51,6 +51,7 @@ export class Mappings extends Component {
         const { scale, x, y, baseWidth, mode, selectedIndicies } = mappingState;
 
         return <div className="mappings" ref={this.onRef}>
+
             <div
                 onWheel={this.onZoom}
                 ref={attachDragMoveToNode}

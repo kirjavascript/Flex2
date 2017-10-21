@@ -39,7 +39,7 @@ export class Axes extends Component {
                 orientation="top"
                 style={style}
                 standalone={true}
-                tickCount={(baseWidth/100)|0}
+                tickCount={Math.max(1, (baseWidth/100)|0)}
                 tickFormat={tickFormat}
             />
             <VictoryAxis

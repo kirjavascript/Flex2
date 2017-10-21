@@ -82,8 +82,33 @@ export const commands = [
         {
             map: 'c t', name: 'Clone Sprite & Tiles', color: 'green',
             func: () => {
-                alert('todo');
-
+                const { tiles, config, doAction } = environment;
+                const { currentSprite, dplcsEnabled } = config;
+                const { mappings, dplcs } = environment.currentSprite;
+                doAction(() => {
+                    if (dplcsEnabled) {
+                        const newDPLCs = toJS(dplcs);
+                        newDPLCs.forEach((dplc) => {
+                            for (let i = 0; i < dplc.size; i++) {
+                                tiles.push(toJS(tiles[dplc.art + i]));
+                            }
+                            dplc.art = tiles.length - dplc.size;
+                        });
+                        environment.dplcs.splice(currentSprite+1, 0, newDPLCs);
+                        environment.mappings.splice(currentSprite+1, 0, toJS(mappings));
+                    }
+                    else {
+                        const newMappings = toJS(mappings);
+                        newMappings.forEach((mapping) => {
+                            const size = mapping.width * mapping.height;
+                            for (let i = 0; i < size; i++) {
+                                tiles.push(toJS(tiles[mapping.art + i]));
+                            }
+                            mapping.art = tiles.length - size;
+                        });
+                        environment.mappings.splice(currentSprite+1, 0, newMappings);
+                    }
+                });
             },
         },
     ],
@@ -286,7 +311,7 @@ export const commands = [
         },
         {
             map: '>', name: 'Last Sprite', color: 'yellow',
-            func: () => { environment.config.currentSprite = Infinity; },
+            func: () => { environment.config.currentSprite = environment.mappings.length -1; },
         },
     ],
 

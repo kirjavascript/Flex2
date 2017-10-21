@@ -1,12 +1,3 @@
-.tile-list {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.tile {
-    image-rendering: pixelated;
-}
 .tile-nodata {
     background-color: $red;
     opacity: .3;
@@ -14,17 +5,17 @@
 
 .art {
     height: 100%;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
-    .autoWrapper {
-        flex-grow: 1;
-        width: 100%;
-        .ReactVirtualized__List:focus {
-            outline: none;
-        }
-        .listRow {
-            display: flex;
-        }
-    }
+}
 
+.tile-container {
+    width: 100%;
+    overflow: scroll;
+    overflow-x: hidden;
+    flex-grow: 1;
+    .tile-list {
+        position: relative;
+    }
 }

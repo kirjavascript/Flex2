@@ -1,6 +1,7 @@
 import { readFile } from 'fs';
 import { extname } from 'path';
-import { observable, computed, action, autorun, toJS } from 'mobx';
+import { observable, computed, action, autorun, toJS, spy } from 'mobx';
+import range from 'lodash/range';
 import { storage } from './storage';
 import { initHistory } from './history';
 import { workspace } from '#store/workspace';
@@ -28,9 +29,13 @@ class Environment {
         // each tile is a length 16 array of palette line indexes
     ];
 
-    @observable mappings = [];
+    @observable mappings = [
+        // {art, top, left, priority, palette, hflip, vflip, width, height}
+    ];
 
-    @observable dplcs = [];
+    @observable dplcs = [
+        // {art, size}
+    ];
 
     @computed get palettesRGB() {
         return this.palettes.map((palette) => (
@@ -74,6 +79,17 @@ class Environment {
         return this.sprites[this.config.currentSprite]
             || this.sprites[0]
             || { mappings: [], buffer: [], index: 0, dplcs: [], };
+    }
+
+    @computed get activeTiles() {
+        const { config: { dplcsEnabled }, currentSprite: { mappings, dplcs } } = environment;
+        let activeTiles = [];
+        (dplcsEnabled ? dplcs : mappings)
+            .forEach(({art, width, height, size}) => {
+                activeTiles.push(...range(art, art + (size || width * height)));
+            });
+
+        return activeTiles;
     }
 
     @action loadObject = (obj) => {

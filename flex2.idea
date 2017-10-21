@@ -32,12 +32,7 @@ create new file | newFactory={(path)=>{}}
 ====
 
 Arrange tile by sprite order -> (check already used)
-DPLC auto optimisation in edit raw (putting all the used tile indexes into an array, sorted, and did a loop increasing the tile number until it hit 16 tiles or a non-matching element in the array)
-instead of getting all the indicies in an array, see if art + size == art of next DPLC, and if size + size < 17 (!) (do when importing)
 https://yarnpkg.com/en/package/node-vibrant
-
-====
-
-try d3-zoom
-Clone Sprite / Clone Sprite And Tiles
-active tile indicies
+DPLC auto optimisation in edit raw (putting all the used tile indexes into an array, sorted, and did a loop increasing the tile number until it hit 16 tiles or a non-matching element in the array)
+instead of getting all the indicies in an array, see if art + size == art of next DPLC, and if size + size < 17 (!) (dowhen importing)
+fix active tiles style (& perf)

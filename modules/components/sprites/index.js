@@ -5,6 +5,7 @@ import { Sprite } from './sprite';
 import { SortableContainer, SortableElement } from 'react-sortable-hoc';
 import { baseSize, margin } from '!!sass-variables-loader!#styles/components/sprites.scss';
 import { scrollbarWidth } from '!!sass-variables-loader!#styles/variables.scss';
+import { DimensionsComponent } from '#util/dimensions-component';
 
 const realBaseSize = parseInt(baseSize) + (parseInt(margin) * 2);
 
@@ -73,8 +74,9 @@ const SortableList = SortableContainer(observer(({items, width, height, scroll})
 }), {withRef: true});
 
 
+
 @observer
-export class Sprites extends Component {
+export class Sprites extends DimensionsComponent {
 
     getContainer = () => {
         return document.querySelector('.spriteSortContainer');
@@ -83,47 +85,6 @@ export class Sprites extends Component {
     onSortEnd = ({oldIndex, newIndex}) => {
         environment.swapSprite(oldIndex, newIndex);
         environment.config.currentSprite = newIndex;
-    };
-
-    // --
-
-    state = {};
-    mounted = false;
-
-    componentWillMount() {
-        this.mounted = true;
-        this.props.node.setEventListener('resize', (e) => {
-            const { width, height } = e.rect;
-
-            requestAnimationFrame(() => {
-                this.mounted &&
-                this.setState({width, height});
-            });
-        });
-
-        this.onScroll = (e) => {
-            this.mounted &&
-            this.setState({scroll: e.target.scrollTop});
-            e.target.blur();
-        };
-    }
-
-    componentWillUnmount() {
-        this.mounted = false;
-        this.node.removeEventListener('scroll', this.onScroll);
-    }
-
-    onContainerRef = (node) => {
-        if (node) {
-            node.addEventListener('scroll', this.onScroll);
-            requestAnimationFrame(() => {
-                const { width, height } = node.getBoundingClientRect();
-                const scroll = node.scrollTop;
-                this.mounted &&
-                this.setState({width, height, scroll});
-            });
-            this.node = node;
-        }
     };
 
     render() {

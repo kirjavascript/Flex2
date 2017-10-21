@@ -6,11 +6,8 @@ export class Slider extends Component {
 
     onChange = (e) => {
         const { store, accessor } = this.props;
-        store[accessor] = e.target.value;
-    }
-
-    constructor(props) {
-        super(props);
+        store[accessor] = parseInt(e.target.value);
+        this.node.blur();
     }
 
     render() {
@@ -19,6 +16,7 @@ export class Slider extends Component {
 
         return <div className="slider">
             <input
+                ref={(node) => { this.node = node; }}
                 type="range"
                 min="1"
                 max="20"

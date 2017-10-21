@@ -5,7 +5,7 @@ import FlexLayout from 'flexlayout-react';
 
 import { Project } from '#components/project';
 import { Palettes } from '#components/palettes';
-import { Art } from '#components/art';
+import { Art } from '#components/art/index';
 import { Sprites } from '#components/sprites';
 import { Mappings } from '#components/mappings';
 

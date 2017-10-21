@@ -208,20 +208,37 @@ export function getMappingsFromOffsets(offsets) {
 }
 
 export function getMappings(canvas, ctx, type) {
-    if (type == 'tiles') {
-        const offsets = getBestOffsets(canvas, ctx);
+    const offsetLists = getOffsetLists(canvas, ctx);
 
-        return getMappingsFromOffsets(offsets);
+
+    const offsetsAndMappings = offsetLists.map((offsets) => ({
+        offsets,
+        mappings: getMappingsFromOffsets(offsets),
+    }));
+
+    if (type == 'tiles') {
+        // pick smallest mappings from smallest tile group
+
+        const fewestTilesQty = offsetsAndMappings.reduce((a, c) => (
+            c.offsets.length < a ? c.offsets.length : a
+        ), Infinity);
+
+        const fewestTilesList = offsetsAndMappings.filter(({offsets}) => (
+            offsets.length == fewestTilesQty
+        ));
+
+        return fewestTilesList.slice(1).reduce((a, c) => {
+            if (c.mappings.length < a.mappings.length) {
+                return c;
+            }
+            else {
+                return a;
+            }
+        }, fewestTilesList[0]).mappings;
+
     }
     else if (type == 'mappings') {
-        const offsetLists = getOffsetLists(canvas, ctx);
-
         // pick smallest tiles from smallest mappings group
-
-        const offsetsAndMappings = offsetLists.map((offsets) => ({
-            offsets,
-            mappings: getMappingsFromOffsets(offsets),
-        }));
 
         const fewestMappingsQty = offsetsAndMappings.reduce((a, c) => (
             c.mappings.length < a ? c.mappings.length : a
