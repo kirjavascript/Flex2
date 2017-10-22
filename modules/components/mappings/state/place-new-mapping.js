@@ -22,7 +22,7 @@ export function placeNewMapping() {
         };
         // check if dplc already exists
         const seenIndex = dplcs.findIndex(({size, art}) => (
-            size == newDPLC.size && art == newDPLC.art
+            size >= newDPLC.size && art == newDPLC.art
         ));
 
         // if it does exist

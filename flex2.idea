@@ -32,6 +32,5 @@ create new file | newFactory={(path)=>{}}
 ====
 
 https://yarnpkg.com/en/package/node-vibrant
-Arrange tile by sprite order -> (check already used)
-DPLC auto optimisation in edit raw (putting all the used tile indexes into an array, sorted, and did a loop increasing the tile number until it hit 16 tiles or a non-matching element in the array)
-instead of getting all the indicies in an array, see if art + size == art of next DPLC, and if size + size < 17 (!) (dowhen importing)
+Arrange tile by sprite order -> (check already used) (store originla indexes)
+Delete unused DPLCS -> fragment tiles (then add concat dplcs when imnporting and a  'Optimize DPLCs');
