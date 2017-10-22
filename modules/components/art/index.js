@@ -24,18 +24,14 @@ export class Art extends DimensionsComponent {
         const { tiles } = environment;
         const { width, height, scroll } = this.state;
 
-        const realItemsPerRow = Math.floor(width / baseSize);
+        const realWidth = width-parseInt(scrollbarWidth);
+        const realItemsPerRow = Math.floor(realWidth / baseSize);
         const itemsPerRow = Math.max(1, realItemsPerRow);
         const rowCount = Math.ceil(tiles.length / itemsPerRow);
-        const remainder = !realItemsPerRow ? 0 : -(parseInt(scrollbarWidth)/2) + (width % baseSize) / 2;
+        const remainder = !realItemsPerRow ? 0 : (realWidth % baseSize) / 2;
         const baseIndex = (0|(scroll / baseSize)) * itemsPerRow;
         const itemQty = (itemsPerRow * (height / baseSize)) + (itemsPerRow * 2);
         const totalHeight = rowCount * baseSize || 0;
-
-        const getXY = (index) => ({
-            x: remainder + (index % itemsPerRow) * baseSize,
-            y: (0|(index / itemsPerRow)) * baseSize,
-        });
 
         return <div
             className="art"
