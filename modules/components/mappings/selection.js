@@ -8,10 +8,7 @@ import SVARS from '!!sass-variables-loader!#styles/variables.scss';
 @observer
 export class Selection extends Component {
 
-    constructor(props) {
-        super(props);
-        this.id = uuid();
-    }
+    id = uuid();
 
     render() {
         const { color = 'blue', opacity = 0, offset = 0, width = 6, all } = this.props;

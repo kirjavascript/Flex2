@@ -5,6 +5,7 @@ import { Tile } from './tile';
 import { observer } from 'mobx-react';
 import { scrollbarWidth } from '!!sass-variables-loader!#styles/variables.scss';
 import { DimensionsComponent } from '#util/dimensions-component';
+import { ActiveSelection } from './active-selection';
 
 @observer
 export class Art extends DimensionsComponent {
@@ -29,6 +30,7 @@ export class Art extends DimensionsComponent {
         const remainder = !realItemsPerRow ? 0 : -(parseInt(scrollbarWidth)/2) + (width % baseSize) / 2;
         const baseIndex = (0|(scroll / baseSize)) * itemsPerRow;
         const itemQty = (itemsPerRow * (height / baseSize)) + (itemsPerRow * 2);
+        const totalHeight = rowCount * baseSize || 0;
 
         return <div
             className="art"
@@ -37,7 +39,13 @@ export class Art extends DimensionsComponent {
             onMouseLeave={this.onMouseUp}
         >
             <div ref={this.onContainerRef} className="tile-container">
-                <div className="tile-list" style={{height: rowCount * baseSize || 0}}>
+                <div className="tile-list" style={{height: totalHeight}}>
+                    <ActiveSelection
+                        remainder={remainder}
+                        itemsPerRow={itemsPerRow}
+                        baseIndex={baseIndex}
+                        itemQty={itemQty}
+                    />
                     {tiles.map((tile, index) => {
 
                         const x = remainder + (index % itemsPerRow) * baseSize;
@@ -62,10 +70,9 @@ export class Art extends DimensionsComponent {
                                     position: 'absolute',
                                     top: y,
                                     left: x,
-                                    width: scale * 8,
-                                    height: scale * 8,
+                                    width: baseSize,
+                                    height: baseSize,
                                 }}
-                                className={false ? 'tile-active' : ''}
                             />
                         );
                     })}
