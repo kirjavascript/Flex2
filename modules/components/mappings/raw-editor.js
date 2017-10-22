@@ -276,12 +276,20 @@ export class RawEditor extends Component {
                                     useDragHandle={true}
                                     onSortEnd={this.onSortEndDPLC}
                                 />
-                                <Item
-                                    onClick={this.addNewDPLC}
-                                    inverted
-                                >
-                                    Add New DPLC
-                                </Item>
+                                <div className="buttons">
+                                    <Item
+                                        onClick={this.addNewDPLC}
+                                        inverted
+                                    >
+                                        Add New DPLC
+                                    </Item>
+                                    <Item
+                                        onClick={mappingState.concatCurrentDPLCs}
+                                        inverted
+                                    >
+                                        Concatenate DPLCs
+                                    </Item>
+                                </div>
                             </div>
                         )}
                     </div>

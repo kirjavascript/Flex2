@@ -2,6 +2,7 @@ import { readFile } from 'fs';
 import { extname } from 'path';
 import { observable, computed, action, autorun, toJS, spy } from 'mobx';
 import range from 'lodash/range';
+import unique from 'lodash/uniq';
 import { storage } from './storage';
 import { initHistory } from './history';
 import { workspace } from '#store/workspace';
@@ -89,7 +90,7 @@ class Environment {
                 activeTiles.push(...range(art, art + (size || width * height)));
             });
 
-        return activeTiles;
+        return unique(activeTiles);
     }
 
     @action loadObject = (obj) => {
@@ -173,6 +174,7 @@ class Environment {
             3,3,3,3,3,3,3,3,
             3,3,3,3,3,3,3,3,
         ];
+        alert('todo');
     };
 
     @action swapSprite = (oldIndex, newIndex) => {

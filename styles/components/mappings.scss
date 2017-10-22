@@ -72,6 +72,11 @@
 
 .raw-dplc-data {
     margin-top: 15px;
+
+    .buttons {
+        display: flex;
+        justify-content: space-between;
+    }
 }
 
 .mapping-data {

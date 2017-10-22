@@ -35,10 +35,11 @@ const SortableItemFast = SortableElement(({bbox: { x, y }}) => (
 
 const SortableList = SortableContainer(observer(({items, width, height, scroll}) => {
 
-    const realItemsPerRow = Math.floor(width / realBaseSize);
+    const realWidth = width - parseInt(scrollbarWidth) -2;
+    const realItemsPerRow = Math.floor(realWidth / realBaseSize);
     const itemsPerRow = Math.max(1, realItemsPerRow);
     const rowCount = Math.ceil(items.length / itemsPerRow);
-    const remainder = !realItemsPerRow ? 0 : -(parseInt(scrollbarWidth)/2) + (width % realBaseSize) / 2;
+    const remainder = !realItemsPerRow ? 0 : (realWidth % realBaseSize) / 2;
 
     const baseIndex = (0|(scroll / realBaseSize)) * itemsPerRow;
     const itemQty = (itemsPerRow * (height / realBaseSize)) + (itemsPerRow * 2);
