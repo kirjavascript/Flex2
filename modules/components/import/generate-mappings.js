@@ -210,7 +210,6 @@ export function getMappingsFromOffsets(offsets) {
 export function getMappings(canvas, ctx, type) {
     const offsetLists = getOffsetLists(canvas, ctx);
 
-
     const offsetsAndMappings = offsetLists.map((offsets) => ({
         offsets,
         mappings: getMappingsFromOffsets(offsets),

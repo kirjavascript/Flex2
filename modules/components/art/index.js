@@ -32,6 +32,11 @@ export class Art extends DimensionsComponent {
         const itemQty = (itemsPerRow * (height / baseSize)) + (itemsPerRow * 2);
         const totalHeight = rowCount * baseSize || 0;
 
+        const getXY = (index) => ({
+            x: remainder + (index % itemsPerRow) * baseSize,
+            y: (0|(index / itemsPerRow)) * baseSize,
+        });
+
         return <div
             className="art"
             onMouseDown={this.onMouseDown}

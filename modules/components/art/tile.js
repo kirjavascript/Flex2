@@ -17,7 +17,6 @@ export class Tile extends Component {
                     width: 8 * scale,
                     height: 8 * scale,
                 }}
-                className="tile"
                 {...otherProps}
             >
                 <div style={{

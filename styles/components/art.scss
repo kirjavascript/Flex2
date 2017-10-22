@@ -16,9 +16,16 @@
     overflow-x: hidden;
     flex-grow: 1;
     .tile-list {
+        margin: 10px 0;
         position: relative;
     }
-    .tile {
-        z-index: -1;
-    }
+}
+
+.active-selection {
+    z-index: 1;
+    pointer-events: none;
+    position: relative;
+    margin-top: -5px;
+    height: calc(100% + 10px);
+    width: calc(100% + 10px);
 }
