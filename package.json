@@ -33,7 +33,7 @@
         "d3-dispatch": "^1.0.3",
         "d3-drag": "^1.1.1",
         "d3-selection": "^1.1.0",
-        "flexlayout-react": "^0.2.3",
+        "flexlayout-react": "^0.2.5",
         "lodash": "^4.17.4",
         "mobx": "^3.2.2",
         "mobx-react": "^4.2.2",

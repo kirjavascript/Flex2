@@ -1637,9 +1637,9 @@ flat-cache@^1.2.1:
     graceful-fs "^4.1.2"
     write "^0.2.1"
 
-flexlayout-react@^0.2.3:
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/flexlayout-react/-/flexlayout-react-0.2.3.tgz#ba53c5fa617569c960c49923c1d7883ee84467a8"
+flexlayout-react@^0.2.5:
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/flexlayout-react/-/flexlayout-react-0.2.5.tgz#32e18bf8538bae9b119faa40048fcae7dc9e6ef0"
   dependencies:
     prop-types "^15.5.10"
 

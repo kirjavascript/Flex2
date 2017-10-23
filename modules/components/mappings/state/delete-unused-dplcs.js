@@ -73,3 +73,51 @@ export function deleteUnusedDPLCs() {
 
     }
 }
+
+//import { concatDPLCs } from './concat-dplcs';
+
+//export function deleteUnusedDPLCs() {
+//    const { currentSprite: { mappings, dplcs }, config } = environment;
+
+//    if (config.dplcsEnabled) {
+
+//        let tiles = [];
+
+//        dplcs.forEach(({art, size}) => {
+//            tiles.push(...range(art, art+size));
+//        });
+
+
+//        // get mappings used by tiles
+//        const mappingTiles = mappings.map(({width, height, art}) => (
+//            Array.from({length: width * height}, (_, i) => tiles[art+i])
+//        ));
+
+//        let newDPLCs = [];
+
+//        mappings.forEach((mapping, i) => {
+//            // search for existing (dupes)
+//            const existingIndicies = mappingTiles[i].map((d) => newDPLCs.indexOf(d));
+//            if (
+//                !existingIndicies.some((d) => d == -1) && // all tiles exist
+//                    existingIndicies
+//                        .every((d, i) => (
+//                            i === existingIndicies.length - 1 ||
+//                            d < existingIndicies[i + 1]
+//                        )) // and are all sequential
+//                ) {
+//                mapping.art = existingIndicies[0];
+//            }
+//            else {
+//                mapping.art = newDPLCs.length;
+//                newDPLCs.push(...mappingTiles[i]);
+//            }
+//        });
+
+//        dplcs.replace(concatDPLCs(newDPLCs.map((d) => ({art: d, size: 1}))));
+
+
+//        // dont add dplcs for non existant
+//        //if mappings hit > dplc.length, leave value alone
+//    }
+//}

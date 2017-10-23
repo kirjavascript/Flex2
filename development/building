@@ -1,9 +1,10 @@
-electron-packager ./static Flex2 --platform=linux --arch=x64 --asar --overwrite
+electron-packager ./static Flex2 --platform=linux --arch=x64 --asar --overwrite --package-manager yarn
 --platform=win32 --arch=x64
 --platform=linux --arch=x64
 --platform=darwin --arch=x64
 --all
 --icon app/index.ico
 https://www.christianengvall.se/electron-packager-tutorial/
+https://github.com/electron-userland/electron-builder
 
 create a shell script

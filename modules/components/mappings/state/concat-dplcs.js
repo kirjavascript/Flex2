@@ -8,7 +8,7 @@ export function concatCurrentDPLCs() {
     dplcs.replace(concatDPLCs(dplcs));
 }
 
-function concatDPLCs(dplcs) {
+export function concatDPLCs(dplcs) {
 
     let newDPLCs = [];
 
@@ -36,7 +36,9 @@ function concatDPLCs(dplcs) {
             obj.size++;
         }
     });
-    obj.art && newDPLCs.push(obj);
+    if (typeof obj.art != 'undefined') {
+        newDPLCs.push(obj);
+    }
 
     return newDPLCs;
 }

@@ -33,4 +33,8 @@ create new file | newFactory={(path)=>{}}
 
 https://yarnpkg.com/en/package/node-vibrant
 Arrange tile by sprite order -> (check already used) (store originla indexes)
-Delete unused DPLCS -> fragment tiles (then add concat dplcs when imnporting and a  'Optimize DPLCs');
+Delete unused DPLCS ->
+    place mapping search for existing dplc (or run delete unused at the end instead?)
+    concat dplcs when placing mapping
+    concat dplcs when imnporting
+    'Optimize DPLCs'
