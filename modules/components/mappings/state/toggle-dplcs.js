@@ -1,5 +1,6 @@
 import { environment } from '#store/environment';
 import { mappingState } from './index';
+import { concatDPLCs } from './concat-dplcs';
 import range from 'lodash/range';
 
 export function toggleDPLCs() {
@@ -59,7 +60,7 @@ export function toggleDPLCs() {
 
             });
 
-            newDPLCList.push(newDPLCs);
+            newDPLCList.push(concatDPLCs(newDPLCs));
 
         });
 

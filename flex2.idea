@@ -10,15 +10,16 @@ import reduce mappings/tiles
 full access to dplc/mapping data
 influences; sonmaped, spriteplotter, soniksprite
 ==
-raw editor doesn't clean up anything
+raw editor doesn't clean up anything (explain deleting)
+to optimise all dplcs, toggle on/off
 SCD 23:39 <+flamewing> Mappings is S1; DPLC is S2 -> ?scd flag
 for_window [title="Flex 2"] floating enable border normal
 ==
 
+check version in documentation tab (move code)
 add flex.json to sonic 2 disassembly
 counts for commands (wrap all in doAction, remove doAction from others)
-check version in documentation tab (move code)
-collapse project objects / have index
+collapse project objects / have index / search (filter)
 lil-g/gemini
 
 ====
@@ -33,4 +34,4 @@ create new file | newFactory={(path)=>{}}
 
 https://yarnpkg.com/en/package/node-vibrant
 change sprite scroll speed
-Arrange tile by sprite order -> (check already used) (store originla indexes)
+SONMAPED: Arrange tile by sprite order -> (check already used) (store originla indexes) (dont change tile qty)

@@ -28,7 +28,7 @@ export function deleteUnusedDPLCs() {
             const existingIndicies = mappingTiles[i].map((d) => newDPLCs.indexOf(d));
             if (
                 existingIndicies.length && // check all tiles are defined
-                !existingIndicies.some((d) => d == -1) && // all tiles exist
+                !existingIndicies.some((d) => d == -1) && // tiles exist in new list
                     existingIndicies
                         .every((d, i) => (
                             i === existingIndicies.length - 1 ||
