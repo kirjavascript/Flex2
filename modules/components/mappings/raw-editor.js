@@ -284,10 +284,10 @@ export class RawEditor extends Component {
                                         Add New DPLC
                                     </Item>
                                     <Item
-                                        onClick={mappingState.concatCurrentDPLCs}
+                                        onClick={mappingState.deleteUnusedDPLCs}
                                         inverted
                                     >
-                                        Concatenate DPLCs
+                                        Optimise DPLCs
                                     </Item>
                                 </div>
                             </div>

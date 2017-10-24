@@ -10,7 +10,7 @@ export function draw(node) {
     const { scale, mode, drawIndexLeft, drawIndexRight } = mappingState;
     const { currentSprite: { mappings, buffer } } = environment;
 
-    if (mode == 'drawing') {
+    if (mode == 'drawing' && mappings.length) {
         const [xPos, yPos] = mouse(node);
 
         const x = ((xPos - mappingState.x) / scale);

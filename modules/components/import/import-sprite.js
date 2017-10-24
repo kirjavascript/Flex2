@@ -1,5 +1,6 @@
 import { environment } from '#store/environment';
 import { getCenter } from '#util/get-center';
+import { concatDPLCs } from '../mappings/state/concat-dplcs';
 
 function addTile(ctx, x, y, palette) {
     const { tiles } = environment;
@@ -77,7 +78,7 @@ export function importSprite(ctx, newMappings, paletteLine) {
     });
 
     if (dplcsEnabled) {
-        dplcs.push(newDPLCsList);
+        dplcs.push(concatDPLCs(newDPLCsList));
     }
     const center = getCenter(newMappingsList);
     mappings.push(newMappingsList.map((mapping) => {

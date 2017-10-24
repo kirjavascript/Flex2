@@ -16,32 +16,13 @@ export function placeNewMapping() {
     let art = piece.art;
 
     if (dplcsEnabled) {
-        const newDPLC = {
+        art = dplcs.reduce((a, c) => {
+            return a + c.size;
+        }, 0);
+        dplcs.push({
             size: piece.width * piece.height,
             art: piece.art,
-        };
-        // check if dplc already exists
-        const seenIndex = dplcs.findIndex(({size, art}) => (
-            size >= newDPLC.size && art == newDPLC.art
-        ));
-
-        // if it does exist
-        if (seenIndex != -1) {
-            art = dplcs.reduce((a, c, i) => {
-                if (i >= seenIndex) return a;
-                else {
-                    return a + c.size;
-                }
-            }, 0);
-        }
-        // otherwise
-        else {
-            // set to last dplc index
-            art = dplcs.reduce((a, c) => {
-                return a + c.size;
-            }, 0);
-            dplcs.push(newDPLC);
-        }
+        });
     }
 
 
@@ -50,4 +31,5 @@ export function placeNewMapping() {
     );
     environment.config.currentTile += piece.width * piece.height;
     mappingState.newMapping.piece = void 0;
+    mappingState.deleteUnusedDPLCs();
 }
