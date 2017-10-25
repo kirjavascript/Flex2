@@ -1,13 +1,6 @@
 import { environment } from '#store/environment';
 import range from 'lodash/range';
 
-export function concatCurrentDPLCs() {
-    const { currentSprite: { dplcs }, config: { dplcsEnabled } } = environment;
-    if (!dplcsEnabled) return;
-
-    dplcs.replace(concatDPLCs(dplcs));
-}
-
 export function concatDPLCs(dplcs) {
 
     let newDPLCs = [];
