@@ -6,7 +6,6 @@ import { placeNewMapping } from './place-new-mapping';
 import { deleteUnusedDPLCs } from './delete-unused-dplcs';
 import { deleteUnusedTiles } from './delete-unused-tiles';
 import { toggleDPLCs } from './toggle-dplcs';
-import { concatCurrentDPLCs } from './concat-dplcs';
 
 class MappingState {
 
@@ -162,7 +161,6 @@ class MappingState {
     @action deleteUnusedDPLCs = deleteUnusedDPLCs;
     @action deleteUnusedTiles = deleteUnusedTiles;
     @action toggleDPLCs = toggleDPLCs;
-    @action concatCurrentDPLCs = concatCurrentDPLCs;
 
 }
 
