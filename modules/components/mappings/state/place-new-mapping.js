@@ -31,5 +31,5 @@ export function placeNewMapping() {
     );
     environment.config.currentTile += piece.width * piece.height;
     mappingState.newMapping.piece = void 0;
-    mappingState.deleteUnusedDPLCs();
+    mappingState.optimizeCurrentDPLCs();
 }

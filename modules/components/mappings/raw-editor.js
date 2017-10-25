@@ -284,7 +284,7 @@ export class RawEditor extends Component {
                                         Add New DPLC
                                     </Item>
                                     <Item
-                                        onClick={mappingState.deleteUnusedDPLCs}
+                                        onClick={mappingState.optimizeCurrentDPLCs}
                                         inverted
                                     >
                                         Optimise DPLCs

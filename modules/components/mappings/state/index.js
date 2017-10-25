@@ -3,7 +3,7 @@ import { environment } from '#store/environment';
 import clamp from 'lodash/clamp';
 import { getCenter } from '#util/get-center';
 import { placeNewMapping } from './place-new-mapping';
-import { deleteUnusedDPLCs } from './delete-unused-dplcs';
+import { optimizeCurrentDPLCs } from './optimize-dplcs';
 import { deleteUnusedTiles } from './delete-unused-tiles';
 import { toggleDPLCs } from './toggle-dplcs';
 
@@ -158,7 +158,7 @@ class MappingState {
 
     // imported stuff
 
-    @action deleteUnusedDPLCs = deleteUnusedDPLCs;
+    @action optimizeCurrentDPLCs = optimizeCurrentDPLCs;
     @action deleteUnusedTiles = deleteUnusedTiles;
     @action toggleDPLCs = toggleDPLCs;
 

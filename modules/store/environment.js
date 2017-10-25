@@ -85,6 +85,9 @@ class Environment {
     @computed get activeTiles() {
         const { config: { dplcsEnabled }, currentSprite: { mappings, dplcs } } = environment;
         let activeTiles = [];
+
+        if (!mappings.length) return [];
+
         (dplcsEnabled ? dplcs : mappings)
             .forEach(({art, width, height, size}) => {
                 activeTiles.push(...range(art, art + (size || width * height)));

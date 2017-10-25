@@ -1,6 +1,6 @@
 import { environment } from '#store/environment';
 import { mappingState } from './index';
-import { concatDPLCs } from './concat-dplcs';
+import { optimizeDPLCs } from './optimize-dplcs';
 import range from 'lodash/range';
 
 export function toggleDPLCs() {
@@ -60,12 +60,19 @@ export function toggleDPLCs() {
 
             });
 
-            newDPLCList.push(concatDPLCs(newDPLCs));
+            newDPLCList.push(newDPLCs);
 
         });
 
         environment.dplcs.replace(newDPLCList);
         environment.config.dplcsEnabled = true;
+
+        // optimize
+        const { mappings, dplcs } = environment;
+        for (let i = 0; i < mappings.length; i++) {
+            optimizeDPLCs(mappings[i], dplcs[i]);
+        }
+
     }
 
 }

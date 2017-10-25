@@ -246,7 +246,7 @@ export const commands = [
                         currentSprite.mappings.filter((d) => !d.rip)
                     );
                     mappingState.selectedIndicies.replace([]);
-                    mappingState.deleteUnusedDPLCs();
+                    mappingState.optimizeCurrentDPLCs();
                 }
             },
         },
