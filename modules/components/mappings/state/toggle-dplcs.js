@@ -40,23 +40,13 @@ export function toggleDPLCs() {
                     art == mapping.art && size >= tileSize
                 ));
 
-                // dplc already exists
-                if (existingIndex != -1) {
-                    // get existing index
-                    mapping.art = newDPLCs.reduce((a, c, i) => (
-                        i < existingIndex ? c.size : a
-                    ), 0);
-                }
-                // doesn't exist, add new
-                else {
-                    newDPLCs.push({
-                        art: mapping.art,
-                        size: tileSize,
-                    });
+                newDPLCs.push({
+                    art: mapping.art,
+                    size: tileSize,
+                });
 
-                    mapping.art = dplcIndex;
-                    dplcIndex += tileSize;
-                }
+                mapping.art = dplcIndex;
+                dplcIndex += tileSize;
 
             });
 
@@ -67,7 +57,7 @@ export function toggleDPLCs() {
         environment.dplcs.replace(newDPLCList);
         environment.config.dplcsEnabled = true;
 
-        // optimize
+        // optimize & dedupe
         const { mappings, dplcs } = environment;
         for (let i = 0; i < mappings.length; i++) {
             optimizeDPLCs(mappings[i], dplcs[i]);

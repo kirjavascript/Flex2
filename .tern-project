@@ -7,7 +7,7 @@
     "modules": {},
     "es_modules": {},
     "webpack": {
-        "configPath": "./.tern.resolve.js"
+        "configPath": "./development/webpack.config.js"
     }
   }
 }

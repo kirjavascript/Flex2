@@ -184,10 +184,10 @@ export class ObjectConfig extends Component {
                         </Item>
                         <div>
                             <Item color="green" inverted onClick={obj.load}>
-                                Load Object
+                                Load Data
                             </Item>
                             <Item color="green" inverted onClick={obj.save}>
-                                Save Object
+                                Save Data
                             </Item>
                         </div>
                     </div>
