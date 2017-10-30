@@ -288,7 +288,7 @@ export const commands = [
             },
         },
         {
-            map: 'l', name: '[dplcs]', color: 'orange',
+            map: 'D', name: '[dplcs]', color: 'orange',
             func: () => {
                 mappingState.toggleDPLCs();
             },
@@ -312,6 +312,13 @@ export const commands = [
         {
             map: '>', name: 'Last Sprite', color: 'yellow',
             func: () => { environment.config.currentSprite = environment.mappings.length -1; },
+        },
+    ],
+
+    [
+        {
+            map: 'A', name: 'Rearrange Tiles', color: 'yellow',
+            func: () => { mappingState.arrangeTilesBySpriteOrder(); },
         },
     ],
 

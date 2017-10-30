@@ -6,6 +6,7 @@ import { placeNewMapping } from './place-new-mapping';
 import { optimizeCurrentDPLCs } from './optimize-dplcs';
 import { deleteUnusedTiles } from './delete-unused-tiles';
 import { toggleDPLCs } from './toggle-dplcs';
+import { arrangeTilesBySpriteOrder } from './arrange-tiles-by-sprite-order';
 
 class MappingState {
 
@@ -161,6 +162,7 @@ class MappingState {
     @action optimizeCurrentDPLCs = optimizeCurrentDPLCs;
     @action deleteUnusedTiles = deleteUnusedTiles;
     @action toggleDPLCs = toggleDPLCs;
+    @action arrangeTilesBySpriteOrder = arrangeTilesBySpriteOrder;
 
 }
 
