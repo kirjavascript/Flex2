@@ -181,7 +181,7 @@ class Environment {
             lineIndex += length;
 
             writeFile(workspace.absolutePath(path), chunk, (err, success) => {
-                err & errorMsg('Error Saving Palette', err);
+                err && errorMsg('Error Saving Palette', err.message);
             });
         });
     };
