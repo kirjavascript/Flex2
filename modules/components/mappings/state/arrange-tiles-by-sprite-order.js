@@ -6,8 +6,6 @@ export function arrangeTilesBySpriteOrder() {
 
     let newTiles = [];
     let newTilesIndicies = [];
-    let newMappingsList = [];
-    let newDPLCsList = [];
 
     const { tiles, mappings, dplcs, config: { dplcsEnabled } } = environment;
 

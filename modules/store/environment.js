@@ -1,4 +1,4 @@
-import { readFile } from 'fs';
+import { readFile, writeFile } from 'fs';
 import { extname } from 'path';
 import { observable, computed, action, autorun, toJS, spy } from 'mobx';
 import range from 'lodash/range';
@@ -10,7 +10,7 @@ import { errorMsg } from '#util/dialog';
 import { bufferToTiles } from '#formats/art';
 import { bufferToMappings } from '#formats/mapping';
 import { bufferToDPLCs } from '#formats/dplc';
-import { buffersToColors, defaultPalettes } from '#formats/palette';
+import { buffersToColors, colorsToBuffers, defaultPalettes } from '#formats/palette';
 import { asmToBin } from '#formats/asm';
 import { arrayMove } from 'react-sortable-hoc';
 
@@ -167,17 +167,23 @@ class Environment {
     };
 
     @action saveObject = (obj) => {
-        this.tiles[0] = [
-            3,3,3,3,3,3,3,3,
-            3,3,3,3,3,3,3,3,
-            3,3,3,3,3,3,3,3,
-            3,3,3,3,3,3,3,3,
-            3,3,3,3,3,3,3,3,
-            3,3,3,3,3,3,3,3,
-            3,3,3,3,3,3,3,3,
-            3,3,3,3,3,3,3,3,
-        ];
-        alert('todo');
+        // if (obj.dplcs.enabled && !this.config.dplcsEnabled) {
+        //     return errorMsg('Error', 'DPLCs required for saving object');
+        // }
+        // else if (!obj.dplcs.enabled && this.config.dplcsEnabled) {
+        //     return errorMsg('Error', 'Trying to save DPLCs with no file definition');
+        // }
+
+        // palettes
+        let lineIndex = 0;
+        obj.palettes.forEach(({path, length}) => {
+            const chunk = colorsToBuffers(this.palettes, lineIndex, lineIndex + length);
+            lineIndex += length;
+
+            writeFile(workspace.absolutePath(path), chunk, (err, success) => {
+                err & errorMsg('Error Saving Palette', err);
+            });
+        });
     };
 
     @action swapSprite = (oldIndex, newIndex) => {

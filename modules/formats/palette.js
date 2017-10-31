@@ -7,6 +7,14 @@ export const defaultPalettes = [
     ['#000','#022','#044','#066','#088','#0aa','#0cc','#0ee','#0ec','#0ca','#0a8','#086','#064','#042','#020','#00e']
 ];
 
+export function hexToMDHex(color) {
+    return '#' + color.slice(1)
+        .match(/../g).map((c) => parseInt(c, 16)) // toArr
+        .map((c) => Math.round(c / 0x22) * 0x22) // round
+        .map((c) => Math.min(c, 0xEE).toString(16)[0]) // simplify
+        .join``;
+}
+
 export function buffersToColors(list) {
     let colors = [];
     list.forEach(({buffer, length}) => {
@@ -28,10 +36,17 @@ export function buffersToColors(list) {
     return chunk(colors, 16).splice(0, 4);
 }
 
-export function hexToMDHex(color) {
-    return '#' + color.slice(1)
-        .match(/../g).map((c) => parseInt(c, 16)) // toArr
-        .map((c) => Math.round(c / 0x22) * 0x22) // round
-        .map((c) => Math.min(c, 0xEE).toString(16)[0]) // simplify
-        .join``;
+export function colorsToBuffers(palettes, start = 0, end = 1) {
+    const bytes = [];
+
+
+    for (let i = start; i < end; i++) {
+        palettes[i].forEach((color) => {
+            const [Z, R, G, B] = [...color];
+            bytes.push(parseInt(`0${B}`, 16));
+            bytes.push(parseInt(`${G}${R}`, 16));
+        });
+    }
+
+    return new Buffer(Uint8Array.from(bytes));
 }
