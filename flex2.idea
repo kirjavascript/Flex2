@@ -35,8 +35,3 @@ when saving asm, use the object name as the label name :D
 throw error if dplc mode doesn't match (suggest converting)
 divide tile index by 2 for sonic 2 2 player mappings
 create new file | newFactory={(path)=>{}}
-
-====
-
-
-SONMAPED: Arrange tile by sprite order -> (check already used) (store originla indexes) (dont change tile qty)

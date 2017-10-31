@@ -317,7 +317,7 @@ export const commands = [
 
     [
         {
-            map: 'A', name: 'Rearrange Tiles', color: 'yellow',
+            map: 'A', name: 'Autoarrange Tiles', color: 'yellow',
             func: () => { mappingState.arrangeTilesBySpriteOrder(); },
         },
     ],

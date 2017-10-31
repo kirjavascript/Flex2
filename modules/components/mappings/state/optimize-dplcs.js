@@ -1,5 +1,6 @@
 import { environment } from '#store/environment';
 import range from 'lodash/range';
+import { arrayIndexOf } from '#util/array-index-of';
 
 import { concatDPLCs } from './concat-dplcs';
 
@@ -32,17 +33,10 @@ export function optimizeDPLCs(mappings, dplcs) {
 
     mappings.forEach((mapping, i) => {
         // search for existing (dupes)
-        const existingIndicies = mappingTiles[i].map((d) => newDPLCs.indexOf(d));
-        if (
-            existingIndicies.length && // check all tiles are defined
-            !existingIndicies.some((d) => d == -1) && // tiles exist in new list
-                existingIndicies
-                    .every((d, i) => (
-                        i === existingIndicies.length - 1 ||
-                        d < existingIndicies[i + 1]
-                    )) // and are all sequential
-            ) {
-            mapping.art = existingIndicies[0];
+        const existingTilesIndex = arrayIndexOf(mappingTiles[i], newDPLCs);
+
+        if (existingTilesIndex != -1) {
+            mapping.art = existingTilesIndex;
         }
         else if (mapping.art < tiles.length) { // check start of dplcs falls before tile cutoff
             mapping.art = newDPLCs.length;

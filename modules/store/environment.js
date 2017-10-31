@@ -181,13 +181,17 @@ class Environment {
     };
 
     @action swapSprite = (oldIndex, newIndex) => {
-        this.config.dplcsEnabled &&
-        this.dplcs.replace(arrayMove(this.dplcs, oldIndex, newIndex));
-        this.mappings.replace(arrayMove(this.mappings, oldIndex, newIndex));
+        if (oldIndex != newIndex) {
+            this.config.dplcsEnabled &&
+            this.dplcs.replace(arrayMove(this.dplcs, oldIndex, newIndex));
+            this.mappings.replace(arrayMove(this.mappings, oldIndex, newIndex));
+        }
     };
 
     @action swapPalette = (oldIndex, newIndex) => {
-        this.palettes.replace(arrayMove(this.palettes, oldIndex, newIndex));
+        if (oldIndex != newIndex) {
+            this.palettes.replace(arrayMove(this.palettes, oldIndex, newIndex));
+        }
     };
 
     @action resetPalettes = () => {
