@@ -1,4 +1,9 @@
 import { decompress, compress } from '#formats/compression';
+import flattenDeep from 'lodash/flattenDeep';
+import chunk from 'lodash/chunk';
+import { toJS } from 'mobx';
+
+// a duxel is two pixels / a byte
 
 export function bufferToTiles(buffer, compression) {
     let tiles = [];
@@ -16,4 +21,16 @@ export function bufferToTiles(buffer, compression) {
     }
 
     return tiles;
+}
+
+export function tilesToBuffer(tiles, compression) {
+
+    const pixels = flattenDeep(toJS(tiles));
+
+    const duxels = chunk(pixels, 2)
+        .map(([H, L]) => (
+            (H << 4) + L
+        ));
+
+    return new Buffer(compress(Uint8Array.from(duxels), compression));
 }

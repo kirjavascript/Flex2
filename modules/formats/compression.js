@@ -18,6 +18,18 @@ export function decompress(buffer, compression) {
     }
 }
 
+export function compress(buffer, compression) {
+    const operation = compressionFormats[compression][0];
+
+    if (!operation) {
+        return buffer;
+    }
+    else {
+        return KENSC(buffer, operation);
+    }
+}
+
+
 function KENSC(input, operation) {
     let sp = Runtime.stackSave();
     try {

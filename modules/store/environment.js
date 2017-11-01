@@ -7,7 +7,7 @@ import { storage } from './storage';
 import { initHistory } from './history';
 import { workspace } from '#store/workspace';
 import { errorMsg } from '#util/dialog';
-import { bufferToTiles } from '#formats/art';
+import { bufferToTiles, tilesToBuffer } from '#formats/art';
 import { bufferToMappings } from '#formats/mapping';
 import { bufferToDPLCs } from '#formats/dplc';
 import { buffersToColors, colorsToBuffers, defaultPalettes } from '#formats/palette';
@@ -173,6 +173,13 @@ class Environment {
         // else if (!obj.dplcs.enabled && this.config.dplcsEnabled) {
         //     return errorMsg('Error', 'Trying to save DPLCs with no file definition');
         // }
+        //
+        // art
+        const artPath = workspace.absolutePath(obj.art.path);
+        const chunk = tilesToBuffer(this.tiles, obj.art.compression);
+        writeFile(artPath, chunk, (err, success) => {
+            if (err) return errorMsg('Error Reading Mapping File', err);
+        });
 
         // palettes
         let lineIndex = 0;
@@ -184,6 +191,7 @@ class Environment {
                 err && errorMsg('Error Saving Palette', err.message);
             });
         });
+
     };
 
     @action swapSprite = (oldIndex, newIndex) => {

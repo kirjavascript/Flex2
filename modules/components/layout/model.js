@@ -40,14 +40,14 @@ const DEFAULT_LAYOUT = {
                         'type': 'tab',
                         'name': 'Project',
                         'component': 'project',
-                        'id': '#3'
+                        'id': '#3',
                     },
                     {
                         'type': 'tab',
                         'name': 'Mappings',
                         'component': 'mappings',
-                        'id': '#7'
-                    }
+                        'id': '#7',
+                    },
                 ],
                 'active': true
             },
@@ -61,10 +61,10 @@ const DEFAULT_LAYOUT = {
                         'name': 'Sprites',
                         'component': 'sprites',
                         'id': '#6'
-                    }
-                ]
-            }
-        ]
+                    },
+                ],
+            },
+        ],
     },
 };
 
