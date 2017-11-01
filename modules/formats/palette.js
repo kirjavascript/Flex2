@@ -40,7 +40,7 @@ export function colorsToBuffers(palettes, start = 0, end = 1) {
     const bytes = [];
 
 
-    for (let i = start; i < end; i++) {
+    for (let i = start; i < Math.min(end, 4); i++) {
         palettes[i].forEach((color) => {
             const [Z, R, G, B] = [...color];
             bytes.push(parseInt(`0${B}`, 16));
