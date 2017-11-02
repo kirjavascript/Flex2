@@ -17,3 +17,5 @@ tar cfvz flex2-linux-x64.tar.gz Flex2-linux-x64
 rm -r Flex2-linux-x64
 tar cfvz flex2-darwin-x64.tar.gz Flex2-darwin-x64
 rm -r Flex2-darwin-x64
+
+# set windows resource info
