@@ -199,7 +199,9 @@ class Environment {
             // const isAsm = extname(obj.mappings.path) == '.asm';
 
             const chunk = mappingsToBuffer(this.mappings, obj.mappingDefinition);
-
+            writeFile(mappingPath, chunk, (err, success) => {
+                err && errorMsg('Error Saving Mappings', err.message);
+            });
         }
 
     };
