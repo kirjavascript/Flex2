@@ -73,29 +73,55 @@ export function mappingsToBuffer(mappings, format) {
 
         pieces.forEach((piece) => {
             const bits = [];
+            const twoPlayerBits = [];
 
             mappingDef.forEach(({name, length}) => {
                 if (['top', 'left'].includes(name)) {
                     bits.push(twosComplement(piece[name], length));
                 }
                 else if (['palette', 'art'].includes(name)) {
-                    bits.push(padAndTruncate(piece[name], length));
+                    const value = padAndTruncate(piece[name], length);
+                    bits.push(value);
+                    if (name == 'palette') {
+                        twoPlayerBits.push(value);
+                    }
+                    else if (name == 'art') {
+                        const halfArt = padAndTruncate(0|(piece[name]/2), length);
+                        twoPlayerBits.push(halfArt);
+                    }
                 }
                 else if (['width', 'height'].includes(name)) {
                     bits.push(padAndTruncate(piece[name] - 1, length));
                 }
                 else if (['priority', 'vflip', 'hflip'].includes(name)) {
-                    bits.push(piece[name] ? '1' : '0');
+                    const value = piece[name] ? '1' : '0';
+                    bits.push(value);
+                    twoPlayerBits.push(value);
                 }
                 else if (name == 'two') {
-                    bits.push('0'.repeat(length));
+                    bits.push('2'.repeat(length));
                 }
                 else if (name == 'ignore') {
                     bits.push('0'.repeat(length));
                 }
             });
 
-            const bytes = bits.join``.match(/.{8}/g).map((d) => parseInt(d, 2));
+            // apply two player data
+            let twoPlayerBitIndex = 0;
+            const twoPlayerBitsConcat = twoPlayerBits.join``;
+            const fixedBits = bits.map((bits) => {
+                return [...bits].map((bit) => {
+                    if (bit == '2') {
+                        const twoPlayerBit = twoPlayerBitsConcat[twoPlayerBitIndex++];
+                        return twoPlayerBit || '0';
+                    }
+                    else {
+                        return bit;
+                    }
+                }).join``;
+            }).join``;
+
+            const bytes = fixedBits.match(/.{8}/g).map((d) => parseInt(d, 2));
 
             pieceBytes.push(bytes);
         });
@@ -126,7 +152,6 @@ export function mappingsToBuffer(mappings, format) {
         frames.map(({header, pieces}) => [header, pieces]),
     ]);
 
-    // TODO: fix two player mode
     // TODO: support 0 header optimization
     // TODO: asm
 
