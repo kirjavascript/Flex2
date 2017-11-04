@@ -99,7 +99,7 @@ export function mappingsToBuffer(mappings, format) {
                     twoPlayerBits.push(value);
                 }
                 else if (name == 'two') {
-                    bits.push('2'.repeat(length));
+                    bits.push('2'.repeat(length)); // 2 is a nice little placeholder
                 }
                 else if (name == 'ignore') {
                     bits.push('0'.repeat(length));
@@ -127,7 +127,7 @@ export function mappingsToBuffer(mappings, format) {
         });
 
         frames.push({
-            header: numberToByteArray(pieceBytes.length, headerSize),
+            header: pieceBytes.length,
             pieces: pieceBytes,
             length: headerSize + pieceBytes.reduce((a, c) => a + c.length, 0),
         });
@@ -138,22 +138,35 @@ export function mappingsToBuffer(mappings, format) {
     const headers = [];
 
     let headerCounter = headerLength;
+    let zeroHeader = false;
 
-    frames.forEach((frame) => {
-        headers.push(headerCounter);
+    frames.forEach(({header, length}, index) => {
+        // check for zero header optimization
+        if (index == 0 && headerSize <= 2 && header == 0) {
+            headers.push(0);
+            zeroHeader = true;
+        }
+        else if (zeroHeader && header == 0) {
+            headers.push(0);
+        }
+        // normal headers
+        else {
+            headers.push(headerCounter);
+            headerCounter += length;
+        }
 
-        headerCounter += frame.length;
     });
 
     const headerWords = headers.map((num) => numberToByteArray(num, 2));
 
     const bytes = flattenDeep([
         headerWords,
-        frames.map(({header, pieces}) => [header, pieces]),
+        frames.map(({header, pieces}) => {
+            return (zeroHeader && header == 0)
+                ? []
+                : [numberToByteArray(header, headerSize), pieces];
+        }),
     ]);
-
-    // TODO: support 0 header optimization
-    // TODO: asm
 
     return new Buffer(Uint8Array.from(bytes));
 
