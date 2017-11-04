@@ -44,3 +44,29 @@ export function parseSigned(value) { // takes binary string
         return parseInt(value.slice(1), 2);
     }
 }
+
+export function numberToByteArray(num, length) {
+    // length = bytes
+    const binStr = padAndTruncate(num, length * 8);
+    return binStr.match(/.{8}/g).map((d) => parseInt(d, 2));
+}
+
+export function padAndTruncate(value, length) {
+    // length = bits
+    const binStr = value.toString(2).padStart(length, '0');
+    const startSlice = binStr.length - length;
+    return binStr.slice(startSlice, startSlice + length);
+}
+
+export function twosComplement(value, bitCount) {
+    let binaryStr;
+
+    if (value >= 0) {
+        let twosComp = value.toString(2);
+        binaryStr    = padAndTruncate(twosComp, (bitCount || twosComp.length));
+    } else {
+        binaryStr = (Math.pow(2, bitCount) + value).toString(2);
+    }
+
+    return `${binaryStr}`.padStart(bitCount, '0');
+}

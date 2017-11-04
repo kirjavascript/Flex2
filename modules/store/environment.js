@@ -9,7 +9,7 @@ import { workspace } from '#store/workspace';
 import { errorMsg } from '#util/dialog';
 import { bufferToTiles, tilesToBuffer } from '#formats/art';
 import { bufferToMappings, mappingsToBuffer } from '#formats/mapping';
-import { bufferToDPLCs } from '#formats/dplc';
+import { bufferToDPLCs, DPLCsToBuffer } from '#formats/dplc';
 import { buffersToColors, colorsToBuffers, defaultPalettes } from '#formats/palette';
 import { asmToBin } from '#formats/asm';
 import { arrayMove } from 'react-sortable-hoc';
@@ -201,6 +201,17 @@ class Environment {
             const chunk = mappingsToBuffer(this.mappings, obj.mappingDefinition);
             writeFile(mappingPath, chunk, (err, success) => {
                 err && errorMsg('Error Saving Mappings', err.message);
+            });
+        }
+
+        // dplcs
+        if (obj.dplcs.enabled && obj.dplcs.path) {
+            const dplcPath = workspace.absolutePath(obj.dplcs.path);
+            // const isAsm = extname(obj.mappings.path) == '.asm';
+
+            const chunk = DPLCsToBuffer(this.dplcs, obj.dplcDefinition);
+            writeFile(dplcPath, chunk, (err, success) => {
+                err && errorMsg('Error Saving DPLCs', err.message);
             });
         }
 

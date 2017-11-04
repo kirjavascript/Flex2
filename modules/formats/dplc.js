@@ -1,6 +1,15 @@
 import { parseDef } from './definitions';
-import { readWord, readN, readBinary, getHeaders, parseSigned } from './util';
 import { errorMsg } from '#util/dialog';
+import flattenDeep from 'lodash/flattenDeep';
+import {
+    readWord,
+    readN,
+    readBinary,
+    getHeaders,
+    parseSigned,
+    padAndTruncate,
+    numberToByteArray,
+} from './util';
 
 export function bufferToDPLCs(buffer, format) {
     const data = new Uint8Array(buffer);
@@ -45,4 +54,61 @@ export function bufferToDPLCs(buffer, format) {
     });
 
     return dplcs;
+}
+
+export function DPLCsToBuffer(dplcs, format) {
+    const { headerSize, dplcSize, dplcDef } = parseDef(format);
+
+    const frames = [];
+
+    dplcs.forEach((pieces) => {
+        const pieceBytes = [];
+
+        pieces.forEach(({art, size}) => {
+            const bits = [];
+
+            dplcDef.forEach(({name, length}) => {
+                if (name == 'size') {
+                    bits.push(padAndTruncate(size - 1, length));
+                }
+                else if (name == 'art') {
+                    bits.push(padAndTruncate(art, length));
+                }
+            });
+
+            const bytes = bits.join``.match(/.{8}/g).map((d) => parseInt(d, 2));
+
+            pieceBytes.push(bytes);
+
+        });
+
+        frames.push({
+            header: numberToByteArray(pieceBytes.length, headerSize),
+            pieces: pieceBytes,
+            length: headerSize + pieceBytes.reduce((a, c) => a + c.length, 0),
+        });
+
+    });
+
+    // headers are word sized
+    const headerLength = frames.length * 2;
+    const headers = [];
+
+    let headerCounter = headerLength;
+
+    frames.forEach((frame) => {
+        headers.push(headerCounter);
+
+        headerCounter += frame.length;
+    });
+
+    const headerWords = headers.map((num) => numberToByteArray(num, 2));
+
+    const bytes = flattenDeep([
+        headerWords,
+        frames.map(({header, pieces}) => [header, pieces]),
+    ]);
+
+    return new Buffer(Uint8Array.from(bytes));
+
 }

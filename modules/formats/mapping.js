@@ -1,7 +1,16 @@
 import { parseDef } from './definitions';
-import { readWord, readN, readBinary, getHeaders, parseSigned } from './util';
 import { errorMsg } from '#util/dialog';
 import flattenDeep from 'lodash/flattenDeep';
+import {
+    readWord,
+    readN,
+    readBinary,
+    getHeaders,
+    parseSigned,
+    numberToByteArray,
+    padAndTruncate,
+    twosComplement,
+} from './util';
 
 export function bufferToMappings(buffer, format) {
     const data = new Uint8Array(buffer);
@@ -117,38 +126,10 @@ export function mappingsToBuffer(mappings, format) {
         frames.map(({header, pieces}) => [header, pieces]),
     ]);
 
-    //TODO: fix two player mode
+    // TODO: fix two player mode
     // TODO: support 0 header optimization
-    // TODO: cleanup functions
+    // TODO: asm
 
     return new Buffer(Uint8Array.from(bytes));
 
-}
-
-function numberToByteArray(num, length) {
-    const binStr = padAndTruncate(num, length * 8);
-    return binStr.match(/.{8}/g).map((d) => parseInt(d, 2));
-}
-
-function padAndTruncate(value, length) {
-    const binStr = value.toString(2).padStart(length, '0');
-    const startSlice = binStr.length - length;
-    return binStr.slice(startSlice, startSlice + length);
-}
-
-function twosComplement(value, bitCount) {
-    let binaryStr;
-
-    if (value >= 0) {
-        let twosComp = value.toString(2);
-        binaryStr    = padAndChop(twosComp, '0', (bitCount || twosComp.length));
-    } else {
-        binaryStr = (Math.pow(2, bitCount) + value).toString(2);
-    }
-
-    return `${binaryStr}`.padStart(bitCount, '0');
-}
-
-function padAndChop(str, padChar, length) {
-    return (Array(length).fill(padChar).join('') + str).slice(length * -1);
 }
