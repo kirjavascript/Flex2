@@ -12,20 +12,17 @@
 
     .panel {
         margin: 10px 0;
+        padding: 5px 5px 0 5px;
     }
 
-    .indent {
-        margin-left: 10px;
+    .config {
         background-color: $black;
         border: 1px solid $white2;
-        margin: 5px;
         padding: 5px;
     }
 
     .object-header {
-        margin-top: 5px;
-        margin-right: 5px;
-        margin-left: 5px;
+        margin-bottom: 5px;
     }
 
     .options {
@@ -49,7 +46,8 @@
 
     .actions {
         @extend .row;
-        margin: 10px 10px 5px 10px;
+        margin: 10px;
+        // margin-bottom: 10px;
         align-items: flex-end;
     }
 

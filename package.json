@@ -40,6 +40,7 @@
         "mousetrap": "^1.6.1",
         "rc-color-picker": "^1.1.7",
         "react": "^15.6.1",
+        "react-collapse": "^4.0.3",
         "react-dom": "^15.6.1",
         "react-masonry-component": "^5.0.7",
         "react-motion": "^0.5.2",

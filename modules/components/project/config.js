@@ -23,12 +23,23 @@ export class ProjectConfig extends Component {
                         accessor="name"
                     />
 
-                    <Item color="blue" onClick={project.newObject} inverted>
-                        New Object
-                    </Item>
-                    <Item color="magenta" inverted onClick={workspace.closeProject}>
-                        Close Project
-                    </Item>
+                    <div className="row-gap">
+                        <Item
+                            color="blue"
+                            onClick={project.newObject}
+                            inverted
+                        >
+                            New Object
+                        </Item>
+
+                        <Item
+                            color="magenta"
+                            inverted
+                            onClick={workspace.closeProject}
+                        >
+                            Close Project
+                        </Item>
+                    </div>
 
                 </div>
 

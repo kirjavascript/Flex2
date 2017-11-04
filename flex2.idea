@@ -26,7 +26,7 @@ check version in documentation tab (move code)
 logo
 add flex.json to sonic 2 disassembly
 counts for commands (wrap all in doAction, remove doAction from others)
-collapse project objects / have index / search (filter)
+search (filter)
 have default as logo?
 input type = color
 lil-g/gemini
@@ -35,7 +35,6 @@ lil-g/gemini
 
 when saving, if 0 appears anywhere in the header use its offset for blank sprites
 when saving asm, use the object name as the label name :D
-throw error if dplc mode doesn't match (suggest converting)
 divide tile index by 2 for sonic 2 2 player mappings
 create new file | newFactory={(path)=>{}}
 

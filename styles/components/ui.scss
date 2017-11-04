@@ -21,6 +21,14 @@
     justify-content: space-between;
 }
 
+.row-gap {
+    @extend .row;
+    margin-right: -5px;
+    > div {
+        margin-right: 5px;
+    }
+}
+
 .panel {
     background-color: $black;
     border: 1px solid $white2;

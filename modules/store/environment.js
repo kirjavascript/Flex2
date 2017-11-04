@@ -8,7 +8,7 @@ import { initHistory } from './history';
 import { workspace } from '#store/workspace';
 import { errorMsg } from '#util/dialog';
 import { bufferToTiles, tilesToBuffer } from '#formats/art';
-import { bufferToMappings } from '#formats/mapping';
+import { bufferToMappings, mappingsToBuffer } from '#formats/mapping';
 import { bufferToDPLCs } from '#formats/dplc';
 import { buffersToColors, colorsToBuffers, defaultPalettes } from '#formats/palette';
 import { asmToBin } from '#formats/asm';
@@ -86,12 +86,13 @@ class Environment {
         const { config: { dplcsEnabled }, currentSprite: { mappings, dplcs } } = environment;
         let activeTiles = [];
 
-        if (!mappings.length) return [];
+        const objs = (dplcsEnabled ? dplcs : mappings);
 
-        (dplcsEnabled ? dplcs : mappings)
-            .forEach(({art, width, height, size}) => {
-                activeTiles.push(...range(art, art + (size || width * height)));
-            });
+        if (!objs.length) return [];
+
+        objs.forEach(({art, width, height, size}) => {
+            activeTiles.push(...range(art, art + (size || width * height)));
+        });
 
         return unique(activeTiles);
     }
@@ -167,13 +168,13 @@ class Environment {
     };
 
     @action saveObject = (obj) => {
-        // if (obj.dplcs.enabled && !this.config.dplcsEnabled) {
-        //     return errorMsg('Error', 'DPLCs required for saving object');
-        // }
-        // else if (!obj.dplcs.enabled && this.config.dplcsEnabled) {
-        //     return errorMsg('Error', 'Trying to save DPLCs with no file definition');
-        // }
-        //
+        if (obj.dplcs.enabled && !this.config.dplcsEnabled) {
+            return errorMsg('Error', 'DPLCs required for saving object');
+        }
+        else if (!obj.dplcs.enabled && this.config.dplcsEnabled) {
+            return errorMsg('Error', 'Trying to save DPLCs with no file definition');
+        }
+
         // art
         const artPath = workspace.absolutePath(obj.art.path);
         const chunk = tilesToBuffer(this.tiles, obj.art.compression);
@@ -191,6 +192,15 @@ class Environment {
                 err && errorMsg('Error Saving Palette', err.message);
             });
         });
+
+        // mappings
+        if (obj.mappings.path) {
+            const mappingPath = workspace.absolutePath(obj.mappings.path);
+            // const isAsm = extname(obj.mappings.path) == '.asm';
+
+            const chunk = mappingsToBuffer(this.mappings, obj.mappingDefinition);
+
+        }
 
     };
 

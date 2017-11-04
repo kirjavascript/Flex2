@@ -52,3 +52,29 @@ export function bufferToMappings(buffer, format) {
 
     return mappings;
 }
+
+export function mappingsToBuffer(mappings, format) {
+
+    const { headerSize, mappingSize, mappingDef } = parseDef(format);
+
+    const frames = [];
+
+    mappings.forEach(({art, top, left, priority, palette, hflip, vflip, width, height}) => {
+        const bytes = [];
+        console.log(art);
+
+        mappingDef.forEach(({name, length}) => {
+            console.log(name, length);
+
+        });
+
+
+    });
+
+    console.log(JSON.stringify(frames, null, 4));
+
+    // get frames from mapping def
+    // add frame header size
+    // get header
+
+}
