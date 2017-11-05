@@ -62,7 +62,7 @@ export const commands = [
             },
         },
         {
-            map: 'n t', name: 'New Tile', color: 'green',
+            map: 'n t', name: 'New Tile', color: 'green', count: true,
             func: () => {
                 environment.tiles.push(
                     Array.from({length: 64}).fill((0|Math.random()*15)+1)
@@ -115,11 +115,11 @@ export const commands = [
 
     [
         {
-            map: 'mod+a', name: 'Select All',
+            map: 'mod+a', name: 'Select All', noMultiplier: true,
             func: () => { mappingState.selectAll(); },
         },
         {
-            map: 'mod+d', name: 'Select None',
+            map: 'mod+d', name: 'Select None', noMultiplier: true,
             func: () => { mappingState.selectNone(); },
         },
     ],
@@ -203,19 +203,19 @@ export const commands = [
 
     [
         {
-            map: 'e', name: 'Export PNG', color: 'blue',
+            map: 'e', name: 'Export PNG', color: 'blue', noMultiplier: true,
             func: () => {
                 exportPNG();
             },
         },
         {
-            map: 'i', name: 'Import Over Sprite', color: 'blue',
+            map: 'i', name: 'Import Over Sprite', color: 'blue', noMultiplier: true,
             func: () => {
                 importImg();
             },
         },
         {
-            map: 's', name: 'Import Spritesheet', color: 'blue',
+            map: 's', name: 'Import Spritesheet', color: 'blue', noMultiplier: true,
             func: () => {
                 importState.newImport();
             },
@@ -251,7 +251,7 @@ export const commands = [
             },
         },
         {
-            map: 'd u', name: 'Delete Unused Tiles', color: 'red',
+            map: 'd u', name: 'Delete Unused Tiles', color: 'red', noMultiplier: true,
             func: () => {
                 mappingState.deleteUnusedTiles();
             },
@@ -262,18 +262,18 @@ export const commands = [
 
     [
         {
-            map: 'mod+z', name: 'Undo', color: 'magenta',
+            map: 'mod+z', name: 'Undo', color: 'magenta', noMultiplier: true,
             func: () => { undo(); },
         },
         {
-            map: 'mod+r', name: 'Redo', color: 'magenta',
+            map: 'mod+r', name: 'Redo', color: 'magenta', noMultiplier: true,
             func: () => { redo(); },
         },
     ],
 
     [
         {
-            map: 'r', name: 'Raw Editor', color: 'white',
+            map: 'r', name: 'Raw Editor', color: 'white', noMultiplier: true,
             func: () => {
                 mappingState.rawEditor.active = !mappingState.rawEditor.active;
             },
@@ -282,13 +282,13 @@ export const commands = [
 
     [
         {
-            map: 'm', name: '[mode]', color: 'orange',
+            map: 'm', name: '[mode]', color: 'orange', noMultiplier: true,
             func: () => {
                 mappingState.toggleMode();
             },
         },
         {
-            map: 'D', name: '[dplcs]', color: 'orange',
+            map: 'D', name: '[dplcs]', color: 'orange', noMultiplier: true,
             func: () => {
                 mappingState.toggleDPLCs();
             },
@@ -306,18 +306,18 @@ export const commands = [
             func: () => { environment.config.currentSprite -= getDistance(); },
         },
         {
-            map: '<', name: 'First Sprite', color: 'yellow',
+            map: '<', name: 'First Sprite', color: 'yellow', noMultiplier: true,
             func: () => { environment.config.currentSprite = 0; },
         },
         {
-            map: '>', name: 'Last Sprite', color: 'yellow',
+            map: '>', name: 'Last Sprite', color: 'yellow', noMultiplier: true,
             func: () => { environment.config.currentSprite = environment.mappings.length -1; },
         },
     ],
 
     [
         {
-            map: 'A', name: 'Autoarrange Tiles', color: 'yellow',
+            map: 'A', name: 'Autoarrange Tiles', color: 'yellow', noMultiplier: true,
             func: () => { mappingState.arrangeTilesBySpriteOrder(); },
         },
     ],
@@ -325,11 +325,11 @@ export const commands = [
 
     [
         {
-            map: 'u a', name: 'Unload Art', color: 'red',
+            map: 'u a', name: 'Unload Art', color: 'red', noMultiplier: true,
             func: () => { environment.tiles.replace([]); },
         },
         {
-            map: 'u m', name: 'Unload Mappings', color: 'red',
+            map: 'u m', name: 'Unload Mappings', color: 'red', noMultiplier: true,
             func: () => {
                 environment.mappings.replace([]);
                 environment.config.dplcsEnabled &&
@@ -337,22 +337,22 @@ export const commands = [
             },
         },
         {
-            map: 'u p', name: 'Unload Palettes', color: 'red',
+            map: 'u p', name: 'Unload Palettes', color: 'red', noMultiplier: true,
             func: () => { environment.resetPalettes(); },
         },
     ],
 
     [
         {
-            map: 't', name: 'Transparency', color: 'magenta',
+            map: 't', name: 'Transparency', color: 'magenta', noMultiplier: true,
             func: () => { environment.config.transparency = !environment.config.transparency; },
         },
         {
-            map: '=', name: 'Reset Pan/Zoom', color: 'magenta',
+            map: '=', name: 'Reset Pan/Zoom', color: 'magenta', noMultiplier: true,
             func: () => { mappingState.resetPanAndZoom(); },
         },
         {
-            map: 'g', name: 'Guidelines', color: 'magenta',
+            map: 'g', name: 'Guidelines', color: 'magenta', noMultiplier: true,
             func: () => { mappingState.guidelines.enabled = !mappingState.guidelines.enabled; },
         },
     ],

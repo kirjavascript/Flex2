@@ -21,16 +21,13 @@ change sprite scroll speed
 drawing mode fill !
 S - scroll to sprite
 s3k sonic mapping definition / conversion tools
+add flex.json to sonic 2 disassembly
 ==
 
 check version in documentation tab (move code)
-add flex.json to sonic 2 disassembly
-search (filter)
 logo / have default as logo?
-counts for commands
-real command modes
+markdown keyboard shortcuts
 
 ====
 
-object collapse state persistance
 create new file | newFactory={(path)=>{}}
