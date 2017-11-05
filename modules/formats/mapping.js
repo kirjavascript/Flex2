@@ -27,7 +27,7 @@ export function bufferToMappings(buffer, format) {
 
         let sprites = [];
 
-        if (mappingQty > 0xFF) return; // prevent crashes
+        if (mappingQty > 100) return; // prevent crashes
 
         for (let i = 0; i < mappingQty; i++) {
             // convert each line to a binary string to easily extract properties

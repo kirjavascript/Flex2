@@ -17,20 +17,18 @@ for_window [title="Flex 2"] floating enable border normal
 ==
 V2: sprite rotation http://forums.sonicretro.org/index.php?showtopic=8848&st=0&p=159754&#entry159754
 https://yarnpkg.com/en/package/node-vibrant
-change sprite scroll speed Set sprite offset based on scroll to increase speed
+change sprite scroll speed
 drawing mode fill !
 S - scroll to sprite
+s3k sonic mapping definition / conversion tools
 ==
 
 check version in documentation tab (move code)
-logo
 add flex.json to sonic 2 disassembly
-counts for commands (wrap all in doAction, remove doAction from others)
-real command modes
 search (filter)
-have default as logo?
-input type = color
-lil-g/gemini
+logo / have default as logo?
+counts for commands
+real command modes
 
 ====
 

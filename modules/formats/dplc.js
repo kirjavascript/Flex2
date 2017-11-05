@@ -26,7 +26,7 @@ export function bufferToDPLCs(buffer, format) {
         let sprites = [];
 
         // prevent crashes from incorrectly read header
-        if (dplcQty > 0xFF) return;
+        if (dplcQty > 100) return;
 
         for (let i = 0; i < dplcQty; i++) {
             // convert each line to a binary string to easily extract properties
