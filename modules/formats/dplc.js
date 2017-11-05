@@ -103,12 +103,14 @@ export function DPLCsToBuffer(dplcs, format) {
     });
 
     const headerWords = headers.map((num) => numberToByteArray(num, 2));
+    const framesArray =frames.map(({header, pieces}) => [header, pieces]);
 
-    const bytes = flattenDeep([
-        headerWords,
-        frames.map(({header, pieces}) => [header, pieces]),
-    ]);
+    const bytes = flattenDeep([headerWords, framesArray]);
 
-    return new Buffer(Uint8Array.from(bytes));
+    return {
+        chunk: new Buffer(Uint8Array.from(bytes)),
+        headers: headerWords,
+        frames: framesArray,
+    };
 
 }

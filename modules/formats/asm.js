@@ -1,6 +1,3 @@
-import chunk from 'lodash/chunk';
-import flatten from 'lodash/flatten';
-
 const sizeLookup = {
     'b': 1,
     'w': 2,
@@ -13,22 +10,56 @@ export function asmToBin(buffer) {
         .replace(/\$|even|(;(.*?)$)/gm, '') // remove comments / even / $ (assume no decimal)
         .replace(/(^\s*$)/gm, ''); // remove empty lines
 
-    const sections = asm.split(/^(.*?):/gm);
-    // header contains a - symbol (assume no negatives in data sections)
-    const headerIndex = sections.findIndex((f) => f.indexOf('-') != -1);
-    const headers = sections[headerIndex];
+    // split into labels/data
+    // double comment char used to indicate start of line
+    const sections = (asm
+        .replace(/^\S/gm, (d) => `;;${d}`)
+        .replace(/\n/gm, '') + ';')
+        .match(/;.*?:.*?;/g)
+        .map((d) => d.replace(/;/g, '').split(':'));
 
-    const dataSections = chunk(sections.splice(headerIndex + 1), 2)
-        .map(([label, data]) => {
-            const lines = data.split('\n');
-            let bytes = [];
-            lines.forEach((line) => {
-                const sizeMatch = line.match(/dc\.(b|w|l)/);
-                if (sizeMatch) {
-                    const size = sizeLookup[sizeMatch[1]];
-                    const fragments = line.replace(/dc\.(b|w|l)|\s/g, '').split(',');
-                    // save each fragment into byte array based on size
-                    fragments.forEach((fragment) => {
+    // calculate pointer for each label
+    let dataIndex = 0;
+    const pointerMap = {};
+    sections.forEach(([label, data]) => {
+        pointerMap[label] = dataIndex;
+        // insert newlines to split on
+        const lines = data.split('dc').join('\ndc').split('\n');
+        lines.forEach((line) => {
+            const sizeMatch = line.match(/dc\.(b|w|l)/);
+            if (sizeMatch) {
+                const size = sizeLookup[sizeMatch[1]];
+                const fragments = line.split(',');
+                dataIndex += size * fragments.length;
+            }
+        });
+    });
+
+    const bytes = [];
+
+    // now just convert the data sections
+    asm.replace(/^(.*?):/gm, '')
+        .split('\n')
+        .forEach((line) => {
+            const sizeMatch = line.match(/dc\.(b|w|l)/);
+            if (sizeMatch) {
+                const size = sizeLookup[sizeMatch[1]];
+                const fragments = line.replace(/dc\.(b|w|l)|\s/g, '').split(',');
+
+                // save each fragment into byte array based on size
+                fragments.forEach((fragment) => {
+                    if (~fragment.indexOf('-')) {
+                        // if data is calculated from labels
+                        const [lVal, rVal] = fragment.split('-');
+                        let pointer = (pointerMap[lVal] - pointerMap[rVal]);
+                        let pointerBytes = [];
+                        for (let i = 0; i < size; i++) {
+                            pointerBytes.unshift(pointer & 0xFF);
+                            pointer = pointer >> 8;
+                        }
+                        bytes.push(...pointerBytes);
+                    }
+                    else {
                         let hex = parseInt(fragment, 16);
                         let fragmentBytes = [];
                         for (let i = 0; i < size; i++) {
@@ -36,49 +67,15 @@ export function asmToBin(buffer) {
                             hex = hex >> 8;
                         }
                         bytes.push(...fragmentBytes);
-                    });
-                }
-            });
+                    }
+                });
 
-            return {
-                label,
-                bytes,
-            };
+            }
         });
 
-    // assume word sized headers
-    const headersList = headers
-        .replace(/dc\.w/gm, '') // remove data annotation
-        .replace(/\n/gm, ',') // change \n to comma
-        .replace(/\s/gm, '') // strip whitespace
-        .replace(/,$|^,/g, '') // strip trailing/beginning comma
-        .split(','); // split by comma
+    return bytes;
+}
 
-    const headerSize = headersList.length * 2; // bytes
-
-    const headerBytes = [];
-
-    headersList.forEach((header) => {
-        const dashIndex = header.indexOf('-');
-        if (dashIndex == -1) {
-            const value = parseInt(header, 16);
-            headerBytes.push(value >> 8, value & 0xFF);
-        }
-        else {
-            const label = header.slice(0, dashIndex);
-            let value = headerSize;
-            for (let i = 0; i < dataSections.length; i++) {
-                if (label == dataSections[i].label) {
-                    break;
-                }
-                value += dataSections[i].bytes.length;
-            }
-
-            headerBytes.push(value >> 8, value & 0xFF);
-        }
-    });
-
-    const dataBytes = flatten(dataSections.map((d) => d.bytes));
-
-    return [...headerBytes, ...dataBytes];
+export function stuffToAsm(headers, frames, name) {
+    return '';
 }

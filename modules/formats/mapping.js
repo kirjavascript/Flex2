@@ -159,15 +159,21 @@ export function mappingsToBuffer(mappings, format) {
 
     const headerWords = headers.map((num) => numberToByteArray(num, 2));
 
+    const framesArray = frames.map(({header, pieces}) => {
+        return (zeroHeader && header == 0)
+            ? []
+            : [numberToByteArray(header, headerSize), pieces];
+    });
+
     const bytes = flattenDeep([
         headerWords,
-        frames.map(({header, pieces}) => {
-            return (zeroHeader && header == 0)
-                ? []
-                : [numberToByteArray(header, headerSize), pieces];
-        }),
+        framesArray,
     ]);
 
-    return new Buffer(Uint8Array.from(bytes));
+    return {
+        chunk: new Buffer(Uint8Array.from(bytes)),
+        headers: headerWords,
+        frames: framesArray,
+    };
 
 }

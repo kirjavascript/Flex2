@@ -33,9 +33,6 @@ lil-g/gemini
 
 ====
 
-when saving, if 0 appears anywhere in the header use its offset for blank sprites
+object collapse state persistance
 when saving asm, use the object name as the label name :D
-divide tile index by 2 for sonic 2 2 player mappings
 create new file | newFactory={(path)=>{}}
-
-bug: try and load dplcs with none there

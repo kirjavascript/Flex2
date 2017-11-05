@@ -11,7 +11,7 @@ import { bufferToTiles, tilesToBuffer } from '#formats/art';
 import { bufferToMappings, mappingsToBuffer } from '#formats/mapping';
 import { bufferToDPLCs, DPLCsToBuffer } from '#formats/dplc';
 import { buffersToColors, colorsToBuffers, defaultPalettes } from '#formats/palette';
-import { asmToBin } from '#formats/asm';
+import { asmToBin, stuffToAsm } from '#formats/asm';
 import { arrayMove } from 'react-sortable-hoc';
 
 class Environment {
@@ -126,7 +126,7 @@ class Environment {
             this.mappings.replace([]);
         }
         // load DPLCs
-        this.config.dplcsEnabled = obj.dplcs.enabled == true;
+        this.config.dplcsEnabled = obj.dplcs.enabled == true && obj.dplcs.path;
         if (this.config.dplcsEnabled && obj.dplcs.path) {
             const dplcPath = workspace.absolutePath(obj.dplcs.path);
             const isAsm = extname(obj.dplcs.path) == '.asm';
@@ -196,10 +196,11 @@ class Environment {
         // mappings
         if (obj.mappings.path) {
             const mappingPath = workspace.absolutePath(obj.mappings.path);
-            // const isAsm = extname(obj.mappings.path) == '.asm';
+            const isAsm = extname(obj.mappings.path) == '.asm';
 
-            const chunk = mappingsToBuffer(this.mappings, obj.mappingDefinition);
-            writeFile(mappingPath, chunk, (err, success) => {
+            const { chunk, headers, frames } = mappingsToBuffer(this.mappings, obj.mappingDefinition);
+            const out = isAsm ? stuffToAsm(headers, frames, obj.name) : chunk;
+            writeFile(mappingPath, out, (err, success) => {
                 err && errorMsg('Error Saving Mappings', err.message);
             });
         }
@@ -207,10 +208,11 @@ class Environment {
         // dplcs
         if (obj.dplcs.enabled && obj.dplcs.path) {
             const dplcPath = workspace.absolutePath(obj.dplcs.path);
-            // const isAsm = extname(obj.mappings.path) == '.asm';
+            const isAsm = extname(obj.dplcs.path) == '.asm';
 
-            const chunk = DPLCsToBuffer(this.dplcs, obj.dplcDefinition);
-            writeFile(dplcPath, chunk, (err, success) => {
+            const { chunk, headers, frames } = DPLCsToBuffer(this.dplcs, obj.dplcDefinition);
+            const out = isAsm ? stuffToAsm(headers, frames, obj.name) : chunk;
+            writeFile(dplcPath, out, (err, success) => {
                 err && errorMsg('Error Saving DPLCs', err.message);
             });
         }
