@@ -53,10 +53,11 @@ export class Input extends Component {
             assert,
             isNumber,
             onChange,
+            containerClass,
             ...otherProps,
         } = this.props;
 
-        return <div>
+        return <div className={containerClass}>
             {label && <span>
                 {label}
                 &emsp;

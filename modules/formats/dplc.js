@@ -109,7 +109,6 @@ export function DPLCsToBuffer(dplcs, format) {
 
     return {
         chunk: new Buffer(Uint8Array.from(bytes)),
-        headers: headerWords,
         frames: framesArray,
     };
 

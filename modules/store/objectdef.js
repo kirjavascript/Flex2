@@ -14,12 +14,14 @@ export class ObjectDef {
         path: '',
         format: 'Sonic 1',
         customDefinition: '',
+        label: '',
     };
     @observable dplcs = {
         enabled: false,
         path: '',
         format: 'Sonic 1',
         customDefinition: '',
+        label: '',
     };
 
     @computed get key() {

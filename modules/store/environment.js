@@ -198,8 +198,8 @@ class Environment {
             const mappingPath = workspace.absolutePath(obj.mappings.path);
             const isAsm = extname(obj.mappings.path) == '.asm';
 
-            const { chunk, headers, frames } = mappingsToBuffer(this.mappings, obj.mappingDefinition);
-            const out = isAsm ? stuffToAsm(headers, frames, obj.name) : chunk;
+            const { chunk, frames } = mappingsToBuffer(this.mappings, obj.mappingDefinition);
+            const out = isAsm ? stuffToAsm(frames, obj.mappings.label, true) : chunk;
             writeFile(mappingPath, out, (err, success) => {
                 err && errorMsg('Error Saving Mappings', err.message);
             });
@@ -210,8 +210,8 @@ class Environment {
             const dplcPath = workspace.absolutePath(obj.dplcs.path);
             const isAsm = extname(obj.dplcs.path) == '.asm';
 
-            const { chunk, headers, frames } = DPLCsToBuffer(this.dplcs, obj.dplcDefinition);
-            const out = isAsm ? stuffToAsm(headers, frames, obj.name) : chunk;
+            const { chunk, frames } = DPLCsToBuffer(this.dplcs, obj.dplcDefinition);
+            const out = isAsm ? stuffToAsm(frames, obj.dplcs.label) : chunk;
             writeFile(dplcPath, out, (err, success) => {
                 err && errorMsg('Error Saving DPLCs', err.message);
             });

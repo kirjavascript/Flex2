@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { extname } from 'path';
 import { observer } from 'mobx-react';
 import {Collapse} from 'react-collapse';
 import { Item, Input, File, Select, Editor } from '#ui';
@@ -130,6 +131,15 @@ export class ObjectConfig extends Component {
                                         />
                                     </div>
                                 )}
+                                {extname(obj.mappings.path) == '.asm' && (
+                                    <Input
+                                        containerClass="row-input"
+                                        label="Label"
+                                        store={obj.mappings}
+                                        accessor="label"
+                                        placeholder="Label Name"
+                                    />
+                               )}
                                 <File
                                     store={obj.mappings}
                                     accessor="path"
@@ -182,6 +192,15 @@ export class ObjectConfig extends Component {
                                                 />
                                             </div>
                                         )}
+                                        {extname(obj.dplcs.path) == '.asm' && (
+                                            <Input
+                                                containerClass="row-input"
+                                                label="Label"
+                                                store={obj.dplcs}
+                                                accessor="label"
+                                                placeholder="Label Name"
+                                            />
+                                       )}
                                         <File
                                             store={obj.dplcs}
                                             accessor="path"
