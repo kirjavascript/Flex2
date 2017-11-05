@@ -8,7 +8,7 @@ Flex 2 is a multi-purpose art and mapping editor for the Sega Megadrive. The ori
 
 Much inspiration has come from the tools SonMapEd, SpritePlotter, and SonikSprite - with ideas being combined and improved upon.
 
-There is a fair amount of hidden behaviour in this application, reading this document is highly recommended before use.
+Because of hidden behaviour in this application, reading this document is recommended before use.
 
 
 ## Controls
@@ -23,6 +23,11 @@ You can cycle through options in dropdown boxes and increase/decrease numbers in
 
 The UI layout is fully customisable by moving or resizing tabs.
 
+## Project Files
+
+Project files serve as definitions for all the objects in your project. They should sit at the root of your project directory and be committed to version control. This allows quick saving and loading of data.
+
+A key change from version 1 is that Flex no longer has a game mode. Data is saved and loaded as whatever the definition for the object says. This means you can mix formats (like S1 Mappings and S2 DPLCs for editing Sonic CD data), or even provide custom definitions.
 
 ## Mapping Editor
 
@@ -54,13 +59,17 @@ Palette input will be normalised into Megadrive colours. To change the order of 
 
 ## Sprites
 
+The Sprites tab gives an overview of your full object's data, allowing you to change sprites or reorder them by dragging and dropping.
+
 ## Importing
 
-## Project Files
+When importing an image over the current frame this is no limitation on image dimensions.
 
-## DPLC Optimization
+For importing a spritesheet, either the alpha channel or the top left pixel color will serve as transparency.
 
-## Mapping Formats
+Mapping output can be configured to either reduce the number of tiles, or the number of mappings. The algorithm favours fewer horizontal sprites over vertical ones.
+
+Both methods of importing use CIEDE2000 nearest colour matching to the current palette.
 
 ## Download
 
