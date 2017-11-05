@@ -25,7 +25,7 @@ The UI layout is fully customisable by moving or resizing tabs.
 
 ## Project Files
 
-Project files serve as definitions for all the objects in your project. They should sit at the root of your project directory and be committed to version control. This allows quick saving and loading of data.
+Project files serve as definitions for all the objects in your project. They should sit at the root of your project directory and be committed to version control. Project file configuration is autosaved.
 
 A key change from version 1 is that Flex no longer has a game mode. Data is saved and loaded as whatever the definition for the object says. This means you can mix formats (like S1 Mappings and S2 DPLCs for editing Sonic CD data), or even provide custom definitions.
 

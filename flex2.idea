@@ -23,12 +23,8 @@ drawing mode fill !
 S - scroll to sprite
 s3k sonic mapping definition / conversion tools
 add flex.json to sonic 2 disassembly
+create new file | newFactory={(path)=>{}}
 ==
 
 check version in documentation tab (move code)
 logo / have default as logo?
-markdown keyboard shortcuts
-
-====
-
-create new file | newFactory={(path)=>{}}
