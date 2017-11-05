@@ -24,7 +24,10 @@ export function bufferToMappings(buffer, format) {
 
         const mappingQty = readN(data, headerOffset, headerSize);
         const mappingOffset = headerOffset + headerSize;
+
         let sprites = [];
+
+        if (mappingQty > 0xFF) return; // prevent crashes
 
         for (let i = 0; i < mappingQty; i++) {
             // convert each line to a binary string to easily extract properties

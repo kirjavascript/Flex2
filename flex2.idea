@@ -26,6 +26,7 @@ check version in documentation tab (move code)
 logo
 add flex.json to sonic 2 disassembly
 counts for commands (wrap all in doAction, remove doAction from others)
+real command modes
 search (filter)
 have default as logo?
 input type = color
@@ -34,5 +35,4 @@ lil-g/gemini
 ====
 
 object collapse state persistance
-when saving asm, use the object name as the label name :D
 create new file | newFactory={(path)=>{}}

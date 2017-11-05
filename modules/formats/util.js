@@ -1,8 +1,9 @@
 export function getHeaders(data) {
-    let a = 0x7FFF; // ???
+    // https://github.com/sonicretro/SonLVL/blob/master/SonLVLAPI/LevelData.cs#L1466-L1481
+    let a = 0x7FFF; // headers are twos complement
     let headers = [];
-    for (let i = 0; i < data.length && i != a; i += 2) {
-        let header = readWord(data, i);
+    for (let i = 0; i < data.length && i < a; i += 2) {
+        let header = readWord(data, i) & 0x7FFF;
         headers.push(header);
         if (header < a && !(header == 0)) {
             a = header;

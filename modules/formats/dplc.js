@@ -25,6 +25,9 @@ export function bufferToDPLCs(buffer, format) {
         const dplcOffset = headerOffset + headerSize;
         let sprites = [];
 
+        // prevent crashes from incorrectly read header
+        if (dplcQty > 0xFF) return;
+
         for (let i = 0; i < dplcQty; i++) {
             // convert each line to a binary string to easily extract properties
             const binStr = readBinary(data, dplcOffset + (dplcSize * i), dplcSize);
