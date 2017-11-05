@@ -2,7 +2,6 @@ import React from 'react';
 import { render } from 'react-dom';
 import { Layout } from '#components/layout';
 
-import '#util/check-version';
 import './controls/keyboard';
 import './components/import';
 

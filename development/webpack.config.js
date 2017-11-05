@@ -34,7 +34,11 @@ module.exports = (env={}, args={}) => {
                 },
                 {
                     test: /\.json$/,
-                    loader: 'json-loader'
+                    loader: 'json-loader',
+                },
+                {
+                    test: /\.md$/,
+                    loader: 'raw-loader',
                 },
                 {
                     test: /\.js$/,

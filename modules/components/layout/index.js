@@ -8,6 +8,7 @@ import { Palettes } from '#components/palettes';
 import { Art } from '#components/art/index';
 import { Sprites } from '#components/sprites';
 import { Mappings } from '#components/mappings';
+import { Documentation } from '#components/documentation';
 
 export class Layout extends Component {
 
@@ -30,6 +31,9 @@ export class Layout extends Component {
             }
             else if (component == 'mappings') {
                 <Mappings node={node}/>;
+            }
+            else if (component == 'documentation') {
+                <Documentation node={node}/>;
             }
         };
     }

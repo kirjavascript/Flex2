@@ -48,6 +48,12 @@ const DEFAULT_LAYOUT = {
                         'component': 'mappings',
                         'id': '#7',
                     },
+                    {
+                        'type': 'tab',
+                        'name': 'Documentation',
+                        'component': 'documentation',
+                        'id': '#8',
+                    },
                 ],
                 'active': true
             },

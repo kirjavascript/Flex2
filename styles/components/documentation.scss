@@ -1,0 +1,33 @@
+.documentation {
+    margin: 80px;
+
+    a {
+        cursor: pointer;
+    }
+
+    kbd {
+        background-color: $grey;
+        // color: $black;
+        padding: 1px 5px;
+        margin: 2px 0;
+        line-height: 18px;
+        border-radius: 5px;
+        font-weight: bold;
+    }
+
+    table {
+        background-color: $grey;
+        padding: 5px;
+        border-radius: 5px;
+        th {
+            text-align: left;
+            padding: 5px 5px 10px 5px;
+            margin: 5px;
+            border-bottom: 2px solid $white;
+        }
+        td {
+            padding: 5px;
+            margin-right: 10px;
+        }
+    }
+}
