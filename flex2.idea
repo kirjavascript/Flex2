@@ -13,6 +13,7 @@ influences; sonmaped, spriteplotter, soniksprite
 raw editor doesn't clean up anything (explain deleting)
 to optimise all dplcs, toggle on/off
 SCD 23:39 <+flamewing> Mappings is S1; DPLC is S2 -> ?scd flag
+project autosaves
 for_window [title="Flex 2"] floating enable border normal
 ==
 V2: sprite rotation http://forums.sonicretro.org/index.php?showtopic=8848&st=0&p=159754&#entry159754

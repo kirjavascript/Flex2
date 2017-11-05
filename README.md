@@ -10,9 +10,10 @@ Much inspiration has come from the tools SonMapEd, SpritePlotter, and SonikSprit
 
 There is a fair amount of hidden behaviour in this application, reading this document is highly recommended before use.
 
+
 ## Controls
 
-Most of the keyboard shortcuts are listed on the Mappings tab at the bottom. Some commands take a multiplier, so <kbd>32</kbd> + <kbd>Up</kbd> will move the selected mappings 32 pixels up, or <kbd>8</kbd> + <kbd>n t</kbd> will add eight new tiles.
+Most of the keyboard shortcuts (and indeed, behaviours for the application) are listed on the Mappings tab at the bottom. Some commands take a multiplier, so <kbd>32</kbd> + <kbd>Up</kbd> will move the selected mappings 32 pixels up, or <kbd>8</kbd> + <kbd>n t</kbd> will add eight new tiles.
 
 ### Inputs
 
@@ -21,6 +22,7 @@ You can cycle through options in dropdown boxes and increase/decrease numbers in
 ### General UI
 
 The UI layout is fully customisable by moving or resizing tabs.
+
 
 ## Mapping Editor
 
@@ -34,17 +36,27 @@ The mapping editor has the following mouse interactions;
 | right drag | pan viewport |
 | wheel | zoom |
 
-### New Sprites
+### New Mapping
+
+The new mapping overlay can be toggled with <kbd>nm</kbd>. To add a new mapping piece, drag it from the new mapping overlay to where in the mapping area you want it to display and type <kbd>nm</kbd> again to dismiss the overlay.
 
 ### Drawing Mode
 
+When entering drawing mode by pressing <kbd>m</kbd>, dragging over the sprite will draw in the respective colour of that mouse button. If mappings overlap, both will have the colour applied.
+
 ### Raw Editor
 
+When doing actions like deleting a mapping, Flex 2 will attempt to remove corresponding unused DPLCs. The raw editor gives you access to modify the raw data for mappings and DPLCs without performing any of these optimisations if you need it. It can also be used to change the draw order by reordering mappings.
+
 ## Palettes
+
+Palette input will be normalised into Megadrive colours. To change the order of palette lines, you can drag the numbers to different positions.
 
 ## Sprites
 
 ## Importing
+
+## Project Files
 
 ## DPLC Optimization
 

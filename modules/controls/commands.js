@@ -19,7 +19,7 @@ import { toJS } from 'mobx';
  *
  * drawing mode;
  * left = chosen pixel
- * right = transparency
+ * right = chosen pixel
  *
  * Input / Select;
  *
