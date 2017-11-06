@@ -23,5 +23,4 @@ logo
 clean up bundles (folder, unused shit)
 electron-builder build.js
 analytics
-set autolock to 30 mins
 submissions->utilities

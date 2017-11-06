@@ -10,10 +10,6 @@ Much inspiration has come from the tools SonMapEd, SpritePlotter, and SonikSprit
 
 # [download](https://github.com/kirjavascript/Flex2/releases)
 
-<a rel="license" href="http://creativecommons.org/publicdomain/zero/1.0/">
-    <img src="https://licensebuttons.net/p/zero/1.0/80x15.png" style="border-style: none;" alt="CC0" />
-</a>
-
 [//]: # (__docs__)
 
 ## Controls
