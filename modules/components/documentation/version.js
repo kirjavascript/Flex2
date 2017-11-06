@@ -41,7 +41,7 @@ export class Version extends Component {
             )}
             {' ★ '}
             <A href="https://www.github.com/kirjavascript/Flex2">
-                Source code
+                Source code / Report bugs
             </A>
             {error && <div className="red">{error}</div>}
         </div>;
