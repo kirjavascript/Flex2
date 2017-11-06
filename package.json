@@ -2,8 +2,7 @@
     "name": "Flex2",
     "version": "0.0.2",
     "scripts": {
-        "start": "electron ./static --dev",
-        "crush": "webpack --config ./development/webpack.config.js -p"
+        "start": "electron ./static --dev"
     },
     "devDependencies": {
         "babel-cli": "^6.24.1",

@@ -7,6 +7,7 @@ draw directly on sprites
 import reduce mappings/tiles
 full access to dplc/mapping data
 to optimise all dplcs, toggle on/off
+mark flex 1 as deprecated
 ==
 V2: sprite rotation http://forums.sonicretro.org/index.php?showtopic=8848&st=0&p=159754&#entry159754
 https://yarnpkg.com/en/package/node-vibrant
@@ -19,3 +20,8 @@ create new file | newFactory={(path)=>{}}
 ==
 
 logo
+clean up bundles (folder, unused shit)
+electron-builder build.js
+analytics
+set autolock to 30 mins
+submissions->utilities
