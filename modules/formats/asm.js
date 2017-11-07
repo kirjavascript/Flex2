@@ -17,7 +17,7 @@ export function asmToBin(buffer) {
     // add starting label to ensure all sections are accounted for
     const sections = (('__flex2__internal: \n' + asm)
         .replace(/^\S/gm, (d) => `;;${d}`)
-        .replace(/\s/gm, '') + ';')
+        .replace(/\s/gm, '') + ';') // strip all whitespace (windows line endings)
         .match(/;.*?:.*?;/g)
         .map((d) => d.replace(/;/g, '').split(':'));
 

@@ -20,7 +20,6 @@ create new file | newFactory={(path)=>{}}
 ==
 
 logo
-clean up bundles (folder, unused shit)
-electron-builder build.js
 analytics
+read file sync for callback
 submissions->utilities

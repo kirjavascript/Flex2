@@ -1,4 +1,4 @@
-import { readFile, writeFile } from 'fs';
+import { readFile, readFileSync, writeFile } from 'fs';
 import { extname } from 'path';
 import { observable, computed, action, autorun, toJS, spy } from 'mobx';
 import range from 'lodash/range';
@@ -101,10 +101,12 @@ class Environment {
         // load art
         if (obj.art.path) {
             const artPath = workspace.absolutePath(obj.art.path);
-            readFile(artPath, (err, buffer) => {
-                if (err) return errorMsg('Error Reading Art File', err);
+            try {
+                const buffer = readFileSync(artPath);
                 this.tiles.replace(bufferToTiles(buffer, obj.art.compression));
-            });
+            } catch(e) {
+                errorMsg('Error Reading Art File', e.message);
+            }
         }
         else {
             this.tiles.replace([]);
@@ -113,14 +115,17 @@ class Environment {
         if (obj.mappings.path) {
             const mappingPath = workspace.absolutePath(obj.mappings.path);
             const isAsm = extname(obj.mappings.path) == '.asm';
-            readFile(mappingPath, (err, buffer) => {
-                if (err) return errorMsg('Error Reading Mapping File', err);
+            try {
+                const buffer = readFileSync(mappingPath);
                 const newMappings = bufferToMappings(
                     isAsm ? asmToBin(buffer) : buffer,
                     obj.mappingDefinition,
                 );
                 this.mappings.replace(newMappings);
-            });
+
+            } catch(e) {
+                errorMsg('Error Reading Mapping File', e.message);
+            }
         }
         else {
             this.mappings.replace([]);
@@ -130,41 +135,35 @@ class Environment {
         if (this.config.dplcsEnabled && obj.dplcs.path) {
             const dplcPath = workspace.absolutePath(obj.dplcs.path);
             const isAsm = extname(obj.dplcs.path) == '.asm';
-            readFile(dplcPath, (err, buffer) => {
-                if (err) return errorMsg('Error Reading DPLC File', err);
+            try {
+                const buffer = readFileSync(dplcPath);
                 const newDPLCs = bufferToDPLCs(
                     isAsm ? asmToBin(buffer) : buffer,
                     obj.dplcDefinition,
                 );
                 this.dplcs.replace(newDPLCs);
-            });
+            } catch(e) {
+                errorMsg('Error Reading DPLC File', e.message);
+            }
         }
         else {
             this.dplcs.replace([]);
         }
 
-        // load palettes
-        Promise
-            .all(
-                obj.palettes.map(({path, length}) => {
-                    const palettePath = workspace.absolutePath(path);
-                    return new Promise((resolve, reject) => {
-                        readFile(palettePath, (err, buffer) => {
-                            if (err) reject(err);
-                            resolve({buffer, length});
-                        });
-                    });
-                })
-            )
-            .then((all) => {
-                buffersToColors(all)
-                    .forEach((line, i) => {
-                        this.palettes[i] = line;
-                    });
-            })
-            .catch((err) => {
-                errorMsg('Error Reading Palette File', err.message);
+        try {
+            const paletteBuffers = obj.palettes.map(({path, length}) => {
+                const palettePath = workspace.absolutePath(path);
+                return { buffer: readFileSync(palettePath), length };
             });
+
+            buffersToColors(paletteBuffers)
+                .forEach((line, i) => {
+                    this.palettes[i] = line;
+                });
+        } catch(e) {
+            errorMsg('Error Reading DPLC File', e.message);
+        }
+
     };
 
     @action saveObject = (obj) => {
