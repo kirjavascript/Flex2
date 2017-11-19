@@ -20,6 +20,4 @@ create new file | newFactory={(path)=>{}}
 04:43:53 <%Lil-G> i mean so when you do "delete unused tiles" it doesn't delete the tiles the other object uses
 ==
 
-logo
-
 submissions->utilities
