@@ -4,7 +4,7 @@ import { A } from './a.js';
 
 function semvarToInt(str) {
     // currently just a rough calculation
-    return +str.split`.`.map((d) => d.padStart(3, '0')).join``;
+    return +str.replace(/[^\d.]/g,'').split`.`.map((d) => d.padStart(3, '0')).join``;
 }
 
 export class Version extends Component {

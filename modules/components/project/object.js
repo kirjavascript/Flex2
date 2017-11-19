@@ -13,8 +13,25 @@ const paletteLengths = '1234'.split``.map((d) => ({label: d, value: +d}));
 @observer
 export class ObjectConfig extends Component {
 
-    state = { open: false, confirmDelete: false };
+    state = { open: false, confirmDelete: false, loading: false, saving: false };
     mounted = true;
+
+    load = () => {
+        this.setState({loading: true});
+        requestIdleCallback(() => {
+            this.props.obj.load(() => {
+                this.setState({loading: false});
+            });
+        });
+    };
+    save = () => {
+        this.setState({saving: true});
+        requestIdleCallback(() => {
+            this.props.obj.save(() => {
+                this.setState({saving: false});
+            });
+        });
+    };
 
     onToggle = () => {
         this.setState({open: !this.state.open});
@@ -40,7 +57,7 @@ export class ObjectConfig extends Component {
 
     render() {
         const { obj } = this.props;
-        const { open, confirmDelete } = this.state;
+        const { open, confirmDelete, loading, saving } = this.state;
 
         return <div>
                 <div className="row object-header">
@@ -57,11 +74,11 @@ export class ObjectConfig extends Component {
                         <Item inverted color="blue" onClick={this.onToggle}>
                             {open ? 'Hide Config' : 'Show Config'}
                         </Item>
-                        <Item color="green" inverted onClick={obj.load}>
-                            Load Data
+                        <Item color="green" inverted onClick={this.load}>
+                            {loading ? 'Loading...' : 'Load Data'}
                         </Item>
-                        <Item color="orange" inverted onClick={obj.save}>
-                            Save Data
+                        <Item color="orange" inverted onClick={this.save}>
+                            {saving ? 'Saving...' : 'Save Data'}
                         </Item>
                     </div>
                 </div>

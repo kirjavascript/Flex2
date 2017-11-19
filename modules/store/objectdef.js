@@ -66,12 +66,14 @@ export class ObjectDef {
         this.parent = parent;
     }
 
-    @action load = () => {
+    @action load = (callback) => {
         environment.loadObject(this);
+        callback();
     };
 
-    @action save = () => {
+    @action save = (callback) => {
         environment.saveObject(this);
+        callback();
     };
 
     @action remove = () => {

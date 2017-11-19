@@ -1,4 +1,4 @@
-import { readFile, readFileSync, writeFile } from 'fs';
+import { readFileSync, writeFile } from 'fs';
 import { extname } from 'path';
 import { observable, computed, action, autorun, toJS, spy } from 'mobx';
 import range from 'lodash/range';
@@ -163,7 +163,6 @@ class Environment {
         } catch(e) {
             errorMsg('Error Reading DPLC File', e.message);
         }
-
     };
 
     @action saveObject = (obj) => {
