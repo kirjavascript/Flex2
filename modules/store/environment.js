@@ -1,4 +1,4 @@
-import { readFileSync, writeFile } from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
 import { extname } from 'path';
 import { observable, computed, action, autorun, toJS, spy } from 'mobx';
 import range from 'lodash/range';
@@ -176,9 +176,12 @@ class Environment {
         // art
         const artPath = workspace.absolutePath(obj.art.path);
         const chunk = tilesToBuffer(this.tiles, obj.art.compression);
-        writeFile(artPath, chunk, (err, success) => {
-            if (err) return errorMsg('Error Reading Mapping File', err);
-        });
+        try {
+            writeFileSync(artPath, chunk);
+        }
+        catch (e) {
+            errorMsg('Error Saving Art', e.message);
+        }
 
         // palettes
         let lineIndex = 0;
@@ -186,9 +189,12 @@ class Environment {
             const chunk = colorsToBuffers(this.palettes, lineIndex, lineIndex + length);
             lineIndex += length;
 
-            writeFile(workspace.absolutePath(path), chunk, (err, success) => {
-                err && errorMsg('Error Saving Palette', err.message);
-            });
+            try {
+                writeFileSync(workspace.absolutePath(path), chunk);
+            }
+            catch (e) {
+                errorMsg('Error Saving Palette', e.message);
+            }
         });
 
         // mappings
@@ -198,9 +204,12 @@ class Environment {
 
             const { chunk, frames } = mappingsToBuffer(this.mappings, obj.mappingDefinition);
             const out = isAsm ? stuffToAsm(frames, obj.mappings.label, true) : chunk;
-            writeFile(mappingPath, out, (err, success) => {
-                err && errorMsg('Error Saving Mappings', err.message);
-            });
+            try {
+                writeFileSync(mappingPath, out);
+            }
+            catch (e) {
+                errorMsg('Error Saving Mappings', e.message);
+            }
         }
 
         // dplcs
@@ -210,9 +219,12 @@ class Environment {
 
             const { chunk, frames } = DPLCsToBuffer(this.dplcs, obj.dplcDefinition);
             const out = isAsm ? stuffToAsm(frames, obj.dplcs.label) : chunk;
-            writeFile(dplcPath, out, (err, success) => {
-                err && errorMsg('Error Saving DPLCs', err.message);
-            });
+            try {
+                writeFileSync(dplcPath, out);
+            }
+            catch (e) {
+                errorMsg('Error Saving DPLCs', e.message);
+            }
         }
 
     };
