@@ -1,18 +1,9 @@
-desktop version
-project files
-sexy flexible UI layout
-custom mapping formats
-undo / redo
-draw directly on sprites
-import reduce mappings/tiles
-full access to dplc/mapping data
-to optimise all dplcs, toggle on/off
-mark flex 1 as deprecated
 ==
 V2: sprite rotation http://forums.sonicretro.org/index.php?showtopic=8848&st=0&p=159754&#entry159754
 https://yarnpkg.com/en/package/node-vibrant
 change sprite scroll speed
 drawing mode fill !
+mark flex 1 as deprecated
 S - scroll to sprite
 s3k sonic mapping definition / conversion tools
 add flex.json to sonic 2 disassembly
@@ -20,4 +11,4 @@ create new file | newFactory={(path)=>{}}
 04:43:53 <%Lil-G> i mean so when you do "delete unused tiles" it doesn't delete the tiles the other object uses
 ==
 
-submissions->utilities
+update wiki

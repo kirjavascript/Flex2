@@ -68,7 +68,7 @@ The Sprites tab gives an overview of your full object's data, allowing you to ch
 
 When importing an image over the current frame there is no limitation on image dimensions.
 
-For importing a spritesheet, either the alpha channel or the top left pixel color will serve as transparency.
+For importing a spritesheet, either the alpha channel or the top left pixel color will serve as transparency. Each sprites requires a minimum separation distance of at least one tile.
 
 Mapping output can be configured to either reduce the number of tiles, or the number of mappings. The algorithm favours fewer horizontal sprites over vertical ones.
 
