@@ -2,3 +2,5 @@ node_modules
 flex.json
 _test
 static/bundles
+flex2-*.zip
+flex2-*.tar.gz
