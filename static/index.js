@@ -1,4 +1,5 @@
 const { app, BrowserWindow } = require('electron');
+const devMode = process.argv.includes('--dev');
 let mainWindow = null;
 
 app.on('window-all-closed', function() {
@@ -30,9 +31,8 @@ app.on('ready', function() {
         mainWindow.focus();
     });
 
-    // development...
-
-    process.argv.includes('--dev') &&
-    require('./../development')(app, mainWindow);
+    if (devMode) {
+        require('./../development')(app, mainWindow);
+    }
 
 });
