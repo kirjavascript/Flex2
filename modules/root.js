@@ -14,8 +14,6 @@ if (!devMode) {
     (new Analytics('UA-109903721-1'))
         .pageview('http://flex2.kirjava.xyz', `/${packageJson.version}`, 'Main View')
         .then((response) => { }).catch((err) => { });
-
-    alert('tracking');
 }
 
 render(
