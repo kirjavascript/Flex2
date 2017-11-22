@@ -156,8 +156,8 @@ export function getSprite(buffer, width, height, fuzziness = 0, startOffset = 0)
     return {
         x: bbox.minX,
         y: bbox.minY,
-        width: bbox.maxX - bbox.minX,
-        height: bbox.maxY - bbox.minY,
+        width: bbox.maxX - bbox.minX + 1,
+        height: bbox.maxY - bbox.minY + 1,
         firstPos,
     };
 

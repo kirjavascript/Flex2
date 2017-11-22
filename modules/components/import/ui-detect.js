@@ -82,8 +82,8 @@ export class DetectSprites extends React.Component {
                             style={{
                                 left: bbox.x,
                                 top: bbox.y,
-                                width: bbox.width + 1,
-                                height: bbox.height + 1,
+                                width: bbox.width,
+                                height: bbox.height,
                             }}
                         >
                     </div>
