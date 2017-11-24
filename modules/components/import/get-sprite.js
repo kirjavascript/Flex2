@@ -47,6 +47,8 @@ export function getSprite(buffer, width, height, fuzziness = 0, startOffset = 0)
     }
 
     function checkMatch(pos) {
+        const { x, y } = getXY(pos);
+        if (x < 0 || y < 0 || x >= width || y >= height) return true;
         return buffer.data[pos+3] !== 0;
     }
 

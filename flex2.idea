@@ -5,10 +5,10 @@ change sprite scroll speed
 drawing mode fill !
 S - scroll to sprite
 s3k sonic mapping definition / conversion tools
-add flex.json to sonic 2 disassembly
 create new file | newFactory={(path)=>{}}
 04:43:53 <%Lil-G> i mean so when you do "delete unused tiles" it doesn't delete the tiles the other object uses
 ==
 
 art offset loading / arbitrary data loader tab
 mark sonmaped as obsolete
+add flex.json to sonic 2 disassembly join #repo

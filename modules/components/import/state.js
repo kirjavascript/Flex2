@@ -86,7 +86,16 @@ class ImportState {
         const { width, height } = canvas;
         const buffer = ctx.getImageData(0, 0, width, height);
         removeBackground(buffer);
-        ctx.putImageData(buffer, 0, 0);
+        /*
+         * moving the sprite 'fixes' a bug where fuzziness going
+         * out of bounds acts as a 'hit' by adding buffer space.
+         * has to be at least the size of the max fuzziness
+         */
+        Object.assign(canvas, {
+            width: width+64,
+            height: height+64,
+        });
+        ctx.putImageData(buffer, 32, 32);
     };
 
     @action getBBoxes = () => {

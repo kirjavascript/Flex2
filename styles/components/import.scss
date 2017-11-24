@@ -66,6 +66,11 @@
             position: absolute;
         }
 
+        .detect-canvas, .bbox {
+            margin-left: -31px;
+            margin-top: -31px;
+        }
+
         .import-mapping {
             position: absolute;
             border: 1px solid $blue;
