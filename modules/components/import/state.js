@@ -89,7 +89,7 @@ class ImportState {
         /*
          * moving the sprite 'fixes' a bug where fuzziness going
          * out of bounds acts as a 'hit' by adding buffer space.
-         * has to be at least the size of the max fuzziness
+         * has to be at least the size of the max fuzziness (maybe)
          */
         Object.assign(canvas, {
             width: width+64,
