@@ -12,3 +12,30 @@ create new file | newFactory={(path)=>{}}
 art offset loading / arbitrary data loader tab
 mark sonmaped as obsolete
 add flex.json to sonic 2 disassembly join #repo
+http://sonicresearch.org/community/index.php?threads/flex-2.5177/#post-78014
+17:27:19 <%MainMemory> do you think you could add an option to export a sprite sheet in the future?
+17:28:38 <%MainMemory> as much as I like people using my programs, it would be more convenient if they didn't have to set up a separate project file just to use SpriteSheetGen
+17:17:46 <%MainMemory> I think you'll have to change the definition format
+17:18:01 <%snkenjoi> why
+17:19:20 <%snkenjoi> I just needs extending if anything
+17:19:34 <%MainMemory> well I consider that a change to the format
+17:20:19 <%snkenjoi> well yeah, it is
+17:20:36 <%MainMemory> S1 and S2 DPLC header is number of requests, S3K non-player DPLC header is number of requests minus one
+17:20:47 <%snkenjoi> I think it already supports N-1 and N
+17:20:52 <%snkenjoi> you just need to use a different letter
+17:22:01 <%MainMemory> I'm talking about headerSize(2)
+17:22:54 <%MainMemory> you need to be able to add one when reading and subtract one when writing
+17:23:04 <%snkenjoi> ah, to the header
+17:23:08 <%MainMemory> instead of just writing the entry count as-is
+17:23:17 <%snkenjoi> header(2, -1) would work
+17:23:23 <%snkenjoi> I mean
+17:23:25 <%snkenjoi> not atm
+17:23:29 <%snkenjoi> when I support it
+17:23:29 <%snkenjoi> lol
+17:23:35 <%MainMemory> sure
+17:23:43 <%snkenjoi> or headerMutation(-1)
+17:23:48 <%snkenjoi> as an addition
+17:24:20 <%MainMemory> and the rest is just swapping the order of the N and A lines
+17:24:28 <%snkenjoi> yeah which it already supports
+
+17:47:50 <MainMemory> if you're interested, you can set a webhook in the repository settings with a URL like http://mmbot.reimuhakurei.net/github?key=secrethackingtools&network=BadnikZONE&channel=%23SSRG
