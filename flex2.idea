@@ -12,6 +12,7 @@ create new file | newFactory={(path)=>{}}
 art offset loading / arbitrary data loader tab
 mark sonmaped as obsolete
 add flex.json to sonic 2 disassembly join #repo
+firebase for stats
 http://sonicresearch.org/community/index.php?threads/flex-2.5177/#post-78014
 17:27:19 <%MainMemory> do you think you could add an option to export a sprite sheet in the future?
 17:28:38 <%MainMemory> as much as I like people using my programs, it would be more convenient if they didn't have to set up a separate project file just to use SpriteSheetGen

@@ -6,7 +6,7 @@ export function getSpriteBBoxes(buffer, width, height, fuzziness = 0) {
         height,
     );
 
-    let bboxes = [];
+    const bboxes = [];
 
     // tracking the offset seems to give a 5x perf boost
 
@@ -21,7 +21,18 @@ export function getSpriteBBoxes(buffer, width, height, fuzziness = 0) {
         }
     } ();
 
-    return bboxes;
+    // sort bboxes into rows
+    const mutBBoxes = [...bboxes];
+    const rows = [];
+    while (mutBBoxes.length) {
+        const highest = mutBBoxes.reduce((a, b) => a.y < b.y ? a : b);
+        const row = mutBBoxes.filter((d) => d.y < highest.y + highest.height);
+        const left = row.reduce((a, b) => a.x < b.x ? a : b);
+        const index = mutBBoxes.findIndex((d) => d === left);
+        rows.push(mutBBoxes.splice(index, 1)[0]);
+    }
+
+    return rows;
 }
 
 export function getSprite(buffer, width, height, fuzziness = 0, startOffset = 0) {
