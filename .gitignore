@@ -1,6 +1,7 @@
 node_modules
 flex.json
-_test
+_tests
 static/bundles
 flex2-*.zip
 flex2-*.tar.gz
+yarn.lock

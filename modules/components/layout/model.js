@@ -54,6 +54,12 @@ const DEFAULT_LAYOUT = {
                         'component': 'documentation',
                         'id': '#8',
                     },
+                    {
+                        'type': 'tab',
+                        'name': 'Animations',
+                        'component': 'animations',
+                        'id': '#9',
+                    },
                 ],
                 'active': true
             },
