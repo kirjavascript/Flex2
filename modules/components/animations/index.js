@@ -74,6 +74,13 @@ const SortableSpriteList = SortableContainer(observer(({items, width, height, sc
 
                 };
             })}
+
+            <SortableSprite 
+                bbox={{x: (items.length) * realBaseSize, y: 0}}
+                index={Infinity}
+                disabled={true}
+            />
+            
         </div>
     );
 }), {withRef: true});
@@ -85,9 +92,9 @@ export class Animations extends DimensionsComponent {
         return document.querySelector('.animSortContainer');
     };
 
-    onSortEnd = ({oldIndex, newIndex}) => {
-        //environment.swapSprite(oldIndex, newIndex);
-        //environment.config.currentSprite = newIndex;
+    onSortEnd = ({oldIndex, newIndex, collection}) => {
+        console.log(collection);
+        environment.swapAnimation(oldIndex, newIndex, collection);
     };
 
     render() {
@@ -98,7 +105,11 @@ export class Animations extends DimensionsComponent {
         return <div className="animList">
             {animations.map((value, index) => {
                 let currentAnimation = environment.getAnimationMappings(index);
-                return <table className="animSortContainer" ref={this.onContainerRef}><tbody><tr>
+                return <table 
+                    key={'animtbl_' + index}
+                    className="animSortContainer" 
+                    ref={this.onContainerRef}
+                ><tbody><tr>
                     <td>
                         0x{index.toString(16).toUpperCase()}
                         <Item
@@ -119,11 +130,15 @@ export class Animations extends DimensionsComponent {
                             accessor='loopmode'
                         />
                     </td>
-                    <td  className="spriteSortContainer">
+                    <td className="spriteSortContainer">
                         <SortableSpriteList
                             axis="xy"
                             helperClass="sortable-float"
-                            //onSortEnd={this.onSortEnd}
+                            onSortEnd={ (props) => {
+                                environment.swapAnimation(props.oldIndex, props.newIndex, index);
+                                currentAnimation = environment.getAnimationMappings(index);
+                                this.forceUpdate();
+                            }}
                             getContainer={this.getContainer}
                             items={currentAnimation}
                             width={width}

@@ -264,6 +264,13 @@ class Environment {
         }
     };
 
+    @action swapAnimation = (oldIndex, newIndex, animIndex) => {
+        if (oldIndex != newIndex) {
+            this.animations[animIndex].frames.replace(
+                arrayMove(this.animations[animIndex].frames, oldIndex, newIndex)
+            );}
+    }
+
     @action resetPalettes = () => {
         this.palettes.replace(defaultPalettes);
     };

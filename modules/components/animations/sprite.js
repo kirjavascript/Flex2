@@ -55,17 +55,11 @@ export class Sprite extends Component {
             </div>;
         } else {
             return <div
-            className="sprite"
-            style={{
-                border: `1px solid ${SVARS['blue']}`,
-            }}
-        >
-            <div>
-                <div className="addspr">
-                    +
-                </div>
-            </div>
-        </div>;
+                className="sprite"
+                style={{border: `1px solid ${SVARS['blue']}`}}
+            >
+                <div className="addspr">+</div>
+            </div>;
         }
     }
 

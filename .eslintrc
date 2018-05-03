@@ -36,7 +36,7 @@
         ],
         "no-console": [
             "warn",
-            { allow: ["warn", "error", "info", "clear"] }
+            { "allow": ["warn", "error", "info", "clear"] }
         ],
         "arrow-parens": ["error", "always"],
         "no-var": "error",
