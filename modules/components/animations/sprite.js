@@ -10,39 +10,63 @@ export class Sprite extends Component {
     render() {
         const { config } = environment;
         const { currentSprite } = config;
+        let index, mappings, buffer;
 
-        const { index, mappings, buffer } = this.props.data;
+        try{
+            index = this.props.data.index;
+            mappings = this.props.data.mappings;
+            buffer = this.props.data.buffer;
+        } catch (error) {
+            index = -1;
+            mappings = undefined;
+            buffer = undefined;
+        }
 
-        return <div
+        if(mappings){
+            return <div
+                className="sprite"
+                style={{
+                    border: `1px solid ${SVARS['blue']}`,
+                }}
+            >
+                <div>
+                    <div className="index">
+                        0x{index.toString(16).toUpperCase()}
+                    </div>
+                    {!mappings.length && (
+                        <div className="blank">
+                            [BLANK]
+                        </div>
+                    )}
+                    <div>
+                        {mappings.reverse().map((mapping, mappingIndex) => {
+                            return <div
+                                key={mappingIndex}
+                                style={{zIndex: mappingIndex}}
+                            >
+                                <Mapping
+                                    data={mapping}
+                                    tileBuffer={buffer}
+                                />
+                            </div>;
+                        })}
+                    </div>
+                </div>
+            </div>;
+        } else {
+            return <div
             className="sprite"
             style={{
                 border: `1px solid ${SVARS['blue']}`,
             }}
         >
             <div>
-                <div className="index">
-                    0x{index.toString(16).toUpperCase()}
-                </div>
-                {!mappings.length && (
-                    <div className="blank">
-                        [BLANK]
-                    </div>
-                )}
-                <div>
-                    {mappings.reverse().map((mapping, mappingIndex) => {
-                        return <div
-                            key={mappingIndex}
-                            style={{zIndex: mappingIndex}}
-                        >
-                            <Mapping
-                                data={mapping}
-                                tileBuffer={buffer}
-                            />
-                        </div>;
-                    })}
+                <div className="addspr">
+                    +
                 </div>
             </div>
         </div>;
+        }
     }
 
 }

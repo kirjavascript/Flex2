@@ -6,6 +6,7 @@ export class ObjectDef {
 
     @observable name = '';
     @observable palettes = [];
+    @observable animations = [];
     @observable art = {
         path: '',
         compression: 'Uncompressed',

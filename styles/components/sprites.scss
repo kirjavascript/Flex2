@@ -10,7 +10,7 @@ $margin: 5px;
 .spriteSortContainer {
     width: 100%;
     overflow: scroll;
-    overflow-x: hidden;
+    overflow-x: scroll;
     flex-grow: 1;
     padding: 5px 0;
 }
@@ -53,6 +53,16 @@ $margin: 5px;
         top: 50%;
         transform: translate(-50%, -50%);
         font-size: 10px;
+        font-weight: bold;
+    }
+
+    .addspr {
+        color: $blue;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 80px;
         font-weight: bold;
     }
 

@@ -19,7 +19,7 @@ class Environment {
     @observable config = {
         currentSprite: 0,
         currentTile: 0,
-        currentAnim: 0,
+        currentObject: 0,
         transparency: true,
         dplcsEnabled: false,
     };
@@ -39,10 +39,8 @@ class Environment {
         // {art, size}
     ];
 
-    @observable anims = [
-        // Animation index, 1 byte each
-        // terminated by FF or FE XX (loop last XX) or FD XX (goto anim X)
-        [1,2,3,4,5], [2,4,6,8,10]
+    @observable animations = [
+        // List of mapping indices
     ];
 
     @computed get palettesRGB() {
@@ -104,14 +102,13 @@ class Environment {
         return unique(activeTiles);
     }
 
-    @computed get animations() {
-        return this.anims;
-    }
-
     @action getAnimationMappings = (i) => {
-        let {sprites} = this;
-
-        return this.anims[i].map((value, index) => sprites[value]);
+        if(i > this.animations.length){
+            console.error('Index ' + i + ' out of bounds ' + this.animations.length);
+            console.log(this.animations);
+            return [];
+        }
+        return this.animations[i].frames.map((value, index) => this.sprites[value]);
     };
 
     @action loadObject = (obj) => {
@@ -181,10 +178,12 @@ class Environment {
             errorMsg('Error Reading DPLC File', e.message);
         }
 
-        this.anims.replace([
-            [1,2,3,4,5],
-            [2,4,6,8,10]
-        ]);
+        // Load animations
+        try {
+            this.animations = obj.animations;
+        } catch(e) {
+            this.animations.replace([]);
+        }
     };
 
     @action saveObject = (obj) => {

@@ -6,6 +6,7 @@ import { SortableContainer, SortableElement } from 'react-sortable-hoc';
 import { baseSize, margin } from '!!sass-variables-loader!#styles/components/sprites.scss';
 import { scrollbarWidth } from '!!sass-variables-loader!#styles/variables.scss';
 import { DimensionsComponent } from '#util/dimensions-component';
+import { Item, Input, File, Select, Editor } from '#ui';
 
 const realBaseSize = parseInt(baseSize) + (parseInt(margin) * 2);
 
@@ -46,7 +47,9 @@ const SortableSpriteList = SortableContainer(observer(({items, width, height, sc
     const itemQty = (itemsPerRow * (height / realBaseSize)) + (itemsPerRow * 2);
 
     return (
-        <div className="sprites" style={{height: rowCount * realBaseSize || 0}}>
+        <div className="sprites" style={{
+            height: rowCount * realBaseSize || 0
+        }}>
             {items.map((value, index) => {
                 // calculate positions
                 const x = remainder + (index % itemsPerRow) * realBaseSize;
@@ -68,6 +71,7 @@ const SortableSpriteList = SortableContainer(observer(({items, width, height, sc
                             bbox={{x, y}}
                         />;
                     }
+
                 };
             })}
         </div>
@@ -89,26 +93,53 @@ export class Animations extends DimensionsComponent {
     render() {
         const { animations } = environment;
         const { width, height, scroll } = this.state;
+        const loopmodes = ['Loop All', 'Loop X Frames', 'Goto Animation X'];
 
         return <div className="animList">
             {animations.map((value, index) => {
                 let currentAnimation = environment.getAnimationMappings(index);
-                return <div className="animSortContainer" ref={this.onContainerRef}>
-                    <SortableSpriteList
-                        axis="xy"
-                        helperClass="sortable-float"
-                        //onSortEnd={this.onSortEnd}
-                        getContainer={this.getContainer}
-                        items={currentAnimation}
-                        width={width}
-                        height={height}
-                        scroll={scroll}
-                    />
-                    <input
-                        label="Animation Name"
-                    />
-                </div>;
+                return <table className="animSortContainer" ref={this.onContainerRef}><tbody><tr>
+                    <td>
+                        0x{index.toString(16).toUpperCase()}
+                        <Item
+                            color="red"
+                            //onClick={animations.loopAll}
+                            inverted
+                        >
+                            Remove
+                        </Item>
+                        <Input
+                            placeholder="Animation Name..."
+                            store={animations[index]} 
+                            accessor='name'
+                        />
+                        <Select
+                            options={loopmodes}
+                            store={animations[index]}
+                            accessor='loopmode'
+                        />
+                    </td>
+                    <td  className="spriteSortContainer">
+                        <SortableSpriteList
+                            axis="xy"
+                            helperClass="sortable-float"
+                            //onSortEnd={this.onSortEnd}
+                            getContainer={this.getContainer}
+                            items={currentAnimation}
+                            width={width}
+                            height={height}
+                            scroll={scroll}
+                        />
+                    </td>
+                </tr></tbody></table>;
             })}
+        <Item
+            color="blue"
+            //onClick={animations.loopAll}
+            inverted
+        >
+            + Animation
+        </Item>
         </div>;
     }
 

@@ -5,6 +5,7 @@ import {Collapse} from 'react-collapse';
 import { Item, Input, File, Select, Editor } from '#ui';
 import { mappingFormats, dplcFormats } from '#formats/definitions';
 import { compressionFormats } from '#formats/compression';
+import { environment } from '#store/environment';
 const compressionList = Object.keys(compressionFormats);
 const mappingList = [...Object.keys(mappingFormats), 'Custom'];
 const dplcList = [...Object.keys(dplcFormats), 'Custom'];
@@ -18,6 +19,7 @@ export class ObjectConfig extends Component {
 
     load = () => {
         this.setState({loading: true});
+        environment.config.currentObject = this.props.index;
         requestIdleCallback(() => {
             this.props.obj.load(() => {
                 this.setState({loading: false});
