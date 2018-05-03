@@ -100,7 +100,15 @@ export class Animations extends DimensionsComponent {
     render() {
         const { animations } = environment;
         const { width, height, scroll } = this.state;
-        const loopmodes = ['Loop All', 'Loop X Frames', 'Goto Animation X'];
+        const loopmodes = [
+            'Loop All', // 0xFF
+            'Loop X Frames', // 0xFE, # frames to rewind
+            'Goto Animation X', //0xFD, animation #
+            'Increment Primary Routine', //0xFC
+            'Reset Secondary Routine', //0xFB
+            'Increment Secondary Routine', //0xFA
+            'Increment Status Byte 2A', //0xF9
+        ];
 
         return <div className="animList">
             {animations.map((value, index) => {
@@ -127,7 +135,7 @@ export class Animations extends DimensionsComponent {
                         <Select
                             options={loopmodes}
                             store={animations[index]}
-                            accessor='loopmode'
+                            accessor='loopMode'
                         />
                     </td>
                     <td className="spriteSortContainer">

@@ -12,6 +12,7 @@ import { bufferToMappings, mappingsToBuffer } from '#formats/mapping';
 import { bufferToDPLCs, DPLCsToBuffer } from '#formats/dplc';
 import { buffersToColors, colorsToBuffers, defaultPalettes } from '#formats/palette';
 import { asmToBin, stuffToAsm } from '#formats/asm';
+import { asmToObj } from '#formats/animation';
 import { arrayMove } from 'react-sortable-hoc';
 
 class Environment {
@@ -22,6 +23,7 @@ class Environment {
         currentObject: 0,
         transparency: true,
         dplcsEnabled: false,
+        animPrefix: ''
     };
 
     // palettes must use colours of the form #NNN
@@ -178,10 +180,20 @@ class Environment {
             errorMsg('Error Reading DPLC File', e.message);
         }
 
-        // Load animations
-        try {
-            this.animations = obj.animations;
-        } catch(e) {
+        // load animations
+        if (obj.animations.path) {
+            try {
+                const animPath = workspace.absolutePath(obj.animations.path);
+                const buffer = readFileSync(animPath);
+                const tmp = asmToObj(buffer);
+
+                this.animations.replace(tmp.obj);
+                this.config.animPrefix = tmp.prefix;
+
+            } catch(e) {
+                errorMsg('Error Reading Animation File', e.message);
+            }
+        } else {
             this.animations.replace([]);
         }
     };
