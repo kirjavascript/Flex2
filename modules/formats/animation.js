@@ -6,7 +6,7 @@ const sizeLookup = {
     'l': 4,
 };
 
-export function asmToObj(buffer) {
+export function asmToAnim(buffer) {
 
     const asm = buffer.toString()
 	.replace(/\$|even|(;(.*?)$)/gm, '') // remove comments / even / $ (assume no decimal)
@@ -30,6 +30,7 @@ export function asmToObj(buffer) {
             tmpstr += ',' + rawData[i].split('dc.b')[1];
         }
     }
+    rawData2.push(tmpstr);
 
     // Convert to animation object
     for(let i = 0; i < rawData2.length; i++){
@@ -77,4 +78,56 @@ export function asmToObj(buffer) {
     }
 
     return {obj: obj, prefix: prefix};
+}
+
+export function animToAsm(obj, prefix) {
+    let buffer = '';
+
+    // Write pointer table
+    buffer += prefix + 'AniData:\toffsetTable\r\n';
+    for (let x of obj) {
+        buffer += prefix + 'Ani_' + x.name + '_ptr:\toffsetTableEntry.w ' + prefix + 'Ani_' + x.name + '\r\n';
+    }
+
+    // Write data
+    for (let x of obj) {
+        buffer += prefix + 'Ani_' + x.name + ':\tdc.b ';
+        // Speed
+        buffer += '$' + x.speed.toString(16).toUpperCase();
+        // Frames
+        for (let i = 0; i < x.frames.length; i++) {
+            if(i%8 != 7){
+                buffer += ',$' + x.frames[i].toString(16).toUpperCase();
+            } else {
+                buffer += '\r\n\t\tdc.b $' + x.frames[i].toString(16).toUpperCase();
+            }
+        }
+        // Loop mode
+        switch(x.loopMode){
+        case 'Loop All':
+            buffer += ',$FF\r\n';
+            break;
+        case 'Loop X Frames':
+            buffer += ',$FE,$' + x.loopLen.toString(16).toUpperCase() + '\r\n';
+            break;
+        case 'Goto Animation X':
+            buffer += ',$FD,$' + x.gotoAnim.toString(16).toUpperCase() + '\r\n';
+            break;
+        case 'Increment Primary Routine':
+            buffer += ',$FC\r\n';
+            break;
+        case 'Reset Secondary Routine':
+            buffer += ',$FB\r\n';
+            break;
+        case 'Increment Secondary Routine':
+            buffer += ',$FA\r\n';
+            break;
+        case 'Increment Status Byte 2A':
+            buffer += ',$F9\r\n';
+            break;
+        }
+        buffer += '\trev02even\r\n';
+    }
+
+    return buffer;
 }

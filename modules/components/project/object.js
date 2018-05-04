@@ -268,6 +268,26 @@ export class ObjectConfig extends Component {
                                     }}
                                 />}
                             </div>
+                            <Item color="orange">
+                                Animations
+                            </Item>
+                            <div className="options">
+                                <File
+                                    store={obj.animations}
+                                    accessor="path"
+                                />
+                            </div><div className="actions">
+                                <span>Prefix</span>
+                                {
+                                    // Not the best place to store this, but
+                                    // I don't know how to access this from environment
+                                }
+                                <Input
+                                    store={environment.config}
+                                    accessor="animPrefix"
+                                    placeholder="ObjXX"
+                                />
+                            </div>
 
                             <Item
                                 color="red"

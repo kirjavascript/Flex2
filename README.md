@@ -56,6 +56,16 @@ When entering drawing mode by pressing <kbd>m</kbd>, dragging over the sprite wi
 
 When doing actions like deleting a mapping, Flex 2 will attempt to remove corresponding unused DPLCs. The raw editor allows you to modify the raw data for mappings and DPLCs without performing any of these optimisations. It can also be used to change the draw order by reordering mappings.
 
+## Animation Editor
+
+The animation editor has no keyboard shortcuts, and is entirely mouse driven.
+
+The loaded animation are displayed as a vertical list. Animation frames are displayed horizontally next to the animation settings. You may need to scroll the frame list to the right to see all the entries. 
+
+Animations can be added via the "Add Animation" button at the bottom of the animation list. They can be removed by the "Remove" button in the settings pane. You can also set an animation's name (required for export), speed (in frames on-screen per animation frame) and loop settings.
+
+Animation frames themselves can be dragged around to be rearranged. To change the mapping a frame uses, change the number in the top-right of the frame. To remove a frame, click "Remove" in the bottom-right corner. To add a new frame, click the plus symbol at the end of the frame list.
+
 ## Palettes
 
 Palette input will be normalised to Megadrive colours. To change the order of palette lines, you can drag the numbers to different positions.
@@ -73,3 +83,5 @@ For importing a spritesheet, either the alpha channel or the top left pixel colo
 Mapping output can be configured to either reduce the number of tiles, or the number of mappings. The algorithm favours fewer horizontal sprites over vertical ones.
 
 Both methods of importing use CIEDE2000 nearest colour matching to the current palette.
+
+For importing animations from Sonic 2 Git, copy everything from "ObjXXAniData:" to the end of the last animation for that object (not including the "even" after the very last animation) to a new ASM file and include it from the source asm file.  This new asm file is what Flex2 will load and edit. Flex2 is also compatible to an extent with the animation files from Sonic 1 Git, but the inconsistent naming conventions and additional data included may cause issues.

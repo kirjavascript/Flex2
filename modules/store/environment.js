@@ -12,7 +12,7 @@ import { bufferToMappings, mappingsToBuffer } from '#formats/mapping';
 import { bufferToDPLCs, DPLCsToBuffer } from '#formats/dplc';
 import { buffersToColors, colorsToBuffers, defaultPalettes } from '#formats/palette';
 import { asmToBin, stuffToAsm } from '#formats/asm';
-import { asmToObj } from '#formats/animation';
+import { asmToAnim, animToAsm } from '#formats/animation';
 import { arrayMove } from 'react-sortable-hoc';
 
 class Environment {
@@ -42,7 +42,7 @@ class Environment {
     ];
 
     @observable animations = [
-        // List of mapping indices
+        // List of animation objects (see animation.js)
     ];
 
     @computed get palettesRGB() {
@@ -107,7 +107,6 @@ class Environment {
     @action getAnimationMappings = (i) => {
         if(i > this.animations.length){
             console.error('Index ' + i + ' out of bounds ' + this.animations.length);
-            console.log(this.animations);
             return [];
         }
         return this.animations[i].frames.map((value, index) => this.sprites[value]);
@@ -214,7 +213,7 @@ class Environment {
             try {
                 const animPath = workspace.absolutePath(obj.animations.path);
                 const buffer = readFileSync(animPath);
-                const tmp = asmToObj(buffer);
+                const tmp = asmToAnim(buffer);
 
                 this.animations.replace(tmp.obj);
                 this.config.animPrefix = tmp.prefix;
@@ -286,6 +285,19 @@ class Environment {
             }
             catch (e) {
                 errorMsg('Error Saving DPLCs', e.message);
+            }
+        }
+
+        // animations
+        if(obj.animations.path && this.config.animPrefix) {
+            const animPath = workspace.absolutePath(obj.animations.path);
+            const out = animToAsm(this.animations, this.config.animPrefix);
+
+            try {
+                writeFileSync(animPath, out);
+            }
+            catch (e) {
+                errorMsg('Error Saving Animations', e.message);
             }
         }
 

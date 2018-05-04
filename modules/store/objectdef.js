@@ -24,6 +24,10 @@ export class ObjectDef {
         customDefinition: '',
         label: '',
     };
+    @observable animations = {
+        path: '',
+        prefix: ''
+    };
 
     @computed get key() {
         return Math.random().toString(35).slice(2);

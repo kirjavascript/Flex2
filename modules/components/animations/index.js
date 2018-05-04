@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import { Sprite } from './sprite';
 import { SortableContainer, SortableElement } from 'react-sortable-hoc';
 import { baseSize, margin } from '!!sass-variables-loader!#styles/components/sprites.scss';
-import { scrollbarWidth } from '!!sass-variables-loader!#styles/variables.scss';
+import { scrollbarWidth, basePadding } from '!!sass-variables-loader!#styles/variables.scss';
 import { DimensionsComponent } from '#util/dimensions-component';
 import { Item, Input, Select, Slider } from '#ui';
 
@@ -65,9 +65,10 @@ const SortableSpriteList = SortableContainer(observer(({items, width, height, sc
                             key={`sprite-${index}`}
                             value={value}
                             bbox={{x, y}}
-                            pos={index}
+                            index={index}
                             frames={frames}
                             parent={parent}
+                            pos={index}
                         />;
                     }
                     else {
@@ -83,10 +84,11 @@ const SortableSpriteList = SortableContainer(observer(({items, width, height, sc
 
             <SortableSprite 
                 bbox={{x: (items.length) * realBaseSize, y: 0}}
-                pos={Infinity}
+                index={Infinity}
                 disabled={true}
                 frames={frames}
                 parent={parent}
+                pos={Infinity}
             />
             
         </div>
@@ -113,7 +115,7 @@ export class Animations extends DimensionsComponent {
             'Increment Status Byte 2A', //0xF9
         ];
 
-        return <div className="animList">
+        return <div className="animList" style={{padding: basePadding}}>
             {animations.map((value, index) => {
                 let currentAnimation = environment.getAnimationMappings(index);
                 return <table 

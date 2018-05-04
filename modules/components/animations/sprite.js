@@ -11,14 +11,12 @@ export class Sprite extends Component {
     render() {
         const { config } = environment;
         const { currentSprite } = config;
-        let index, mappings, buffer, pos, frames, parent;
+        let mappings, buffer, pos, frames, parent;
 
         try{
-            index = this.props.data.index;
             mappings = this.props.data.mappings;
             buffer = this.props.data.buffer;
         } catch (error) {
-            index = -1;
             mappings = undefined;
             buffer = undefined;
         }
@@ -72,8 +70,6 @@ export class Sprite extends Component {
                     <div 
                         className="remove"
                         onClick={() => {
-                            console.log(pos);
-                            console.log(frames);
                             frames.splice(pos, 1);
                             parent.forceUpdate();
                         }}
