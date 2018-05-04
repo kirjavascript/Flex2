@@ -6,20 +6,23 @@ import { SortableContainer, SortableElement } from 'react-sortable-hoc';
 import { baseSize, margin } from '!!sass-variables-loader!#styles/components/sprites.scss';
 import { scrollbarWidth } from '!!sass-variables-loader!#styles/variables.scss';
 import { DimensionsComponent } from '#util/dimensions-component';
-import { Item, Input, File, Select, Editor } from '#ui';
+import { Item, Input, Select, Slider } from '#ui';
 
 const realBaseSize = parseInt(baseSize) + (parseInt(margin) * 2);
 
 const SortableSprite = SortableElement(observer(class extends Component {
 
     render() {
-        const { value, bbox: { x, y } } = this.props;
+        const { value, bbox: { x, y }, pos } = this.props;
 
         return <div className="bbox" style={{
             left: x || 0,
             top: y || 0,
         }}>
-            <Sprite data={value}/>
+            <Sprite 
+                data={value}
+                pos={pos}
+            />
         </div>;
     }
 
@@ -48,7 +51,7 @@ const SortableSpriteList = SortableContainer(observer(({items, width, height, sc
 
     return (
         <div className="sprites" style={{
-            height: rowCount * realBaseSize || 0
+            height: realBaseSize || 0
         }}>
             {items.map((value, index) => {
                 // calculate positions
@@ -62,6 +65,7 @@ const SortableSpriteList = SortableContainer(observer(({items, width, height, sc
                             index={index}
                             value={value}
                             bbox={{x, y}}
+                            pos={index}
                         />;
                     }
                     else {
@@ -119,7 +123,7 @@ export class Animations extends DimensionsComponent {
                     ref={this.onContainerRef}
                 ><tbody><tr>
                     <td>
-                        0x{index.toString(16).toUpperCase()}
+                        {index}
                         <Item
                             color="red"
                             //onClick={animations.loopAll}
@@ -128,15 +132,50 @@ export class Animations extends DimensionsComponent {
                             Remove
                         </Item>
                         <Input
+                            label='Name'
                             placeholder="Animation Name..."
                             store={animations[index]} 
                             accessor='name'
+                            width='106px'
+                        />
+                        <Input
+                            label='Speed'
+                            store={animations[index]}
+                            accessor='speed'
+                            min='0'
+                            max='255'
+                            isNumber={true}
+                            width='97px'
                         />
                         <Select
                             options={loopmodes}
                             store={animations[index]}
                             accessor='loopMode'
                         />
+                        {
+                            animations[index].loopMode == 'Loop X Frames' && 
+                            <Input
+                                label='Loop Last'
+                                store={animations[index]}
+                                accessor='loopLen'
+                                min='1'
+                                max={animations[index].frames.length}
+                                isNumber={true}
+                                width='64px'
+                            />
+                        }
+                        {
+                            animations[index].loopMode == 'Goto Animation X' && 
+                            <Input
+                                label='Goto'
+                                store={animations[index]}
+                                accessor='gotoAnim'
+                                min='0'
+                                max={animations.length}
+                                isNumber={true}
+                                width='106px'
+                            />
+                        }
                     </td>
                     <td className="spriteSortContainer">
                         <SortableSpriteList

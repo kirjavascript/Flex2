@@ -9,6 +9,7 @@ app.on('window-all-closed', function() {
 });
 
 app.on('ready', function() {
+
     mainWindow = new BrowserWindow({
         title: 'Flex 2',
         backgroundColor: '#282C34',

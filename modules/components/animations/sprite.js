@@ -10,16 +10,18 @@ export class Sprite extends Component {
     render() {
         const { config } = environment;
         const { currentSprite } = config;
-        let index, mappings, buffer;
+        let index, mappings, buffer, pos;
 
         try{
             index = this.props.data.index;
             mappings = this.props.data.mappings;
             buffer = this.props.data.buffer;
+            pos = this.props.pos;
         } catch (error) {
             index = -1;
             mappings = undefined;
             buffer = undefined;
+            pos = 'undefined';
         }
 
         if(mappings){
@@ -32,6 +34,9 @@ export class Sprite extends Component {
                 <div>
                     <div className="index">
                         0x{index.toString(16).toUpperCase()}
+                    </div>
+                    <div className="pos">
+                        {pos}
                     </div>
                     {!mappings.length && (
                         <div className="blank">
@@ -50,6 +55,9 @@ export class Sprite extends Component {
                                 />
                             </div>;
                         })}
+                    </div>
+                    <div className="remove">
+                        remove
                     </div>
                 </div>
             </div>;

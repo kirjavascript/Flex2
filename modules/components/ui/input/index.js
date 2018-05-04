@@ -15,8 +15,10 @@ export class Input extends Component {
     }
 
     mutateNum = (num = 1) => {
-        const { store, accessor, isNumber, assert = (d) => d } = this.props;
-        store[accessor] = assert(store[accessor] + num);
+        const { store, accessor, isNumber, min, max, assert = (d) => d } = this.props;
+        store[accessor] = assert(parseInt(store[accessor]) + num);
+        if(store[accessor] < min){store[accessor] = min;}
+        else if (store[accessor] > max){store[accessor] = max;}
         this.props.onChange &&
         this.props.onChange(store[accessor]);
     };
@@ -54,6 +56,9 @@ export class Input extends Component {
             isNumber,
             onChange,
             containerClass,
+            min,
+            max,
+            width,
             ...otherProps,
         } = this.props;
 
@@ -63,11 +68,14 @@ export class Input extends Component {
                 &emsp;
             </span>}
             <input
-                style={color && {color: SVARS[color]}}
+                type={isNumber? 'number' : 'text'}
+                style={color && {color: SVARS[color]}, {width: width}}
                 value={store[accessor]}
                 onChange={this.onChange}
                 onKeyDown={this.onKeyDown}
                 onWheel={this.onWheel}
+                min={min ? min : 0}
+                max={max ? max : 255}
                 {...otherProps}
             />
         </div>;

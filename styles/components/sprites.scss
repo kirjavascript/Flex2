@@ -47,6 +47,13 @@ $margin: 5px;
         font-size: 10px;
     }
 
+    .pos {
+        position: absolute;
+        left: 5px;
+        top: 5px;
+        font-size: 10px;
+    }
+
     .blank {
         position: absolute;
         left: 50%;
@@ -64,6 +71,16 @@ $margin: 5px;
         transform: translate(-50%, -50%);
         font-size: 80px;
         font-weight: bold;
+        cursor: pointer;
+    }
+
+    .remove {
+        color: $red;
+        position: absolute;
+        right: 5px;
+        bottom: 5px;
+        font-size: 10px;
+        cursor: pointer;
     }
 
 }
