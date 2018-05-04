@@ -21,7 +21,7 @@ export class Sprite extends Component {
         >
             <div>
                 <div className="index">
-                    0x{index.toString(16).toUpperCase()}
+                    ({index}) 0x{index.toString(16).toUpperCase()}
                 </div>
                 {!mappings.length && (
                     <div className="blank">

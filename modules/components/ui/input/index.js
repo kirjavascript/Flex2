@@ -68,7 +68,7 @@ export class Input extends Component {
                 &emsp;
             </span>}
             <input
-                type={isNumber? 'number' : 'text'}
+                type={(isNumber) ? 'number' : 'text'}
                 style={color && {color: SVARS[color]}, {width: width}}
                 value={store[accessor]}
                 onChange={this.onChange}

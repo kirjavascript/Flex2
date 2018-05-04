@@ -50,16 +50,16 @@ const DEFAULT_LAYOUT = {
                     },
                     {
                         'type': 'tab',
-                        'name': 'Documentation',
-                        'component': 'documentation',
-                        'id': '#8',
-                    },
-                    {
-                        'type': 'tab',
                         'name': 'Animations',
                         'component': 'animations',
                         'id': '#9',
                     },
+                    {
+                        'type': 'tab',
+                        'name': 'Documentation',
+                        'component': 'documentation',
+                        'id': '#8',
+                    }
                 ],
                 'active': true
             },

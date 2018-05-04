@@ -113,6 +113,35 @@ class Environment {
         return this.animations[i].frames.map((value, index) => this.sprites[value]);
     };
 
+    @action removeAnim = (index) => {
+        this.animations.splice(index, 1);
+        for(let i = index; i < this.animations.length; i++){
+            if(
+                this.animations[i].loopMode == 'Goto Animation X' &&
+                this.animations[i].gotoAnim >= index
+            ){
+                this.animations[i].gotoAnim -= 1;
+            }
+        }
+    }
+
+    @action removeAnimFrame = (frames, index) => {
+        frames.splice(index, 1);
+    }
+
+    @action addAnim = () => {
+        this.animations.push(
+            {
+                'name': '',
+                'frames': [],
+                'loopMode': 'Loop All',
+                'speed': 1,
+                'loopLen': 0,
+                'gotoAnim': 0
+            }
+        );
+    }
+
     @action loadObject = (obj) => {
         // load art
         if (obj.art.path) {

@@ -13,7 +13,7 @@ const realBaseSize = parseInt(baseSize) + (parseInt(margin) * 2);
 const SortableSprite = SortableElement(observer(class extends Component {
 
     render() {
-        const { value, bbox: { x, y }, pos } = this.props;
+        const { value, bbox: { x, y }, pos, frames, parent } = this.props;
 
         return <div className="bbox" style={{
             left: x || 0,
@@ -22,6 +22,8 @@ const SortableSprite = SortableElement(observer(class extends Component {
             <Sprite 
                 data={value}
                 pos={pos}
+                frames={frames}
+                parent={parent}
             />
         </div>;
     }
@@ -37,13 +39,12 @@ const SortableSpriteFast = SortableElement(({bbox: { x, y }}) => (
     }}/>
 ));
 
-const SortableSpriteList = SortableContainer(observer(({items, width, height, scroll}) => {
+const SortableSpriteList = SortableContainer(observer(({items, width, height, scroll, frames, parent}) => {
 
     const realWidth = width - parseInt(scrollbarWidth) -2;
-    const realItemsPerRow = items.length; //Math.floor(realWidth / realBaseSize) ;
+    const realItemsPerRow = items.length;
     const itemsPerRow = Math.max(1, realItemsPerRow);
     const rowCount = Math.ceil(items.length / itemsPerRow);
-    //const remainder = !realItemsPerRow ? 0 : (realWidth % realBaseSize) / 2;
     const remainder = 0;
 
     const baseIndex = (0|(scroll / realBaseSize)) * itemsPerRow;
@@ -62,10 +63,11 @@ const SortableSpriteList = SortableContainer(observer(({items, width, height, sc
                     if (index >= baseIndex && index < baseIndex + itemQty) {
                         <SortableSprite
                             key={`sprite-${index}`}
-                            index={index}
                             value={value}
                             bbox={{x, y}}
                             pos={index}
+                            frames={frames}
+                            parent={parent}
                         />;
                     }
                     else {
@@ -81,8 +83,10 @@ const SortableSpriteList = SortableContainer(observer(({items, width, height, sc
 
             <SortableSprite 
                 bbox={{x: (items.length) * realBaseSize, y: 0}}
-                index={Infinity}
+                pos={Infinity}
                 disabled={true}
+                frames={frames}
+                parent={parent}
             />
             
         </div>
@@ -94,11 +98,6 @@ export class Animations extends DimensionsComponent {
 
     getContainer = () => {
         return document.querySelector('.animSortContainer');
-    };
-
-    onSortEnd = ({oldIndex, newIndex, collection}) => {
-        console.log(collection);
-        environment.swapAnimation(oldIndex, newIndex, collection);
     };
 
     render() {
@@ -126,7 +125,7 @@ export class Animations extends DimensionsComponent {
                         {index}
                         <Item
                             color="red"
-                            //onClick={animations.loopAll}
+                            onClick={() => {environment.removeAnim(index);}}
                             inverted
                         >
                             Remove
@@ -191,16 +190,18 @@ export class Animations extends DimensionsComponent {
                             width={width}
                             height={height}
                             scroll={scroll}
+                            frames={environment.animations[index].frames}
+                            parent={this}
                         />
                     </td>
                 </tr></tbody></table>;
             })}
         <Item
             color="blue"
-            //onClick={animations.loopAll}
+            onClick={environment.addAnim}
             inverted
         >
-            + Animation
+            Add Animation
         </Item>
         </div>;
     }
