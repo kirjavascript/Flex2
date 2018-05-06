@@ -46,7 +46,7 @@ The mapping editor has the following mouse interactions;
 
 ### New Mapping
 
-The new mapping overlay can be toggled with <kbd>nm</kbd>. To add a new mapping piece, drag it from the new mapping overlay to where in the mapping area you want it to display and type <kbd>nm</kbd> again to dismiss the overlay.
+The new mapping overlay can be toggled with <kbd>nm</kbd>. To add a new mapping piece, drag it from the new mapping overlay to where in the mapping area you want it to display and the overlay will autodismiss.
 
 ### Drawing Mode
 

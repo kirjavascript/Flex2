@@ -8,7 +8,6 @@ import { Select, Input, Item } from '#ui';
 import { Tile } from '../art/tile';
 import { isNumber, isPositiveNumber, isDPLCSize, isWidthHeight } from '#util/assertions';
 
-
 const Handle = SortableHandle(() => <div className="handle">
     <svg viewBox="20 20 56 56" width="26" height="26">
       <path d="M73 48.4l-10.4-9.6v4.8H52.4V33.4h4.8L47.6 23l-9 10.4h5v10.2H33.3v-4.8L23 48.4l10.4 9v-5h10.2v10.3h-4.8L47.6 73l9.6-10.4h-4.8V52.4h10.2v4.8L73 48.4z"/>
