@@ -9,6 +9,8 @@ create new file | newFactory={(path)=>{}}
 04:43:53 <%Lil-G> i mean so when you do "delete unused tiles" it doesn't delete the tiles the other object uses
 ==
 
+parser combinators
+21:10 <+Dick-Cord> <A​kumaYin> Being able to load and edit files without using the project setup would be nice. That's one of the few things that I prefer about the original Flex, along with the ability to preview animations.
 do animations as a new tab - animation editor - load one at a time and FE changes the current index
 animation: play, pause
 migration function to add a tab
