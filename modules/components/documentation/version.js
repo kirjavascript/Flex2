@@ -2,7 +2,7 @@ import packageJson from '../../../package.json';
 import React, { Component } from 'react';
 import { A } from './a.js';
 
-function semvarToInt(str) {
+function semver(str) {
     // currently just a rough calculation
     return +str.replace(/[^\d.]/g,'').split`.`.map((d) => d.padStart(3, '0')).join``;
 }
@@ -15,8 +15,8 @@ export class Version extends Component {
         fetch('https://raw.githubusercontent.com/kirjavascript/Flex2/master/package.json')
             .then((response) => response.json())
             .then(({version}) => {
-                const currentVersion = semvarToInt(packageJson.version);
-                const githubVersion = semvarToInt(version);
+                const currentVersion = semver(packageJson.version);
+                const githubVersion = semver(version);
                 if (githubVersion > currentVersion) {
                     this.setState({newVersion: version});
                 }

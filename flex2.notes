@@ -1,4 +1,15 @@
 ==
+generate definition project files from sonlvl
+parser combinators
+improved buttons
+disable optimizations
+copy / paste mappings
+file - project - mappings
+github issues
+scrollwheel bug
+open arbitrary files
+fullscreen tabs
+==
 V2: sprite rotation http://forums.sonicretro.org/index.php?showtopic=8848&st=0&p=159754&#entry159754
 https://yarnpkg.com/en/package/node-vibrant
 change sprite scroll speed
@@ -7,6 +18,7 @@ S - scroll to sprite
 s3k sonic mapping definition / conversion tools
 create new file | newFactory={(path)=>{}}
 04:43:53 <%Lil-G> i mean so when you do "delete unused tiles" it doesn't delete the tiles the other object uses
+backdrop-filter
 ==
 
 parser combinators
@@ -14,7 +26,7 @@ parser combinators
 do animations as a new tab - animation editor - load one at a time and FE changes the current index
 animation: play, pause
 migration function to add a tab
-actually deprecate SonMapEd - due to confusion with handling older formats (maybe add this to the docs)
+document how to use project files
 
 use 'sonic'; as custom mapping directive
 

@@ -1,32 +1,27 @@
 const { app, BrowserWindow } = require('electron');
 const devMode = process.argv.includes('--dev');
-let mainWindow = null;
 
-app.on('window-all-closed', function() {
-    if (process.platform != 'darwin') {
-        app.quit();
-    }
-});
-
-app.on('ready', function() {
-    mainWindow = new BrowserWindow({
+function createWindow() {
+    const mainWindow = new BrowserWindow({
         title: 'Flex 2',
         backgroundColor: '#282C34',
         width: 1200,
         height: 800,
         center: true,
         resizable: true,
+        darkTheme: true,
         show: false,
+        webPreferences: {
+            nodeIntegration: true,
+        },
+        // display properly in i3 etc
+        type: process.platform === 'linux' && 'toolbar',
     });
 
     mainWindow.setMenu(null);
-    mainWindow.loadURL('file://' + __dirname + '/index.html');
+    mainWindow.loadFile('./index.html');
 
-    mainWindow.on('closed', function() {
-        mainWindow = null;
-    });
-
-    mainWindow.on('ready-to-show', function() {
+    mainWindow.on('ready-to-show', () => {
         mainWindow.show();
         mainWindow.focus();
     });
@@ -34,5 +29,20 @@ app.on('ready', function() {
     if (devMode) {
         require('./../development')(app, mainWindow);
     }
+}
 
+app.allowRendererProcessReuse = true;
+
+app.on('ready', createWindow);
+
+app.on('window-all-closed', () => {
+    if (process.platform != 'darwin') {
+        app.quit();
+    }
+});
+
+app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) {
+        createWindow()
+    }
 });
