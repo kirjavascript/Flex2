@@ -1,36 +1,38 @@
 const webpack = require('webpack');
 
-module.exports = (env={}, args={}) => {
-
-    let config = {
-        target: 'electron',
-        entry : {
-            root: './modules/root.js',
+module.exports = (env = {}, args = {}) => {
+    const config = {
+        target: 'electron-renderer',
+        mode: env.dev ? 'development' : 'production',
+        entry: {
+            root: './app/main.js',
         },
         output: {
-            path: __dirname  + '/../static/bundles',
+            path: __dirname + '/../static/bundles',
             filename: '[name].js',
         },
         module: {
-            loaders: [
+            rules: [
                 {
                     test: /\.jsx?$/,
-                    exclude: /node_modules/,
+                    exclude: env.dev ? /node_modules/ : void 0,
                     use: [
                         {
                             loader: 'babel-loader',
                             options: {
                                 presets: [
-                                    'stage-0'
+                                    '@babel/preset-env',
+                                    '@babel/preset-react',
                                 ],
                                 plugins: [
-                                    'transform-react-jsx',
-                                    'transform-decorators-legacy',
-                                    'transform-class-properties',
+                                    [
+                                        '@babel/plugin-proposal-decorators',
+                                        { legacy: true },
+                                    ],
                                 ]
                             }
                         }
-                    ]
+                    ],
                 },
                 {
                     test: /\.json$/,
@@ -40,22 +42,12 @@ module.exports = (env={}, args={}) => {
                     test: /\.md$/,
                     loader: 'raw-loader',
                 },
-                {
-                    test: /\.js$/,
-                    enforce: 'pre',
-                    loader: 'eslint-loader',
-                    exclude: /node_modules/,
-                    options: {
-                        configFile: '.eslintrc',
-                        failOnWarning: false,
-                        failOnError: false,
-                        emitError: false,
-                        fix: true
-                    }
-                }
             ],
         },
         plugins: [
+            new webpack.DefinePlugin({
+                __DEV__: env.dev
+            }),
         ],
         resolve: {
             extensions: ['.js', '.json', '.jsx'],
@@ -68,18 +60,14 @@ module.exports = (env={}, args={}) => {
                 '#lib': __dirname + '/../modules/lib',
                 '#formats': __dirname + '/../modules/formats',
                 '#styles': __dirname + '/../styles/',
-            }
-
+            },
         },
+        devtool: env.dev && 'source-map',
     };
 
-    if (env.dev) {
-        // config.devtool = 'eval';
-    }
-    else {
+    if (!env.dev) {
         config.plugins.push(new webpack.optimize.ModuleConcatenationPlugin());
     }
 
     return config;
-
-}
+};

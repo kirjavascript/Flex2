@@ -27,7 +27,7 @@ function createWindow() {
     });
 
     if (devMode) {
-        require('./../development')(app, mainWindow);
+        require('./../development')(mainWindow);
     }
 }
 

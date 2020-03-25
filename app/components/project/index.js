@@ -8,14 +8,11 @@ import { workspace } from '#store/workspace';
 export class Project extends Component {
 
     render() {
-        return do {
-            if (!workspace.projectPath) {
-                <ProjectExplorer/>;
-            }
-            else {
-                <ProjectConfig/>;
-            }
-        };
+        if (!workspace.projectPath) {
+            return <ProjectExplorer/>;
+        } else {
+            return <ProjectConfig/>;
+        }
     }
 
 }

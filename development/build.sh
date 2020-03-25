@@ -1,4 +1,5 @@
 #!/bin/zsh
+npx webpack -p
 electron-packager ./static Flex2 --platform=win32 --arch=x64 \
     --asar --overwrite --package-manager yarn \
     --win32metadata.CompanyName="Flex 2" \

@@ -29,17 +29,13 @@ import { toJS } from 'mobx';
  */
 
 export function getCommandLabel(name) {
-    return do {
-        if (name == '[mode]') {
-            mappingState.mode == 'drawing' ? 'Mapping Mode' : 'Drawing Mode';
-        }
-        else if (name == '[dplcs]') {
-            environment.config.dplcsEnabled ? 'Disable DPLCs' : 'Enable DPLCs';
-        }
-        else {
-            name;
-        }
-    };
+    if (name == '[mode]') {
+        return mappingState.mode == 'drawing' ? 'Mapping Mode' : 'Drawing Mode';
+    } else if (name == '[dplcs]') {
+        return environment.config.dplcsEnabled ? 'Disable DPLCs' : 'Enable DPLCs';
+    } else {
+        return name;
+    }
 }
 
 export const commands = [
