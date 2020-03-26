@@ -36,14 +36,10 @@ export function draw(node) {
                 const bufferOffset = art + tileOffset;
 
                 if (bufferOffset < buffer.length) {
-                    buffer[bufferOffset][tileX + (tileY*8)] = do {
-                        if (button == LEFT) {
-                            drawIndexLeft;
-                        }
-                        else if (button == RIGHT) {
-                            drawIndexRight;
-                        }
-                    };
+                    buffer[bufferOffset][tileX + (tileY*8)] = {
+                        [LEFT]: drawIndexLeft,
+                        [RIGHT]: drawIndexRight,
+                    }[button];
                 }
             }
 

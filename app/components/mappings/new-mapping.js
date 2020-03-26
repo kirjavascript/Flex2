@@ -72,10 +72,8 @@ export class NewMapping extends Component {
 
     getLeft = () => {
         const { newMapping: { active, piece } } = mappingState;
-        return do {
-            if (active && piece || !active) -325;
-            else if (active) 15;
-        };
+        if (active && piece || !active) return -325;
+        else if (active) return 15;
     };
 
     getOpacity = () => {

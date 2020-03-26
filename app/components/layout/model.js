@@ -76,14 +76,10 @@ const DEFAULT_LAYOUT = {
 
 const savedLayout = localStorage.getItem('layout');
 
-export const model = do {
-    if (savedLayout) {
-        FlexLayout.Model.fromJson(JSON.parse(savedLayout));
-    }
-    else {
-        FlexLayout.Model.fromJson(DEFAULT_LAYOUT);
-    }
-};
+export const model = savedLayout
+    ?  FlexLayout.Model.fromJson(JSON.parse(savedLayout))
+    : FlexLayout.Model.fromJson(DEFAULT_LAYOUT);
+
 
 export function saveModel() {
     localStorage.setItem('layout', JSON.stringify(model.toJson()));

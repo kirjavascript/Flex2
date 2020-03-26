@@ -22,8 +22,7 @@ export class File extends Component {
             if (paths) {
                 this.update(paths[0]);
             }
-        });
-    }
+        }); }
 
     onEmpty = () => {
         this.update(void 0);
@@ -47,14 +46,7 @@ export class File extends Component {
     update = (path) => {
         const { store, accessor } = this.props;
         if (store && accessor) {
-            store[accessor] = do {
-                if (path) {
-                    workspace.relativePath(path);
-                }
-                else {
-                    store.accessor = '';
-                }
-            };
+            store[accessor] = path ? workspace.relativePath(path) : (store.accessor = ''); // TODO: this looks wrong
         }
 
         this.props.onChange &&
@@ -66,19 +58,16 @@ export class File extends Component {
         const { dragging } = this.state;
 
         return <div className="file" {...otherProps}>
-            { do {
-                if (accessor && store[accessor]) {
-                    <div className="row">
-                        Path
-                        <div>
-                            {store[accessor]}
-                            <span onClick={this.onEmpty} className="clear">
-                                &nbsp;(clear)
-                            </span>
-                        </div>
-                    </div>;
-                }
-                else {
+            { accessor && store[accessor] ? (<div className="row">
+                    Path
+                    <div>
+                        {store[accessor]}
+                        <span onClick={this.onEmpty} className="clear">
+                            &nbsp;(clear)
+                        </span>
+                    </div>
+                </div>
+                ) : (
                     <div
                         className={`dropzone ${dragging && 'dragging'}`}
                         onClick={this.onClick}
@@ -87,9 +76,8 @@ export class File extends Component {
                         onDrop={this.onDrop}
                     >
                         {label || 'Click or drag files'}
-                    </div>;
-                }
-            }}
+                    </div>
+                )}
 
 
         </div>;

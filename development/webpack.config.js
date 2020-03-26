@@ -5,7 +5,7 @@ module.exports = (env = {}, args = {}) => {
         target: 'electron-renderer',
         mode: env.dev ? 'development' : 'production',
         entry: {
-            root: './app/main.js',
+            main: './app/main.js',
         },
         output: {
             path: __dirname + '/../static/bundles',
@@ -29,14 +29,14 @@ module.exports = (env = {}, args = {}) => {
                                         '@babel/plugin-proposal-decorators',
                                         { legacy: true },
                                     ],
+                                    [
+                                        '@babel/plugin-proposal-class-properties',
+                                        { loose: true },
+                                    ],
                                 ]
                             }
                         }
                     ],
-                },
-                {
-                    test: /\.json$/,
-                    loader: 'json-loader',
                 },
                 {
                     test: /\.md$/,
@@ -52,13 +52,13 @@ module.exports = (env = {}, args = {}) => {
         resolve: {
             extensions: ['.js', '.json', '.jsx'],
             alias: {
-                '#store': __dirname + '/../modules/store',
-                '#components': __dirname + '/../modules/components',
-                '#controls': __dirname + '/../modules/controls',
-                '#ui': __dirname + '/../modules/components/ui',
-                '#util': __dirname + '/../modules/util',
-                '#lib': __dirname + '/../modules/lib',
-                '#formats': __dirname + '/../modules/formats',
+                '#store': __dirname + '/../app/store',
+                '#components': __dirname + '/../app/components',
+                '#controls': __dirname + '/../app/controls',
+                '#ui': __dirname + '/../app/components/ui',
+                '#util': __dirname + '/../app/util',
+                '#lib': __dirname + '/../app/lib',
+                '#formats': __dirname + '/../app/formats',
                 '#styles': __dirname + '/../styles/',
             },
         },

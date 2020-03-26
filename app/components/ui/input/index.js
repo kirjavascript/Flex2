@@ -54,7 +54,7 @@ export class Input extends Component {
             isNumber,
             onChange,
             containerClass,
-            ...otherProps,
+            ...otherProps
         } = this.props;
 
         return <div className={containerClass}>

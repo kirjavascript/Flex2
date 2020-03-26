@@ -16,26 +16,19 @@ export class Layout extends Component {
         let component = node.getComponent();
         saveModel();
 
-        return node._visible && do {
-            if (component == 'project') {
-                <Project node={node}/>;
-            }
-            else if (component == 'palettes') {
-                <Palettes node={node}/>;
-            }
-            else if (component == 'art') {
-                <Art node={node}/>;
-            }
-            else if (component == 'sprites') {
-                <Sprites node={node}/>;
-            }
-            else if (component == 'mappings') {
-                <Mappings node={node}/>;
-            }
-            else if (component == 'documentation') {
-                <Documentation node={node}/>;
-            }
-        };
+        if (component == 'project') {
+            return <Project node={node}/>;
+        } else if (component == 'palettes') {
+            return <Palettes node={node}/>;
+        } else if (component == 'art') {
+            return <Art node={node}/>;
+        } else if (component == 'sprites') {
+            return <Sprites node={node}/>;
+        } else if (component == 'mappings') {
+            return <Mappings node={node}/>;
+        } else if (component == 'documentation') {
+            return <Documentation node={node}/>;
+        }
     }
 
     render() {

@@ -17,45 +17,52 @@ export class ProjectExplorer extends Component {
 
     resetMenu = () => {
         this.menu = false;
-    }
+    };
 
     updateProjectName = (e) => {
         this.newProjectName = e.target.value;
-    }
+    };
 
     createNew = () => {
-        dialog.showOpenDialog({
-            title: `Create Project '${this.newProjectName}'`,
-            properties: ['openDirectory'],
-        }, (paths) => {
-            if (paths) {
-                workspace.newProject({
-                    name: this.newProjectName,
-                    path: pathTool.join(paths[0], 'flex.json'),
-                });
-                this.newProjectName = '';
-                this.resetMenu();
-            }
-        });
-
-    }
+        dialog.showOpenDialog(
+            {
+                title: `Create Project '${this.newProjectName}'`,
+                properties: ['openDirectory'],
+            },
+            (paths) => {
+                if (paths) {
+                    workspace.newProject({
+                        name: this.newProjectName,
+                        path: pathTool.join(paths[0], 'flex.json'),
+                    });
+                    this.newProjectName = '';
+                    this.resetMenu();
+                }
+            },
+        );
+    };
 
     openProject = () => {
-        dialog.showOpenDialog({
-            title: 'Open Project',
-            properties: ['openFile'],
-            filters: [{name: 'Flex 2 Project File', extensions: ['json']}],
-        }, (paths) => {
-            if (paths) {
-                workspace.openProject(paths[0]);
-            }
-        });
+        dialog.showOpenDialog(
+            {
+                title: 'Open Project',
+                properties: ['openFile'],
+                filters: [
+                    { name: 'Flex 2 Project File', extensions: ['json'] },
+                ],
+            },
+            (paths) => {
+                if (paths) {
+                    workspace.openProject(paths[0]);
+                }
+            },
+        );
     };
 
     render() {
-        return <div className="project-menu">
-            { do {
-                if (this.menu == 'new') {
+        return (
+            <div className="project-menu">
+                {this.menu === 'new' ? (
                     <div>
                         <input
                             type="text"
@@ -71,9 +78,8 @@ export class ProjectExplorer extends Component {
                         <div className="menu-item" onClick={this.resetMenu}>
                             Cancel
                         </div>
-                    </div>;
-                }
-                else {
+                    </div>
+                ) : (
                     <div>
                         <div className="menu-item" onClick={this.newProject}>
                             New Project
@@ -81,10 +87,9 @@ export class ProjectExplorer extends Component {
                         <div className="menu-item" onClick={this.openProject}>
                             Open Project
                         </div>
-                    </div>;
-                }
-            }}
-        </div> ;
+                    </div>
+                )}
+            </div>
+        );
     }
-
 }

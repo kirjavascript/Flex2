@@ -48,7 +48,7 @@ class SelectionLayer extends Component {
             itemQty,
             offset = 0,
             color = null,
-            ...otherProps,
+            ...otherProps
         } = this.props;
 
         const baseSize = 32;

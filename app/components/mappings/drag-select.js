@@ -9,43 +9,53 @@ import { LEFT, RIGHT, MIDDLE } from './buttons';
 
 export function attachDragSelectToNode(node) {
     if (node) {
-        select(node)
-            .call(
-                drag()
-                    .filter(() => true)
-                    .on('start', () => {
-                        const { dx, dy, sourceEvent: { button } } = event;
-                        if (button == LEFT) {
-                            const [x, y] = mouse(node);
-                            mappingState.select.active = true;
-                            mappingState.select.x0 = x;
-                            mappingState.select.y0 = y;
-                            mappingState.select.x1 = x;
-                            mappingState.select.y1 = y;
-                            setSelectedMappings(node);
-                        }
-                    })
-                    .on('drag', () => {
-                        const { dx, dy, sourceEvent: { button } } = event;
-                        if (button == LEFT) {
-                            const [x, y] = mouse(node);
-                            mappingState.select.x1 = x;
-                            mappingState.select.y1 = y;
-                            setSelectedMappings(node);
-                        }
-                        else if (button == RIGHT) {
-                            mappingState.x += dx;
-                            mappingState.y += dy;
-                        }
-                    })
-                    .on('end', () => {
-                        const { dx, dy, sourceEvent: { button } } = event;
-                        if (button == LEFT) {
-                            setSelectedMappings(node);
-                            mappingState.select.active = false;
-                        }
-                    })
-            );
+        select(node).call(
+            drag()
+                .filter(() => true)
+                .on('start', () => {
+                    const {
+                        dx,
+                        dy,
+                        sourceEvent: { button },
+                    } = event;
+                    if (button == LEFT) {
+                        const [x, y] = mouse(node);
+                        mappingState.select.active = true;
+                        mappingState.select.x0 = x;
+                        mappingState.select.y0 = y;
+                        mappingState.select.x1 = x;
+                        mappingState.select.y1 = y;
+                        setSelectedMappings(node);
+                    }
+                })
+                .on('drag', () => {
+                    const {
+                        dx,
+                        dy,
+                        sourceEvent: { button },
+                    } = event;
+                    if (button == LEFT) {
+                        const [x, y] = mouse(node);
+                        mappingState.select.x1 = x;
+                        mappingState.select.y1 = y;
+                        setSelectedMappings(node);
+                    } else if (button == RIGHT) {
+                        mappingState.x += dx;
+                        mappingState.y += dy;
+                    }
+                })
+                .on('end', () => {
+                    const {
+                        dx,
+                        dy,
+                        sourceEvent: { button },
+                    } = event;
+                    if (button == LEFT) {
+                        setSelectedMappings(node);
+                        mappingState.select.active = false;
+                    }
+                }),
+        );
     }
 }
 
@@ -53,30 +63,29 @@ function setSelectedMappings(node) {
     const { scale, x: offsetX, y: offsetY } = mappingState;
     const { x, y, width, height } = mappingState.selectBBox;
 
-    const indicies = environment.currentSprite.mappings.reduce((acc, mapping, index) => {
-        const { top: my, left: mx, width: mw, height: mh } = mapping;
+    const indicies = environment.currentSprite.mappings.reduce(
+        (acc, mapping, index) => {
+            const { top: my, left: mx, width: mw, height: mh } = mapping;
 
-        return do {
             if (
-                x - offsetX < (mx * scale) &&
-                x + width - offsetX > (mx * scale) + (mw * scale * 8) &&
-                y - offsetY < (my * scale) &&
-                y + height - offsetY > (my * scale) + (mh * scale * 8)
-            ) (
-                [...acc, index]
-            );
-            else (
-                acc
-            );
-        };
-    }, []);
+                x - offsetX < mx * scale &&
+                x + width - offsetX > mx * scale + mw * scale * 8 &&
+                y - offsetY < my * scale &&
+                y + height - offsetY > my * scale + mh * scale * 8
+            ) {
+                return [...acc, index];
+            } else {
+                return acc;
+            }
+        },
+        [],
+    );
 
     mappingState.selectedIndicies.replace(indicies);
 }
 
 @observer
 export class DragSelect extends Component {
-
     render() {
         if (mappingState.select.active) {
             const { active, x, y, width, height } = mappingState.selectBBox;
@@ -99,10 +108,8 @@ export class DragSelect extends Component {
                         strokeWidth={3}
                         fill="none"
                     />
-               </g>
+                </g>
             );
-        }
-        else return false;
+        } else return false;
     }
-
 }

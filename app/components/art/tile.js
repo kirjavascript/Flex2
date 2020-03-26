@@ -25,14 +25,9 @@ export class Tile extends Component {
                     marginLeft: -scale,
                     marginTop: -scale,
                     boxShadow: data && data.map((pixel, i) => {
-                        const color = do {
-                            if (pixel == 0 && transparency) {
-                                'transparent';
-                            }
-                            else {
-                                palettes[paletteLine][pixel];
-                            }
-                        };
+                        const color = pixel == 0 && transparency
+                                ? 'transparent'
+                                : palettes[paletteLine][pixel];
                         return `${((i%8)+1)*scale}px ${((0|i/8)+1)*scale}px ${color}`;
                     }).join`,`,
                 }}/>
