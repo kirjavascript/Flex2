@@ -12,6 +12,7 @@
         "@babel/preset-react": "^7.9.4",
         "babel-loader": "^8.1.0",
         "electron": "^8.1.1",
+        "node-sass": "git+https://github.com/TomiBelan/node-sass-wasm#built/master",
         "raw-loader": "^4.0.0",
         "sass-variables-loader": "^0.1.3",
         "sass.js": "^0.11.1",

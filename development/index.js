@@ -19,27 +19,32 @@ module.exports = ( mainWindow) => {
         }
     });
 
-    const sassCompiler = require('sass.js/dist/sass.node');
-
-    const options = {
-        // style: sassCompiler.Sass.style.compressed,
-    };
+    const sass = require('node-sass');
 
     const buildSass = () => {
-        sassCompiler('styles/main.scss', options, function(result) {
-            if (result.status) {
-                console.error(result.formatted);
-            } else {
-                writeFile('./static/bundles/main.css', result.text, err => {
-                    if (err) {
-                        console.error(err);
-                    } else {
-                        mainWindow.reload();
-                        console.log('SCSS Compiled');
-                    }
-                });
-            }
+        sass.render({ file: 'styles/main.scss' }, (err, result) => {
+            if (err) return console.error(err);
+            writeFile('./static/bundles/main.css', result.css.toString(), err => {
+                if (err) return console.error(err);
+                mainWindow.reload();
+                console.log('SCSS Compiled');
+            });
         });
+        // console.log(result.css.toString());
+        // sass.render({ file: 'styles/main.scss' }, (result) => {
+        //     if (result.status) {
+        //         console.error(result.formatted);
+        //     } else {
+        //         writeFile('./static/bundles/main.css', result.text, err => {
+        //             if (err) {
+        //                 console.error(err);
+        //             } else {
+        //                 mainWindow.reload();
+        //                 console.log('SCSS Compiled');
+        //             }
+        //         });
+        //     }
+        // });
     };
 
     buildSass();

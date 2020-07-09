@@ -7,7 +7,7 @@ copy / paste mappings
 file - project - mappings
 github issues
 scrollwheel bug
-open arbitrary files
+open arbitrary files - File Tab
 fullscreen tabs
 ==
 V2: sprite rotation http://forums.sonicretro.org/index.php?showtopic=8848&st=0&p=159754&#entry159754
@@ -19,6 +19,7 @@ s3k sonic mapping definition / conversion tools
 create new file | newFactory={(path)=>{}}
 04:43:53 <%Lil-G> i mean so when you do "delete unused tiles" it doesn't delete the tiles the other object uses
 backdrop-filter
+Support MainMemory's macros formats
 ==
 
 parser combinators

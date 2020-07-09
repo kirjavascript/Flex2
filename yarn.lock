@@ -3288,6 +3288,10 @@ node-releases@^1.1.52:
   dependencies:
     semver "^6.3.0"
 
+"node-sass@git+https://github.com/TomiBelan/node-sass-wasm#built/master":
+  version "0.1.0"
+  resolved "git+https://github.com/TomiBelan/node-sass-wasm#97014c5d3de9063ebb522e31617c9be84e5ac22a"
+
 normalize-path@^2.1.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/normalize-path/-/normalize-path-2.1.1.tgz#1ab28b556e198363a8c1a6f7e6fa20137fe6aed9"
