@@ -9,7 +9,10 @@ github issues
 scrollwheel bug
 open arbitrary files - File Tab
 fullscreen tabs
+rotsprite
+WASM KENSC
 ==
+debugger for user errors (dev console too)
 V2: sprite rotation http://forums.sonicretro.org/index.php?showtopic=8848&st=0&p=159754&#entry159754
 https://yarnpkg.com/en/package/node-vibrant
 change sprite scroll speed
@@ -20,9 +23,9 @@ create new file | newFactory={(path)=>{}}
 04:43:53 <%Lil-G> i mean so when you do "delete unused tiles" it doesn't delete the tiles the other object uses
 backdrop-filter
 Support MainMemory's macros formats
+<H​itaxas> There is also a glitch where Flex will sometimes destroy mappings when saving. Unsure the cause, but this has happened to me twice in the past month. https://cdn.discordapp.com/attachments/718373949368696892/731396915052412958/unknown.png
 ==
 
-parser combinators
 21:10 <+Dick-Cord> <A​kumaYin> Being able to load and edit files without using the project setup would be nice. That's one of the few things that I prefer about the original Flex, along with the ability to preview animations.
 do animations as a new tab - animation editor - load one at a time and FE changes the current index
 animation: play, pause

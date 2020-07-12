@@ -19,10 +19,18 @@ import { attachDragMoveToNode } from './drag-move';
 
 @observer
 export class Mappings extends Component {
+    mappingRef = (node) => {
+        attachDragMoveToNode(node);
+        if (node) {
+            node.addEventListener('wheel', this.onZoom, { passive: false });
+        } else {
+            node.removeEventListener('wheel', this.onZoom);
+        }
+    };
+
     onZoom = (e) => {
         const { scale } = mappingState;
-        const { deltaY } = e.nativeEvent;
-        mappingState.setZoom(scale + (deltaY > 0 ? -1 : 1));
+        mappingState.setZoom(scale + (e.deltaY > 0 ? -1 : 1));
         e.preventDefault();
     };
 
@@ -51,8 +59,7 @@ export class Mappings extends Component {
         return (
             <div className="mappings" ref={this.onRef}>
                 <div
-                    onWheel={this.onZoom}
-                    ref={attachDragMoveToNode}
+                    ref={this.mappingRef}
                     className="mappingContainer"
                     style={{
                         width: '100%',

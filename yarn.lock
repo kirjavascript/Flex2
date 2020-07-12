@@ -4025,11 +4025,6 @@ sass-variables-loader@^0.1.3:
   resolved "https://registry.yarnpkg.com/sass-variables-loader/-/sass-variables-loader-0.1.3.tgz#4f0c2f609cd154aa1b1669dcb7efe9698786243c"
   integrity sha1-TwwvYJzRVKobFmnct+/paYeGJDw=
 
-sass.js@^0.11.1:
-  version "0.11.1"
-  resolved "https://registry.yarnpkg.com/sass.js/-/sass.js-0.11.1.tgz#199c73dcafd74043281c864393197ff12f945161"
-  integrity sha512-X9AtzYFr/HZ+pDIxX6xN74w/H9JjnDHqZcsYY8mr/SpCyhDVN1pJ3G0Q9rb+z3pZ7obZdYuTYMbKl1ALuhbZDw==
-
 schema-utils@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/schema-utils/-/schema-utils-1.0.0.tgz#0b79a93204d7b600d4b2850d1f66c2a34951c770"
