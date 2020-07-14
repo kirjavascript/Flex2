@@ -2,11 +2,8 @@
 
 ## [Unreleased]
 
-## [1.0.0] - YYYY-MM-DD
-### Added
-- Changelog
-
-### Changed
+## [0.0.7]
+- Added changelog
 - Sort imported art into rows
 - Autodismiss new mapping screen
-- Updated everything
+- Updated dependencies

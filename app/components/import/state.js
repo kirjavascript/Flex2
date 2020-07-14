@@ -41,14 +41,14 @@ class ImportState {
             title: 'Import Spritesheet',
             properties: ['openFile'],
             filters: [{name: 'Image File', extensions: ['bmp', 'jpg', 'jpeg', 'png', 'gif']}],
-        }, (paths) => {
-            if (paths) {
-                const [path] = paths;
-
-                this.path = path;
-                this.config.active = true;
-            }
-        });
+        })
+            .then(({ filePaths: [path] }) => {
+                if (path) {
+                    this.path = path;
+                    this.config.active = true;
+                }
+            })
+            .catch(console.error);
     };
 
     @action cancel = () => {

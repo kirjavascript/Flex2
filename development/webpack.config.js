@@ -21,7 +21,11 @@ module.exports = (env = {}, args = {}) => {
                             loader: 'babel-loader',
                             options: {
                                 presets: [
-                                    '@babel/preset-env',
+                                    ['@babel/preset-env', {
+                                        targets: {
+                                            electron: 8,
+                                        },
+                                    }],
                                     '@babel/preset-react',
                                 ],
                                 plugins: [

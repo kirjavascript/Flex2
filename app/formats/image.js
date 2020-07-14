@@ -86,14 +86,16 @@ export function exportPNG(debug = false) {
         title: 'Export Sprite',
         defaultPath: `0x${environment.config.currentSprite.toString(16).toUpperCase()}.png`,
         filters: [{name: 'PNG Image File', extensions: ['png']}],
-    }, (filename) => {
-        if (filename) {
-            const base64Data = canvas.toDataURL().replace(/data(.*?),/, '');
-            writeFile(filename, new Buffer(base64Data, 'base64'), (err, success) => {
-                err && errorMsg('Error exporting sprite', String(err));
-            });
-        }
-    });
+    })
+        .then(({ filePath }) => {
+            if (filePath) {
+                const base64Data = canvas.toDataURL().replace(/data(.*?),/, '');
+                writeFile(filePath, new Buffer(base64Data, 'base64'), (err, success) => {
+                    err && errorMsg('Error exporting sprite', String(err));
+                });
+            }
+        })
+        .catch(console.error);
 
 }
 
@@ -101,21 +103,13 @@ export async function importImg(debug = false) {
 
     // get path
 
-    const path = await (new Promise((resolve) => {
-        dialog.showOpenDialog({
+    const path = await dialog.showOpenDialog({
             title: 'Import Sprite',
             properties: ['openFile'],
             filters: [{name: 'Image File', extensions: ['bmp', 'jpg', 'jpeg', 'png', 'gif']}],
-        }, (paths) => {
-            if (paths) {
-                const [path] = paths;
-                resolve(path);
-            }
-            else {
-                resolve(null);
-            }
-        });
-    }));
+        })
+            .then(({ filePaths: [path] }) => path)
+            .catch(console.error);
 
     if (!path) return;
 

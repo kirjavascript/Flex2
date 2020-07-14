@@ -29,17 +29,18 @@ export class ProjectExplorer extends Component {
                 title: `Create Project '${this.newProjectName}'`,
                 properties: ['openDirectory'],
             },
-            (paths) => {
-                if (paths) {
+        )
+            .then(({ filePaths: [path] }) => {
+                if (path) {
                     workspace.newProject({
                         name: this.newProjectName,
-                        path: pathTool.join(paths[0], 'flex.json'),
+                        path: pathTool.join(path, 'flex.json'),
                     });
                     this.newProjectName = '';
                     this.resetMenu();
                 }
-            },
-        );
+            })
+            .catch(console.error);
     };
 
     openProject = () => {
@@ -51,12 +52,13 @@ export class ProjectExplorer extends Component {
                     { name: 'Flex 2 Project File', extensions: ['json'] },
                 ],
             },
-            (paths) => {
-                if (paths) {
-                    workspace.openProject(paths[0]);
+        )
+            .then(({ filePaths: [path] }) => {
+                if (path) {
+                    workspace.openProject(path);
                 }
-            },
-        );
+            })
+            .catch(console.error);
     };
 
     render() {

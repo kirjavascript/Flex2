@@ -14,15 +14,13 @@ export class File extends Component {
     };
 
     onClick = () => {
-        const { store, accessor } = this.props;
         dialog.showOpenDialog({
             title: 'Open Project',
             properties: ['openFile'],
-        }, (paths) => {
-            if (paths) {
-                this.update(paths[0]);
-            }
-        }); }
+        })
+            .then(({ filePaths: [path] }) => path && this.update(path))
+            .catch(console.error);
+    }
 
     onEmpty = () => {
         this.update(void 0);
