@@ -43,7 +43,7 @@ export class Select extends Component {
 
     render() {
         const { label, store, accessor, onChange, color, ...otherProps } = this.props;
-        const value = this.options.find((d) => d.value == store[accessor]).label;
+        const value = this.options.find((d) => d.value == store[accessor])?.label;
 
         return <div className="row select">
             {label && <span>

@@ -4,6 +4,8 @@
 
 ## [0.0.7]
 - Added changelog
-- Sort imported art into rows
-- Autodismiss new mapping screen
 - Updated dependencies
+- Compression uses WASM and is much faster
+- Added ArtC42, LZKN1, Rocket and RLE compression formats
+- Sort imported spritesheet into rows properly
+- Autodismiss new mapping screen

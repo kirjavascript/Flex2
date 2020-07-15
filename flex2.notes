@@ -1,11 +1,8 @@
 BUGS
 load data to back to mappings masonry broken
-check filePath: [path] doesnt break anything
-
-check migration guide
 FEATURES
 fullscreen
-compressors
+test compressors
 debugger
 ==
 generate definition project files from sonlvl

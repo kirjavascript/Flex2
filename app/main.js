@@ -1,7 +1,10 @@
+// without this line, we cant run WASM without warnings
+// the messages are hidden in prod, and we dont do network stuff anyway
+window.ELECTRON_DISABLE_SECURITY_WARNINGS = true;
+
 import React from 'react';
 import { render } from 'react-dom';
 import { Layout } from '#components/layout';
-
 import './controls/keyboard';
 import './components/import';
 

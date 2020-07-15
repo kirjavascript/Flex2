@@ -4,7 +4,14 @@
         "target": "esnext",
         "baseUrl": "./",
         "paths": {
-            "#base/*": ["app/base/*"]
+            "#store/*": ["./app/store/*"],
+            "#components/*": ["./app/components/*"],
+            "#controls/*": ["./app/controls/*"],
+            "#ui/*": ["./app/components/ui/*"],
+            "#util/*": ["./app/util*"],
+            "#lib/*": ["./app/lib*"],
+            "#formats/*": ["./app/formats*"],
+            "#styles/*": ["./styles*"]
         }
     },
     "include": [

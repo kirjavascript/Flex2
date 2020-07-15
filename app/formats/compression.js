@@ -1,60 +1,59 @@
 export const compressionFormats = {
-    'Uncompressed': [void 0, void 0],
-    'Nemesis': [_nemesis_encode, _nemesis_decode],
-    'Kosinski': [_kosinski_encode, _kosinski_decode],
-    'Kosinski-M': [_moduled_kosinski_encode, _moduled_kosinski_decode],
-    'Comper': [_comper_encode, _comper_decode],
-    // 'Enigma': [_enigma_encode, _enigma_decode],
+    'Uncompressed': undefined,
+    'Nemesis': 'nemesis',
+    'Kosinski': 'kosinski',
+    'Kosinski-M': 'kosplus',
+    'Comper': 'comper',
+    'Enigma': 'enigma',
+    'ArtC42': 'artc42',
+    'LZKN1': 'lzkn1',
+    'Rocket': 'rocket',
+    'RLE': 'snkrle',
 };
 
 export function decompress(buffer, compression) {
-    const operation = compressionFormats[compression][1];
+    const operation = compressionFormats[compression];
 
-    if (!operation) {
-        return new Uint8Array(buffer);
-    }
-    else {
-        return KENSC(buffer, operation);
-    }
+    if (!operation) return new Uint8Array(buffer);
+    else return mdcomp(`_${operation}_decode`, buffer);
+
 }
 
 export function compress(buffer, compression) {
-    const operation = compressionFormats[compression][0];
+    const operation = compressionFormats[compression];
 
-    if (!operation) {
-        return buffer;
-    }
-    else {
-        return KENSC(buffer, operation);
-    }
+    if (!operation) return buffer;
+    else return mdcomp(`_${operation}_encode`, buffer);
 }
 
 
-function KENSC(input, operation) {
-    let sp = Runtime.stackSave();
+function mdcomp(func, data) {
+    const operation = Module[func];
+    const sp = Module.stackSave();
     try {
-        let inputPtr = _malloc(input.length);
+        const dataPtr = _malloc(data.length);
         try {
-            writeArrayToMemory(input, inputPtr);
-            let outputPtrPtr = Runtime.stackAlloc(4);
-            let outputSizePtr = Runtime.stackAlloc(4);
-            if (operation(inputPtr, input.length, outputPtrPtr, outputSizePtr)) {
-                let outputPtr = HEAP32[outputPtrPtr >> 2];
+            writeArrayToMemory(data, dataPtr);
+            const outputPtrPtr = Module.stackAlloc(4);
+            const outputSizePtr = Module.stackAlloc(4);
+            if (operation(dataPtr, data.length, outputPtrPtr, outputSizePtr)) {
+                const outputPtr = HEAP32[outputPtrPtr >> 2];
                 try {
-                    let outputSize = HEAP32[outputSizePtr >> 2];
-                    let output = new Uint8Array(outputSize);
+                    const outputSize = HEAP32[outputSizePtr >> 2];
+                    const output = new Uint8Array(outputSize);
                     let outputBuffer = outputPtr;
-                    for (let i=0; i < outputSize; i++) output[i] = HEAP8[outputBuffer++];
+                    for (let i=0; i < outputSize; i++) {
+                        output[i] = HEAP8[outputBuffer++];
+                    }
                     return output;
-
                 } finally {
                     _free(outputPtr);
                 }
             }
         } finally {
-            _free(inputPtr);
+            _free(dataPtr);
         }
     } finally {
-        Runtime.stackRestore(sp);
+        Module.stackRestore(sp);
     }
 }

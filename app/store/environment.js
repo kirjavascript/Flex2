@@ -101,12 +101,12 @@ class Environment {
         // load art
         if (obj.art.path) {
             const artPath = workspace.absolutePath(obj.art.path);
-            try {
+            // try {
                 const buffer = readFileSync(artPath);
                 this.tiles.replace(bufferToTiles(buffer, obj.art.compression));
-            } catch(e) {
-                errorMsg('Error Reading Art File', e.message);
-            }
+            // } catch(e) {
+            //     errorMsg('Error Reading Art File', e.message);
+            // }
         }
         else {
             this.tiles.replace([]);
