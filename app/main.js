@@ -7,6 +7,7 @@ import { render } from 'react-dom';
 import { Layout } from '#components/layout';
 import './controls/keyboard';
 import './components/import';
+import './util/debugger';
 
 render(
     <Layout/>,

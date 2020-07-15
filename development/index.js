@@ -1,8 +1,6 @@
 const { writeFile } = require('fs');
 
 module.exports = ( mainWindow) => {
-    mainWindow.openDevTools();
-
     // webpack reload
 
     const webpack = require('webpack');
@@ -30,21 +28,6 @@ module.exports = ( mainWindow) => {
                 console.log('SCSS Compiled');
             });
         });
-        // console.log(result.css.toString());
-        // sass.render({ file: 'styles/main.scss' }, (result) => {
-        //     if (result.status) {
-        //         console.error(result.formatted);
-        //     } else {
-        //         writeFile('./static/bundles/main.css', result.text, err => {
-        //             if (err) {
-        //                 console.error(err);
-        //             } else {
-        //                 mainWindow.reload();
-        //                 console.log('SCSS Compiled');
-        //             }
-        //         });
-        //     }
-        // });
     };
 
     buildSass();

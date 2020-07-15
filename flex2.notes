@@ -3,7 +3,6 @@ load data to back to mappings masonry broken
 FEATURES
 fullscreen
 test compressors
-debugger
 ==
 generate definition project files from sonlvl
 parser combinators
@@ -12,14 +11,10 @@ improved buttons
 disable optimizations
 copy / paste mappings
 file - project - mappings
-github issues
-scrollwheel bug
 open arbitrary files - File Tab
-fullscreen tabs
-rotsprite
-==
-debugger for user errors (dev console too)
+github issues
 V2: sprite rotation http://forums.sonicretro.org/index.php?showtopic=8848&st=0&p=159754&#entry159754
+==
 https://yarnpkg.com/en/package/node-vibrant
 change sprite scroll speed
 drawing mode fill !

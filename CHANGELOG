@@ -1,11 +1,10 @@
 # Changelog
 
-## [Unreleased]
-
 ## [0.0.7]
 - Added changelog
-- Updated dependencies
-- Compression uses WASM and is much faster
-- Added ArtC42, LZKN1, Rocket and RLE compression formats
+- Compression now based on flamewing's mdcomp
+    - Uses WASM and is much faster
+    - Added ArtC42, LZKN1, Rocket and RLE compression formats
 - Sort imported spritesheet into rows properly
 - Autodismiss new mapping screen
+- Better error reporting & enabled devtools (F12)

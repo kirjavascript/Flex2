@@ -139,10 +139,11 @@ export class Mappings extends Component {
                     style={{
                         width: Math.max((0 | (baseWidth / 220)) * 220, 220),
                     }}
+                    key={Math.random()}
                 >
                     {commands.map((group, i) => (
                         <div key={i} className="group">
-                            {group.map(({ name, map, func, color }) => (
+                            {group.map(({ name, map, func, color, hidden }) => hidden || (
                                 <Item
                                     onClick={func}
                                     key={name}
