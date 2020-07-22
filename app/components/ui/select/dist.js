@@ -1,7 +1,9 @@
 'use strict';
 
 // https://github.com/fraserxu/react-dropdown
-// modification: this.props.color
+// modifications:
+//     this.props.color
+//     this.props.placeholderRef
 
 Object.defineProperty(exports, '__esModule', {
     value: true
@@ -203,6 +205,7 @@ let Dropdown = function (_Component) {
                 {
                     className: baseClassName + '-placeholder',
                     onWheel: this.props.onWheel,
+                    ref: this.props.placeholderRef,
                     style: this.props.color && placeHolderValue[0] == '#' ? {
                         backgroundColor: placeHolderValue,
                         height: 14,

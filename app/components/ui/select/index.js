@@ -16,7 +16,7 @@ export class Select extends Component {
 
     onWheel = (e) => {
         const { store, accessor, flipScroll } = this.props;
-        const delta = e.nativeEvent.deltaY > 0 ? 1 : -1;
+        const delta = e.deltaY > 0 ? 1 : -1;
         const index = (delta * (flipScroll ? -1 : 1))  + this.options.findIndex((d) => d.value == store[accessor]);
 
         if (index >= 0 && index < this.options.length) {
@@ -26,6 +26,15 @@ export class Select extends Component {
         }
 
         e.preventDefault();
+    };
+
+    placeholderRef = (node) => {
+        if (node) {
+            this.placeholderRefNode = node;
+            node.addEventListener('wheel', this.onWheel, { passive: false });
+        } else {
+            this.placeholderRefNode.removeEventListener('wheel', this.onWheel);
+        }
     };
 
     constructor(props) {
@@ -42,7 +51,7 @@ export class Select extends Component {
     }
 
     render() {
-        const { label, store, accessor, onChange, color, ...otherProps } = this.props;
+        const { label, store, accessor, color } = this.props;
         const value = this.options.find((d) => d.value == store[accessor])?.label;
 
         return <div className="row select">
@@ -55,7 +64,7 @@ export class Select extends Component {
                 value={String(value)}
                 onChange={this.onChange}
                 color={color}
-                onWheel={this.onWheel}
+                placeholderRef={this.placeholderRef}
             />
         </div>;
     }

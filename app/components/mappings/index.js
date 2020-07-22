@@ -20,11 +20,12 @@ import { attachDragMoveToNode } from './drag-move';
 @observer
 export class Mappings extends Component {
     mappingRef = (node) => {
-        attachDragMoveToNode(node);
         if (node) {
+            this.mappingRefNode = node;
+            attachDragMoveToNode(node);
             node.addEventListener('wheel', this.onZoom, { passive: false });
         } else {
-            node.removeEventListener('wheel', this.onZoom);
+            this.mappingRefNode.removeEventListener('wheel', this.onZoom);
         }
     };
 

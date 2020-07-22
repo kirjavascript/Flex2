@@ -39,8 +39,17 @@ export class Input extends Component {
 
     onWheel = (e) => {
         if (this.props.isNumber) {
-            this.mutateNum(e.nativeEvent.deltaY > 0 ? -1 : 1);
+            this.mutateNum(e.deltaY > 0 ? -1 : 1);
             e.preventDefault();
+        }
+    };
+
+    inputRef = (node) => {
+        if (node) {
+            this.inputRefNode = node;
+            node.addEventListener('wheel', this.onWheel, { passive: false });
+        } else {
+            this.inputRefNode.removeEventListener('wheel', this.onWheel);
         }
     };
 
@@ -67,7 +76,7 @@ export class Input extends Component {
                 value={store[accessor]}
                 onChange={this.onChange}
                 onKeyDown={this.onKeyDown}
-                onWheel={this.onWheel}
+                ref={this.inputRef}
                 {...otherProps}
             />
         </div>;

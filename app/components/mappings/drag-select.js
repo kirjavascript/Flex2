@@ -39,6 +39,8 @@ export function attachDragSelectToNode(node) {
                         mappingState.select.y1 = y;
                         setSelectedMappings(node);
                     } else if (buttons & RIGHT) {
+                        // seem to get lag without using RAF
+                        // cant profile it because the lag doesnt appear when profiling ?!
                         requestAnimationFrame(() => {
                             runInAction(() => {
                                 mappingState.x += dx;
