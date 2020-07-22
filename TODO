@@ -1,8 +1,13 @@
+ROADMAP
+file menu (offset loading)
+custom mapping formats
+rotsprite
+animation editor
+==
 BUGS
 load data to back to mappings masonry broken
 FEATURES
 fullscreen
-test compressors
 ==
 generate definition project files from sonlvl
 parser combinators
@@ -13,6 +18,7 @@ copy / paste mappings
 file - project - mappings
 open arbitrary files - File Tab
 github issues
+time travel for undo/redo
 V2: sprite rotation http://forums.sonicretro.org/index.php?showtopic=8848&st=0&p=159754&#entry159754
 ==
 https://yarnpkg.com/en/package/node-vibrant

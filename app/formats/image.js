@@ -99,7 +99,7 @@ export function exportPNG(debug = false) {
 
 }
 
-export async function importImg(debug = false) {
+export async function importImg() {
 
     // get path
 

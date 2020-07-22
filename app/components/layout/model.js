@@ -5,7 +5,7 @@ const DEFAULT_LAYOUT = {
         'splitterSize': 6,
         'tabEnableClose': false,
         'tabEnableRename': false,
-        'tabSetEnableMaximize': false
+        'tabSetEnableMaximize': true
     },
     'layout': {
         'type': 'row',
@@ -74,12 +74,36 @@ const DEFAULT_LAYOUT = {
     },
 };
 
-const savedLayout = localStorage.getItem('layout');
+let savedLayout = localStorage.getItem('layout');
+let version = +localStorage.getItem('layout-version')
+    // if we have a layout but no version we are adding layout-version & migrating
+    // otherwise, we have a fresh install and can consider having the latest version
+    || (savedLayout ? 0 : migrations.length);
+
+const migrations = [
+    (layout) => {
+        layout.global.tabSetEnableMaximize = true;
+    },
+];
+
+if (savedLayout && version < migrations.length) {
+    const layout = JSON.parse(savedLayout);
+    migrations
+        .slice(version)
+        .forEach((migration, i) => {
+            console.info(`Layout migration #${i}`);
+            migration(layout);
+            version++;
+        });
+    const migrated = JSON.stringify(layout)
+    localStorage.setItem('layout', migrated);
+    savedLayout = migrated;
+    localStorage.setItem('layout-version', version);
+}
 
 export const model = savedLayout
     ?  FlexLayout.Model.fromJson(JSON.parse(savedLayout))
     : FlexLayout.Model.fromJson(DEFAULT_LAYOUT);
-
 
 export function saveModel() {
     localStorage.setItem('layout', JSON.stringify(model.toJson()));

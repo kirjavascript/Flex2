@@ -1,11 +1,7 @@
 import packageJson from '../../../package.json';
 import React, { Component } from 'react';
 import { A } from './a.js';
-
-function semver(str) {
-    // currently just a rough calculation
-    return +str.replace(/[^\d.]/g,'').split`.`.map((d) => d.padStart(3, '0')).join``;
-}
+import { semver } from '#util/semver';
 
 export class Version extends Component {
 
