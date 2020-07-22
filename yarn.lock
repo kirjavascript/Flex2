@@ -1690,9 +1690,18 @@ create-hmac@^1.1.0, create-hmac@^1.1.2, create-hmac@^1.1.4:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
-create-react-class@15.x, create-react-class@^15.5.2, create-react-class@^15.6.0:
+create-react-class@15.x, create-react-class@^15.6.0:
   version "15.6.0"
   resolved "https://registry.yarnpkg.com/create-react-class/-/create-react-class-15.6.0.tgz#ab448497c26566e1e29413e883207d57cfe7bed4"
+  dependencies:
+    fbjs "^0.8.9"
+    loose-envify "^1.3.1"
+    object-assign "^4.1.1"
+
+create-react-class@^15.6.2:
+  version "15.6.3"
+  resolved "https://registry.yarnpkg.com/create-react-class/-/create-react-class-15.6.3.tgz#2d73237fb3f970ae6ebe011a9e66f46dbca80036"
+  integrity sha512-M+/3Q6E6DLO6Yx3OwrWjwHBnvfXXYA7W+dFjt/ZDBemHO1DDZhsalX/NUtnTYclN6GfnBDRh4qRHjcDHmlJBJg==
   dependencies:
     fbjs "^0.8.9"
     loose-envify "^1.3.1"
@@ -2961,11 +2970,7 @@ lodash._getnative@^3.0.0:
   version "3.9.1"
   resolved "https://registry.yarnpkg.com/lodash._getnative/-/lodash._getnative-3.9.1.tgz#570bc7dede46d61cdcde687d65d3eecbaa3aaff5"
 
-lodash.assign@^4.0.9:
-  version "4.2.0"
-  resolved "https://registry.yarnpkg.com/lodash.assign/-/lodash.assign-4.2.0.tgz#0d99f3ccd7a6d261d19bdaeb9245005d285808e7"
-
-lodash.debounce@^4.0.6, lodash.debounce@^4.0.8:
+lodash.debounce@^4.0.8:
   version "4.0.8"
   resolved "https://registry.yarnpkg.com/lodash.debounce/-/lodash.debounce-4.0.8.tgz#82d79bff30a67c4005ffd5e2515300ad9ca4d7af"
 
@@ -2984,10 +2989,6 @@ lodash.keys@^3.1.2:
     lodash._getnative "^3.0.0"
     lodash.isarguments "^3.0.0"
     lodash.isarray "^3.0.0"
-
-lodash.omit@^4.3.0:
-  version "4.5.0"
-  resolved "https://registry.yarnpkg.com/lodash.omit/-/lodash.omit-4.5.0.tgz#6eb19ae5a1ee1dd9df0b969e66ce0b7fa30b5e60"
 
 lodash@^4.12.0, lodash@^4.17.4:
   version "4.17.4"
@@ -3791,16 +3792,15 @@ react-dom@^15.6.1:
     object-assign "^4.1.0"
     prop-types "^15.5.10"
 
-react-masonry-component@^5.0.7:
-  version "5.0.7"
-  resolved "https://registry.yarnpkg.com/react-masonry-component/-/react-masonry-component-5.0.7.tgz#2984ef9749b34c57addec1a7323a6467c9a9ad10"
+react-masonry-component@^6.2.1:
+  version "6.2.1"
+  resolved "https://registry.yarnpkg.com/react-masonry-component/-/react-masonry-component-6.2.1.tgz#dd23b3129d6b922852b160472e6c9a6256fcdb8a"
+  integrity sha512-xoNdw/gOp0nkCXqvF8QDcRInFEVtbCBzT8QbxmRnCEzsOgDKtKlG/x6SoxXWivPCxdyr1PGdyngiA7TsqANHKA==
   dependencies:
-    create-react-class "^15.5.2"
+    create-react-class "^15.6.2"
     element-resize-detector "^1.1.9"
     imagesloaded "^4.0.0"
-    lodash.assign "^4.0.9"
-    lodash.debounce "^4.0.6"
-    lodash.omit "^4.3.0"
+    lodash "^4.17.4"
     masonry-layout "^4.2.0"
     prop-types "^15.5.8"
 

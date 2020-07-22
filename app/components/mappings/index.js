@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import Masonry from 'react-masonry-component';
 import { observer } from 'mobx-react';
 import { environment } from '#store/environment';
 import classNames from 'classnames';
-import { commands, getCommandLabel } from '#controls/commands';
 import { mappingState } from './state';
-import { Item, Slider } from '#ui';
+import { Slider } from '#ui';
 import { Mapping } from './mapping';
 import { Selection } from './selection';
 import { Axes } from './axis';
@@ -16,6 +14,7 @@ import { NewMapping } from './new-mapping';
 import { RawEditor } from './raw-editor';
 import { DragSelect, attachDragSelectToNode } from './drag-select';
 import { attachDragMoveToNode } from './drag-move';
+import { Commands } from './commands';
 
 @observer
 export class Mappings extends Component {
@@ -135,28 +134,7 @@ export class Mappings extends Component {
 
                 <RawEditor />
 
-                <Masonry
-                    className="commands"
-                    style={{
-                        width: Math.max((0 | (baseWidth / 220)) * 220, 220),
-                    }}
-                >
-                    {commands.map((group, i) => (
-                        <div key={i} className="group">
-                            {group.map(({ name, map, func, color, hidden }) => hidden || (
-                                <Item
-                                    onClick={func}
-                                    key={name}
-                                    color={color || 'blue'}
-                                    prefix={getCommandLabel(name)}
-                                    inverted
-                                >
-                                    {map}
-                                </Item>
-                            ))}
-                        </div>
-                    ))}
-                </Masonry>
+                <Commands />
             </div>
         );
     }

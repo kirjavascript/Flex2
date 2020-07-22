@@ -6,8 +6,6 @@ file menu (offset loading)
 ==
 BUGS
 load data to back to mappings masonry broken
-preventDefault on input / select
-import sprintesheet doesnt work
 FEATURES
 fullscreen
     maximized scrollbars

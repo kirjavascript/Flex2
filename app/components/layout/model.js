@@ -74,17 +74,17 @@ const DEFAULT_LAYOUT = {
     },
 };
 
-let savedLayout = localStorage.getItem('layout');
-let version = +localStorage.getItem('layout-version')
-    // if we have a layout but no version we are adding layout-version & migrating
-    // otherwise, we have a fresh install and can consider having the latest version
-    || (savedLayout ? 0 : migrations.length);
-
 const migrations = [
     (layout) => {
         layout.global.tabSetEnableMaximize = true;
     },
 ];
+
+let savedLayout = localStorage.getItem('layout');
+let version = +localStorage.getItem('layout-version')
+    // if we have a layout but no version we are adding layout-version & migrating
+    // otherwise, we have a fresh install and can consider having the latest version
+    || (savedLayout ? 0 : migrations.length);
 
 if (savedLayout && version < migrations.length) {
     const layout = JSON.parse(savedLayout);
@@ -108,3 +108,9 @@ export const model = savedLayout
 export function saveModel(model) {
     localStorage.setItem('layout', JSON.stringify(model.toJson()));
 }
+
+window.resetLayout = () => {
+    localStorage.setItem('layout', '');
+    localStorage.setItem('layout-version', '');
+    window.location.reload();
+};

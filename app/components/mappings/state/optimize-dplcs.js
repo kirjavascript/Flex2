@@ -14,8 +14,6 @@ export function optimizeCurrentDPLCs() {
 
 export function optimizeDPLCs(mappings, dplcs) {
 
-    const { config } = environment;
-
     let tiles = [];
 
     dplcs.forEach(({art, size}) => {
