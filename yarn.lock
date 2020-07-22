@@ -1754,9 +1754,10 @@ d3-dispatch@1, d3-dispatch@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/d3-dispatch/-/d3-dispatch-1.0.3.tgz#46e1491eaa9b58c358fce5be4e8bed626e7871f8"
 
-d3-drag@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/d3-drag/-/d3-drag-1.1.1.tgz#b5155304433b18ba38726b2184d0098e820dc64b"
+d3-drag@^1.2.5:
+  version "1.2.5"
+  resolved "https://registry.yarnpkg.com/d3-drag/-/d3-drag-1.2.5.tgz#2537f451acd39d31406677b7dc77c82f7d988f70"
+  integrity sha512-rD1ohlkKQwMZYkQlYVCrSFxsWPzI97+W+PaEIBNTMxRuxz9RF0Hi5nJWHGVJ3Om9d2fRTe1yOBINJyy/ahV95w==
   dependencies:
     d3-dispatch "1"
     d3-selection "1"
@@ -2272,6 +2273,7 @@ fizzy-ui-utils@^2.0.0:
 flexlayout-react@^0.2.5:
   version "0.2.5"
   resolved "https://registry.yarnpkg.com/flexlayout-react/-/flexlayout-react-0.2.5.tgz#32e18bf8538bae9b119faa40048fcae7dc9e6ef0"
+  integrity sha512-yL1JL1Rn7LTpTkuKNmVAydtCc+5eehnX9iQapMpMp2B6jMNetUdyC5ESlPsggvWXsXc02rJzIarEgvxXGVstJg==
   dependencies:
     prop-types "^15.5.10"
 

@@ -1,12 +1,12 @@
 // called from drag-move
 
-import { LEFT, RIGHT, MIDDLE } from './buttons';
+import { LEFT, RIGHT } from './buttons';
 import { select, event, mouse } from 'd3-selection';
 import { mappingState } from './state';
 import { environment } from '#store/environment';
 
 export function draw(node) {
-    const { sourceEvent: { button } } = event;
+    const { sourceEvent: { buttons } } = event;
     const { scale, mode, drawIndexLeft, drawIndexRight } = mappingState;
     const { currentSprite: { mappings, buffer } } = environment;
 
@@ -39,13 +39,9 @@ export function draw(node) {
                     buffer[bufferOffset][tileX + (tileY*8)] = {
                         [LEFT]: drawIndexLeft,
                         [RIGHT]: drawIndexRight,
-                    }[button];
+                    }[buttons];
                 }
             }
-
-
         });
-
     }
-
 }

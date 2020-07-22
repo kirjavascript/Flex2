@@ -1,3 +1,3 @@
-export const LEFT = 0;
-export const MIDDLE = 1;
+export const LEFT = 1;
+export const MIDDLE = 4;
 export const RIGHT = 2;

@@ -22,7 +22,7 @@
         "classnames": "^2.2.5",
         "color-diff": "^1.1.0",
         "d3-dispatch": "^1.0.3",
-        "d3-drag": "^1.1.1",
+        "d3-drag": "^1.2.5",
         "d3-selection": "^1.1.0",
         "electron-unhandled": "^3.0.2",
         "flexlayout-react": "^0.2.5",

@@ -5,7 +5,8 @@ import { environment } from '#store/environment';
 import { mappingState } from './state';
 import { select, event, mouse } from 'd3-selection';
 import { drag } from 'd3-drag';
-import { LEFT, RIGHT, MIDDLE } from './buttons';
+import { LEFT, RIGHT } from './buttons';
+import { runInAction } from 'mobx';
 
 export function attachDragSelectToNode(node) {
     if (node) {
@@ -14,11 +15,9 @@ export function attachDragSelectToNode(node) {
                 .filter(() => true)
                 .on('start', () => {
                     const {
-                        dx,
-                        dy,
-                        sourceEvent: { button },
+                        sourceEvent: { buttons },
                     } = event;
-                    if (button == LEFT) {
+                    if (buttons & LEFT) {
                         const [x, y] = mouse(node);
                         mappingState.select.active = true;
                         mappingState.select.x0 = x;
@@ -32,25 +31,24 @@ export function attachDragSelectToNode(node) {
                     const {
                         dx,
                         dy,
-                        sourceEvent: { button },
+                        sourceEvent: { buttons },
                     } = event;
-                    if (button == LEFT) {
+                    if (buttons & LEFT) {
                         const [x, y] = mouse(node);
                         mappingState.select.x1 = x;
                         mappingState.select.y1 = y;
                         setSelectedMappings(node);
-                    } else if (button == RIGHT) {
-                        mappingState.x += dx;
-                        mappingState.y += dy;
+                    } else if (buttons & RIGHT) {
+                        requestAnimationFrame(() => {
+                            runInAction(() => {
+                                mappingState.x += dx;
+                                mappingState.y += dy;
+                            });
+                        });
                     }
                 })
                 .on('end', () => {
-                    const {
-                        dx,
-                        dy,
-                        sourceEvent: { button },
-                    } = event;
-                    if (button == LEFT) {
+                    if (mappingState.select.active) {
                         setSelectedMappings(node);
                         mappingState.select.active = false;
                     }
@@ -60,28 +58,30 @@ export function attachDragSelectToNode(node) {
 }
 
 function setSelectedMappings(node) {
-    const { scale, x: offsetX, y: offsetY } = mappingState;
-    const { x, y, width, height } = mappingState.selectBBox;
+    const { select: { active }, scale, x: offsetX, y: offsetY } = mappingState;
+    if (active) {
+        const { x, y, width, height } = mappingState.selectBBox;
 
-    const indicies = environment.currentSprite.mappings.reduce(
-        (acc, mapping, index) => {
-            const { top: my, left: mx, width: mw, height: mh } = mapping;
+        const indicies = environment.currentSprite.mappings.reduce(
+            (acc, mapping, index) => {
+                const { top: my, left: mx, width: mw, height: mh } = mapping;
 
-            if (
-                x - offsetX < mx * scale &&
-                x + width - offsetX > mx * scale + mw * scale * 8 &&
-                y - offsetY < my * scale &&
-                y + height - offsetY > my * scale + mh * scale * 8
-            ) {
-                return [...acc, index];
-            } else {
-                return acc;
-            }
-        },
-        [],
-    );
+                if (
+                    x - offsetX < mx * scale &&
+                    x + width - offsetX > mx * scale + mw * scale * 8 &&
+                    y - offsetY < my * scale &&
+                    y + height - offsetY > my * scale + mh * scale * 8
+                ) {
+                    return [...acc, index];
+                } else {
+                    return acc;
+                }
+            },
+            [],
+        );
 
-    mappingState.selectedIndicies.replace(indicies);
+        mappingState.selectedIndicies.replace(indicies);
+    }
 }
 
 @observer

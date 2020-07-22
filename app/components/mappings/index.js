@@ -139,7 +139,6 @@ export class Mappings extends Component {
                     style={{
                         width: Math.max((0 | (baseWidth / 220)) * 220, 220),
                     }}
-                    key={Math.random()}
                 >
                     {commands.map((group, i) => (
                         <div key={i} className="group">

@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { mappingState } from './state';
 import { VictoryAxis } from 'victory';
-import range from 'lodash/range';
 import { white } from '!!sass-variables-loader!#styles/variables.scss';
 
 const style = {

@@ -1,4 +1,3 @@
-import React, { Component } from 'react';
 import { mappingState } from './state';
 import { select, event, mouse } from 'd3-selection';
 import { drag } from 'd3-drag';
@@ -12,14 +11,14 @@ export function attachDragMoveToNode(node) {
                 drag()
                     .filter(() => true)
                     .on('start', () => {
-                        const { dx, dy, sourceEvent: { button, target } } = event;
+                        const { dx, dy, sourceEvent: { buttons, target } } = event;
                         const { move, activeMappings, selectedIndicies } = mappingState;
 
                         const mappingNode = target.closest('.mapping-wrapper');
                         const sourceIndex = mappingNode ? +mappingNode.getAttribute('data-index') : -1;
                         const sourceIsActive = ~selectedIndicies.indexOf(sourceIndex);
 
-                        if (button == LEFT && sourceIsActive) {
+                        if (buttons == LEFT && sourceIsActive) {
                             move.init.replace([]);
 
                             activeMappings.forEach(({left, top}) => {
@@ -34,10 +33,10 @@ export function attachDragMoveToNode(node) {
                         draw(node);
                     })
                     .on('drag', () => {
-                        const { dx, dy, sourceEvent: { button, target } } = event;
+                        const { dx, dy, sourceEvent: { buttons, target } } = event;
                         const { move } = mappingState;
 
-                        if (button == LEFT && move.active) {
+                        if (buttons == LEFT && move.active) {
                             move.x += dx;
                             move.y += dy;
                             const xOffset = 0|(move.x/mappingState.scale);
@@ -52,9 +51,9 @@ export function attachDragMoveToNode(node) {
                         draw(node);
                     })
                     .on('end', () => {
-                        const { dx, dy, sourceEvent: { button, target } } = event;
+                        const { dx, dy, sourceEvent: { buttons, target } } = event;
 
-                        if (button == LEFT && mappingState.move.active) {
+                        if (buttons == LEFT && mappingState.move.active) {
                             mappingState.move.active = false;
                         }
                     })

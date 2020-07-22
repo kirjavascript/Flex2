@@ -1,19 +1,33 @@
+.flexlayout_panel {
+    height: 100%;
+}
+
+.flexlayout__panel_maximized {
+    background-color: $black;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 20px;
+    bottom: 0;
+    // overflow: scroll;
+}
+
 .flexlayout__layout {
     left: 0;
     top: 0;
     right: 0;
     bottom: 0;
     position: absolute;
-    overflow:hidden;
+    overflow: hidden;
 }
 
 .flexlayout__splitter {
     background-color: $grey;
-    opacity: .2;
+    opacity: 0.2;
 }
 
 .flexlayout__splitter:hover {
-    opacity: .5;
+    opacity: 0.5;
 }
 
 .flexlayout__splitter_drag {
@@ -26,7 +40,7 @@
     position: absolute;
     cursor: move;
     border: 2px solid $blue;
-    box-shadow: inset 0 0 60px rgba(0, 0, 0, .2);
+    box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.2);
     border-radius: 5px;
     z-index: 1000;
     box-sizing: border-box;
@@ -58,7 +72,7 @@
     display: flex;
     justify-content: center;
     flex-direction: column;
-    overflow:hidden;
+    overflow: hidden;
     padding: 5px;
     word-wrap: break-word;
 }
@@ -70,17 +84,16 @@
 
 .flexlayout__tab {
     overflow: auto;
-    position:absolute;
+    position: absolute;
 }
 
 .flexlayout__tab_button {
     // cursor: pointer;
     padding: 4px 8px 4px 8px;
     margin: 0px 3px;
-    float:left;
+    float: left;
     vertical-align: top;
     box-sizing: border-box;
-
 }
 
 .flexlayout__tab_button--selected {
@@ -95,20 +108,20 @@
 
 .flexlayout__tab_button_leading {
     float: left;
-    display:inline-block;
+    display: inline-block;
 }
 
 .flexlayout__tab_button_content {
     float: left;
-    display:inline-block;
+    display: inline-block;
     font-size: 12px;
 }
 
 .flexlayout__tab_button_textbox {
     float: left;
     border: none;
-    color:lightgreen;
-    background-color:#222;
+    color: lightgreen;
+    background-color: #222;
 }
 .flexlayout__tab_button_textbox:focus {
     outline: none;
@@ -116,39 +129,38 @@
 
 .flexlayout__tab_button_trailing {
     float: left;
-    display:inline-block;
-    margin-left:5px;
-    margin-top:3px;
-    width:8px;
-    height:8px;
+    display: inline-block;
+    margin-left: 5px;
+    margin-top: 3px;
+    width: 8px;
+    height: 8px;
 }
 
 .flexlayout__tab_button:hover .flexlayout__tab_button_trailing,
-.flexlayout__tab_button--selected .flexlayout__tab_button_trailing{
-    background: transparent url("../images/close_white.png") no-repeat center;
+.flexlayout__tab_button--selected .flexlayout__tab_button_trailing {
+    background: transparent url('../images/close_white.png') no-repeat center;
 }
 
 .flexlayout__tab_button_overflow {
     float: left;
     width: 20px;
-    height:15px;
-    margin-top:2px;
-    padding-left:12px;
-    border:none;
+    height: 15px;
+    margin-top: 2px;
+    padding-left: 12px;
+    border: none;
     font-size: 10px;
-    color:lightgray;
+    color: lightgray;
     font-family: Arial, sans-serif;
-    background: transparent url("../images/more.png") no-repeat left;
+    background: transparent url('../images/more.png') no-repeat left;
 }
 
-.flexlayout__tabset_header
-{
+.flexlayout__tabset_header {
     position: absolute;
     left: 0;
     right: 0;
     // color:#eee;
     // background-color: #212121;
-    padding:3px 3px 3px 5px;
+    padding: 3px 3px 3px 5px;
     box-sizing: border-box;
 }
 
@@ -170,35 +182,33 @@
     overflow: hidden;
 }
 
-.flexlayout__tabset-selected
-{
+.flexlayout__tabset-selected {
     // background-image: linear-gradient(#111, #444);
 }
 
 .flexlayout__tab_toolbar {
-    position:absolute;
-    display:flex;
+    position: absolute;
+    display: flex;
     flex-direction: row-reverse;
     align-items: center;
-    top:0;
-    bottom:0;
-    right:0;
+    top: 0;
+    bottom: 0;
+    right: 0;
 }
 
 .flexlayout__tab_toolbar_button-min {
-    width:20px;
-    height:20px;
-    border:none;
+    width: 20px;
+    height: 20px;
+    border: none;
     outline-width: 0;
-    background: transparent url("../images/maximize.png") no-repeat center;
-
+    background: transparent url('../images/maximize.png') no-repeat center;
 }
 .flexlayout__tab_toolbar_button-max {
-    width:20px;
-    height:20px;
-    border:none;
+    width: 20px;
+    height: 20px;
+    border: none;
     outline-width: 0;
-    background: transparent url("../images/restore.png") no-repeat center;
+    background: transparent url('../images/restore.png') no-repeat center;
 }
 
 .flexlayout__popup_menu {
@@ -206,7 +216,7 @@
 
 .flexlayout__popup_menu_item {
     padding: 2px 10px 2px 10px;
-    color:#ddd;
+    color: #ddd;
 }
 
 .flexlayout__popup_menu_item:hover {
@@ -214,67 +224,66 @@
 }
 
 .flexlayout__popup_menu_container {
-    box-shadow: inset 0 0 5px rgba(0, 0, 0, .15);
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.15);
     border: 1px solid #555;
     background: #222;
-    border-radius:3px;
-    position:absolute;
-    z-index:1000;
+    border-radius: 3px;
+    position: absolute;
+    z-index: 1000;
 }
 
-
 .flexlayout__border_top {
-    background-color:black;
+    background-color: black;
     border-bottom: 1px solid #ddd;
     box-sizing: border-box;
-    overflow:hidden;
+    overflow: hidden;
 }
 
 .flexlayout__border_bottom {
-    background-color:black;
+    background-color: black;
     border-top: 1px solid #333;
     box-sizing: border-box;
-    overflow:hidden;
+    overflow: hidden;
 }
 .flexlayout__border_left {
-    background-color:black;
+    background-color: black;
     border-right: 1px solid #333;
     box-sizing: border-box;
-    overflow:hidden;
+    overflow: hidden;
 }
 
 .flexlayout__border_right {
-    background-color:black;
+    background-color: black;
     border-left: 1px solid #333;
     box-sizing: border-box;
-    overflow:hidden;
+    overflow: hidden;
 }
 
-.flexlayout__border_inner_bottom{
+.flexlayout__border_inner_bottom {
     display: flex;
 }
 
 .flexlayout__border_inner_left {
-    position:absolute;
+    position: absolute;
     white-space: nowrap;
     right: 23px;
-    transform-origin:  top right;
+    transform-origin: top right;
     transform: rotate(-90deg);
 }
 
 .flexlayout__border_inner_right {
-    position:absolute;
+    position: absolute;
     white-space: nowrap;
     left: 23px;
-    transform-origin:  top left;
+    transform-origin: top left;
     transform: rotate(90deg);
 }
 
 .flexlayout__border_button {
     background-color: #222;
-    color:white;
-    display:inline-block;
-    white-space:nowrap;
+    color: white;
+    display: inline-block;
+    white-space: nowrap;
 
     // cursor: pointer;
     padding: 2px 8px 3px 8px;
@@ -294,73 +303,72 @@
 
 .flexlayout__border_button_leading {
     float: left;
-    display:inline;
+    display: inline;
 }
 
 .flexlayout__border_button_content {
-    display:inline-block;
+    display: inline-block;
 }
 
 .flexlayout__border_button_textbox {
     float: left;
     border: none;
-    color:green;
-    background-color:#ddd;
+    color: green;
+    background-color: #ddd;
 }
 .flexlayout__border_button_textbox:focus {
     outline: none;
 }
 
 .flexlayout__border_button_trailing {
-    display:inline-block;
-    margin-left:5px;
-    margin-top:3px;
-    width:8px;
-    height:8px;
+    display: inline-block;
+    margin-left: 5px;
+    margin-top: 3px;
+    width: 8px;
+    height: 8px;
 }
 
 .flexlayout__border_button:hover .flexlayout__border_button_trailing,
-.flexlayout__border_button--selected .flexlayout__border_button_trailing{
-    background: transparent url("../images/close_white.png") no-repeat center;
+.flexlayout__border_button--selected .flexlayout__border_button_trailing {
+    background: transparent url('../images/close_white.png') no-repeat center;
 }
 
-
 .flexlayout__border_toolbar_left {
-    position:absolute;
+    position: absolute;
     display: flex;
     flex-direction: column-reverse;
     align-items: center;
-    bottom:0;
-    left:0;
-    right:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }
 
 .flexlayout__border_toolbar_right {
-    position:absolute;
+    position: absolute;
     display: flex;
     flex-direction: column-reverse;
     align-items: center;
-    bottom:0;
-    left:0;
-    right:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }
 
 .flexlayout__border_toolbar_top {
-    position:absolute;
+    position: absolute;
     display: flex;
     flex-direction: row-reverse;
     align-items: center;
-    top:0;
-    bottom:0;
-    right:0;
+    top: 0;
+    bottom: 0;
+    right: 0;
 }
 
 .flexlayout__border_toolbar_bottom {
-    position:absolute;
+    position: absolute;
     display: flex;
     flex-direction: row-reverse;
     align-items: center;
-    top:0;
-    bottom:0;
-    right:0;
+    top: 0;
+    bottom: 0;
+    right: 0;
 }

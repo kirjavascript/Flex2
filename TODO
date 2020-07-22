@@ -1,13 +1,17 @@
 ROADMAP
-file menu (offset loading)
 custom mapping formats
 rotsprite
 animation editor
+file menu (offset loading)
 ==
 BUGS
 load data to back to mappings masonry broken
 FEATURES
 fullscreen
+    maximized scrollbars
+    maximized width used
+    drag zindex is wrong
+palette drag cursors
 ==
 generate definition project files from sonlvl
 parser combinators
