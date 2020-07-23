@@ -11,7 +11,9 @@ import { Sprites } from '#components/sprites';
 import { Mappings } from '#components/mappings';
 import { Documentation } from '#components/documentation';
 
-const getPanel = (component, node) => {
+const getPanel = (node) => {
+    const component = node.getComponent();
+    if (!node._visible) return false;
     if (component === 'project') {
         return <Project node={node}/>;
     } else if (component === 'palettes') {
@@ -30,14 +32,13 @@ const getPanel = (component, node) => {
 export class Layout extends Component {
 
     factory = (node) => {
-        const component = node.getComponent();
         const maximized = !!node.getModel().getMaximizedTabset();
         return (
             <div className={classNames([
                 'flexlayout_panel',
                 maximized && 'flexlayout__panel_maximized',
             ])}>
-                { getPanel(component, node) }
+                {getPanel(node)}
             </div>
         );
     }

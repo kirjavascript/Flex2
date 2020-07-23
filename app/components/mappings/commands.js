@@ -11,12 +11,14 @@ export class Commands extends Component {
 
     render() {
         const { baseWidth } = mappingState;
+        const width = Math.max((0 | (baseWidth / 220)) * 220, 220);
 
         return (
             <Masonry
                 className="commands"
-                style={{
-                    width: Math.max((0 | (baseWidth / 220)) * 220, 220),
+                style={{ width }}
+                ref={(node) => {
+                    window.NN=node
                 }}
             >
                 {commands.map((group, i) => (
