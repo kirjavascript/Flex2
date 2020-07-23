@@ -11,29 +11,24 @@ hide invisible
 pink surrounding tiles sometimes breaks
 FEATURES
 Maximize tabs
-    drag zindex is wrong
-    export spritesheet window is wrong
-    images
+    images for icons
 palette drag cursors
 ==
 CUSTOM FORMATS
 parser combinators
 specify mapping definition files or presets
-
+disable optimizations
+==
+ROTSPRITE
+https://forums.sonicretro.org/index.php?threads/sprite-rotation-utility.8848/#post-159754
 ==
 generate definition project files from sonlvl
-improved buttons
-disable optimizations
 copy / paste mappings
 file - project - mappings
-open arbitrary files - File Tab
-github issues
 time travel for undo/redo
-V2: sprite rotation http://forums.sonicretro.org/index.php?showtopic=8848&st=0&p=159754&#entry159754
 import palette from spritesheet https://yarnpkg.com/en/package/node-vibrant
 ==
 use a repo url
-disable optimizations
 change sprite scroll speed
 drawing mode fill !
 S - scroll to sprite

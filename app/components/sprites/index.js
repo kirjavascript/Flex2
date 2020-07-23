@@ -115,7 +115,7 @@ export class Sprites extends DimensionsComponent {
                 <div className="spriteSortContainer" ref={this.onContainerRef}>
                     <SortableList
                         axis="xy"
-                        helperClass="sortable-float"
+                        helperClass="sortable-float-sprite"
                         onSortEnd={this.onSortEnd}
                         getContainer={this.getContainer}
                         items={sprites}

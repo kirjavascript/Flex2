@@ -8,3 +8,4 @@
     - Added ArtC42, LZKN1, Rocket and RLE compression formats
 - Sort imported spritesheet into rows properly
 - Autodismiss new mapping screen
+- Tabs can be maximized

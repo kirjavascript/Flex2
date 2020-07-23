@@ -42,6 +42,7 @@
 .sortable-float-palette {
     display: flex;
     flex-direction: row;
+    z-index: $z-float;
     .color {
         flex-grow: 1;
     }

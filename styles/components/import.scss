@@ -5,7 +5,7 @@
     bottom: 0;
     right: 0;
     background-color: $black;
-    z-index: 10;
+    z-index: $z-float;
 
     .menu {
         margin: 0 15px;
