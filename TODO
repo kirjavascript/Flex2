@@ -7,11 +7,13 @@ file menu (offset loading)
 BUGS
 load data to back to mappings masonry broken
     save scroll position to fix?
+    show/hide config state
 FEATURES
 fullscreen
     maximized scrollbars
     maximized width used
     drag zindex is wrong
+    export spritesheet window is wrong
 palette drag cursors
 ==
 generate definition project files from sonlvl
@@ -27,6 +29,7 @@ time travel for undo/redo
 V2: sprite rotation http://forums.sonicretro.org/index.php?showtopic=8848&st=0&p=159754&#entry159754
 import palette from spritesheet https://yarnpkg.com/en/package/node-vibrant
 ==
+use a repo url
 change sprite scroll speed
 drawing mode fill !
 S - scroll to sprite

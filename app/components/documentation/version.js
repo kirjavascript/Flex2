@@ -3,12 +3,14 @@ import React, { Component } from 'react';
 import { A } from './a.js';
 import { semver } from '#util/semver';
 
+const { previewVersion } = packageJson;
+
 export class Version extends Component {
 
-    state = { newVersion: void 0, error: false };
+    state = { newVersion: undefined, error: false };
 
     componentDidMount() {
-        fetch('https://raw.githubusercontent.com/kirjavascript/Flex2/master/package.json')
+        !previewVersion && fetch('https://raw.githubusercontent.com/kirjavascript/Flex2/master/package.json')
             .then((response) => response.json())
             .then(({version}) => {
                 const currentVersion = semver(packageJson.version);
@@ -26,19 +28,21 @@ export class Version extends Component {
         const { error, newVersion } = this.state;
 
         return <div>
-            version {packageJson.version}
-            {newVersion && (
-                <span>
-                    {' - '}
-                    <A href="https://github.com/kirjavascript/Flex2/releases" className="magenta">
-                        a new version ({newVersion}) is available
-                    </A>
-                </span>
+            {previewVersion ? (
+                `pre-release version ${previewVersion}  ★ `
+            ) : (
+                `version ${packageJson.version}  ★ `
             )}
-            {' ★ '}
             <A href="https://www.github.com/kirjavascript/Flex2">
                 Source code / Report bugs
             </A>
+            {newVersion && (
+                <p>
+                    <A href="https://github.com/kirjavascript/Flex2/releases" className="magenta">
+                        a new version ({newVersion}) is available
+                    </A>
+                </p>
+            )}
             {error && <div className="red">{error}</div>}
         </div>;
     }
