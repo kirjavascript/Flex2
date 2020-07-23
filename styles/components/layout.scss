@@ -1,4 +1,4 @@
-.flexlayout_panel {
+.flexlayout__panel {
     height: 100%;
 }
 
@@ -9,7 +9,9 @@
     right: 0;
     top: 20px;
     bottom: 0;
-    // overflow: scroll;
+
+    height: calc(100% - 20px);
+    overflow: auto;
 }
 
 .flexlayout__layout {

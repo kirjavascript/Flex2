@@ -35,7 +35,7 @@ export class Layout extends Component {
         const maximized = !!node.getModel().getMaximizedTabset();
         return (
             <div className={classNames([
-                'flexlayout_panel',
+                'flexlayout__panel',
                 maximized && 'flexlayout__panel_maximized',
             ])}>
                 {getPanel(node)}

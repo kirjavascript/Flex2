@@ -3,22 +3,25 @@ custom mapping formats
 rotsprite
 animation editor
 file menu (offset loading)
+export spritesheet
 ==
 BUGS
-load data to back to mappings masonry broken
-    save scroll position to fix?
+hide invisible
     show/hide config state
+pink surrounding tiles sometimes breaks
 FEATURES
-fullscreen
-    maximized scrollbars
-    maximized width used
+Maximize tabs
     drag zindex is wrong
     export spritesheet window is wrong
+    images
 palette drag cursors
 ==
-generate definition project files from sonlvl
+CUSTOM FORMATS
 parser combinators
-    specify mapping definition files or presets
+specify mapping definition files or presets
+
+==
+generate definition project files from sonlvl
 improved buttons
 disable optimizations
 copy / paste mappings
@@ -30,6 +33,7 @@ V2: sprite rotation http://forums.sonicretro.org/index.php?showtopic=8848&st=0&p
 import palette from spritesheet https://yarnpkg.com/en/package/node-vibrant
 ==
 use a repo url
+disable optimizations
 change sprite scroll speed
 drawing mode fill !
 S - scroll to sprite
