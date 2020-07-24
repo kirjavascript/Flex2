@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { environment } from '#store/environment';
 import { observer } from 'mobx-react';
-import { observable } from 'mobx';
 import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
 import { hexToMDHex } from '#formats/palette';
 import ColorPicker from 'rc-color-picker';
