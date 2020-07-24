@@ -8,8 +8,8 @@ export spritesheet
 BUGS
 show/hide collapse config state
 pink surrounding tiles sometimes breaks
-FEATURES
-Maximize tabs - images for icons (color)
+TASKS
+test icon on windows
 ==
 CUSTOM FORMATS
 parser combinators
@@ -40,7 +40,6 @@ Support MainMemory's macros formats
 21:10 <+Dick-Cord> <A​kumaYin> Being able to load and edit files without using the project setup would be nice. That's one of the few things that I prefer about the original Flex, along with the ability to preview animations.
 do animations as a new tab - animation editor - load one at a time and FE changes the current index
 animation: play, pause
-migration function to add a tab
 document how to use project files
 
 use 'sonic'; as custom mapping directive
