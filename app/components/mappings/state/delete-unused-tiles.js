@@ -5,23 +5,23 @@ import range from 'lodash/range';
 export function deleteUnusedTiles() {
     const { sprites, config: { dplcsEnabled }, tiles } = environment;
 
-    let usedIndicies = [];
+    let usedIndices = [];
 
     sprites.forEach(({mappings, dplcs}) => {
         if (dplcsEnabled) {
             dplcs.forEach(({art, size}) => {
-                usedIndicies.push(...range(art, art + size));
+                usedIndices.push(...range(art, art + size));
             });
         }
         else {
             mappings.forEach(({art, width, height}) => {
-                usedIndicies.push(...range(art, art + (width * height)));
+                usedIndices.push(...range(art, art + (width * height)));
             });
         }
     });
 
-    const unusedIndicies = Array.from({length: tiles.length}, (_, i) => i)
-        .filter((index) => !usedIndicies.includes(index));
+    const unusedIndices = Array.from({length: tiles.length}, (_, i) => i)
+        .filter((index) => !usedIndices.includes(index));
 
     // save initial art positions to compare against
     sprites.forEach(({mappings, dplcs}) => {
@@ -31,7 +31,7 @@ export function deleteUnusedTiles() {
             });
     });
 
-    unusedIndicies.forEach((index) => {
+    unusedIndices.forEach((index) => {
         // mark as unused
         tiles[index].unused = true;
 

@@ -9,7 +9,7 @@ const numFmt = (num) => `${num<0?'-':''}0x${(Math.abs(+num)).toString(16).toUppe
 export class HUD extends Component {
 
     render() {
-        const { x, y, select: { active }, center, activeMappings, selectedIndicies, newMapping } = mappingState;
+        const { x, y, select: { active }, center, activeMappings, selectedIndices, newMapping } = mappingState;
         const { config: { currentSprite, dplcsEnabled, currentTile }, mappings, tiles } = environment;
 
         return <div className="hud">
@@ -33,8 +33,8 @@ export class HUD extends Component {
             )}
             {!!activeMappings.length && (
                 <div>
-                    indicies: <span className="blue">
-                        {JSON.stringify(selectedIndicies.filter((i) => {
+                    indices: <span className="blue">
+                        {JSON.stringify(selectedIndices.filter((i) => {
                             return i < mappings[currentSprite].length;
                         }))}
                     </span>

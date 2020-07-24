@@ -6,12 +6,10 @@ file menu (offset loading)
 export spritesheet
 ==
 BUGS
-hide invisible
-    show/hide config state
+show/hide collapse config state
 pink surrounding tiles sometimes breaks
 FEATURES
-Maximize tabs
-    images for icons
+Maximize tabs - images for icons (color)
 ==
 CUSTOM FORMATS
 parser combinators

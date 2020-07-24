@@ -54,7 +54,7 @@ export class Mappings extends Component {
 
     render() {
         const { buffer, index, mappings } = environment.currentSprite;
-        const { scale, x, y, baseWidth, mode, selectedIndicies } = mappingState;
+        const { scale, x, y, baseWidth, mode, selectedIndices } = mappingState;
 
         return (
             <div className="mappings" ref={this.onRef}>
@@ -77,7 +77,7 @@ export class Mappings extends Component {
                                 }}
                                 className={classNames({
                                     'mapping-wrapper': mode == 'mapping',
-                                    noselect: !selectedIndicies.includes(
+                                    noselect: !selectedIndices.includes(
                                         realIndex,
                                     ),
                                 })}

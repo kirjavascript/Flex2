@@ -55,7 +55,7 @@ class SelectionLayer extends Component {
                 const ry = (top * scale) - (extra / 2);
 
                 return (
-                    all || ~mappingState.selectedIndicies.indexOf(mappingIndex) ?
+                    all || ~mappingState.selectedIndices.indexOf(mappingIndex) ?
                     <rect
                         key={mappingIndex}
                         x={rx + x}

@@ -5,7 +5,7 @@ import { arrayIndexOf } from '#util/array-index-of';
 export function arrangeTilesBySpriteOrder() {
 
     let newTiles = [];
-    let newTilesIndicies = [];
+    let newTilesIndices = [];
 
     const { tiles, mappings, dplcs, config: { dplcsEnabled } } = environment;
 
@@ -15,16 +15,16 @@ export function arrangeTilesBySpriteOrder() {
             const length = obj.size || obj.width * obj.height;
             const { art } = obj;
 
-            const objTileIndicies = range(art, art +length);
-            const indiciesTileIndex = arrayIndexOf(objTileIndicies, newTilesIndicies);
+            const objTileIndices = range(art, art +length);
+            const indicesTileIndex = arrayIndexOf(objTileIndices, newTilesIndices);
 
-            if (indiciesTileIndex != -1) {
-                obj.art = indiciesTileIndex;
+            if (indicesTileIndex != -1) {
+                obj.art = indicesTileIndex;
             }
             else {
                 obj.art = newTiles.length;
                 newTiles.push(...tiles.slice(art, art + length));
-                newTilesIndicies.push(...objTileIndicies);
+                newTilesIndices.push(...objTileIndices);
             }
 
         });

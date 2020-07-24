@@ -64,7 +64,7 @@ function setSelectedMappings(node) {
     if (active) {
         const { x, y, width, height } = mappingState.selectBBox;
 
-        const indicies = environment.currentSprite.mappings.reduce(
+        const indices = environment.currentSprite.mappings.reduce(
             (acc, mapping, index) => {
                 const { top: my, left: mx, width: mw, height: mh } = mapping;
 
@@ -82,7 +82,7 @@ function setSelectedMappings(node) {
             [],
         );
 
-        mappingState.selectedIndicies.replace(indicies);
+        mappingState.selectedIndices.replace(indices);
     }
 }
 

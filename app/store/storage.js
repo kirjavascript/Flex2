@@ -43,7 +43,7 @@ export function storage(obj, name) {
 
 }
 
-window.__clearStorage = () => {
+window.resetStorage = () => {
     while(localStorage.key(0)) {
         localStorage.removeItem(localStorage.key(0));
     }

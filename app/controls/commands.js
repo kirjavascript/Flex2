@@ -241,16 +241,16 @@ export const commands = [
         {
             map: 'd m', name: 'Delete Mappings', color: 'red',
             func: () => {
-                const { selectedIndicies, hasActive } = mappingState;
+                const { selectedIndices, hasActive } = mappingState;
                 const { currentSprite, dplcsEnabled } = environment;
                 if (hasActive) {
-                    selectedIndicies.forEach((i) => {
+                    selectedIndices.forEach((i) => {
                         currentSprite.mappings[i].rip = true;
                     });
                     currentSprite.mappings.replace(
                         currentSprite.mappings.filter((d) => !d.rip)
                     );
-                    mappingState.selectedIndicies.replace([]);
+                    mappingState.selectedIndices.replace([]);
                     mappingState.optimizeCurrentDPLCs();
                 }
             },
@@ -303,12 +303,32 @@ export const commands = [
 
     [
         {
+            map: '[', name: 'Previous Sprite', color: 'yellow', hasShift: true,
+            func: () => { environment.config.currentSprite -= getDistance(); },
+        },
+        {
             map: ']', name: 'Next Sprite', color: 'yellow', hasShift: true,
             func: () => { environment.config.currentSprite += getDistance(); },
         },
         {
-            map: '[', name: 'Previous Sprite', color: 'yellow', hasShift: true,
-            func: () => { environment.config.currentSprite -= getDistance(); },
+            map: 'mod+[', name: 'Swap Previous', color: 'yellow', hasShift: true,
+            func: () => {
+                const { currentSprite } = environment.config;
+                if (currentSprite > 0) {
+                    environment.swapSprite(currentSprite, currentSprite - 1);
+                    environment.config.currentSprite = currentSprite - 1;
+                }
+            },
+        },
+        {
+            map: 'mod+]', name: 'Swap Next', color: 'yellow', hasShift: true,
+            func: () => {
+                const { currentSprite } = environment.config;
+                if (currentSprite < environment.mappings.length - 1) {
+                    environment.swapSprite(currentSprite, currentSprite + 1);
+                    environment.config.currentSprite = currentSprite + 1;
+                }
+            },
         },
         {
             map: '<', name: 'First Sprite', color: 'yellow', noMultiplier: true,

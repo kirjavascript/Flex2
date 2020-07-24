@@ -11,14 +11,14 @@ export function toggleDPLCs() {
 
         sprites.forEach(({mappings, dplcs}) => {
             // get list dplc tiles
-            const dplcIndicies = [];
+            const dplcIndices = [];
             dplcs.forEach(({art, size}) => {
-                dplcIndicies.push(...range(art, art + size));
+                dplcIndices.push(...range(art, art + size));
             });
 
             // update mapping art locations
             mappings.forEach((mapping) => {
-                mapping.art = dplcIndicies[mapping.art];
+                mapping.art = dplcIndices[mapping.art];
             });
 
         });

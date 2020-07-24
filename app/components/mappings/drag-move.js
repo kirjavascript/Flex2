@@ -12,11 +12,11 @@ export function attachDragMoveToNode(node) {
                     .filter(() => true)
                     .on('start', () => {
                         const { dx, dy, sourceEvent: { buttons, target } } = event;
-                        const { move, activeMappings, selectedIndicies } = mappingState;
+                        const { move, activeMappings, selectedIndices } = mappingState;
 
                         const mappingNode = target.closest('.mapping-wrapper');
                         const sourceIndex = mappingNode ? +mappingNode.getAttribute('data-index') : -1;
-                        const sourceIsActive = ~selectedIndicies.indexOf(sourceIndex);
+                        const sourceIsActive = ~selectedIndices.indexOf(sourceIndex);
 
                         if (buttons == LEFT && sourceIsActive) {
                             move.init.replace([]);

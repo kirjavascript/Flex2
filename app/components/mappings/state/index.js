@@ -66,7 +66,7 @@ class MappingState {
 
     // selections
 
-    @observable selectedIndicies = [];
+    @observable selectedIndices = [];
 
     @observable select = {
         active: false,
@@ -96,22 +96,22 @@ class MappingState {
     }
 
     @action selectAll = () => {
-        const indicies = environment.currentSprite.mappings.map((d, i) => i);
-        this.selectedIndicies.replace(indicies);
+        const indices = environment.currentSprite.mappings.map((d, i) => i);
+        this.selectedIndices.replace(indices);
     };
 
     @action selectNone = () => {
-        this.selectedIndicies.replace([]);
+        this.selectedIndices.replace([]);
     };
 
     @action selectToggle = (index) => {
-        if (~this.selectedIndicies.indexOf(index)) {
-            this.selectedIndicies.replace(this.selectedIndicies.filter((i) => {
+        if (~this.selectedIndices.indexOf(index)) {
+            this.selectedIndices.replace(this.selectedIndices.filter((i) => {
                 return i != index;
             }));
         }
         else {
-            this.selectedIndicies.push(index);
+            this.selectedIndices.push(index);
         }
     };
 
@@ -133,7 +133,7 @@ class MappingState {
     // active mappings
 
     @computed get activeMappings() {
-        return this.selectedIndicies.reduce((a, c) => {
+        return this.selectedIndices.reduce((a, c) => {
             const { mappings } = environment.currentSprite;
             if (mappings.length > c) {
                 a.push(mappings[c]);
