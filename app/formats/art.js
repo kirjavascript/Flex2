@@ -32,5 +32,5 @@ export function tilesToBuffer(tiles, compression) {
             (H << 4) + L
         ));
 
-    return new Buffer(compress(Uint8Array.from(duxels), compression));
+    return Buffer.from(compress(Uint8Array.from(duxels), compression));
 }

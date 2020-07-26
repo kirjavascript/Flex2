@@ -13,16 +13,28 @@ superset of ASM
 Xw
 {} loops ?
 [] flip bits
-header
 <!-- retain -->
-<INFO>
 
-<ART> link
-
-(header dc.b)
-(mapping TTTTTTTT ????  WW HH P CC Y X AAAAAAAAAAA LLLLLLLL)
+top left right down TLRD
 
 (type, size)
 (reverse NNNN)
+(info)
+(text "; Art: {location}")
+(label "sonic1_mappings")
 
-top left right down TLRD
+; sonic 1 mapping
+(header dc.b)
+(mapping TTTTTTTT ????  WW HH P CC Y X AAAAAAAAAAA LLLLLLLL)
+
+; sonic 1 dplc
+(header db.b)
+(dplc NNNN AAAA AAAA AAAA)
+
+; sonic 2/3&k dplc
+(header db.w)
+(dplc NNNN AAAA AAAA AAAA)
+
+; sonic 2/3&k dplc
+(header db.w)
+(dplc NNNN AAAA AAAA AAAA)

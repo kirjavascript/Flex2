@@ -48,5 +48,5 @@ export function colorsToBuffers(palettes, start = 0, end = 1) {
         });
     }
 
-    return new Buffer(Uint8Array.from(bytes));
+    return Buffer.from(Uint8Array.from(bytes));
 }

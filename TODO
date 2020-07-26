@@ -1,5 +1,6 @@
 ROADMAP
 file menu (offset loading) / create files
+    (OR add load/save to objectdef and add objectdev to project homescreen
 custom mapping formats / screen mappings
 export spritesheet
 rotsprite
@@ -8,9 +9,15 @@ animation editor
 BUGS
 show/hide collapse config state
 pink surrounding tiles sometimes breaks
+flex2_test/logo.png import is broken (alpha)
+tile deletes when drawing (unmap pieces / shortcuts in drawing mode)
+many writes while drawing
+project files easier to use / create
 FEATURES
-default palette https://i.imgur.com/suYXmiv.png
+ctrl+wheel for horiz scroll
 TASKS
+checkbox
+buffer is deprecated on save
 ==
 CUSTOM FORMATS
 parser combinators

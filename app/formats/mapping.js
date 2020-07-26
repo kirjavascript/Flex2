@@ -174,7 +174,7 @@ export function mappingsToBuffer(mappings, format) {
     ]);
 
     return {
-        chunk: new Buffer(Uint8Array.from(bytes)),
+        chunk: Buffer.from(Uint8Array.from(bytes)),
         frames: framesArray,
     };
 

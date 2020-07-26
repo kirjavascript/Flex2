@@ -111,7 +111,7 @@ export function DPLCsToBuffer(dplcs, format) {
     const bytes = flattenDeep([headerWords, framesArray]);
 
     return {
-        chunk: new Buffer(Uint8Array.from(bytes)),
+        chunk: Buffer.from(Uint8Array.from(bytes)),
         frames: framesArray,
     };
 

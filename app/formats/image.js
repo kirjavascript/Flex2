@@ -90,7 +90,7 @@ export function exportPNG(debug = false) {
         .then(({ filePath }) => {
             if (filePath) {
                 const base64Data = canvas.toDataURL().replace(/data(.*?),/, '');
-                writeFile(filePath, new Buffer(base64Data, 'base64'), (err, success) => {
+                writeFile(filePath, Buffer.from(base64Data, 'base64'), (err, success) => {
                     err && errorMsg('Error exporting sprite', String(err));
                 });
             }
