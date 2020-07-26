@@ -1,6 +1,6 @@
 import { readFileSync, writeFileSync } from 'fs';
 import { extname } from 'path';
-import { observable, computed, action, autorun, toJS, spy } from 'mobx';
+import { observable, computed, action, autorun } from 'mobx';
 import range from 'lodash/range';
 import unique from 'lodash/uniq';
 import { storage } from './storage';

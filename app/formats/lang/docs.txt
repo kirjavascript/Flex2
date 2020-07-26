@@ -1,0 +1,28 @@
+
+
+mapping language
+read/write
+XX YY
+HEADER:
+ dc.b {XX}
+ .asm and .bin out
+superset of ASM
+
+/* ds.b - offset */
+
+Xw
+{} loops ?
+[] flip bits
+header
+<!-- retain -->
+<INFO>
+
+<ART> link
+
+(header dc.b)
+(mapping TTTTTTTT ????  WW HH P CC Y X AAAAAAAAAAA LLLLLLLL)
+
+(type, size)
+(reverse NNNN)
+
+top left right down TLRD

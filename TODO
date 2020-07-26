@@ -1,15 +1,16 @@
 ROADMAP
-custom mapping formats
+file menu (offset loading) / create files
+custom mapping formats / screen mappings
+export spritesheet
 rotsprite
 animation editor
-file menu (offset loading)
-export spritesheet
 ==
 BUGS
 show/hide collapse config state
 pink surrounding tiles sometimes breaks
+FEATURES
+default palette https://i.imgur.com/suYXmiv.png
 TASKS
-test icon on windows
 ==
 CUSTOM FORMATS
 parser combinators

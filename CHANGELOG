@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.0.0]
+- Changed default palette from Sonic 2 to the SCH unified palette
+
 ## [0.0.7]
 - Added changelog
 - Better error reporting & enabled devtools (F12)

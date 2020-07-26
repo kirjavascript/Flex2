@@ -1,5 +1,6 @@
 {
     "version": "0.0.7",
+    "previewVersion": "1.0.0",
     "scripts": {
         "start": "electron ./static --dev"
     },

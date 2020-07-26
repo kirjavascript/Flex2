@@ -15,11 +15,11 @@ export function initHistory() {
 
         const { config, palettes, mappings, dplcs, tiles } = environment;
         // traverse everything we want to react to...
-        const { dplcsEnabled } = config;
-        tiles.forEach((a) => {a.forEach((b) => {b;});});
-        palettes.forEach((a) => {a.forEach((b) => {b;});});
-        mappings.forEach((a) => {a.forEach((b) => Object.values(b));});
-        dplcs.forEach((a) => {a.forEach((b) => Object.values(b));});
+        config.dplcsEnabled;
+        tiles.forEach((a) => a.forEach((b) => b));
+        palettes.forEach((a) => a.forEach((b) => b));
+        mappings.forEach((a) => a.forEach((b) => Object.values(b)));
+        dplcs.forEach((a) => a.forEach((b) => Object.values(b)));
 
         !timeTravelling && addHistory();
 
