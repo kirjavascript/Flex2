@@ -14,7 +14,7 @@ module.exports = (env = {}, args = {}) => {
         module: {
             rules: [
                 {
-                    test: /\.jsx?$/,
+                    test: /\.m?jsx?$/,
                     exclude: env.dev ? /node_modules/ : void 0,
                     use: [
                         {

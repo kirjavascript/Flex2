@@ -9,7 +9,7 @@ animation editor
 BUGS
 show/hide collapse config state
 pink surrounding tiles sometimes breaks
-flex2_test/logo.png import is broken (alpha)
+flex2_test/logo.png import is broken (alpha - works with exported flex file)
 tile deletes when drawing (unmap pieces / shortcuts in drawing mode)
 many writes while drawing
 project files easier to use / create

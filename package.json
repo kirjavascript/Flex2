@@ -1,6 +1,6 @@
 {
     "version": "0.0.7",
-    "previewVersion": "1.0.0 - Flex 2 & Knuckles",
+    "previewVersion": "Flex 2 & Knuckles",
     "scripts": {
         "start": "electron ./static --dev"
     },
@@ -19,6 +19,7 @@
         "webpack-cli": "^3.3.11"
     },
     "dependencies": {
+        "arcsecond": "^2.0.4",
         "brace": "^0.10.0",
         "classnames": "^2.2.5",
         "color-diff": "^1.1.0",
