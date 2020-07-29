@@ -96,15 +96,18 @@ class MappingState {
     }
 
     @action selectAll = () => {
+        if (this.move.active) return;
         const indices = environment.currentSprite.mappings.map((d, i) => i);
         this.selectedIndices.replace(indices);
     };
 
     @action selectNone = () => {
+        if (this.move.active) return;
         this.selectedIndices.replace([]);
     };
 
     @action selectToggle = (index) => {
+        if (this.move.active) return;
         if (~this.selectedIndices.indexOf(index)) {
             this.selectedIndices.replace(this.selectedIndices.filter((i) => {
                 return i != index;

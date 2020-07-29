@@ -57,7 +57,7 @@ export function attachDragMoveToNode(node) {
                     .on('end', () => {
                         const { dx, dy, sourceEvent: { buttons, target } } = event;
 
-                        if (buttons == LEFT && mappingState.move.active) {
+                        if (mappingState.move.active) {
                             mappingState.move.active = false;
                         }
                     })
