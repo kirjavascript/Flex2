@@ -42,6 +42,8 @@ top left right down TLRD
 (offset-table dc.w)
 (dplc (sub.w #$1 (length dc.w)) (def AAAA AAAA AAAA NNNN))
 
+(loop (length) (dplc XXXX))
+
 ; TODO
 ; kid chameleon
 ; crackers

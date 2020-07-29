@@ -42,9 +42,13 @@ export function attachDragMoveToNode(node) {
                             const xOffset = 0|(move.x/mappingState.scale);
                             const yOffset = 0|(move.y/mappingState.scale);
                             mappingState.mutateActive((mapping, index) => {
-                                const { top, left } = move.init[index];
-                                mapping.top = top + yOffset;
-                                mapping.left = left + xOffset;
+                                if (index in move.init) {
+                                    const { top, left } = move.init[index];
+                                    mapping.top = top + yOffset;
+                                    mapping.left = left + xOffset;
+                                } else {
+                                    console.error(`${index} not found in move.init`)
+                                }
                             });
                         }
 
