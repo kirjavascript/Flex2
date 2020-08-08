@@ -1,6 +1,5 @@
 {
     "version": "0.0.7",
-    "previewVersion": "Flex 2 & Knuckles",
     "scripts": {
         "start": "electron ./static --dev"
     },

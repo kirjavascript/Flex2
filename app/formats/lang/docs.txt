@@ -1,7 +1,7 @@
 
-
-mapping language
+// purple = error colour
 read/write
+
 XX YY
 HEADER:
  dc.b {XX}
@@ -23,6 +23,8 @@ top left right down TLRD
 (label "sonic1_mappings")
 (start-label mappings_start)
 (end-label mappings_end)
+
+// (offset #$0) in File menu default
 
 ; sonic 1 mapping
 (header dc.b)
