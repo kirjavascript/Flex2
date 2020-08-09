@@ -10,6 +10,7 @@ import {
     recursiveParser,
     whitespace as rawWhitespace,
     everythingUntil,
+optionalWhitespace,
     str,
     anyOfString,
     possibly,
@@ -21,6 +22,9 @@ import {
     takeRight,
     sepBy,
 } from 'arcsecond';
+
+const whitespaceSymbol = Symbol('whitespace');
+const whitespace = rawWhitespace.map(() => whitespaceSymbol);
 
 const parser = recursiveParser(() => many(choice ([
     whitespace,
@@ -36,27 +40,23 @@ const parser = recursiveParser(() => many(choice ([
     info,
     dplc,
     add,
-])));
+]))).map(items => items.filter(d => d !== whitespaceSymbol));
 
-const whitespaceSymbol = Symbol('whitespace');
-const whitespace = rawWhitespace.map(() => whitespaceSymbol);
+const param = (param) => composeParsers([param, whitespace]);
 
-const arg = (arg) => composeParsers([arg, whitespace]);
+// const
 
 const sexpr = (fn) => {
     const [head, ...tail] = fn();
+    const params = sequenceOf([head, ...tail.map(param)]);
     return (
-        sequenceOf([
-            char('('),
-            takeLeft(sequenceOf([head, ...tail.map(arg)]))(char(')')),
-        ]).map(([, ...args]) => args)
+        composeParsers([
+            takeLeft(params) (sequenceOf([optionalWhitespace, char(')')])),
+            sequenceOf([char('('), optionalWhitespace]),
+        ])
     );
 };
 
-// const sexpr = ([head, ...tail]) => sequenceOf([
-//     char('('),
-//     takeLeft(sequenceOf([head, ...tail.map(arg)]))(char(')')),
-// ]).map(([, ...args]) => args);
 
 const comment = sequenceOf([
     char(';'),
@@ -76,27 +76,13 @@ const number = choice([
     ]).map(([, hex]) => +`0x${hex}`),
 ]);
 
-const token = () => many1(anyOfString('TBLRPC')).map(() => ({ type: 'tokens', }));
+// spread
 
-const definition = recursiveParser(() => many(choice([
-    number,
-    token,
-])));
-
-const add = sexpr(() => [
-    str('add'),
-    // definition,
-]);
-
-const dplc = sexpr(() => [
-    str('dplc'),
-    // definition,
-]);
-
-
-
-const tokens = {
+const tokenList = {
     'T': 'top',
+    'L': 'left',
+    'R': 'right',
+    'B': 'bottom',
     'W': 'width',
     'H': 'height',
     'P': 'priority',
@@ -104,14 +90,42 @@ const tokens = {
     'Y': 'vflip',
     'X': 'hflip',
     'A': 'art',
-    '2': 'two',
-    'L': 'left',
     'N': 'size',
 };
 
+const token = many1(anyOfString(Object.keys(tokenList).join('')))
+    .map((tokens) => tokens.map(token => ({ type: 'token', token: tokenList[token] })));
 
-// const dplc
+const definition = recursiveParser(() => many(choice([
+    number,
+    token,
+    add,
+    reverse,
+])));
 
+// operation
+
+const add = sexpr(() => [
+    str('add'),
+    number,
+    definition,
+]).map(([, expr]) => ({ type: 'op', expr }));
+
+const reverse = sexpr(() => [
+    str('reverse'),
+    definition,
+]).map(([, expr]) => ({ type: 'op', expr }));
+
+const dplc = sexpr(() => [
+    str('dplc'),
+    sepBy(whitespace)(definition),
+]).map(([, expr]) => ({ type: 'dplc', expr }));
+
+
+
+
+
+// ASM & binary out first
 // be able to parse from bits to byte / word / long
 // then do operations
 // definition
@@ -129,8 +143,9 @@ const tokens = {
 // ]).map(([,x]) => ({string:x}));
 
 const input = `
-(info) ; this is a comment
-(dplc XYXY AAAA)
+( info ) ; this is a comment
+( dplc YXYA (reverse (add #$1 AAA)))
+( dplc AAAA AAAA (add #3 AAA) )
 `;
 
 // whitespace symbol
@@ -144,4 +159,11 @@ const input = `
 // TODO: arcsecond-binary
 
 // compare index to length
-console.log(parser.run(input))
+const out = parser.run(input);
+const diff = input.length - out.index;
+if (diff > 0) {
+    // todo: line column (highlight?)
+    console.log(diff);
+}
+console.log(out.result)
+console.log(out.result[2])
