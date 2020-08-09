@@ -4,9 +4,7 @@
 </div>
 <br>
 
-Flex 2 is a multi-purpose art and mapping editor for the Sega Megadrive. The original Flex was a web app, which gave it several limitations. A full rewrite for desktop opens up the ability to use real project files, as well as various other improvements.
-
-Much inspiration has come from the tools SonMapEd, SpritePlotter, and SonikSprite.
+Flex 2 is a multi-purpose sprite editor for the Sega Megadrive
 
 # [download](https://github.com/kirjavascript/Flex2/releases)
 

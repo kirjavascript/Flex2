@@ -21,7 +21,6 @@ checkbox
 buffer is deprecated on save
 ==
 CUSTOM FORMATS
-parser combinators
 specify mapping definition files or presets
 disable optimizations
 ==

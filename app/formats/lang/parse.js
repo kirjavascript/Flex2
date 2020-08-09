@@ -29,17 +29,8 @@ const whitespace = rawWhitespace.map(() => whitespaceSymbol);
 const parser = recursiveParser(() => many(choice ([
     whitespace,
     comment,
-    // sexpr,
-  // parseNumber,
-  // parseBool,
-  // parseNull,
-  // parseString,
-  // parseArray,
-  // parseObject,
-    // parseString,
     info,
     dplc,
-    add,
 ]))).map(items => items.filter(d => d !== whitespaceSymbol));
 
 const param = (param) => composeParsers([param, whitespace]);
@@ -76,8 +67,6 @@ const number = choice([
     ]).map(([, hex]) => +`0x${hex}`),
 ]);
 
-// spread
-
 const tokenList = {
     'T': 'top',
     'L': 'left',
@@ -103,7 +92,7 @@ const definition = recursiveParser(() => many(choice([
     reverse,
 ])));
 
-// operation
+
 
 const add = sexpr(() => [
     str('add'),
@@ -121,20 +110,20 @@ const dplc = sexpr(() => [
     sepBy(whitespace)(definition),
 ]).map(([, expr]) => ({ type: 'dplc', expr }));
 
+// definition list
+// operation
+// size
 
 
 
 
-// ASM & binary out first
+// ASM & binary out first (tedmediate format)
+//
+// read / write
+//
 // be able to parse from bits to byte / word / long
 // then do operations
 // definition
-// add sub reverse
-
-// const join = seperator => array => array.join(seperator);
-// const escapedQuote = sequenceOf ([ str ('\\'), anyOfString (`"'`) ]).map(x => x.join(''));
-
-
 
 // const parseString = sequenceOf([
 //     char('"'),
@@ -143,9 +132,12 @@ const dplc = sexpr(() => [
 // ]).map(([,x]) => ({string:x}));
 
 const input = `
-( info ) ; this is a comment
-( dplc YXYA (reverse (add #$1 AAA)))
-( dplc AAAA AAAA (add #3 AAA) )
+(offset-table dc.b)
+(mapping-header LLLL)
+(mapping TTTTTTTT 0000  WW HH P CC Y X AAAAAAAAAAA LLLLLLLL)
+;(info) ; this is a comment
+;( dplc YXYA (reverse (add #$1 AAA)))
+;( dplc AAAA AAAA (add #3 AAA) )
 `;
 
 // whitespace symbol

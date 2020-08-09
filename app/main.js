@@ -25,4 +25,4 @@ document.addEventListener('drop', (e) => {
 }, false);
 
 console.log('todo: remove');
-require('#formats/lang/parse');
+require('#formats/scripts/index.js');

@@ -28,22 +28,25 @@ top left right down TLRD
 // (offset #$0) in File menu default
 
 ; sonic 1 mapping
-(header dc.b)
+(offset-table dc.b)
 (mapping TTTTTTTT 0000  WW HH P CC Y X AAAAAAAAAAA LLLLLLLL)
 
-; TODO - two player data
+; sonic 2 mapping
 
 ; sonic 1 dplc
 (offset-table db.b)
+(dplc-header LLLL)
 (dplc NNNN AAAA AAAA AAAA)
 
 ; sonic 2/3&k dplc
 (offset-table dc.w)
-(dplc (length dc.w) (def NNNN AAAA AAAA AAAA))
+(dplc-header LLLLLLLL)
+(dplc NNNN AAAA AAAA AAAA)
 
 ; sonic 2/3&k non-player dplc
 (offset-table dc.w)
-(dplc (sub.w #$1 (length dc.w)) (def AAAA AAAA AAAA NNNN))
+(dplc-header (sub #1 LLLL))
+(dplc AAAA AAAA AAAA NNNN)
 
 (loop (length) (dplc XXXX))
 
