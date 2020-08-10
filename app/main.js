@@ -23,6 +23,3 @@ document.addEventListener('drop', (e) => {
     e.preventDefault();
     return false;
 }, false);
-
-console.log('todo: remove');
-require('#formats/scripts/index.js');
