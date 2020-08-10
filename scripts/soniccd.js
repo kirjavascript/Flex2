@@ -1,6 +1,7 @@
-// Flex2 mapping definition - sonic 2 object sprites
+// Flex2 mapping definition
 
 const {
+    label,
     info,
     offsetTable,
     mapping,
@@ -11,11 +12,12 @@ const {
     dc,
 } = Flex2;
 
+label('Sonic CD');
 info();
 offsetTable(dc.w);
 mappingHeader(
-    (_mappings) => read(dc.w),
-    (mappings) => write(dc.w, mappings.length),
+    (_mappings) => read(dc.b),
+    (mappings) => write(dc.b, mappings.length),
 );
 mappings(
     (mapping) => {
@@ -28,7 +30,6 @@ mappings(
         mapping.yflip = read(1);
         mapping.xflip = read(1);
         mapping.offset = read(1);
-        read(dc.w);
         mapping.left = read(dc.l);
     },
     (mapping) => {
@@ -44,12 +45,6 @@ mappings(
         write(1, mapping.yflip);
         write(1, mapping.xflip);
         write(11, mapping.offset);
-        // 2 player
-        write(1, mapping.priority);
-        write(2, mapping.palette);
-        write(1, mapping.yflip);
-        write(1, mapping.xflip);
-        write(11, Math.floor(mapping.offset / 2));
         // left
         write(dc.w, mapping.left);
     },

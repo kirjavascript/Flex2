@@ -11,8 +11,9 @@ const {
     dc,
 } = Flex2;
 
+label('Sonic 1');
 info();
-offsetTable(dc.b);
+offsetTable(dc.w);
 mappingHeader(
     (_mappings) => read(dc.b),
     (mappings) => write(dc.b, mappings.length),
