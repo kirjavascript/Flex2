@@ -12,8 +12,7 @@ const {
     dc,
 } = Flex2;
 
-label('Sonic 3&K');
-info();
+label('Sonic 3&K Objects');
 offsetTable(dc.w);
 mappingHeader(
     (_mappings) => read(dc.w),
@@ -30,7 +29,7 @@ mappings(
         mapping.yflip = read(1);
         mapping.xflip = read(1);
         mapping.offset = read(1);
-        mapping.left = read(dc.l);
+        mapping.left = read(dc.w);
     },
     (mapping) => {
         // top
@@ -51,15 +50,15 @@ mappings(
 );
 dplcHeader(
     (_dplcs) => read(dc.w),
-    (dplcs) => write(dc.w, dplcs.length),
+    (dplcs) => write(dc.w, dplcs.length - 1),
 );
 dplcs(
     (dplc) => {
-        dplc.size = read(nybble);
         dplc.offset = read(nybble * 3);
+        dplc.size = read(nybble);
     },
     (dplc) => {
-        write(nybble, dplc.size);
         write(nybblr * 3, dplc.offset);
+        write(nybble, dplc.size);
     },
 );

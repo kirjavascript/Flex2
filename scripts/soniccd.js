@@ -13,7 +13,6 @@ const {
 } = Flex2;
 
 label('Sonic CD');
-info();
 offsetTable(dc.w);
 mappingHeader(
     (_mappings) => read(dc.b),
@@ -30,7 +29,7 @@ mappings(
         mapping.yflip = read(1);
         mapping.xflip = read(1);
         mapping.offset = read(1);
-        mapping.left = read(dc.l);
+        mapping.left = read(dc.b);
     },
     (mapping) => {
         // top
@@ -46,7 +45,7 @@ mappings(
         write(1, mapping.xflip);
         write(11, mapping.offset);
         // left
-        write(dc.w, mapping.left);
+        write(dc.b, mapping.left);
     },
 );
 dplcHeader(

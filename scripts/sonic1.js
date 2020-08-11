@@ -1,4 +1,4 @@
-// Flex2 mapping definition - sonic 1 object sprites
+// Flex2 Mapping Definition
 
 const {
     info,
@@ -12,14 +12,10 @@ const {
 } = Flex2;
 
 label('Sonic 1');
-info();
-offsetTable(dc.w);
-mappingHeader(
-    (_mappings) => read(dc.b),
-    (mappings) => write(dc.b, mappings.length),
-);
+offsetTable(dc.w, 'mappings');
 mappings(
-    (mapping) => {
+    (mapping, i) => {
+        if (i === 0) read(dc.b);
         mapping.top = read(dc.b);
         read(nybble);
         mapping.width = read(2) + 1;
@@ -29,9 +25,10 @@ mappings(
         mapping.yflip = read(1);
         mapping.xflip = read(1);
         mapping.offset = read(11);
-        mapping.left = read(dc.w);
+        mapping.left = read(dc.b);
     },
-    (mapping) => {
+    (mapping, i) => {
+        if (i === 0) write(dc.b, mapping.parent.length);
         write(dc.b, mapping.top);
         write(nybble, 0);
         write(2, mapping.width - 1);
@@ -41,19 +38,18 @@ mappings(
         write(1, mapping.yflip);
         write(1, mapping.xflip);
         write(11, mapping.offset);
-        write(dc.w, mapping.left);
+        write(dc.b, mapping.left);
     },
 );
-dplcHeader(
-    (_dplcs) => read(dc.b),
-    (dplcs) => write(dc.b, dplcs.length),
-);
+offsetTable(dc.w, 'dplcs');
 dplcs(
-    (dplc) => {
+    (dplc, i) => {
+        if (i === 0) read(dc.b);
         dplc.size = read(nybble);
         dplc.offset = read(nybble * 3);
     },
-    (dplc) => {
+    (dplc, i) => {
+        if (i === 0) write(dc.b, dplc.parent.length);
         write(nybble, dplc.size);
         write(nybblr * 3, dplc.offset);
     },

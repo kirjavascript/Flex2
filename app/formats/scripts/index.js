@@ -1,47 +1,48 @@
+// script language
+
 // padding / fill
 // optimizations(false);
 // loadASM();
+// mappingHeader -> index 0
+// reverse endianness
+// end tokens
 
 // ASM & BIN read / write
 
+// new Function('Flex2', script)({ read, write });
+// odd numbers of bits -
+// offset table built on other primitives (or default params)
+// assert everything on sprite is correcr
+// when write is a value of bigger than max safe int, or read value could be bbigger
+// read a byte at a time always
+
+// asm read/write
+
+// ASM parser: just read data, ignore everything else
+// use arcsecond or remove it
+
+// UI
+
+// file menu
+// remove acdeditor
 // purple warning: arbitrary code - warning before yes
 // derive UI from script - make dplcs still optional
-// assert everything on sprite is correcr
-// can read offset table
+
+// other
+
 // need an external scrtipts folder copied to the root on bundle
-// new Function('Flex2', script)({ read, write });
-// when write is a value of bigger than max safe int
-//
-// read a byte at a time always
-//
-// cystom screen
-//
-// ; sonic 1 mapping
-// (offset-table dc.b)
-// (mapping TTTTTTTT 0000  WW HH P CC Y X AAAAAAAAAAA LLLLLLLL)
+// example: HUD graphics
 
-// ; sonic 2 mapping
+// formats to support
 
-// ; sonic 1 dplc
-// (offset-table db.b)
-// (dplc-header LLLL)
-// (dplc NNNN AAAA AAAA AAAA)
-
-// ; sonic 2/3&k dplc
-// (offset-table dc.w)
-// (dplc-header LLLLLLLL)
-// (dplc NNNN AAAA AAAA AAAA)
-
-// ; sonic 2/3&k non-player dplc
-// (offset-table dc.w)
-// (dplc-header (sub #1 LLLL))
-// (dplc AAAA AAAA AAAA NNNN)
-//
-// TODO
 // kid chameleon
 // crackers
 // chaotix
-// github issues
-//
-// example: HUD graphics
+// plane mappings / snap to
 // s2 special stages
+// github issues
+
+//unsigned int a = 0xABCDEF23;
+// a = ((a&(0x0000FFFF)) << 16) | ((a&(0xFFFF0000)) >> 16);
+// a = ((a&(0x00FF00FF)) << 8) | ((a&(0xFF00FF00)) >>8);
+// printf("%0x\n",a);
