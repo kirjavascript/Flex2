@@ -27,7 +27,7 @@
         "d3-selection": "^1.1.0",
         "electron-unhandled": "^3.0.2",
         "flexlayout-react": "^0.4.5",
-        "lodash": "^4.17.15",
+        "lodash": "^4.17.19",
         "marked": "^0.3.6",
         "mobx": "^5.15.5",
         "mobx-react": "^6.2.5",
