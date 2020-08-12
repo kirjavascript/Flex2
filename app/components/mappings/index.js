@@ -43,7 +43,7 @@ export class Mappings extends Component {
         }
     };
 
-    componentWillMount() {
+    componentDidMount() {
         this.props.node.setEventListener('resize', (e) => {
             requestAnimationFrame(() => {
                 const baseWidth = e.rect.width - 10;
@@ -66,7 +66,7 @@ export class Mappings extends Component {
                         height: 600,
                     }}
                 >
-                    {mappings.reverse().map((mapping, mappingIndex) => {
+                    {mappings.slice(0).reverse().map((mapping, mappingIndex) => {
                         const realIndex = mappings.length - 1 - mappingIndex;
                         return (
                             <div

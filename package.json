@@ -1,5 +1,6 @@
 {
     "version": "0.0.7",
+    "previewVersion": "1.0.0 & Knuckles",
     "scripts": {
         "start": "electron ./static --dev"
     },
@@ -18,7 +19,6 @@
         "webpack-cli": "^3.3.11"
     },
     "dependencies": {
-        "arcsecond": "^2.0.4",
         "brace": "^0.10.0",
         "classnames": "^2.2.5",
         "color-diff": "^1.1.0",
@@ -26,19 +26,19 @@
         "d3-drag": "^1.2.5",
         "d3-selection": "^1.1.0",
         "electron-unhandled": "^3.0.2",
-        "flexlayout-react": "^0.2.5",
+        "flexlayout-react": "^0.4.5",
         "lodash": "^4.17.15",
         "marked": "^0.3.6",
-        "mobx": "^3.2.2",
-        "mobx-react": "^4.2.2",
+        "mobx": "^5.15.5",
+        "mobx-react": "^6.2.5",
         "mousetrap": "^1.6.1",
-        "rc-color-picker": "^1.1.7",
-        "react": "^15.6.1",
-        "react-collapse": "^4.0.3",
-        "react-dom": "^15.6.1",
+        "rc-color-picker": "^1.2.6",
+        "react": "^16.13.1",
+        "react-color": "^2.18.1",
+        "react-dom": "^16.13.1",
         "react-masonry-component": "^6.2.1",
-        "react-motion": "^0.5.2",
-        "react-sortable-hoc": "^0.6.7",
-        "victory": "^0.22.2"
+        "react-sortable-hoc": "^1.11.0",
+        "react-spring": "^8.0.27",
+        "victory": "^35.0.8"
     }
 }

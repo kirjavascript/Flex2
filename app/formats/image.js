@@ -37,7 +37,7 @@ export function exportPNG(debug = false) {
     const mappingCanvas = document.createElement('canvas');
     const mappingCtx = mappingCanvas.getContext('2d');
 
-    mappings.reverse().forEach((mapping) => {
+    mappings.slice(0).reverse().forEach((mapping) => {
         const palette = palettesRGB[mapping.palette];
 
         mappingCanvas.width = mapping.width * 8;

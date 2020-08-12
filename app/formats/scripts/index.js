@@ -1,4 +1,8 @@
-// next: file menu + custom loader
+// delete arcsecond, brace. upgrade react, react deps, mobx
+// remove colorpicker
+// flexlayout rounded corners
+
+// next: file menu + custom loader -> remove brace
 //
 // script language
 
@@ -27,6 +31,9 @@
 // UI
 
 // file menu
+//      ability to specify offset & etc
+//      allow editing filename
+//      format:
 // remove acdeditor
 // purple warning: arbitrary code - warning before yes
 // derive UI from script - make dplcs still optional

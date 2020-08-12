@@ -29,7 +29,7 @@ export class Sprite extends Component {
                     </div>
                 )}
                 <div>
-                    {mappings.reverse().map((mapping, mappingIndex) => {
+                    {mappings.slice(0).reverse().map((mapping, mappingIndex) => {
                         return <div
                             key={mappingIndex}
                             style={{zIndex: mappingIndex}}

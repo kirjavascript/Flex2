@@ -2,6 +2,7 @@
 // the messages are hidden in prod, and we dont do network stuff anyway
 window.ELECTRON_DISABLE_SECURITY_WARNINGS = true;
 
+import 'mobx-react-lite/batchingForReactDom'
 import React from 'react';
 import { render } from 'react-dom';
 import { Layout } from '#components/layout';

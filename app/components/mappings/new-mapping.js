@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Motion, spring } from 'react-motion';
 import chunk from 'lodash/chunk';
 import { select, event, mouse } from 'd3-selection';
 import { drag } from 'd3-drag';
@@ -7,6 +6,7 @@ import { mappingState } from './state';
 import { environment } from '#store/environment';
 import { observer } from 'mobx-react';
 import { Mapping } from './mapping';
+import { Spring } from 'react-spring/renderprops';
 
 const baseConfig = {
     hflip: false,
@@ -103,14 +103,14 @@ export class NewMapping extends Component {
                         />
                    </div>
                 )}
-                <Motion
-                    defaultStyle={{
+                <Spring
+                    from={{
                         left: this.getLeft(),
                         opacity: this.getOpacity(),
                     }}
-                    style={{
-                        left: spring(this.getLeft()),
-                        opacity: spring(this.getOpacity()),
+                    to={{
+                        left: this.getLeft(),
+                        opacity: this.getOpacity(),
                     }}
                 >
                     {({left, opacity}) => (
@@ -137,7 +137,7 @@ export class NewMapping extends Component {
                             )}
                         </div>
                     )}
-                </Motion>
+                </Spring>
             </div>
         );
     }

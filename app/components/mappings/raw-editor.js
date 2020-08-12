@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Motion, spring } from 'react-motion';
+import { Spring } from 'react-spring/renderprops';
 import { SortableContainer, SortableElement, SortableHandle, arrayMove } from 'react-sortable-hoc';
 import { mappingState } from './state';
 import { environment } from '#store/environment';
@@ -238,14 +238,14 @@ export class RawEditor extends Component {
         const { scale, rawEditor: { active } } = mappingState;
 
         return (
-            <Motion
-                defaultStyle={{
+            <Spring
+                from={{
                     top: this.getTop(),
                     opacity: this.getOpacity(),
                 }}
-                style={{
-                    top: spring(this.getTop()),
-                    opacity: spring(this.getOpacity()),
+                to={{
+                    top: this.getTop(),
+                    opacity: this.getOpacity(),
                 }}
             >
                 {(style) => (
@@ -293,7 +293,7 @@ export class RawEditor extends Component {
                         )}
                     </div>
                 )}
-            </Motion>
+            </Spring>
         );
     }
 

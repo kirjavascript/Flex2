@@ -4,23 +4,22 @@ export class DimensionsComponent extends Component {
 
     state = {};
     mounted = false;
+    onScroll = (e) => {
+        this.mounted &&
+            this.setState({scroll: e.target.scrollTop});
+        e.target.blur();
+    };
 
-    componentWillMount() {
+    componentDidMount() {
         this.mounted = true;
         this.props.node.setEventListener('resize', (e) => {
             const { width, height } = e.rect;
 
             requestAnimationFrame(() => {
                 this.mounted &&
-                this.setState({width, height});
+                    this.setState({width, height});
             });
         });
-
-        this.onScroll = (e) => {
-            this.mounted &&
-            this.setState({scroll: e.target.scrollTop});
-            e.target.blur();
-        };
     }
 
     componentWillUnmount() {
@@ -35,7 +34,7 @@ export class DimensionsComponent extends Component {
                 const { width, height } = node.getBoundingClientRect();
                 const scroll = node.scrollTop;
                 this.mounted &&
-                this.setState({width, height, scroll});
+                    this.setState({width, height, scroll});
             });
             this.node = node;
         }

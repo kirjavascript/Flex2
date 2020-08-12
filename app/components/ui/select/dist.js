@@ -57,8 +57,8 @@ let Dropdown = function (_Component) {
     }
 
     _createClass(Dropdown, [{
-        key: 'componentWillReceiveProps',
-        value: function componentWillReceiveProps(newProps) {
+        key: 'UNSAFE_componentWillReceiveProps',
+        value: function (newProps) {
             if (newProps.value && newProps.value !== this.state.selected) {
                 this.setState({ selected: newProps.value });
             } else if (!newProps.value) {

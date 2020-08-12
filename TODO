@@ -14,9 +14,10 @@ flex2_test/logo.png import is broken (alpha - works with exported flex file)
 tile deletes when drawing (unmap pieces / shortcuts in drawing mode)
 many writes while drawing
 project files easier to use / create
+sprites are offset if something else lods fullscreen
 FEATURES
 ctrl+wheel for horiz scroll
-fullscreen icons - https://systemuicons.com/
+fullscreen icons - https://systemuicons.com/ arrows
 TASKS
 checkbox
 buffer is deprecated on save

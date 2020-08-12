@@ -50,7 +50,8 @@ module.exports = (env = {}, args = {}) => {
         },
         plugins: [
             new webpack.DefinePlugin({
-                __DEV__: env.dev
+                __DEV__: env.dev,
+                __REACT_DEVTOOLS_GLOBAL_HOOK__: '({ isDisabled: true })',
             }),
         ],
         resolve: {

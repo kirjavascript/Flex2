@@ -29,31 +29,31 @@ export class Axes extends Component {
         const domainX = baseWidth / scale;
 
         return <g>
-            <VictoryAxis
-                width={baseWidth}
-                height={600}
-                domain={[- (x/scale), domainX - (x/scale)]}
-                offsetY={600}
-                padding={{left: 0, right: 0}}
-                orientation="top"
-                style={style}
-                standalone={true}
-                tickCount={Math.max(1, (baseWidth/100)|0)}
-                tickFormat={tickFormat}
-            />
-            <VictoryAxis
-                width={600}
-                height={600}
-                domain={[domainY - (y/scale), - (y/scale)]}
-                offsetX={600}
-                padding={{left: 0, right: 0}}
-                orientation="right"
-                style={style}
-                standalone={true}
-                tickCount={10}
-                tickFormat={tickFormat}
-            />
-        </g>;
+                <VictoryAxis
+                    width={baseWidth}
+                    height={600}
+                    domain={[- (x/scale), domainX - (x/scale)]}
+                    offsetY={600}
+                    padding={{left: 0, right: 0}}
+                    orientation="top"
+                    style={style}
+                    standalone={false}
+                    tickCount={Math.max(1, (baseWidth/100)|0)}
+                    tickFormat={tickFormat}
+                />
+                <VictoryAxis
+                    width={600}
+                    height={600}
+                    domain={[domainY - (y/scale), - (y/scale)]}
+                    offsetX={600}
+                    padding={{left: 0, right: 0}}
+                    orientation="right"
+                    style={style}
+                    standalone={false}
+                    tickCount={10}
+                    tickFormat={tickFormat}
+                />
+        </g>
     }
 
 }

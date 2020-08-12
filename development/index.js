@@ -1,6 +1,8 @@
 const { writeFile } = require('fs');
 
-module.exports = ( mainWindow) => {
+module.exports = (mainWindow) => {
+    mainWindow.openDevTools();
+
     // webpack reload
 
     const webpack = require('webpack');

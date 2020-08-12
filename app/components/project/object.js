@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { extname } from 'path';
 import { observer } from 'mobx-react';
-import {Collapse} from 'react-collapse';
 import { Item, Input, File, Select, Editor } from '#ui';
 import { mappingFormats, dplcFormats } from '#formats/definitions';
 import { compressionFormats } from '#formats/compression';
@@ -82,7 +81,7 @@ export class ObjectConfig extends Component {
                         </Item>
                     </div>
                 </div>
-                <Collapse isOpened={open}>
+                {open && <div>
                     <div style={{paddingBottom: 5}}>
                         <div className="config">
                             <Item color="blue">
@@ -276,7 +275,7 @@ export class ObjectConfig extends Component {
                             </Item>
                         </div>
                     </div>
-                </Collapse>
+                </div>}
             </div>;
     }
 

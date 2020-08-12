@@ -50,47 +50,51 @@ const SortableItemFast = SortableElement(({ bbox: { x, y } }) => (
 ));
 
 const SortableList = SortableContainer(
-    observer(({ items, width, height, scroll }) => {
-        const realWidth = width - parseInt(scrollbarWidth) - 2;
-        const realItemsPerRow = Math.floor(realWidth / realBaseSize);
-        const itemsPerRow = Math.max(1, realItemsPerRow);
-        const rowCount = Math.ceil(items.length / itemsPerRow);
-        const remainder = !realItemsPerRow ? 0 : (realWidth % realBaseSize) / 2;
+    observer(class extends Component {
+        render() {
+            const { items, width, height, scroll } = this.props;
 
-        const baseIndex = (0 | (scroll / realBaseSize)) * itemsPerRow;
-        const itemQty = itemsPerRow * (height / realBaseSize) + itemsPerRow * 2;
+            const realWidth = width - parseInt(scrollbarWidth) - 2;
+            const realItemsPerRow = Math.floor(realWidth / realBaseSize);
+            const itemsPerRow = Math.max(1, realItemsPerRow);
+            const rowCount = Math.ceil(items.length / itemsPerRow);
+            const remainder = !realItemsPerRow ? 0 : (realWidth % realBaseSize) / 2;
 
-        return (
-            <div
-                className="sprites"
-                style={{ height: rowCount * realBaseSize || 0 }}
-            >
-                {items.map((value, index) => {
-                    // calculate positions
-                    const x = remainder + (index % itemsPerRow) * realBaseSize;
-                    const y = (0 | (index / itemsPerRow)) * realBaseSize;
+            const baseIndex = (0 | (scroll / realBaseSize)) * itemsPerRow;
+            const itemQty = itemsPerRow * (height / realBaseSize) + itemsPerRow * 2;
 
-                    if (index >= baseIndex && index < baseIndex + itemQty) {
-                        return (
-                            <SortableItem
-                                key={`sprite-${index}`}
-                                index={index}
-                                value={value}
-                                bbox={{ x, y }}
-                            />
-                        );
-                    } else {
-                        return (
-                            <SortableItemFast
-                                key={`sprite-${index}`}
-                                index={index}
-                                bbox={{ x, y }}
-                            />
-                        );
-                    }
-                })}
-            </div>
-        );
+            return (
+                <div
+                    className="sprites"
+                    style={{ height: rowCount * realBaseSize || 0 }}
+                >
+                    {items.map((value, index) => {
+                        // calculate positions
+                        const x = remainder + (index % itemsPerRow) * realBaseSize;
+                        const y = (0 | (index / itemsPerRow)) * realBaseSize;
+
+                        if (index >= baseIndex && index < baseIndex + itemQty) {
+                            return (
+                                <SortableItem
+                                    key={`sprite-${index}`}
+                                    index={index}
+                                    value={value}
+                                    bbox={{ x, y }}
+                                />
+                            );
+                        } else {
+                            return (
+                                <SortableItemFast
+                                    key={`sprite-${index}`}
+                                    index={index}
+                                    bbox={{ x, y }}
+                                />
+                            );
+                        }
+                    })}
+                </div>
+            );
+        }
     }),
     { withRef: true },
 );
