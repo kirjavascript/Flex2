@@ -155,7 +155,7 @@ class MappingState {
     };
 
     @computed get center() {
-        if (!this.activeMappings.length) return void 0;
+        if (!this.activeMappings.length) return;
 
         return getCenter(this.activeMappings);
     }

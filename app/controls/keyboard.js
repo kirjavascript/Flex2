@@ -7,10 +7,10 @@ import flatten from 'lodash/flatten';
 flatten(commands)
     .forEach((obj) => {
         if (obj.hasShift) {
-            Mousetrap.bind([obj.map, `shift+${obj.map}`], () => doCommand(obj));
+            Mousetrap.bind([obj.map, `shift+${obj.map}`], doCommand.bind(null, obj));
         }
         else {
-            Mousetrap.bind(obj.map, () => doCommand(obj));
+            Mousetrap.bind(obj.map, doCommand.bind(null, obj));
         }
     });
 
@@ -22,14 +22,14 @@ Mousetrap.bind(['0','1','2','3','4','5','6','7','8','9'], (e) => {
 Mousetrap.bind('esc', () => {
     multiplier = '';
 });
-function doCommand(obj) {
+function doCommand(obj, e) {
     environment.doAction(() => {
         if (!obj.noMultiplier && multiplier) {
             for (let i = 0; i < +multiplier; i++) obj.func();
             multiplier = '';
         }
         else {
-            obj.func();
+            obj.func(e);
         }
     });
 }

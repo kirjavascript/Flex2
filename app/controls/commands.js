@@ -189,7 +189,7 @@ export const commands = [
         {
             map: 'up', name: 'Move Up', hasShift: true, color: 'white',
             func: (e) => {
-                e && e.preventDefault();
+                mappingState.hasActive && e.preventDefault();
                 mappingState.mutateActive((mapping) => {
                     mapping.top -= getDistance();
                 });
@@ -198,7 +198,7 @@ export const commands = [
         {
             map: 'down', name: 'Move Down', hasShift: true, color: 'white',
             func: (e) => {
-                e && e.preventDefault();
+                mappingState.hasActive && e.preventDefault();
                 mappingState.mutateActive((mapping) => {
                     mapping.top += getDistance();
                 });
@@ -209,21 +209,15 @@ export const commands = [
     [
         {
             map: 'e', name: 'Export PNG', color: 'blue', noMultiplier: true,
-            func: () => {
-                exportPNG();
-            },
+            func: exportPNG,
         },
         {
             map: 'i', name: 'Import Over Sprite', color: 'blue', noMultiplier: true,
-            func: () => {
-                importImg();
-            },
+            func: importImg,
         },
         {
             map: 's', name: 'Import Spritesheet', color: 'blue', noMultiplier: true,
-            func: () => {
-                importState.newImport();
-            },
+            func: importState.newImport,
         },
     ],
 

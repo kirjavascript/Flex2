@@ -1,8 +1,11 @@
+// next: file menu + custom loader
+//
 // script language
 
 // padding / fill
 // optimizations(false);
 // loadASM();
+// customOffset()
 // mappingHeader -> index 0
 // reverse endianness
 // end tokens
