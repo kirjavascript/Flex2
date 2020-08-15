@@ -1,6 +1,5 @@
 // delete arcsecond, brace. upgrade react, react deps, mobx
 // remove colorpicker
-// flexlayout rounded corners
 
 // next: file menu + custom loader -> remove brace
 //
@@ -51,6 +50,7 @@
 // plane mappings / snap to
 // s2 special stages
 // github issues
+// sonic3player - unsplit - copy the file and change the format
 
 //unsigned int a = 0xABCDEF23;
 // a = ((a&(0x0000FFFF)) << 16) | ((a&(0xFFFF0000)) >> 16);

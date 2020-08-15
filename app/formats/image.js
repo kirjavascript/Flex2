@@ -4,7 +4,9 @@ import { writeFile } from 'fs';
 import { errorMsg } from '#util/dialog';
 import { colorMatch } from '#components/import/color-match';
 
-export function exportPNG(debug = false) {
+const debug = false;
+
+export function exportPNG() {
     const { currentSprite: { buffer, mappings }, palettesRGB, sprites } = environment;
 
     if (!mappings.length || !sprites.length) return;

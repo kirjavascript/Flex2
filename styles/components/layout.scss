@@ -64,6 +64,10 @@
 .flexlayout__tabset-selected {
     background: darken($black, 12%);
 }
+.flexlayout__tab_button {
+    border-top-right-radius: 2px;
+    border-top-left-radius: 2px;
+}
 .flexlayout__tab,
 .flexlayout__tabset {
     background: none;

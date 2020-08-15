@@ -32,7 +32,7 @@
         "mobx": "^5.15.5",
         "mobx-react": "^6.2.5",
         "mousetrap": "^1.6.1",
-        "rc-color-picker": "^1.2.6",
+        "rc-trigger": "3",
         "react": "^16.13.1",
         "react-color": "^2.18.1",
         "react-dom": "^16.13.1",

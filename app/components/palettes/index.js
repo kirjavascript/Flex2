@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { createPortal } from 'react-dom';
 import { environment } from '#store/environment';
 import { observer } from 'mobx-react';
 import {
@@ -8,46 +7,50 @@ import {
     SortableHandle,
 } from 'react-sortable-hoc';
 import { hexToMDHex } from '#formats/palette';
-import ColorPicker from 'rc-color-picker';
-import { SketchPicker } from 'react-color';
+import Picker from './picker';
+import Trigger from 'rc-trigger';
 
 const Handle = SortableHandle(({ lineIndex }) => (
     <div className="index">{lineIndex}</div>
 ));
 
-const container = document.body.appendChild(document.createElement('div'));
-container.className = 'palette-color-picker';
+// anim, colour, placement
 
 const SortableItem = SortableElement(
-    observer(({ line, lineIndex, onClick }) => {
+    observer(({ line, lineIndex }) => {
         return (
             <div className="line">
                 <Handle lineIndex={lineIndex} />
                 {line.map((color, colorIndex) => {
                     return (
-                        <div
+                        <Trigger
                             key={colorIndex}
-                            className="color"
-                            style={{
-                                backgroundColor: color,
-                                textAlign: 'center',
+                            action={['click']}
+                            prefixCls="color-picker"
+                            popup={(
+                                <Picker
+                                    color={color}
+                                    onChange={({ hex }) => {
+                                        environment.palettes[lineIndex][
+                                            colorIndex
+                                        ] = hexToMDHex(hex);
+                                    }}
+                                />
+                            )}
+                            popupAlign={{
+                                points: ['tl', 'bl'],
+                                offset: [0, 3]
                             }}
-                            onClick={(e) => onClick(lineIndex, colorIndex, e)}
+                            destroyPopupOnHide
                         >
-                            <ColorPicker
-                                animation="slide-up"
-                                color={color}
-                                enableAlpha={false}
-                                mode="RGB"
-                                onChange={({ color }) => {
-                                    environment.palettes[lineIndex][
-                                        colorIndex
-                                    ] = hexToMDHex(color);
+                            <div
+                                className="color"
+                                style={{
+                                    backgroundColor: color,
+                                    textAlign: 'center',
                                 }}
-                            >
-                                <div className="picker" />
-                            </ColorPicker>
-                        </div>
+                            />
+                        </Trigger>
                     );
                 })}
             </div>
@@ -68,7 +71,6 @@ const SortableList = SortableContainer(
                                 index={index}
                                 line={line}
                                 lineIndex={index}
-                                onClick={this.props.onClick}
                             />
                         ))}
                     </div>
@@ -81,7 +83,7 @@ const SortableList = SortableContainer(
 
 @observer
 export class Palettes extends Component {
-    state = { vert: false, picker: false };
+    state = { vert: false };
     mounted = false;
 
     onRef = (node) => {
@@ -112,24 +114,8 @@ export class Palettes extends Component {
         environment.swapPalette(oldIndex, newIndex);
     };
 
-    onClickColor = (lineIndex, colorIndex, e) => {
-        const rect = e.target.getBoundingClientRect();
-        const { picker } = this.state;
-        if (
-            picker &&
-            lineIndex === picker.lineIndex &&
-            colorIndex === picker.colorIndex
-        ) {
-            this.closePicker();
-        } else {
-            this.setState({ picker: { lineIndex, colorIndex, rect } });
-        }
-    };
-
-    closePicker = () => this.setState({ picker: false });
-
     render() {
-        const { vert, picker } = this.state;
+        const { vert } = this.state;
         const { palettes } = environment;
         return (
             <div ref={this.onRef} className="paletteWrap">
@@ -142,22 +128,8 @@ export class Palettes extends Component {
                     useDragHandle={true}
                     vert={vert}
                     onSortEnd={this.onSortEnd}
-                    onClick={this.onClickColor}
                 />
-                {createPortal(
-                    picker && (
-                        <div
-                            style={{
-                                left: picker.rect.x + 'px',
-                                top: picker.rect.y + picker.rect.height + 'px',
-                                position: 'absolute',
-                            }}
-                        >
-                            <SketchPicker />
-                        </div>
-                    ),
-                    container,
-                )}
+
             </div>
         );
     }

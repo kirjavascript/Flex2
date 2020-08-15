@@ -1,5 +1,4 @@
 import { environment } from '#store/environment';
-import { mappingState } from './index';
 import { optimizeDPLCs } from './optimize-dplcs';
 import range from 'lodash/range';
 
