@@ -19,6 +19,7 @@
         "webpack-cli": "^3.3.11"
     },
     "dependencies": {
+        "array-move": "^3.0.1",
         "brace": "^0.10.0",
         "classnames": "^2.2.5",
         "color-diff": "^1.1.0",

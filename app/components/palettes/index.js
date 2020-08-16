@@ -42,7 +42,6 @@ const Color = ({ color, onChange, rect }) => {
                 points,
                 offset,
                 targetOffset: [0, 0],
-                // overflow: { adjustX: true, adjustY: true },
             }}
             destroyPopupOnHide
         >
@@ -57,8 +56,6 @@ const Color = ({ color, onChange, rect }) => {
         </Trigger>
     );
 };
-
-// placement
 
 const SortableItem = SortableElement(
     observer(({ line, lineIndex, rect }) => {

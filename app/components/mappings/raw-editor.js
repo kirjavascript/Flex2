@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Spring } from 'react-spring/renderprops';
-import { SortableContainer, SortableElement, SortableHandle, arrayMove } from 'react-sortable-hoc';
+import { SortableContainer, SortableElement, SortableHandle } from 'react-sortable-hoc';
+import arrayMove from 'array-move';
 import { mappingState } from './state';
 import { environment } from '#store/environment';
 import { observer } from 'mobx-react';
@@ -110,20 +111,26 @@ const SortableMappingItem = SortableElement(observer(({mapping, mappingIndex}) =
     </div>
 )));
 
-const SortableMappingList = SortableContainer(observer(({items}) => {
-    return (
-        <div>
-            {items.map((mapping, index) => (
-                <SortableMappingItem
-                    key={`item-${index}`}
-                    index={index}
-                    mapping={mapping}
-                    mappingIndex={index}
-                />
-            ))}
-        </div>
-    );
-}), {withRef: true});
+const SortableMappingList = SortableContainer(
+    observer(class extends Component {
+        render() {
+            const { items } = this.props;
+            return (
+                <div>
+                    {items.map((mapping, index) => (
+                        <SortableMappingItem
+                            key={`item-${index}`}
+                            index={index}
+                            mapping={mapping}
+                            mappingIndex={index}
+                        />
+                    ))}
+                </div>
+            );
+        }
+    }),
+    {withRef: true}
+);
 
 // dplcs
 
@@ -172,20 +179,26 @@ const SortableDPLCItem = SortableElement(observer(({dplc, dplcIndex}) => (
     </div>
 )));
 
-const SortableDPLCList = SortableContainer(observer(({items}) => {
-    return (
-        <div>
-            {items.map((dplc, index) => (
-                <SortableDPLCItem
-                    key={`item-${index}`}
-                    index={index}
-                    dplc={dplc}
-                    dplcIndex={index}
-                />
-            ))}
-        </div>
-    );
-}), {withRef: true});
+const SortableDPLCList = SortableContainer(
+    observer(class extends Component {
+        render() {
+            const { items } = this.props;
+            return (
+                <div>
+                    {items.map((dplc, index) => (
+                        <SortableDPLCItem
+                            key={`item-${index}`}
+                            index={index}
+                            dplc={dplc}
+                            dplcIndex={index}
+                        />
+                    ))}
+                </div>
+            );
+        }
+    }),
+    {withRef: true}
+);
 
 @observer
 export class RawEditor extends Component {

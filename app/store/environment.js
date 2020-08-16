@@ -12,7 +12,7 @@ import { bufferToMappings, mappingsToBuffer } from '#formats/mapping';
 import { bufferToDPLCs, DPLCsToBuffer } from '#formats/dplc';
 import { buffersToColors, colorsToBuffers, defaultPalettes } from '#formats/palette';
 import { asmToBin, stuffToAsm } from '#formats/asm';
-import { arrayMove } from 'react-sortable-hoc';
+import arrayMove from 'array-move';
 
 class Environment {
 

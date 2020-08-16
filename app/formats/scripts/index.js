@@ -1,6 +1,3 @@
-// delete arcsecond, brace. upgrade react, react deps, mobx
-// remove colorpicker
-
 // next: file menu + custom loader -> remove brace
 //
 // script language
