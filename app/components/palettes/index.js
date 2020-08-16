@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useRef, useEffect, useState } from 'react';
 import { environment } from '#store/environment';
 import { observer } from 'mobx-react';
 import {
@@ -14,43 +14,69 @@ const Handle = SortableHandle(({ lineIndex }) => (
     <div className="index">{lineIndex}</div>
 ));
 
-// anim, colour, placement
+const Color = ({ color, onChange, rect }) => {
+    const [points, setPoints] = useState(['br', 'tr']);
+    const [offset, setOffset] = useState([2, 2])
+    const node = useRef();
+    useEffect(() => {
+        if (node.current) {
+            const { x, y, height } = node.current.getBoundingClientRect();
+            const overflowX = x + 250 > window.innerWidth;
+            const overflowY = (y + height) + 250 > window.innerHeight;
+            const xType = 'lr'[+overflowX];
+            setPoints(['tb'[+overflowY]+xType, 'bt'[+overflowY]+xType])
+            setOffset([overflowX ? -2 : 2, overflowY ? -3 : 3])
+        }
+    }, [node.current, rect]);
+    return (
+        <Trigger
+            action={['click']}
+            prefixCls="color-picker"
+            popup={(
+                <Picker
+                    color={color}
+                    onChange={onChange}
+                />
+            )}
+            popupAlign={{
+                points,
+                offset,
+                targetOffset: [0, 0],
+                // overflow: { adjustX: true, adjustY: true },
+            }}
+            destroyPopupOnHide
+        >
+            <div
+                ref={node}
+                className="color"
+                style={{
+                    backgroundColor: color,
+                    textAlign: 'center',
+                }}
+            />
+        </Trigger>
+    );
+};
+
+// placement
 
 const SortableItem = SortableElement(
-    observer(({ line, lineIndex }) => {
+    observer(({ line, lineIndex, rect }) => {
         return (
             <div className="line">
                 <Handle lineIndex={lineIndex} />
                 {line.map((color, colorIndex) => {
                     return (
-                        <Trigger
+                        <Color
                             key={colorIndex}
-                            action={['click']}
-                            prefixCls="color-picker"
-                            popup={(
-                                <Picker
-                                    color={color}
-                                    onChange={({ hex }) => {
-                                        environment.palettes[lineIndex][
-                                            colorIndex
-                                        ] = hexToMDHex(hex);
-                                    }}
-                                />
-                            )}
-                            popupAlign={{
-                                points: ['tl', 'bl'],
-                                offset: [0, 3]
+                            color={color}
+                            rect={rect}
+                            onChange={({ hex }) => {
+                                environment.palettes[lineIndex][
+                                    colorIndex
+                                ] = hexToMDHex(hex);
                             }}
-                            destroyPopupOnHide
-                        >
-                            <div
-                                className="color"
-                                style={{
-                                    backgroundColor: color,
-                                    textAlign: 'center',
-                                }}
-                            />
-                        </Trigger>
+                        />
                     );
                 })}
             </div>
@@ -62,15 +88,16 @@ const SortableList = SortableContainer(
     observer(
         class extends Component {
             render() {
-                const { items, vert } = this.props;
+                const { items, rect } = this.props;
                 return (
-                    <div className={`palettes ${vert ? 'vert' : ''}`}>
+                    <div className={`palettes ${rect.vert ? 'vert' : ''}`}>
                         {items.map((line, index) => (
                             <SortableItem
                                 key={`item-${index}`}
                                 index={index}
                                 line={line}
                                 lineIndex={index}
+                                rect={rect}
                             />
                         ))}
                     </div>
@@ -83,14 +110,15 @@ const SortableList = SortableContainer(
 
 @observer
 export class Palettes extends Component {
-    state = { vert: false };
+    state = { width: 0, height: 0, x: 0, y: 0, };
     mounted = false;
 
     onRef = (node) => {
         if (node) {
             requestAnimationFrame(() => {
-                const { width, height } = node.getBoundingClientRect();
-                this.mounted && this.setState({ vert: width < height });
+                const { width, height, x, y } = node.getBoundingClientRect();
+                const vert = width < height;
+                this.mounted && this.setState({ vert, width, height, x, y });
             });
         }
     };
@@ -98,10 +126,9 @@ export class Palettes extends Component {
     componentDidMount() {
         this.mounted = true;
         this.props.node.setEventListener('resize', (e) => {
-            const { width, height } = e.rect;
-
+            const vert = e.rect.width < e.rect.height;
             requestAnimationFrame(() => {
-                this.mounted && this.setState({ vert: width < height });
+                this.mounted && this.setState({ vert, ...e.rect });
             });
         });
     }
@@ -126,7 +153,7 @@ export class Palettes extends Component {
                     items={palettes}
                     lockToContainerEdges={true}
                     useDragHandle={true}
-                    vert={vert}
+                    rect={this.state}
                     onSortEnd={this.onSortEnd}
                 />
 

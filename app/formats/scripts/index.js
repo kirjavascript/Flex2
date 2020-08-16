@@ -33,6 +33,7 @@
 //      ability to specify offset & etc
 //      allow editing filename
 //      format:
+//      add to project
 // remove acdeditor
 // purple warning: arbitrary code - warning before yes
 // derive UI from script - make dplcs still optional

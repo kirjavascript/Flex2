@@ -204,23 +204,10 @@ export const Sketch = ({
             },
             hue: {
                 position: 'relative',
-                height: '10px',
+                height: '24px',
                 overflow: 'hidden',
             },
             Hue: {
-                radius: '2px',
-                shadow:
-                    'inset 0 0 0 1px rgba(0,0,0,.15), inset 0 0 4px rgba(0,0,0,.25)',
-            },
-
-            alpha: {
-                position: 'relative',
-                height: '10px',
-                marginTop: '4px',
-                overflow: 'hidden',
-                display: 'none',
-            },
-            Alpha: {
                 radius: '2px',
                 shadow:
                     'inset 0 0 0 1px rgba(0,0,0,.15), inset 0 0 4px rgba(0,0,0,.25)',
@@ -241,7 +228,22 @@ export const Sketch = ({
             <div style={styles.controls} className="flexbox-fix">
                 <div style={styles.sliders}>
                     <div style={styles.hue}>
-                        <Hue style={styles.Hue} hsl={hsl} onChange={onChange} />
+                        <Hue
+                            style={styles.Hue}
+                            hsl={hsl}
+                            onChange={onChange}
+                            height="24px"
+                            pointer={() => (
+                                <div style={{
+                                    width: 4,
+                                    height: 22,
+                                    backgroundColor: white,
+                                    borderRadius: '4px',
+                                    pointerEvents: 'none',
+                                    transform: 'translate(-2px, 1px)',
+                                }}/>
+                            )}
+                        />
                     </div>
                 </div>
                 <div style={styles.color}>

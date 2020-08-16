@@ -15,7 +15,7 @@ module.exports = (env = {}, args = {}) => {
             rules: [
                 {
                     test: /\.m?jsx?$/,
-                    // exclude: env.dev ? /node_modules/ : void 0,
+                    exclude: env.dev ? /node_modules/ : void 0,
                     use: [
                         {
                             loader: 'babel-loader',
