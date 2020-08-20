@@ -212,6 +212,15 @@ export const Sketch = ({
                 shadow:
                     'inset 0 0 0 1px rgba(0,0,0,.15), inset 0 0 4px rgba(0,0,0,.25)',
             },
+            circle: {
+                width: '4px',
+                height: '4px',
+                boxShadow: `0 0 0 1.5px ${(rgb.r+rgb.b+rgb.g) < 384 ? white : black}, inset 0 0 1px 1px rgba(0,0,0,.3),
+            0 0 1px 2px rgba(0,0,0,.4)`,
+                borderRadius: '50%',
+                cursor: 'hand',
+                transform: 'translate(-2px, -2px)',
+            },
         },
     });
 
@@ -223,6 +232,9 @@ export const Sketch = ({
                     hsl={hsl}
                     hsv={hsv}
                     onChange={onChange}
+                    pointer={() => (
+                        <div style={styles.circle} />
+                    )}
                 />
             </div>
             <div style={styles.controls} className="flexbox-fix">

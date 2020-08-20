@@ -15,7 +15,10 @@ label('Sonic 1');
 offsetTable(dc.w, 'mappings');
 mappings(
     (mapping, i) => {
-        if (i === 0) read(dc.b);
+        // header(() => {
+        //     read()
+        // })
+        if (i === 0) mapping.ref.endIndex = read(dc.b);
         mapping.top = read(dc.b);
         read(nybble);
         mapping.width = read(2) + 1;
@@ -26,6 +29,7 @@ mappings(
         mapping.xflip = read(1);
         mapping.offset = read(11);
         mapping.left = read(dc.b);
+        // if (i > mapping.ref.endIndex) return end;
     },
     (mapping, i) => {
         if (i === 0) write(dc.b, mapping.parent.length);

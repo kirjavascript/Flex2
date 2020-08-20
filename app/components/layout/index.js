@@ -4,6 +4,7 @@ import { model, saveModel } from './model';
 import FlexLayout from 'flexlayout-react';
 import classNames from 'classnames';
 
+import { File } from '#components/file';
 import { Project } from '#components/project';
 import { Palettes } from '#components/palettes';
 import { Art } from '#components/art/index';
@@ -14,7 +15,9 @@ import { Documentation } from '#components/documentation';
 const getPanel = (node) => {
     const component = node.getComponent();
     if (!node._visible) return false;
-    if (component === 'project') {
+    if (component === 'file') {
+        return <File node={node}/>;
+    } else if (component === 'project') {
         return <Project node={node}/>;
     } else if (component === 'palettes') {
         return <Palettes node={node}/>;

@@ -1,3 +1,33 @@
+import fs from 'fs';
+import { join, dirname } from 'path';
+import { errorMsg } from '#util/dialog';
+import { uniq } from 'lodash';
+
+// if it can't find it, ask to specify
+
+const scriptPaths = uniq([
+    process.cwd(),
+    dirname(process.execPath),
+]).map(path => join(path, 'scripts2'));
+
+const scriptDir = scriptPaths.find(path => fs.existsSync(path));
+
+if (!scriptDir) {
+    errorMsg(`Script Error`, `
+Could not find 'scripts' directory for mapping definition files
+Searched in;
+\t${scriptPaths.join('\n\t')}`);
+}
+
+export async function scriptListing() {
+    // readdirSync(scriptDir)
+    // console.log(await readdir(scriptDir))
+}
+
+// function scriptDir() {
+
+// }
+
 // next: file menu + custom loader -> remove brace
 //
 // script language
@@ -30,7 +60,7 @@
 //      ability to specify offset & etc
 //      allow editing filename
 //      format:
-//      add to project
+//      add conf to project
 // remove acdeditor
 // purple warning: arbitrary code - warning before yes
 // derive UI from script - make dplcs still optional

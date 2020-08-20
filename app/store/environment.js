@@ -261,8 +261,7 @@ autorun(() => {
     // force currentSprite to lie within bounds
     if (config.currentSprite < 0 || mappings.length == 0) {
         config.currentSprite = 0;
-    }
-    else if (config.currentSprite >= mappings.length) {
+    } else if (config.currentSprite >= mappings.length) {
         config.currentSprite = mappings.length -1;
     }
 });

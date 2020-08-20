@@ -16,6 +16,7 @@ many writes while drawing
 project files easier to use / create
 sprites are offset if something else lods fullscreen
 FEATURES
+make decompression threaded
 ctrl+wheel for horiz scroll
 fullscreen icons - https://systemuicons.com/ arrows
 TASKS
@@ -23,8 +24,6 @@ checkbox
 buffer is deprecated on save
 ==
 CUSTOM FORMATS
-specify mapping definition files or presets
-disable optimizations
 ==
 ROTSPRITE
 https://forums.sonicretro.org/index.php?threads/sprite-rotation-utility.8848/#post-159754

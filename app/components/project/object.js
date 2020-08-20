@@ -7,7 +7,7 @@ import { compressionFormats } from '#formats/compression';
 const compressionList = Object.keys(compressionFormats);
 const mappingList = [...Object.keys(mappingFormats), 'Custom'];
 const dplcList = [...Object.keys(dplcFormats), 'Custom'];
-const paletteLengths = '1234'.split``.map((d) => ({label: d, value: +d}));
+const paletteLengths = [...'1234'].map((d) => ({label: d, value: +d}));
 
 @observer
 export class ObjectConfig extends Component {

@@ -1,5 +1,7 @@
 import FlexLayout from 'flexlayout-react';
 
+let fileMenu;
+
 const DEFAULT_LAYOUT = {
     'global': {
         'splitterSize': 6,
@@ -36,6 +38,12 @@ const DEFAULT_LAYOUT = {
                 'selected': 0,
                 'id': '#2',
                 'children': [
+                    fileMenu = {
+                        'type': 'tab',
+                        'name': 'File',
+                        'component': 'file',
+                        'id': '#11',
+                    },
                     {
                         'type': 'tab',
                         'name': 'Project',
@@ -74,9 +82,25 @@ const DEFAULT_LAYOUT = {
     },
 };
 
+const recurse = (children, callback) => {
+    children.forEach(child => {
+        callback(child, children);
+        if (child.children) {
+            recurse(child.children, callback);
+        }
+    });
+};
+
 const migrations = [
     (layout) => {
         layout.global.tabSetEnableMaximize = true;
+    },
+    (layout) => {
+        recurse([layout.layout], (node, parent) => {
+            if (node.component === 'project') {
+                parent.unshift(fileMenu);
+            }
+        });
     },
 ];
 
@@ -91,7 +115,7 @@ if (savedLayout && version < migrations.length) {
     migrations
         .slice(version)
         .forEach((migration, i) => {
-            console.info(`Layout migration #${i}`);
+            console.info(`Layout migration #${i + version}`);
             migration(layout);
             version++;
         });
