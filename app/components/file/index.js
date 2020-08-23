@@ -1,23 +1,17 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { observer } from 'mobx-react';
 import { Item, Input, File as FileInput, Select, Editor } from '#ui';
-import { scriptListing } from '#formats/scripts';
-// console.log(require('electron').remote.app.getAppPath())
-// const chokidar = require('chokidar');
-
-// chokidar.watch('./scripts').on('all', console.log)
-
-// just load scripts from dropdown
+import { listing } from '#formats/scripts';
 
 export const File = observer(() => {
 
-    useEffect(() => {
+    // useEffect(() => {
 
 
-    }, []);
+    // }, []);
     return <div>
         left align
         <FileInput />
-        {JSON.stringify(scriptListing())}
+        {JSON.stringify(listing)}
     </div>;
 });

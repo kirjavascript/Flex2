@@ -1,28 +1,6 @@
-import fs from 'fs';
-import { join, dirname } from 'path';
-import { errorMsg } from '#util/dialog';
-import { uniq } from 'lodash';
+// listing.js
 
-// if it can't find it, ask to specify
-
-const scriptPaths = uniq([
-    process.cwd(),
-    dirname(process.execPath),
-]).map(path => join(path, 'scripts2'));
-
-const scriptDir = scriptPaths.find(path => fs.existsSync(path));
-
-if (!scriptDir) {
-    errorMsg(`Script Error`, `
-Could not find 'scripts' directory for mapping definition files
-Searched in;
-\t${scriptPaths.join('\n\t')}`);
-}
-
-export async function scriptListing() {
-    // readdirSync(scriptDir)
-    // console.log(await readdir(scriptDir))
-}
+export { default as listing } from './listing';
 
 // function scriptDir() {
 

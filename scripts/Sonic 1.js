@@ -1,17 +1,17 @@
-// Flex2 Mapping Definition
+// Flex 2 Mapping Definition
 
 const {
+    label,
     info,
     offsetTable,
-    mapping,
-    mappingHeader,
+    mappings,
+    dplcs,
     write,
     read,
     nybble,
     dc,
 } = Flex2;
 
-label('Sonic 1');
 offsetTable(dc.w, 'mappings');
 mappings(
     (mapping, i) => {
