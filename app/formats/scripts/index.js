@@ -1,10 +1,7 @@
 // listing.js
 
 export { default as listing } from './listing';
-
-// function scriptDir() {
-
-// }
+export { default as load } from './load';
 
 // next: file menu + custom loader -> remove brace
 //

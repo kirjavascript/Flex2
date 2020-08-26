@@ -1,3 +1,6 @@
+import { scriptDir } from './listing';
+
+
 const globals = {
     dc: {
         b: 8,

@@ -9,13 +9,15 @@ const scriptPaths = uniq([
     process.cwd(),
 ]).map(path => join(path, 'scripts'));
 
-const scriptDir = scriptPaths.find(path => fs.existsSync(path) && fs.lstatSync(path).isDirectory());
+export const scriptDir = scriptPaths.find(path => (
+    fs.existsSync(path) && fs.lstatSync(path).isDirectory()
+));
 
 const scripts = observable([]);
 
 const { readdir } = fs.promises;
 
-async function loadScripts(...args) {
+async function loadScripts() {
     try {
         const list = await readdir(scriptDir);
         scripts.replace(list.map(filename => ({
