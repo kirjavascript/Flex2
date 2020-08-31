@@ -1,6 +1,7 @@
-import { observable, computed, action, autorun, toJS } from 'mobx';
+import { observable, computed, action } from 'mobx';
 import { environment } from '#store/environment';
 import { mappingFormats, dplcFormats } from '#formats/definitions';
+import { extname } from 'path';
 
 export class ObjectDef {
 
@@ -23,6 +24,14 @@ export class ObjectDef {
         customDefinition: '',
         label: '',
     };
+
+    @computed get mappingsASM() {
+        return extname(this.mappings.path) === '.asm';
+    }
+
+    @computed get dplcsASM() {
+        return extname(this.dplcs.path) === '.asm';
+    }
 
     @computed get key() {
         return Math.random().toString(35).slice(2);

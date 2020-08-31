@@ -1,5 +1,4 @@
 import { readFileSync, writeFileSync } from 'fs';
-import { extname } from 'path';
 import { observable, computed, action, autorun } from 'mobx';
 import range from 'lodash/range';
 import unique from 'lodash/uniq';
@@ -114,11 +113,10 @@ class Environment {
         // load mappings
         if (obj.mappings.path) {
             const mappingPath = workspace.absolutePath(obj.mappings.path);
-            const isAsm = extname(obj.mappings.path) == '.asm';
             try {
                 const buffer = readFileSync(mappingPath);
                 const newMappings = bufferToMappings(
-                    isAsm ? asmToBin(buffer) : buffer,
+                    obj.mappingsASM ? asmToBin(buffer) : buffer,
                     obj.mappingDefinition,
                 );
                 this.mappings.replace(newMappings);
@@ -134,11 +132,10 @@ class Environment {
         this.config.dplcsEnabled = obj.dplcs.enabled == true && obj.dplcs.path;
         if (this.config.dplcsEnabled && obj.dplcs.path) {
             const dplcPath = workspace.absolutePath(obj.dplcs.path);
-            const isAsm = extname(obj.dplcs.path) == '.asm';
             try {
                 const buffer = readFileSync(dplcPath);
                 const newDPLCs = bufferToDPLCs(
-                    isAsm ? asmToBin(buffer) : buffer,
+                    obj.dplcsASM ? asmToBin(buffer) : buffer,
                     obj.dplcDefinition,
                 );
                 this.dplcs.replace(newDPLCs);
@@ -200,10 +197,9 @@ class Environment {
         // mappings
         if (obj.mappings.path) {
             const mappingPath = workspace.absolutePath(obj.mappings.path);
-            const isAsm = extname(obj.mappings.path) == '.asm';
 
             const { chunk, frames } = mappingsToBuffer(this.mappings, obj.mappingDefinition);
-            const out = isAsm ? stuffToAsm(frames, obj.mappings.label, true) : chunk;
+            const out = obj.mappingsASM ? stuffToAsm(frames, obj.mappings.label, true) : chunk;
             try {
                 writeFileSync(mappingPath, out);
             }
@@ -215,10 +211,9 @@ class Environment {
         // dplcs
         if (obj.dplcs.enabled && obj.dplcs.path) {
             const dplcPath = workspace.absolutePath(obj.dplcs.path);
-            const isAsm = extname(obj.dplcs.path) == '.asm';
 
             const { chunk, frames } = DPLCsToBuffer(this.dplcs, obj.dplcDefinition);
-            const out = isAsm ? stuffToAsm(frames, obj.dplcs.label) : chunk;
+            const out = obj.dplcsASM ? stuffToAsm(frames, obj.dplcs.label) : chunk;
             try {
                 writeFileSync(dplcPath, out);
             }

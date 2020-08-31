@@ -17,8 +17,7 @@ function nearestColor(line = 0) {
 
         if (preCalculated) {
             return preCalculated.result;
-        }
-        else {
+        } else {
             const result = closest(color, palette);
 
             cache.push({color, result});
