@@ -29,11 +29,13 @@ cd ..
 rm -r Flex2-win32-x64
 
 cd Flex2-linux-x64
+chmod a+x Flex2
 tar cfvz ../flex2-linux-x64.tar.gz *
 cd ..
 rm -r Flex2-linux-x64
 
 cd Flex2-darwin-x64
+chmod a+x Flex2
 tar cfvz ../flex2-osx-x64.tar.gz *
 cd ..
 rm -r Flex2-darwin-x64

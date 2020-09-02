@@ -38,12 +38,12 @@ const DEFAULT_LAYOUT = {
                 'selected': 0,
                 'id': '#2',
                 'children': [
-                    // fileMenu = {
-                    //     'type': 'tab',
-                    //     'name': 'File',
-                    //     'component': 'file',
-                    //     'id': '#11',
-                    // },
+                    fileMenu = {
+                        'type': 'tab',
+                        'name': 'File',
+                        'component': 'file',
+                        'id': '#11',
+                    },
                     {
                         'type': 'tab',
                         'name': 'Project',
@@ -95,13 +95,13 @@ const migrations = [
     (layout) => {
         layout.global.tabSetEnableMaximize = true;
     },
-    // (layout) => {
-    //     recurse([layout.layout], (node, parent) => {
-    //         if (node.component === 'project') {
-    //             parent.unshift(fileMenu);
-    //         }
-    //     });
-    // },
+    (layout) => {
+        recurse([layout.layout], (node, parent) => {
+            if (node.component === 'project') {
+                parent.unshift(fileMenu);
+            }
+        });
+    },
 ];
 
 let savedLayout = localStorage.getItem('layout');
