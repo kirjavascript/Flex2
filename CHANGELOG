@@ -4,6 +4,7 @@
 - Changed default palette from Sonic 2 to the SCH unified palette
 - Fixed a bug that allows deleting mappings in drawing mode
 - Fixed a bug where up/down scrolls when there are active mappings
+- Rebuilt colour picker
 
 ## [0.0.7]
 - Added changelog

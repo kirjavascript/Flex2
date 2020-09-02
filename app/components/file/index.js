@@ -8,7 +8,7 @@ export const File = observer(() => {
 
     // }, []);
     if (listing.length) {
-        console.log('script');
+        // console.log('script');
         // load(listing[0].value);
     }
     return (

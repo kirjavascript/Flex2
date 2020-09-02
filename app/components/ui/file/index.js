@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import SVARS from '!!sass-variables-loader!#styles/variables.scss';
 import { observer } from 'mobx-react';
 import { workspace } from '#store/workspace';
-import { Item } from '#ui';
 
 const { dialog } = require('electron').remote;
 
@@ -23,7 +21,7 @@ export class File extends Component {
     }
 
     onEmpty = () => {
-        this.update(void 0);
+        this.update();
     };
 
     onDragOver = () => {
@@ -44,7 +42,7 @@ export class File extends Component {
     update = (path) => {
         const { store, accessor } = this.props;
         if (store && accessor) {
-            store[accessor] = path ? workspace.relativePath(path) : (store.accessor = ''); // TODO: this looks wrong
+            store[accessor] = path ? workspace.relativePath(path) : '';
         }
 
         this.props.onChange &&
