@@ -1,13 +1,14 @@
 ROADMAP
 file menu (offset loading) / create files
     (OR add load/save to objectdef and add objectdev to project homescreen
-custom mapping formats / screen mappings
+custom mapping formats / screen mappings -> spritesmind
 export spritesheet
 rotsprite
 animation editor
-spritesmind
 ==
 BUGS
+saving 0 tile as nemesis crashes
+saving ArtC42 at all crashes
 show/hide collapse config state
 says open project when choosing mappings
 pink surrounding tiles sometimes breaks
