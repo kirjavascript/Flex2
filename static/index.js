@@ -14,8 +14,6 @@ function createWindow() {
         webPreferences: {
             nodeIntegration: true,
         },
-        // display properly in i3 etc
-        type: process.platform === 'linux' && 'toolbar',
     });
 
     mainWindow.setMenu(null);

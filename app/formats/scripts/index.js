@@ -1,7 +1,5 @@
-// listing.js
-
-export { default as listing } from './listing';
-export { default as load } from './load';
+export { scripts } from './file';
+export { default as runScript } from './run-script';
 
 // next: file menu + custom loader -> remove brace
 //
@@ -24,7 +22,11 @@ export { default as load } from './load';
 // when write is a value of bigger than max safe int, or read value could be bbigger
 // read a byte at a time always
 
+// intermediate format for output
+
+// rwlayer
 // asm read/write
+// bin read/write
 
 // ASM parser: just read data, ignore everything else
 // use arcsecond or remove it
@@ -32,7 +34,7 @@ export { default as load } from './load';
 // UI
 
 // file menu
-//      ability to specify offset & etc
+//      ability to specify offset, size & etc
 //      allow editing filename
 //      format:
 //      add conf to project

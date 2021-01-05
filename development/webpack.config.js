@@ -37,6 +37,7 @@ module.exports = (env = {}, args = {}) => {
                                         '@babel/plugin-proposal-class-properties',
                                         { loose: true },
                                     ],
+                                    '@babel/plugin-proposal-optional-chaining',
                                 ]
                             }
                         }

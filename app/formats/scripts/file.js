@@ -9,7 +9,7 @@ const scriptPaths = uniq([
     process.cwd(),
 ]).map(path => join(path, 'scripts'));
 
-export const scriptDir = scriptPaths.find(path => (
+const scriptDir = scriptPaths.find(path => (
     fs.existsSync(path) && fs.lstatSync(path).isDirectory()
 ));
 
@@ -37,4 +37,11 @@ Searched in;\n\t${scriptPaths.join('\n\t')}`);
     fs.watch(scriptDir, debounce(loadScripts, 100));
 }
 
-export default scripts;
+function loadScript(file) {
+    return fs.readFileSync(join(scriptDir, file), 'utf8');
+}
+
+export {
+    scripts,
+    loadScript,
+};

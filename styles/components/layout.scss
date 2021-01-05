@@ -79,6 +79,12 @@
 
 .flexlayout__tab_button {
     cursor: initial;
+    font-size: 13px;
+    padding: 0 8px;
+}
+
+.flexlayout__tab_button_content {
+    font-size: 13px;
 }
 
 .flexlayout__tab_button--selected,

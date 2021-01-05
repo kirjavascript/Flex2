@@ -1,13 +1,16 @@
 ROADMAP
 file menu (offset loading) / create files
     (OR add load/save to objectdef and add objectdev to project homescreen
+set colour of palettes
 custom mapping formats / screen mappings -> spritesmind
 export spritesheet
 rotsprite
 animation editor
 ==
 BUGS
+flush layout data - use new place
 saving 0 tile as nemesis crashes
+add a toggle for: Suggestion: plz add back the thing where the mappings menu would stay open after you place a sprite, it was useful for piecing together large sprites
 saving ArtC42 at all crashes
 show/hide collapse config state
 says open project when choosing mappings

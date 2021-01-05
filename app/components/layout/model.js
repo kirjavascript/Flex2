@@ -1,6 +1,10 @@
 import FlexLayout from 'flexlayout-react';
 
-let fileMenu;
+window.resetLayout = () => {
+    localStorage.setItem('layout', null);
+    localStorage.setItem('layout-version', null);
+    window.location.reload();
+};
 
 const DEFAULT_LAYOUT = {
     'global': {
@@ -38,11 +42,11 @@ const DEFAULT_LAYOUT = {
                 'selected': 0,
                 'id': '#2',
                 'children': [
-                    fileMenu = {
+                    {
                         'type': 'tab',
                         'name': 'File',
                         'component': 'file',
-                        'id': '#11',
+                        'id': '#14',
                     },
                     {
                         'type': 'tab',
@@ -82,59 +86,16 @@ const DEFAULT_LAYOUT = {
     },
 };
 
-const recurse = (children, callback) => {
-    children.forEach(child => {
-        callback(child, children);
-        if (child.children) {
-            recurse(child.children, callback);
-        }
-    });
-};
-
-const migrations = [
-    (layout) => {
-        layout.global.tabSetEnableMaximize = true;
-    },
-    (layout) => {
-        recurse([layout.layout], (node, parent) => {
-            if (node.component === 'project') {
-                parent.unshift(fileMenu);
-            }
-        });
-    },
-];
-
-let savedLayout = localStorage.getItem('layout');
-let version = +localStorage.getItem('layout-version')
-    // if we have a layout but no version we are adding layout-version & migrating
-    // otherwise, we have a fresh install and can consider having the latest version
-    || (savedLayout ? 0 : migrations.length);
-
-if (savedLayout && version < migrations.length) {
-    const layout = JSON.parse(savedLayout);
-    migrations
-        .slice(version)
-        .forEach((migration, i) => {
-            console.info(`Layout migration #${i + version}`);
-            migration(layout);
-            version++;
-        });
-    const migrated = JSON.stringify(layout)
-    localStorage.setItem('layout', migrated);
-    savedLayout = migrated;
-    localStorage.setItem('layout-version', version);
+const savedLayout = localStorage.getItem('layout');
+const version = +localStorage.getItem('layout-version')
+if (!version) {
+    localStorage.setItem('layout-version', 1);
 }
 
-export const model = savedLayout
-    ?  FlexLayout.Model.fromJson(JSON.parse(savedLayout))
+export const model = version
+    ? FlexLayout.Model.fromJson(JSON.parse(savedLayout))
     : FlexLayout.Model.fromJson(DEFAULT_LAYOUT);
 
 export function saveModel(model) {
     localStorage.setItem('layout', JSON.stringify(model.toJson()));
 }
-
-window.resetLayout = () => {
-    localStorage.setItem('layout', '');
-    localStorage.setItem('layout-version', '');
-    window.location.reload();
-};

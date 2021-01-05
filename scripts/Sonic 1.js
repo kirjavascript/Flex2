@@ -1,4 +1,4 @@
-// Flex 2 Mapping Definition
+// Flex 2 Mapping Definition - Sonic 1
 
 const { mappings, dplcs, offsetTable, write, read, dc, nybble } = Flex2;
 
