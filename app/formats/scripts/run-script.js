@@ -10,14 +10,13 @@ const constants = {
     nybble: 4,
 };
 
-function useDef() {
-    const def = {};
+
+function useDef(def = {}) {
     const setDef = (config) => Object.assign(def, config);
     return [def, setDef];
 }
 
-function useFunc() {
-    let ref = () => {};
+function useFunc(ref = () => {}) {
     const setFunc = (func) => {ref = func};
     return [(...args) => ref(...args), setFunc];
 }
@@ -33,7 +32,6 @@ function catchFunc(func) {
 }
 
 export default catchFunc((file) => {
-    // const definition = [];
     const errors = [];
 
     const [write, setWrite] = useFunc();
@@ -41,7 +39,6 @@ export default catchFunc((file) => {
 
     const [mappings, setMappings] = useDef();
     const [dplcs, setDPLCs] = useDef();
-
 
     const offsetTable = () => [null, null];
 
@@ -56,32 +53,37 @@ export default catchFunc((file) => {
     const dumpMappings = catchFunc((env) => {
         if (!mappings.sprites) throw new Error('Sprite mappings are undefined');
 
-        const [_readFrame, writeFrame] = mappings.sprites;
-
+        const [, writeFrame] = mappings.sprites;
         const sprites = [];
+        const header = [];
+        const footer = [];
 
-        // console.log(toJS(env.mappings));
+        if (mappings.header) {
+
+        }
+
+
+
+        // TODO: genericize
 
         toJS(env.mappings).forEach((mapList) => {
             const mappings = []
             mapList.forEach((mapping, index) => {
-                console.log(mapping);
                 const frame = [];
                 setWrite((size, data) => {
-                    frame.push(size, data);
+                    frame.push([size, data]);
                 });
-                // mapping.ref = {};
-                // mapping.parent = mapList;
-                // writeFrame(mapping, index);
+                mapping.ref = {};
+                mapping.parent = mapList;
+                mapping.offset = mapping.art;
+                writeFrame(mapping, index);
                 mappings.push(frame);
             });
 
             sprites.push(mappings);
         });
 
-        writeFrame();
-
-        return {a:1};
+        return {sprites};
     });
 
 

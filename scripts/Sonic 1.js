@@ -1,6 +1,14 @@
 // Flex 2 Mapping Definition - Sonic 1
 
-const { mappings, dplcs, offsetTable, write, read, dc, nybble } = Flex2;
+const {
+    mappings,
+    dplcs,
+    offsetTable,
+    write,
+    read,
+    dc,
+    nybble,
+} = Flex2;
 
 mappings({
     header: offsetTable(dc.w), // [read, write]
@@ -13,8 +21,8 @@ mappings({
             mapping.height = read(2) + 1;
             mapping.priority = read(1);
             mapping.palette = read(2);
-            mapping.yflip = read(1);
-            mapping.xflip = read(1);
+            mapping.vflip = read(1);
+            mapping.hflip = read(1);
             mapping.offset = read(11);
             mapping.left = read(dc.b);
             if (i > mapping.ref.endIndex) return end;
@@ -27,8 +35,8 @@ mappings({
             write(2, mapping.height - 1);
             write(1, mapping.priority);
             write(2, mapping.palette);
-            write(1, mapping.yflip);
-            write(1, mapping.xflip);
+            write(1, mapping.vflip);
+            write(1, mapping.hflip);
             write(11, mapping.offset);
             write(dc.b, mapping.left);
         },
