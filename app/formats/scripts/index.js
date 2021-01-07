@@ -1,9 +1,11 @@
 export { scripts } from './file';
 export { default as runScript } from './run-script';
 
-// next: file menu + custom loader -> remove brace
-//
-// script language
+    // offsetTable
+    // asm out
+    // binary out
+    // read
+    // file menu / remove brace
 
 // padding / fill
 // optimizations(false);
@@ -15,7 +17,6 @@ export { default as runScript } from './run-script';
 
 // ASM & BIN read / write
 
-// new Function('Flex2', script)({ read, write });
 // odd numbers of bits -
 // offset table built on other primitives (or default params)
 // assert everything on sprite is correcr
@@ -26,7 +27,9 @@ export { default as runScript } from './run-script';
 
 // rwlayer
 // asm read/write
+//      use padded hex address for labels
 // bin read/write
+//      can just flatten all the info
 
 // ASM parser: just read data, ignore everything else
 // use arcsecond or remove it

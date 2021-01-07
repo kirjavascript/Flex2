@@ -1,17 +1,16 @@
 ROADMAP
 file menu (offset loading) / create files
     (OR add load/save to objectdef and add objectdev to project homescreen
-set colour of palettes
-custom mapping formats / screen mappings -> spritesmind
+custom mapping formats / screen mappings format (!) -> spritesmind
 generate project files -> use to create s3portal
 export spritesheet
 rotsprite
 animation editor
 ==
 BUGS
-flush layout data - use new place
+
+mappings mode in fullscreen raw editor is borked
 saving 0 tile as nemesis crashes
-add a toggle for: Suggestion: plz add back the thing where the mappings menu would stay open after you place a sprite, it was useful for piecing together large sprites
 saving ArtC42 at all crashes
 show/hide collapse config state
 says open project when choosing mappings
@@ -20,21 +19,32 @@ flex2_test/logo.png import is broken (alpha - works with exported flex file)
 tile deletes when drawing (unmap pieces / shortcuts in drawing mode)
 many writes while drawing
 project files easier to use / create
-sprites are offset if something else lods fullscreen
+
 FEATURES
+set colour of art tiles
+    radio button
 make decompression threaded
 ctrl+wheel for horiz scroll
-fullscreen icons - https://systemuicons.com/ arrows
+
+FILE MENU
+new / load save  on each thing
+load all / save all
+offset / size
+reuse for project
+
+NEW MAPPING
+add checkbox to the modal (autodismiss [x])
+
+CUSTOM FORMATS
+
 TASKS
 checkbox
 buffer is deprecated on save
 ==
-CUSTOM FORMATS
 ==
 ROTSPRITE
 https://forums.sonicretro.org/index.php?threads/sprite-rotation-utility.8848/#post-159754
 ==
-generate definition project files from sonlvl
 copy / paste mappings
 time travel for undo/redo
 import palette from spritesheet https://yarnpkg.com/en/package/node-vibrant
@@ -50,9 +60,3 @@ backdrop-filter
 Support MainMemory's macros formats
 <Hitaxas> There is also a glitch where Flex will sometimes destroy mappings when saving. Unsure the cause, but this has happened to me twice in the past month. https://cdn.discordapp.com/attachments/718373949368696892/731396915052412958/unknown.png
 ==
-
-21:10 <+Dick-Cord> <A​kumaYin> Being able to load and edit files without using the project setup would be nice. That's one of the few things that I prefer about the original Flex, along with the ability to preview animations.
-do animations as a new tab - animation editor - load one at a time and FE changes the current index
-animation: play, pause
-
-art offset loading / arbitrary data loader tab

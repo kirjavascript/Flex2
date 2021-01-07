@@ -11,9 +11,12 @@ const constants = {
 };
 
 
-function useDef(def = {}) {
-    const setDef = (config) => Object.assign(def, config);
-    return [def, setDef];
+function useDef() {
+    let def = [];
+    return [
+        new Proxy([], { get: (_, prop) => def[prop] }),
+        (...args) => { def = args; },
+    ];
 }
 
 function useFunc(ref = () => {}) {
@@ -31,59 +34,66 @@ function catchFunc(func) {
     };
 }
 
-export default catchFunc((file) => {
-    const errors = [];
+function offsetTable(size = constants.dc.w) {
+    return [
+        () => {
 
+        },
+        () => {
+
+        },
+    ];
+}
+
+export default catchFunc((file) => {
     const [write, setWrite] = useFunc();
     const [read, setRead] = useFunc();
 
-    const [mappings, setMappings] = useDef();
-    const [dplcs, setDPLCs] = useDef();
-
-    const offsetTable = () => [null, null];
+    const [mappingArgs, mappingFunc] = useDef();
+    const [dplcArgs, dplcFunc] = useDef();
 
     (new Function('Flex2', loadScript(file)))({
         ...constants,
         write,
-        mappings: setMappings,
-        dplcs: setDPLCs,
-        offsetTable: () => [],
+        read,
+        mappings: mappingFunc,
+        dplcs: dplcFunc,
+        offsetTable,
     });
 
+    // offsetTable
+    // asm out
+    // binary out
+    // read
+
     const dumpMappings = catchFunc((env) => {
-        if (!mappings.sprites) throw new Error('Sprite mappings are undefined');
+        const [mappings] = mappingArgs;
 
-        const [, writeFrame] = mappings.sprites;
-        const sprites = [];
-        const header = [];
-        const footer = [];
+        if (!mappings) throw new Error('Sprite mappings are undefined');
 
-        if (mappings.header) {
-
-        }
-
-
-
-        // TODO: genericize
-
-        toJS(env.mappings).forEach((mapList) => {
-            const mappings = []
-            mapList.forEach((mapping, index) => {
-                const frame = [];
-                setWrite((size, data) => {
-                    frame.push([size, data]);
+        const sections = mappings.map(([, writeFrame]) => (
+            toJS(env.mappings).map((mapList) => {
+                const ref = {};
+                const mappings = []
+                mapList.forEach((mapping, index) => {
+                    const frame = [];
+                    setWrite((size, data) => {
+                        frame.push([size, data]);
+                    });
+                    Object.assign(mapping, {
+                        ref,
+                        parent: mapList,
+                        offset: mapping.art,
+                    })
+                    writeFrame(mapping, index);
+                    mappings.push(frame);
                 });
-                mapping.ref = {};
-                mapping.parent = mapList;
-                mapping.offset = mapping.art;
-                writeFrame(mapping, index);
-                mappings.push(frame);
-            });
 
-            sprites.push(mappings);
-        });
+                return mappings;
+            })
+        ));
 
-        return {sprites};
+        return {sections};
     });
 
 

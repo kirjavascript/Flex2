@@ -10,9 +10,9 @@ const {
     nybble,
 } = Flex2;
 
-mappings({
-    header: offsetTable(dc.w), // [read, write]
-    sprites: [
+mappings([
+    offsetTable(dc.w),
+    [
         (mapping, i) => {
             if (i === 0) mapping.ref.endIndex = read(dc.b);
             mapping.top = read(dc.b);
@@ -41,7 +41,7 @@ mappings({
             write(dc.b, mapping.left);
         },
     ],
-});
+]);
 
 dplcs({
     header: offsetTable(dc.w),
