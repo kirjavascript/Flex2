@@ -11,10 +11,10 @@ const {
 } = Flex2;
 
 mappings([
-    offsetTable(dc.w),
+    offsetTable(dc.w, length => (length * 5) + 1),
     [
-        (mapping, i) => {
-            if (i === 0) mapping.ref.endIndex = read(dc.b);
+        ({ mapping, ref }, i) => {
+            if (i === 0) ref.endIndex = read(dc.b);
             mapping.top = read(dc.b);
             read(nybble);
             mapping.width = read(2) + 1;
@@ -25,10 +25,10 @@ mappings([
             mapping.hflip = read(1);
             mapping.offset = read(11);
             mapping.left = read(dc.b);
-            if (i > mapping.ref.endIndex) return end;
+            if (i > ref.endIndex) return end;
         },
-        (mapping, i) => {
-            if (i === 0) write(dc.b, mapping.parent.length);
+        ({ mapping, sprite }, i) => {
+            if (i === 0) write(dc.b, sprite.length);
             write(dc.b, mapping.top);
             write(nybble, 0);
             write(2, mapping.width - 1);

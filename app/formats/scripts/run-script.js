@@ -1,13 +1,18 @@
 import { loadScript } from './file';
 import { toJS } from 'mobx';
 
-const constants = {
+const binary = Symbol('binary');
+const address = Symbol('address');
+
+export const constants = {
     dc: {
         b: 8,
         w: 16,
         l: 32,
     },
     nybble: 4,
+    binary,
+    address,
 };
 
 
@@ -34,13 +39,22 @@ function catchFunc(func) {
     };
 }
 
-function offsetTable(size = constants.dc.w) {
-    return [
+function makeOffsetTable({ write }) {
+    return (size = constants.dc.w, func) => [
         () => {
-
+            // TODO
         },
-        () => {
-
+        ({ ref, sprite }, frameIndex, spriteIndex) => {
+            if (spriteIndex === 0 && frameIndex === 0) {
+                // TODO: get parent index
+               ref.global[address] = 0;
+            }
+            if (frameIndex === 0) {
+                // TODO: add initial header offset
+                console.log(ref.global[address].toString(16));
+                write(size, ref.global[address], address);
+                ref.global[address] += func(sprite.length);
+            }
         },
     ];
 }
@@ -58,40 +72,39 @@ export default catchFunc((file) => {
         read,
         mappings: mappingFunc,
         dplcs: dplcFunc,
-        offsetTable,
+        offsetTable: makeOffsetTable({ write }),
     });
-
-    // offsetTable
-    // asm out
-    // binary out
-    // read
 
     const dumpMappings = catchFunc((env) => {
         const [mappings] = mappingArgs;
 
         if (!mappings) throw new Error('Sprite mappings are undefined');
 
-        const sections = mappings.map(([, writeFrame]) => (
-            toJS(env.mappings).map((mapList) => {
-                const ref = {};
+        const sections = mappings.map(([, writeFrame]) => {
+            const global = {};
+            const sprites = toJS(env.mappings);
+            return sprites.map((sprite, spriteIndex) => {
+                const ref = { global };
                 const mappings = []
-                mapList.forEach((mapping, index) => {
+                sprite.forEach((mapping, frameIndex) => {
                     const frame = [];
-                    setWrite((size, data) => {
-                        frame.push([size, data]);
+                    setWrite((size, data, type = binary) => {
+                        frame.push([type, size, data]);
                     });
-                    Object.assign(mapping, {
+                    mapping.offset = mapping.art;
+                    const param = {
+                        mapping,
+                        sprite,
+                        sprites,
                         ref,
-                        parent: mapList,
-                        offset: mapping.art,
-                    })
-                    writeFrame(mapping, index);
+                    };
+                    writeFrame(param, frameIndex, spriteIndex);
                     mappings.push(frame);
                 });
 
                 return mappings;
-            })
-        ));
+            });
+        });
 
         return {sections};
     });

@@ -1,11 +1,13 @@
 export { scripts } from './file';
 export { default as runScript } from './run-script';
 
-    // offsetTable
+    // confirm output headers
+    // binary out (flatten, strip out zero sized)
     // asm out
-    // binary out
     // read
     // file menu / remove brace
+//
+// comment = write(0, 'comment', comment)
 
 // padding / fill
 // optimizations(false);
