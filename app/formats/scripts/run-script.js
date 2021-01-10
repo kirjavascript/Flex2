@@ -44,16 +44,17 @@ function makeOffsetTable({ write }) {
         () => {
             // TODO
         },
-        ({ ref, sprite }, frameIndex, spriteIndex) => {
+        ({ ref, sprite, sprites }, frameIndex, spriteIndex) => {
             if (spriteIndex === 0 && frameIndex === 0) {
-                // TODO: get parent index
-               ref.global[address] = 0;
+               ref.global[address] = sprites.length * size / constants.dc.b;
             }
             if (frameIndex === 0) {
                 // TODO: add initial header offset
                 console.log(ref.global[address].toString(16));
+                // console.log(sprite.length);
                 write(size, ref.global[address], address);
                 ref.global[address] += func(sprite.length);
+                // 000c 0036 0068 00a2 00e4 00ee
             }
         },
     ];
@@ -80,8 +81,8 @@ export default catchFunc((file) => {
 
         if (!mappings) throw new Error('Sprite mappings are undefined');
 
+        const global = {};
         const sections = mappings.map(([, writeFrame]) => {
-            const global = {};
             const sprites = toJS(env.mappings);
             return sprites.map((sprite, spriteIndex) => {
                 const ref = { global };

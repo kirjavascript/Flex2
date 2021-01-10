@@ -11,7 +11,7 @@ const {
 } = Flex2;
 
 mappings([
-    offsetTable(dc.w, length => (length * 5) + 1),
+    offsetTable(dc.w, quantity => (quantity * 5) + 1),
     [
         ({ mapping, ref }, i) => {
             if (i === 0) ref.endIndex = read(dc.b);
