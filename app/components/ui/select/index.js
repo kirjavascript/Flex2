@@ -5,6 +5,21 @@ import Dropdown from './dist';
 @observer
 export class Select extends Component {
 
+    constructor(props) {
+        super(props);
+
+        console.log(this.props.options);
+
+        this.options = this.props.options.map((option) => {
+            if (typeof option !== 'object') {
+                return {label: String(option), value: option};
+            }
+            else {
+                return option;
+            }
+        });
+    }
+
     onChange = ({label}) => {
         const { store, accessor } = this.props;
         // value is sometimes incorrect so
@@ -36,19 +51,6 @@ export class Select extends Component {
             this.placeholderRefNode.removeEventListener('wheel', this.onWheel);
         }
     };
-
-    constructor(props) {
-        super(props);
-
-        this.options = this.props.options.map((option) => {
-            if (typeof option !== 'object') {
-                return {label: String(option), value: option};
-            }
-            else {
-                return option;
-            }
-        });
-    }
 
     render() {
         const { label, store, accessor, color } = this.props;

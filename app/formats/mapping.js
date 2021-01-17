@@ -155,6 +155,7 @@ export function mappingsToBuffer(mappings, format) {
         // normal headers
         else {
             headers.push(headerCounter);
+
             headerCounter += length;
         }
 

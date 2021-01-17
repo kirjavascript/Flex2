@@ -1,3 +1,8 @@
+DOC
+==
+1.0.0 - breaking change to select mapping format
+
+
 ROADMAP
 file menu (offset loading) / create files
     (OR add load/save to objectdef and add objectdev to project homescreen
@@ -31,6 +36,9 @@ new / load save  on each thing
 load all / save all
 offset / size
 reuse for project
+
+PROJECTS
+copy object
 
 NEW MAPPING
 add checkbox to the modal (autodismiss [x])

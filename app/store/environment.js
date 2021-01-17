@@ -248,7 +248,6 @@ class Environment {
 
 const environment = new Environment();
 storage(environment, 'environment');
-window.env = environment;
 
 autorun(() => {
     const { mappings, config } = environment;

@@ -1,7 +1,7 @@
 export { scripts } from './file';
 export { default as runScript } from './run-script';
 
-    // confirm output headers
+    // confirm output headers (done wrong format_
     // binary out (flatten, strip out zero sized)
     // asm out
     // read

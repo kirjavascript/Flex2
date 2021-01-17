@@ -3,11 +3,9 @@ import { optimizeDPLCs } from './optimize-dplcs';
 import range from 'lodash/range';
 
 export function toggleDPLCs() {
-
     const { sprites, config: { dplcsEnabled } } = environment;
 
     if (dplcsEnabled) {
-
         sprites.forEach(({mappings, dplcs}) => {
             // get list dplc tiles
             const dplcIndices = [];
@@ -24,16 +22,14 @@ export function toggleDPLCs() {
 
         environment.dplcs.replace([]);
         environment.config.dplcsEnabled = false;
-    }
-    else {
+    } else {
         let newDPLCList = [];
 
         sprites.forEach(({mappings}) => {
-
             let newDPLCs = [];
             let dplcIndex = 0;
-            mappings.forEach((mapping) => {
 
+            mappings.forEach((mapping) => {
                 const tileSize = mapping.width * mapping.height;
                 const existingIndex = newDPLCs.findIndex(({art, size}) => (
                     art == mapping.art && size >= tileSize
@@ -50,7 +46,6 @@ export function toggleDPLCs() {
             });
 
             newDPLCList.push(newDPLCs);
-
         });
 
         environment.dplcs.replace(newDPLCList);
@@ -61,7 +56,5 @@ export function toggleDPLCs() {
         for (let i = 0; i < mappings.length; i++) {
             optimizeDPLCs(mappings[i], dplcs[i]);
         }
-
     }
-
 }

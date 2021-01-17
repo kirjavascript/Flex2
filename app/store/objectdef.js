@@ -4,6 +4,22 @@ import { mappingFormats, dplcFormats } from '#formats/definitions';
 import { extname } from 'path';
 
 export class ObjectDef {
+    constructor(parent, obj = void 0) {
+        // if rehydrating...
+        if (obj) {
+            Object.assign(this, obj);
+            if (this.mappings.format != 'Custom') {
+                this.mappings.customDefinition = '';
+            }
+            if (this.dplcs.format != 'Custom') {
+                this.dplcs.customDefinition = '';
+            }
+        }
+
+        this.parent = parent;
+    }
+
+    @observable format = '';
 
     @observable name = '';
     @observable palettes = [];
@@ -58,21 +74,6 @@ export class ObjectDef {
         else {
             return dplcFormats[format];
         }
-    }
-
-    constructor(parent, obj = void 0) {
-        // if rehydrating...
-        if (obj) {
-            Object.assign(this, obj);
-            if (this.mappings.format != 'Custom') {
-                this.mappings.customDefinition = '';
-            }
-            if (this.dplcs.format != 'Custom') {
-                this.dplcs.customDefinition = '';
-            }
-        }
-
-        this.parent = parent;
     }
 
     @action load = (callback) => {
