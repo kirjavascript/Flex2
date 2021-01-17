@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { workspace } from '#store/workspace';
+import { Input, Item } from '#ui';
 
 const { dialog } = require('electron').remote;
 
@@ -13,7 +14,7 @@ export class File extends Component {
 
     onClick = () => {
         dialog.showOpenDialog({
-            title: 'Open Project',
+            title: `Open ${this.props.label}`,
             properties: ['openFile'],
         })
             .then(({ filePaths: [path] }) => path && this.update(path))
@@ -56,12 +57,10 @@ export class File extends Component {
         return <div className="file" {...otherProps}>
             { accessor && store[accessor] ? (<div className="row">
                     Path
-                    <div>
-                        {store[accessor]}
-                        <span onClick={this.onEmpty} className="clear">
-                            &nbsp;(clear)
-                        </span>
-                    </div>
+                    <Input store={store} accessor={accessor}/>
+                    <span onClick={this.onEmpty} className="clear">
+                        &nbsp;(clear)
+                    </span>
                 </div>
                 ) : (
                     <div
@@ -71,7 +70,7 @@ export class File extends Component {
                         onDragLeave={this.onDragLeave}
                         onDrop={this.onDrop}
                     >
-                        {label || 'Click or drag files'}
+                        {'Click or drag files'}
                     </div>
                 )}
 

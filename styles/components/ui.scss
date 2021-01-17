@@ -71,6 +71,7 @@ input {
 
 .file {
     .dropzone {
+        cursor: pointer;
         border: 2px dashed $grey;
         padding: 15px;
         border-radius: 5px;

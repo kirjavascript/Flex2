@@ -5,37 +5,34 @@ import Dropdown from './dist';
 @observer
 export class Select extends Component {
 
-    constructor(props) {
-        super(props);
-
-        console.log(this.props.options);
-
-        this.options = this.props.options.map((option) => {
+    options = () => {
+        return this.props.options.map((option) => {
             if (typeof option !== 'object') {
-                return {label: String(option), value: option};
+                return { label: String(option), value: option };
             }
             else {
                 return option;
             }
-        });
-    }
+        })
+    };
 
     onChange = ({label}) => {
         const { store, accessor } = this.props;
         // value is sometimes incorrect so
-        store[accessor] = this.options.find((d) => d.label == label).value;
+        store[accessor] = this.options().find((d) => d.label == label).value;
 
         this.props.onChange &&
         this.props.onChange(store[accessor]);
     }
 
     onWheel = (e) => {
+        const options = this.options();
         const { store, accessor, flipScroll } = this.props;
         const delta = e.deltaY > 0 ? 1 : -1;
-        const index = (delta * (flipScroll ? -1 : 1))  + this.options.findIndex((d) => d.value == store[accessor]);
+        const index = (delta * (flipScroll ? -1 : 1))  + options.findIndex((d) => d.value == store[accessor]);
 
-        if (index >= 0 && index < this.options.length) {
-            store[accessor] = this.options[index].value;
+        if (index >= 0 && index < options.length) {
+            store[accessor] = options[index].value;
             this.props.onChange &&
             this.props.onChange(store[accessor]);
         }
@@ -53,8 +50,9 @@ export class Select extends Component {
     };
 
     render() {
+        const options = this.options();
         const { label, store, accessor, color } = this.props;
-        const value = this.options.find((d) => d.value == store[accessor])?.label;
+        const value = options.find((d) => d.value == store[accessor])?.label || store[accessor];
 
         return <div className="row select">
             {label && <span>
@@ -62,8 +60,8 @@ export class Select extends Component {
                 &emsp;
             </span>}
             <Dropdown
-                options={this.options}
-                value={String(value)}
+                options={options}
+                value={value}
                 onChange={this.onChange}
                 color={color}
                 placeholderRef={this.placeholderRef}

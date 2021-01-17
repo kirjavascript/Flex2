@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { extname } from 'path';
 import { observer } from 'mobx-react';
-import { Item, Input, File, Select, Editor } from '#ui';
+import { Item, Input, File, Select } from '#ui';
 import { mappingFormats, dplcFormats } from '#formats/definitions';
 import { compressionFormats } from '#formats/compression';
 const compressionList = Object.keys(compressionFormats);
@@ -141,10 +141,7 @@ export class ObjectConfig extends Component {
                                                 ))}
                                             </div>
                                         </div>
-                                        <Editor
-                                            store={obj.mappings}
-                                            accessor="customDefinition"
-                                        />
+                                        [used to be: editor]
                                     </div>
                                 )}
                                 {extname(obj.mappings.path) == '.asm' && (
@@ -202,10 +199,7 @@ export class ObjectConfig extends Component {
                                                         ))}
                                                     </div>
                                                 </div>
-                                                <Editor
-                                                    store={obj.dplcs}
-                                                    accessor="customDefinition"
-                                                />
+                                                [used to be: editor]
                                             </div>
                                         )}
                                         {extname(obj.dplcs.path) == '.asm' && (

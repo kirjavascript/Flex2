@@ -4,33 +4,42 @@ import { Item, Input, File as FileInput, Select, Editor } from '#ui';
 import { scripts, runScript } from '#formats/scripts';
 import { environment } from '#store/environment';
 import { workspace } from '#store/workspace';
+import { toJS } from 'mobx';
 
-const { file } = workspace;
 
 export const File = observer(() => {
     // useEffect(() => {
 
     // }, []);
     const script = scripts.length && runScript(scripts[0].value);
-    // console.log(scripts);
     // script && console.log(script);
     // script && !script.error && console.log(script.dumpMappings(environment));
+
+    const obj = workspace.file;
+    // const path = workspacePath
 
     return (
         <div>
             Game Format <Select
                 options={scripts}
-                store={file}
+                store={obj}
                 accessor="format"
-                value={file.format}
             />
-            <FileInput store={file.mappings} accessor="path" />
+            <Item color="yellow">Mappings</Item>
+            <FileInput
+                label="Mapping"
+                store={obj.mappings}
+                accessor="path"
+            />
         </div>
     );
 });
-// have value for select as
 
 // make fileinput allowed to edit text, add <Item> new
-// storage for file screen
+// create file -> choose directory -> focus on input
+
+//
+
+// load/save for everything - add in environment
 // buttons for shit
 // fix up project screen to always be open
