@@ -8,13 +8,14 @@ ROADMAP
 file menu (offset loading) / create files
     (OR add load/save to objectdef and add objectdev to project homescreen
 custom mapping formats / screen mappings format (!) -> spritesmind
-generate project files -> use to create s3portal
+generate project files -> use to create s3portal + apateur theme
 export spritesheet
 rotsprite
 animation editor
 ==
 BUGS
 
+max mapping qty limit
 mappings mode in fullscreen raw editor is borked
 saving 0 tile as nemesis crashes
 saving ArtC42 at all crashes

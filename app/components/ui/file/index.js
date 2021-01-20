@@ -12,10 +12,19 @@ export class File extends Component {
         dragging: false,
     };
 
-    onClick = () => {
+    openFile = () => {
         dialog.showOpenDialog({
             title: `Open ${this.props.label}`,
             properties: ['openFile'],
+        })
+            .then(({ filePaths: [path] }) => path && this.update(path))
+            .catch(console.error);
+    }
+
+    openDirectory = () => {
+        dialog.showOpenDialog({
+            title: `Open ${this.props.label}`,
+            properties: ['openDirectory'],
         })
             .then(({ filePaths: [path] }) => path && this.update(path))
             .catch(console.error);
@@ -63,15 +72,31 @@ export class File extends Component {
                     </span>
                 </div>
                 ) : (
-                    <div
-                        className={`dropzone ${dragging && 'dragging'}`}
-                        onClick={this.onClick}
-                        onDragOver={this.onDragOver}
-                        onDragLeave={this.onDragLeave}
-                        onDrop={this.onDrop}
-                    >
-                        {'Click or drag files'}
-                    </div>
+                    <>
+                        <Item
+                            color="blue"
+                            inverted
+                            onClick={this.openDirectory}
+                        >
+                            New
+                        </Item>
+                        <Item
+                            color="green"
+                            inverted
+                            onClick={this.openFile}
+                        >
+                            Existing
+                        </Item>
+                        <div
+                            className={`dropzone ${dragging && 'dragging'}`}
+                            onClick={this.openFile}
+                            onDragOver={this.onDragOver}
+                            onDragLeave={this.onDragLeave}
+                            onDrop={this.onDrop}
+                        >
+                            {'Drag'}
+                        </div>
+                    </>
                 )}
 
 

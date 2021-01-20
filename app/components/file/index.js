@@ -39,6 +39,8 @@ export const File = observer(() => {
 // create file -> choose directory -> focus on input
 
 //
+//
+// show current path?
 
 // load/save for everything - add in environment
 // buttons for shit
