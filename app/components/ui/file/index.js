@@ -14,7 +14,7 @@ export class File extends Component {
 
     openFile = () => {
         dialog.showOpenDialog({
-            title: `Open ${this.props.label}`,
+            title: `Choose ${this.props.label}`,
             properties: ['openFile'],
         })
             .then(({ filePaths: [path] }) => path && this.update(path))
@@ -23,7 +23,7 @@ export class File extends Component {
 
     openDirectory = () => {
         dialog.showOpenDialog({
-            title: `Open ${this.props.label}`,
+            title: `New ${this.props.label} Location`,
             properties: ['openDirectory'],
         })
             .then(({ filePaths: [path] }) => path && this.update(path))
@@ -50,17 +50,18 @@ export class File extends Component {
     }
 
     update = (path) => {
-        const { store, accessor } = this.props;
+        const { store, accessor, absolute } = this.props;
+        const finalPath = absolute ? path : workspace.relativePath(path);
         if (store && accessor) {
-            store[accessor] = path ? workspace.relativePath(path) : '';
+            store[accessor] = path ? finalPath : '';
         }
 
         this.props.onChange &&
-        this.props.onChange(workspace.relativePath(path));
+        this.props.onChange(finalPath);
     };
 
     render() {
-        const { label, store, accessor, ...otherProps } = this.props;
+        const { label, store, accessor, absolute, ...otherProps } = this.props;
         const { dragging } = this.state;
 
         return <div className="file" {...otherProps}>
@@ -80,13 +81,6 @@ export class File extends Component {
                         >
                             New
                         </Item>
-                        <Item
-                            color="green"
-                            inverted
-                            onClick={this.openFile}
-                        >
-                            Existing
-                        </Item>
                         <div
                             className={`dropzone ${dragging && 'dragging'}`}
                             onClick={this.openFile}
@@ -94,7 +88,7 @@ export class File extends Component {
                             onDragLeave={this.onDragLeave}
                             onDrop={this.onDrop}
                         >
-                            {'Drag'}
+                            click / drag file
                         </div>
                     </>
                 )}

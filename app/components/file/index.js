@@ -6,7 +6,6 @@ import { environment } from '#store/environment';
 import { workspace } from '#store/workspace';
 import { toJS } from 'mobx';
 
-
 export const File = observer(() => {
     // useEffect(() => {
 
@@ -30,6 +29,7 @@ export const File = observer(() => {
                 label="Mapping"
                 store={obj.mappings}
                 accessor="path"
+                absolute
             />
         </div>
     );
@@ -38,8 +38,6 @@ export const File = observer(() => {
 // make fileinput allowed to edit text, add <Item> new
 // create file -> choose directory -> focus on input
 
-//
-//
 // show current path?
 
 // load/save for everything - add in environment
