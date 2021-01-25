@@ -38,7 +38,7 @@ export const File = observer(() => {
 // make fileinput allowed to edit text, add <Item> new
 // create file -> choose directory -> focus on input
 
-// show current path?
+// checkbox
 
 // load/save for everything - add in environment
 // buttons for shit

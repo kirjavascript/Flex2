@@ -70,12 +70,32 @@ input {
 }
 
 .file {
-    .dropzone {
+    &-menu {
+        display: flex;
+        align-items: stretch;
+        justify-content: stretch;
+    }
+    .dashed-box {
+        display: flex;
+        flex: 2;
+        justify-content: center;
+        align-items: center;
         cursor: pointer;
         border: 2px dashed $grey;
         padding: 15px;
         border-radius: 5px;
         text-align: center;
+        margin-right: 10px;
+        height: 21px;
+        &:last-of-type {
+            margin-right: 0;
+        }
+        &.new {
+            flex: 1;
+            .item {
+                width: initial;
+            }
+        }
     }
     .clear {
         color: $grey;
