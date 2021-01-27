@@ -37,9 +37,11 @@ export const File = observer(() => {
 
 // make fileinput allowed to edit text, add <Item> new
 // create file -> choose directory -> focus on input
+// file exists - select it anyway?
 
 // checkbox
 
 // load/save for everything - add in environment
 // buttons for shit
 // fix up project screen to always be open
+// size / offset

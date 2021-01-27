@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { join } from 'path';
 import { observer } from 'mobx-react';
 import { workspace } from '#store/workspace';
 import { Input, Item } from '#ui';
@@ -42,15 +43,6 @@ export class File extends Component {
         return false;
     };
 
-    openDirectory = () => {
-        dialog
-            .showOpenDialog({
-                title: `New ${this.props.label} Location`,
-                properties: ['openDirectory'],
-            })
-            .then(({ filePaths: [path] }) => path && this.update(path))
-            .catch(console.error);
-    };
 
     create = () => {
         this.setState({
@@ -61,6 +53,29 @@ export class File extends Component {
 
     setFilename = (e) => {
         this.setState({ filename: e.target.value });
+    };
+
+    makeFile = () => {
+        dialog
+            .showOpenDialog({
+                title: `New ${this.props.label} Location`,
+                properties: ['openDirectory'],
+            })
+            .then(({ filePaths: [path] }) => {
+                if (path) {
+                    const finalName = join(path, this.state.filename);
+                }
+            })
+            .catch(console.error);
+    };
+
+    cancelFile = () => {
+        this.setState({ creating: false });
+    };
+
+    fileInputKeyDown = (e) => {
+        e.key === 'Escape' && this.cancelFile();
+        e.key === 'Enter' && this.makeFile();
     };
 
     update = (path) => {
@@ -94,22 +109,29 @@ export class File extends Component {
                                 <input
                                     value={filename}
                                     onChange={this.setFilename}
+                                    onKeyDown={this.fileInputKeyDown}
                                     placeholder="filename"
                                     autoFocus
                                 />
-                                <Item inverted color="green">
-                                    ✔
-                                </Item>
-                                <Item inverted color="red">
+                                <Item
+                                    inverted
+                                    color="red"
+                                    onClick={this.cancelFile}
+                                >
                                     ✗
+                                </Item>
+                                <Item
+                                    inverted
+                                    color="green"
+                                    onClick={this.makeFile}
+                                >
+                                    ✔
                                 </Item>
                             </div>
                         ) : (
                             <div
                                 className="dashed-box new"
-                                onClick={() => {
-                                    this.setState({ creating: true });
-                                }}
+                                onClick={this.create}
                             >
                                 create new
                             </div>
