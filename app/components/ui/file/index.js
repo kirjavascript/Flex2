@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
-import { join } from 'path';
 import { observer } from 'mobx-react';
 import { workspace } from '#store/workspace';
-import { Input, Item } from '#ui';
+import { Input } from '#ui';
 
 const { dialog } = require('electron').remote;
 
@@ -10,8 +9,6 @@ const { dialog } = require('electron').remote;
 export class File extends Component {
     state = {
         dragging: false,
-        filename: '',
-        creating: false,
     };
 
     openFile = () => {
@@ -43,40 +40,20 @@ export class File extends Component {
         return false;
     };
 
+    createFile = () => {
+        dialog.showSaveDialog({
+            title: `New ${this.props.label}`,
+            defaultPath: `${this.props.label.toLowerCase()}.bin`,
+            filters: [{name: `${this.props.label} File`, extensions: ['bin', 'asm']}],
+        })
+            .then(({ filePath }) => {
+                filePath && this.update(filePath);
 
-    create = () => {
-        this.setState({
-            creating: true,
-            filename: `${this.props.label.toLowerCase()}.bin`,
-        });
-    };
-
-    setFilename = (e) => {
-        this.setState({ filename: e.target.value });
-    };
-
-    makeFile = () => {
-        dialog
-            .showOpenDialog({
-                title: `New ${this.props.label} Location`,
-                properties: ['openDirectory'],
-            })
-            .then(({ filePaths: [path] }) => {
-                if (path) {
-                    const finalName = join(path, this.state.filename);
-                }
             })
             .catch(console.error);
     };
 
-    cancelFile = () => {
-        this.setState({ creating: false });
-    };
 
-    fileInputKeyDown = (e) => {
-        e.key === 'Escape' && this.cancelFile();
-        e.key === 'Enter' && this.makeFile();
-    };
 
     update = (path) => {
         const { store, accessor, absolute } = this.props;
@@ -90,13 +67,13 @@ export class File extends Component {
 
     render() {
         const { label, store, accessor, absolute, ...otherProps } = this.props;
-        const { dragging, filename, creating } = this.state;
+        const { dragging } = this.state;
 
         return (
             <div className="file" {...otherProps}>
                 {accessor && store[accessor] ? (
-                    <div className="row">
-                        Path
+                    <div className="file-info">
+                        <span> Path </span>
                         <Input store={store} accessor={accessor} />
                         <span onClick={this.onEmpty} className="clear">
                             &nbsp;(clear)
@@ -104,38 +81,12 @@ export class File extends Component {
                     </div>
                 ) : (
                     <div className="file-menu">
-                        {creating ? (
-                            <div className="dashed-box new">
-                                <input
-                                    value={filename}
-                                    onChange={this.setFilename}
-                                    onKeyDown={this.fileInputKeyDown}
-                                    placeholder="filename"
-                                    autoFocus
-                                />
-                                <Item
-                                    inverted
-                                    color="red"
-                                    onClick={this.cancelFile}
-                                >
-                                    ✗
-                                </Item>
-                                <Item
-                                    inverted
-                                    color="green"
-                                    onClick={this.makeFile}
-                                >
-                                    ✔
-                                </Item>
-                            </div>
-                        ) : (
-                            <div
-                                className="dashed-box new"
-                                onClick={this.create}
-                            >
-                                create new
-                            </div>
-                        )}
+                        <div
+                            className="dashed-box new"
+                            onClick={this.createFile}
+                        >
+                            create new
+                        </div>
                         <div
                             className={`dashed-box ${dragging && 'dragging'}`}
                             onClick={this.openFile}

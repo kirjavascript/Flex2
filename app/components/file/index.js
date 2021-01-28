@@ -26,7 +26,7 @@ export const File = observer(() => {
             />
             <Item color="yellow">Mappings</Item>
             <FileInput
-                label="Mapping"
+                label="Mappings"
                 store={obj.mappings}
                 accessor="path"
                 absolute
@@ -34,10 +34,6 @@ export const File = observer(() => {
         </div>
     );
 });
-
-// make fileinput allowed to edit text, add <Item> new
-// create file -> choose directory -> focus on input
-// file exists - select it anyway?
 
 // checkbox
 
