@@ -62,7 +62,7 @@ export class Input extends Component {
             assert,
             isNumber,
             onChange,
-            containerClass,
+            containerClass = 'ui-input',
             ...otherProps
         } = this.props;
 

@@ -76,9 +76,13 @@ input {
         height: 30px;
         justify-content: space-between;
         align-items: center;
-        input {
-            width: 100%;
-            display: block;
+        .ui-input {
+            margin-left: 10px;
+            margin-right: 20px;
+            flex-grow: 1;
+            input {
+                width: 100%;
+            }
         }
     }
     &-menu {
@@ -103,6 +107,7 @@ input {
         }
     }
     .clear {
+        cursor: pointer;
         color: $grey;
         font-family: Hack Bold;
     }

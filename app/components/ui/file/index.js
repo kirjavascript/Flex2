@@ -73,7 +73,7 @@ export class File extends Component {
             <div className="file" {...otherProps}>
                 {accessor && store[accessor] ? (
                     <div className="file-info">
-                        <span> Path </span>
+                        <label>Path</label>
                         <Input store={store} accessor={accessor} />
                         <span onClick={this.onEmpty} className="clear">
                             &nbsp;(clear)
