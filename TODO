@@ -8,7 +8,8 @@ ROADMAP
 file menu (offset loading) / create files
     (OR add load/save to objectdef and add objectdev to project homescreen
 custom mapping formats / screen mappings format (!) -> spritesmind
-generate project files -> use to create s3portal + apateur theme
+project file tabs
+generate project files -> use to create s3portal
 export spritesheet
 rotsprite
 animation editor

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { observer } from 'mobx-react';
-import { Item, Input, File as FileInput, Select, Editor } from '#ui';
+import { Item, Input, File as FileInput, Select, Checkbox } from '#ui';
 import { scripts, runScript } from '#formats/scripts';
 import { environment } from '#store/environment';
 import { workspace } from '#store/workspace';
@@ -15,6 +15,7 @@ export const File = observer(() => {
     // script && !script.error && console.log(script.dumpMappings(environment));
 
     const obj = workspace.file;
+    const isAbsolute = true;
     // const path = workspacePath
 
     return (
@@ -24,19 +25,36 @@ export const File = observer(() => {
                 store={obj}
                 accessor="format"
             />
+            loca/save
+
             <Item color="yellow">Mappings</Item>
+            Load / Save
             <FileInput
                 label="Mappings"
                 store={obj.mappings}
                 accessor="path"
-                absolute
+                absolute={isAbsolute}
             />
+
+            <Checkbox checked onChange={() => {}}/>
+            <Item color="red">DPLCs</Item>
+            Load / Save
+            <FileInput
+                label="Mappings"
+                store={obj.dplcs}
+                accessor="path"
+                absolute={isAbsolute}
+            />
+
         </div>
     );
 });
 
+
 // checkbox
 
+// computed script for objectdef for format
+//
 // load/save for everything - add in environment
 // buttons for shit
 // fix up project screen to always be open

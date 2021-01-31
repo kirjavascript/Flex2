@@ -116,6 +116,20 @@ input {
     }
 }
 
+.checkbox {
+    border: 2px solid $grey;
+    border-radius: 2px;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    path {
+        fill: $blue;
+    }
+}
+
 .slider {
     margin: 0;
     position: relative;
