@@ -20,38 +20,42 @@ export const File = observer(() => {
 
     return (
         <div>
-            Game Format <Select
-                options={scripts}
-                store={obj}
-                accessor="format"
-            />
-            loca/save
+            <div>
+                Game Format <Select
+                    options={scripts}
+                    store={obj}
+                    accessor="format"
+                />
+                loca/save
 
-            <Item color="yellow">Mappings</Item>
-            Load / Save
-            <FileInput
-                label="Mappings"
-                store={obj.mappings}
-                accessor="path"
-                absolute={isAbsolute}
-            />
+                <Item color="yellow">Mappings</Item>
+                Load / Save
+                <FileInput
+                    label="Mappings"
+                    store={obj.mappings}
+                    accessor="path"
+                    absolute={isAbsolute}
+                />
 
-            <Checkbox checked onChange={() => {}}/>
-            <Item color="red">DPLCs</Item>
-            Load / Save
-            <FileInput
-                label="Mappings"
-                store={obj.dplcs}
-                accessor="path"
-                absolute={isAbsolute}
-            />
-
+                <div style={{padding:5}}>
+                    <Checkbox checked onChange={() => {}}/>
+                </div>
+                <Item color="red">DPLCs</Item>
+                <button color="red">
+                    hello
+                </button>
+                Load / Save
+                <FileInput
+                    label="Mappings"
+                    store={obj.dplcs}
+                    accessor="path"
+                    absolute={isAbsolute}
+                />
+            </div>
         </div>
     );
 });
 
-
-// checkbox
 
 // computed script for objectdef for format
 //

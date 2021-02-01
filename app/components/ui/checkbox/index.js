@@ -7,8 +7,8 @@ export function Checkbox({ checked, onChange }) {
             onClick={onChange}
         >
             <svg
-                width={9}
-                height={9}
+                width={11}
+                height={11}
                 viewBox="0 0 80 80"
             >
                 {checked && (
