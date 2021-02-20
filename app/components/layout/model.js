@@ -92,9 +92,10 @@ if (!version) {
     localStorage.setItem('layout-version', 1);
 }
 
-export const model = version
+export const model = version && savedLayout
     ? FlexLayout.Model.fromJson(JSON.parse(savedLayout))
     : FlexLayout.Model.fromJson(DEFAULT_LAYOUT);
+
 
 export function saveModel(model) {
     localStorage.setItem('layout', JSON.stringify(model.toJson()));

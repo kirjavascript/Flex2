@@ -73,7 +73,6 @@ export class File extends Component {
             <div className="file" {...otherProps}>
                 {accessor && store[accessor] ? (
                     <div className="file-info">
-                        <label>Path</label>
                         <Input store={store} accessor={accessor} />
                         <span onClick={this.onEmpty} className="clear">
                             &nbsp;(clear)
@@ -96,6 +95,7 @@ export class File extends Component {
                         >
                             choose file / drop
                         </div>
+                        {this.props.children}
                     </div>
                 )}
             </div>

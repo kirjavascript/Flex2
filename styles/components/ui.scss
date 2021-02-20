@@ -74,11 +74,11 @@ input {
     padding: 2px 5px;
     margin: 2px 0;
     border: 0;
-    width: 75px;
+    width: 77px;
     text-align: center;
 
     &:focus {
-      outline: 1px solid $magenta;
+        outline: 1px solid $magenta;
     }
 }
 
@@ -90,7 +90,6 @@ input {
         justify-content: space-between;
         align-items: center;
         .ui-input {
-            margin-left: 10px;
             margin-right: 20px;
             flex-grow: 1;
             input {
@@ -121,7 +120,7 @@ input {
     }
     .clear {
         cursor: pointer;
-        color: $grey;
+        color: $white;
         font-family: Hack Bold;
     }
     .dragging {
