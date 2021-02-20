@@ -25,7 +25,7 @@ Mousetrap.bind('esc', () => {
 function doCommand(obj, e) {
     environment.doAction(() => {
         if (!obj.noMultiplier && multiplier) {
-            for (let i = 0; i < +multiplier; i++) obj.func();
+            for (let i = 0; i < +multiplier; i++) obj.func(e);
             multiplier = '';
         }
         else {

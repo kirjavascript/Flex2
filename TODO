@@ -11,7 +11,7 @@ custom mapping formats / screen mappings format (!) -> spritesmind
 project file tabs
 generate project files -> use to create s3portal
 export spritesheet
-rotsprite
+rotsprite https://crates.io/crates/rotsprite
 animation editor
 ==
 BUGS
