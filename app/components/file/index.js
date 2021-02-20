@@ -1,10 +1,13 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { observer } from 'mobx-react';
-import { Item, Input, File as FileInput, Select, Checkbox } from '#ui';
+import { Item, Input, File as FileInput, Select, Checkbox, Button } from '#ui';
 import { scripts, runScript } from '#formats/scripts';
 import { environment } from '#store/environment';
+// import { compressionFormats } from '#formats/compression';
 import { workspace } from '#store/workspace';
-import { toJS } from 'mobx';
+import { toJS, observable } from 'mobx';
+
+// const compressionList = observable(Object.keys(compressionFormats));
 
 export const File = observer(() => {
     // useEffect(() => {
@@ -17,19 +20,46 @@ export const File = observer(() => {
     const obj = workspace.file;
     const isAbsolute = true;
     // const path = workspacePath
+    // use dplcs enabled
 
     return (
         <div>
-            <div>
-                Game Format <Select
-                    options={scripts}
-                    store={obj}
-                    accessor="format"
-                />
-                loca/save
+            <div className="file-object">
+                <div className="menu-item">
+                    <Item>Game Format</Item>
+                    <Select
+                        options={scripts}
+                        store={obj}
+                        accessor="format"
+                    />
+                </div>
+                <div className="menu-item">
+                    <Item color="blue">Object</Item>
+                    <div className="saveload">
+                        <Button color="green">load</Button>
+                        <Button color="orange">save</Button>
+                    </div>
+                </div>
+                <div className="menu-item">
+                    <Item color="green">Art</Item>
+                    <div className="saveload">
+                        <Button color="green">load</Button>
+                        <Button color="orange">save</Button>
+                    </div>
 
-                <Item color="yellow">Mappings</Item>
-                Load / Save
+                </div>
+                <File
+                    store={obj.art}
+                    accessor="path"
+                />
+
+                <div className="menu-item">
+                    <Item color="yellow">Mappings</Item>
+                    <div className="saveload">
+                        <Button color="green">load</Button>
+                        <Button color="orange">save</Button>
+                    </div>
+                </div>
                 <FileInput
                     label="Mappings"
                     store={obj.mappings}
@@ -37,14 +67,18 @@ export const File = observer(() => {
                     absolute={isAbsolute}
                 />
 
-                <div style={{padding:5}}>
+                <div className="menu-item">
+                    <Item>DPLCs Enabled</Item>
                     <Checkbox checked onChange={() => {}}/>
                 </div>
-                <Item color="red">DPLCs</Item>
-                <button color="red">
-                    hello
-                </button>
-                Load / Save
+
+                <div className="menu-item">
+                    <Item color="red">DPLCs</Item>
+                    <div className="saveload">
+                        <Button color="green">load</Button>
+                        <Button color="orange">save</Button>
+                    </div>
+                </div>
                 <FileInput
                     label="Mappings"
                     store={obj.dplcs}

@@ -1,0 +1,21 @@
+.file-object {
+    padding: 10px;
+
+    .menu-item {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+
+    .saveload {
+        button {
+            margin-left: 5px;
+        }
+    }
+
+    .file {
+        margin-bottom: 10px;
+    }
+}

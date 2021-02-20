@@ -29,9 +29,9 @@ import { toJS } from 'mobx';
  */
 
 export function getCommandLabel(name) {
-    if (name == '[mode]') {
-        return mappingState.mode == 'drawing' ? 'Mapping Mode' : 'Drawing Mode';
-    } else if (name == '[dplcs]') {
+    if (name === '[mode]') {
+        return mappingState.mode === 'drawing' ? 'Mapping Mode' : 'Drawing Mode';
+    } else if (name === '[dplcs]') {
         return environment.config.dplcsEnabled ? 'Disable DPLCs' : 'Enable DPLCs';
     } else {
         return name;

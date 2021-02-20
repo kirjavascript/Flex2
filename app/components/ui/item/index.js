@@ -13,7 +13,6 @@ export class Item extends Component {
                 inverted ? {
                     backgroundColor: SVARS[color || 'white2'],
                     color: SVARS.black,
-                    fontFamily: 'Hack Bold',
                 } : {
                     color: SVARS[color],
                     padding: 0,
