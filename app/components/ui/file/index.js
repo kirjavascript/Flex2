@@ -22,7 +22,8 @@ export class File extends Component {
     };
 
     onEmpty = () => {
-        this.update();
+        const { store, accessor } = this.props;
+        store[accessor] = '';
     };
 
     onDragOver = () => {

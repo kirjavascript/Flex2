@@ -177,6 +177,7 @@ export function mappingsToBuffer(mappings, format) {
     return {
         chunk: Buffer.from(Uint8Array.from(bytes)),
         frames: framesArray,
+        headerWords,
     };
 
 }

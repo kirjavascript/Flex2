@@ -50,7 +50,7 @@ function makeOffsetTable({ write }) {
             }
             if (frameIndex === 0) {
                 // TODO: add initial header offset
-                console.log(ref.global[address].toString(16));
+                // console.log(ref.global[address].toString(16));
                 // console.log(sprite.length);
                 write(size, ref.global[address], address);
                 ref.global[address] += func(sprite.length);
@@ -76,9 +76,76 @@ export default catchFunc((file) => {
         offsetTable: makeOffsetTable({ write }),
     });
 
+    const readLimit = 1e3;
+
+    const readMappings = catchFunc((env, buffer) => {
+        const [mappings] = mappingArgs;
+        if (!mappings) throw new Error('Sprite mappings are undefined');
+
+        const bitBuffer = [];
+        let cursor = 0;
+        let bufferOverflow = false;
+        setRead((size) => {
+            if (size > bitBuffer.length) {
+                const nextBitQty = size - bitBuffer.length;
+                const bitsLeft = (buffer.length - cursor) * 8;
+                if (bitsLeft < nextBitQty) {
+                    bufferOverflow = true;
+                } else {
+                    // fill the buffer
+                    const bytesNeeded = Math.ceil(nextBitQty/8);
+
+                    const bytes = Array.from(buffer.slice(cursor, cursor + bytesNeeded));
+
+                    const bits = bytes.map(d => d.toString(2).padStart(8, 0))
+                        .join('')
+                        .split('')
+                        .map(Number);
+
+                    cursor += bytesNeeded
+                    bitBuffer.push(...bits);
+                }
+            }
+            // flush the buffer
+            return  parseInt(bitBuffer.splice(0, size).join(''), 2);
+        });
+
+        const global = {};
+        const sections = mappings.map(([readFrame]) => {
+            const sprites = [];
+
+            // setRead should say if it's empty
+
+            read: for (let spriteIndex = 0; spriteIndex < readLimit; spriteIndex++) {
+                const sprite = [];
+                const ref = { global };
+                for (let frameIndex = 0; frameIndex < readLimit; frameIndex++) {
+                    const mapping = {};
+                    const param = {
+                        mapping,
+                        ref,
+                    };
+                    const result = readFrame(param, frameIndex, spriteIndex);
+                    if (bufferOverflow) {
+                        break read;
+                    }
+                    sprite.push(mapping);
+                    if (result) {
+                        break;
+                    }
+                }
+
+                sprites.push(sprite);
+            }
+
+            return sprites;
+        });
+
+        return {sections};
+    });
+
     const dumpMappings = catchFunc((env) => {
         const [mappings] = mappingArgs;
-
         if (!mappings) throw new Error('Sprite mappings are undefined');
 
         const global = {};
@@ -90,7 +157,7 @@ export default catchFunc((file) => {
                 sprite.forEach((mapping, frameIndex) => {
                     const frame = [];
                     setWrite((size, data, type = binary) => {
-                        frame.push([type, size, data]);
+                        frame.push([type, size, +data]);
                     });
                     mapping.offset = mapping.art;
                     const param = {
@@ -112,7 +179,7 @@ export default catchFunc((file) => {
 
 
     return {
-        // definition,
+        readMappings,
         dumpMappings,
     };
 });

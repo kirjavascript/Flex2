@@ -11,7 +11,7 @@ const {
 } = Flex2;
 
 mappings([
-    offsetTable(dc.w, quantity => (quantity * 5) + 1),
+    // offsetTable(dc.w, quantity => (quantity * 5) + 1),
     [
         ({ mapping, ref }, i) => {
             if (i === 0) ref.endIndex = read(dc.b);
@@ -25,7 +25,7 @@ mappings([
             mapping.hflip = read(1);
             mapping.offset = read(11);
             mapping.left = read(dc.b);
-            if (i > ref.endIndex) return end;
+            if (i === ref.endIndex) return true;
         },
         ({ mapping, sprite }, i) => {
             if (i === 0) write(dc.b, sprite.length);
