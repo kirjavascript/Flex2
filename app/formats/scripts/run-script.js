@@ -13,6 +13,8 @@ export const constants = {
     nybble: 4,
     binary,
     address,
+    endFrame: Symbol('endFrame'),
+    endSection: Symbol('endSection'),
 };
 
 
@@ -39,10 +41,20 @@ function catchFunc(func) {
     };
 }
 
-function makeOffsetTable({ write }) {
+function makeOffsetTable({ read, write }) {
     return (size = constants.dc.w, func) => [
-        () => {
-            // TODO
+        ({ ref }) => {
+            let a = 0x7FFF;
+            const headers = [];
+            for (let i = 0; i < 1e6 && i < a; i += 2) {
+                const header = read(constants.dc.w) & 0x7FFF;
+                headers.push(header);
+                if (header < a && !(header == 0)) {
+                    a = header;
+                }
+            }
+            ref.global.headers = headers;
+            return constants.endSection;
         },
         ({ ref, sprite, sprites }, frameIndex, spriteIndex) => {
             if (spriteIndex === 0 && frameIndex === 0) {
@@ -60,6 +72,7 @@ function makeOffsetTable({ write }) {
     ];
 }
 
+import { twosComplement } from '../util';
 export default catchFunc((file) => {
     const [write, setWrite] = useFunc();
     const [read, setRead] = useFunc();
@@ -73,7 +86,7 @@ export default catchFunc((file) => {
         read,
         mappings: mappingFunc,
         dplcs: dplcFunc,
-        offsetTable: makeOffsetTable({ write }),
+        offsetTable: makeOffsetTable({ read, write }),
     });
 
     const readLimit = 1e3;
@@ -107,14 +120,16 @@ export default catchFunc((file) => {
                 }
             }
             // flush the buffer
-            return  parseInt(bitBuffer.splice(0, size).join(''), 2);
+            const binString = bitBuffer.splice(0, size).join('')
+            if (binString[0] === '1') {
+                return ((1 << size) - parseInt(binString, 2)) * -1;
+            }
+            return parseInt(binString, 2);
         });
 
         const global = {};
         const sections = mappings.map(([readFrame]) => {
             const sprites = [];
-
-            // setRead should say if it's empty
 
             read: for (let spriteIndex = 0; spriteIndex < readLimit; spriteIndex++) {
                 const sprite = [];
@@ -126,11 +141,14 @@ export default catchFunc((file) => {
                         ref,
                     };
                     const result = readFrame(param, frameIndex, spriteIndex);
-                    if (bufferOverflow) {
+                    mapping.priority = Boolean(mapping.priority);
+                    mapping.vflip = Boolean(mapping.vflip);
+                    mapping.hflip = Boolean(mapping.hflip);
+                    if (result === constants.endSection || bufferOverflow) {
                         break read;
                     }
                     sprite.push(mapping);
-                    if (result) {
+                    if (result === constants.endFrame) {
                         break;
                     }
                 }
@@ -159,7 +177,6 @@ export default catchFunc((file) => {
                     setWrite((size, data, type = binary) => {
                         frame.push([type, size, +data]);
                     });
-                    mapping.offset = mapping.art;
                     const param = {
                         mapping,
                         sprite,

@@ -38,6 +38,10 @@ export const FileObject = observer(({obj, isAbsolute}) => {
                     </pre>
                     <div>
                         <pre> {headerWords.map(d => d.map(d => '$' + d).join``).join`,`} </pre>
+
+                    <pre>
+                        {JSON.stringify(environment.mappings, null, 4)}
+                    </pre>
                         <pre> {out} </pre>
                     </div>
                 </div>)}
