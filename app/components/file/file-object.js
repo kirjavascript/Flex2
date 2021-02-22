@@ -14,17 +14,25 @@ import { inspect } from 'util';
 const compressionList = Object.keys(compressionFormats);
 
 export const FileObject = observer(({obj}) => {
-    // useEffect(() => {
+    // TESTS!
 
-    // }, []);
     const script = scripts.length && runScript(scripts[0].value);
     // script && console.log(script);
 
-    const buffer = obj.mappings.path && readFileSync(obj.mappings.path);
-    const mappings = script && !script.error && script.readMappings(environment, buffer);
+    // const buffer = obj.mappings.path && readFileSync(obj.mappings.path, 'utf8');
+    const buffer = obj.mappings.path && readFileSync('/home/cake/dev/flex2_test/map_plant_s1.bin');
+    const asm = obj.mappings.path && readFileSync('/home/cake/dev/flex2_test/map_plant_s1.asm', 'utf8');
+    // console.log(buffer.length, parseASM(asm).length)
+    // const t = parseASM(asm).filter((d, i) => buffer[i] !==  d)
+    // console.log(t);
 
-    const { frames, headerWords } = mappingsToBuffer(environment.mappings, mappingFormats['Sonic 1']);
-    const out = stuffToAsm(frames, 'LABEL', true);
+
+    const mappings = script && !script.error && script.readMappings(environment, parseASM(asm));
+
+    environment.mappings.replace(mappings.sprites && mappings.sprites)
+
+    // const { frames, headerWords } = mappingsToBuffer(environment.mappings, mappingFormats['Sonic 1']);
+    // const out = stuffToAsm(frames, 'LABEL', true);
 
     return (
         <div>
@@ -38,14 +46,14 @@ export const FileObject = observer(({obj}) => {
                     </pre>
                         <pre> {headerWords.map(d => d.map(d => '$' + d).join``).join`,`} </pre>
                     <pre> {JSON.stringify(environment.mappings, null, 4)} </pre>
+                        <pre> {inspect(parseASM(out).join`,` === [...buffer].join`,`, {depth: 9})} </pre>
+                    <pre> {inspect(parseASM(out), {depth: 9})} </pre>
 
                     */}
-                    <pre>
-                        {inspect(parseASM(out), {depth: 9})}
-                    </pre>
+                    <pre> {inspect(mappings, {depth: 9})} </pre>
                     <div>
-
-                        <pre> {out} </pre>
+                        <pre>{asm}</pre>
+                        {buffer.join` `}
                     </div>
                 </div>)}
                 <div className="menu-item">

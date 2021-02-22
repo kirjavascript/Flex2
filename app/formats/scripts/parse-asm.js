@@ -69,7 +69,7 @@ export function parseASM(text) {
             return [data, size, items.forEach(([type, value]) => {
                 if (type === addr) {
                     const [left, right] = value.toLowerCase().split('-');
-                    value = labelAddr[left] - labelAddr[right]; // mutate param!
+                    value = labelAddr[left] - labelAddr[right]; // mutate param (!)
                 }
                 bytes.push(...Array.from({ length: size }, (_, i) => {
                     return value >> (8 * i);

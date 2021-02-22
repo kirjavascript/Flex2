@@ -76,6 +76,8 @@ function makeOffsetTable({ read, write }) {
     ];
 }
 
+// TODO: negative numbers in write
+
 export default catchFunc((file) => {
     const [write, setWrite] = useFunc();
     const [read, setRead] = useFunc();
@@ -130,7 +132,6 @@ export default catchFunc((file) => {
         const global = {};
         const sprites = [];
         sectionList.forEach(([readFrame]) => {
-
             read: for (let spriteIndex = 0; spriteIndex < readLimit; spriteIndex++) {
                 const sprite = [];
                 const ref = { global };
