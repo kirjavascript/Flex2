@@ -1,7 +1,7 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import { Item, Input, File as FileInput, Select, Checkbox, Button } from '#ui';
-import { scripts, runScript } from '#formats/scripts';
+import { scripts, runScript, parseASM } from '#formats/scripts';
 import { compressionFormats } from '#formats/compression';
 import { environment } from '#store/environment';
 
@@ -9,6 +9,7 @@ import { mappingFormats, dplcFormats } from '#formats/definitions';
 import { bufferToMappings, mappingsToBuffer } from '#formats/mapping';
 import { asmToBin, stuffToAsm } from '#formats/asm';
 import { readFileSync } from 'fs';
+import { inspect } from 'util';
 
 const compressionList = Object.keys(compressionFormats);
 
@@ -30,14 +31,20 @@ export const FileObject = observer(({obj}) => {
             <div className="file-object">
                 {script.error}
                 {mappings?.error?.message}
-                {script && !script.error && false &&  (<div className="menu-item">
+                {script && !script.error &&  (<div className="menu-item">
+                    {/*
                     <pre style={{border: '1px solid black'}}>
                         {JSON.stringify(mappings, null, 4)}
                     </pre>
-                    <div>
                         <pre> {headerWords.map(d => d.map(d => '$' + d).join``).join`,`} </pre>
-
                     <pre> {JSON.stringify(environment.mappings, null, 4)} </pre>
+
+                    */}
+                    <pre>
+                        {inspect(parseASM(out), {depth: 9})}
+                    </pre>
+                    <div>
+
                         <pre> {out} </pre>
                     </div>
                 </div>)}

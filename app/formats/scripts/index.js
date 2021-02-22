@@ -1,4 +1,5 @@
 export { scripts } from './file';
+export { parseASM } from './parse-asm';
 export { default as runScript } from './run-script';
 
 // comment = write(0, 'comment', comment)

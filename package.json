@@ -20,6 +20,7 @@
     },
     "dependencies": {
         "@babel/plugin-proposal-optional-chaining": "^7.12.7",
+        "arcsecond": "^3.1.2",
         "array-move": "^3.0.1",
         "classnames": "^2.2.5",
         "color-diff": "^1.1.0",

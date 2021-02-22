@@ -161,10 +161,8 @@ export default catchFunc((file) => {
         return {sprites};
     });
 
-
     const readMappings = createReader(mappingArgs[0]);
     const readDPLCs = createReader(dplcArgs[0]);
-
 
     const createWriter = (sectionList) => catchFunc((env) => {
         const global = {};
