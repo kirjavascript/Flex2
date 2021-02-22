@@ -12,7 +12,7 @@ import { readFileSync } from 'fs';
 
 const compressionList = Object.keys(compressionFormats);
 
-export const FileObject = observer(({obj, isAbsolute}) => {
+export const FileObject = observer(({obj}) => {
     // useEffect(() => {
 
     // }, []);
@@ -22,8 +22,6 @@ export const FileObject = observer(({obj, isAbsolute}) => {
     const buffer = obj.mappings.path && readFileSync(obj.mappings.path);
     const mappings = script && !script.error && script.readMappings(environment, buffer);
 
-    // console.log(mappings.sections?.flat(3));
-
     const { frames, headerWords } = mappingsToBuffer(environment.mappings, mappingFormats['Sonic 1']);
     const out = stuffToAsm(frames, 'LABEL', true);
 
@@ -32,16 +30,14 @@ export const FileObject = observer(({obj, isAbsolute}) => {
             <div className="file-object">
                 {script.error}
                 {mappings?.error?.message}
-                {script && !script.error && (<div className="menu-item">
+                {script && !script.error && false &&  (<div className="menu-item">
                     <pre style={{border: '1px solid black'}}>
                         {JSON.stringify(mappings, null, 4)}
                     </pre>
                     <div>
                         <pre> {headerWords.map(d => d.map(d => '$' + d).join``).join`,`} </pre>
 
-                    <pre>
-                        {JSON.stringify(environment.mappings, null, 4)}
-                    </pre>
+                    <pre> {JSON.stringify(environment.mappings, null, 4)} </pre>
                         <pre> {out} </pre>
                     </div>
                 </div>)}
@@ -84,7 +80,7 @@ export const FileObject = observer(({obj, isAbsolute}) => {
                     label="Mappings"
                     store={obj.mappings}
                     accessor="path"
-                    absolute={isAbsolute}
+                    absolute={obj.isAbsolute}
                 />
                 {obj.mappingsASM && (
                     <div className="menu-item">
@@ -109,7 +105,7 @@ export const FileObject = observer(({obj, isAbsolute}) => {
                     label="Mappings"
                     store={obj.dplcs}
                     accessor="path"
-                    absolute={isAbsolute}
+                    absolute={obj.isAbsolute}
                 />
                 {obj.dplcsASM && (
                     <div className="menu-item">
@@ -155,7 +151,7 @@ export const FileObject = observer(({obj, isAbsolute}) => {
                                 label="Palette"
                                 store={palette}
                                 accessor="path"
-                                absolute={isAbsolute}
+                                absolute={obj.isAbsolute}
                             >
                                 <div
                                     className="dashed-box new"

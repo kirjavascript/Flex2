@@ -3,6 +3,9 @@ import { toJS } from 'mobx';
 
 const binary = Symbol('binary');
 const address = Symbol('address');
+const signed = Symbol('signed');
+const endFrame = Symbol('endFrame');
+const endSection = Symbol('endSection');
 
 export const constants = {
     dc: {
@@ -13,8 +16,9 @@ export const constants = {
     nybble: 4,
     binary,
     address,
-    endFrame: Symbol('endFrame'),
-    endSection: Symbol('endSection'),
+    signed,
+    endFrame,
+    endSection,
 };
 
 
@@ -46,7 +50,7 @@ function makeOffsetTable({ read, write }) {
         ({ ref }) => {
             let a = 0x7FFF;
             const headers = [];
-            for (let i = 0; i < 1e6 && i < a; i += 2) {
+            for (let i = 0; i < 1e5 && i < a; i += 2) {
                 const header = read(constants.dc.w) & 0x7FFF;
                 headers.push(header);
                 if (header < a && !(header == 0)) {
@@ -72,7 +76,6 @@ function makeOffsetTable({ read, write }) {
     ];
 }
 
-import { twosComplement } from '../util';
 export default catchFunc((file) => {
     const [write, setWrite] = useFunc();
     const [read, setRead] = useFunc();
@@ -91,14 +94,11 @@ export default catchFunc((file) => {
 
     const readLimit = 1e3;
 
-    const readMappings = catchFunc((env, buffer) => {
-        const [mappings] = mappingArgs;
-        if (!mappings) throw new Error('Sprite mappings are undefined');
-
+    const createReader = (sectionList) => catchFunc((env, buffer) => {
         const bitBuffer = [];
         let cursor = 0;
         let bufferOverflow = false;
-        setRead((size) => {
+        setRead((size, type) => {
             if (size > bitBuffer.length) {
                 const nextBitQty = size - bitBuffer.length;
                 const bitsLeft = (buffer.length - cursor) * 8;
@@ -121,15 +121,15 @@ export default catchFunc((file) => {
             }
             // flush the buffer
             const binString = bitBuffer.splice(0, size).join('')
-            if (binString[0] === '1') {
+            if (type === signed && binString[0] === '1') {
                 return ((1 << size) - parseInt(binString, 2)) * -1;
             }
             return parseInt(binString, 2);
         });
 
         const global = {};
-        const sections = mappings.map(([readFrame]) => {
-            const sprites = [];
+        const sprites = [];
+        sectionList.forEach(([readFrame]) => {
 
             read: for (let spriteIndex = 0; spriteIndex < readLimit; spriteIndex++) {
                 const sprite = [];
@@ -156,18 +156,19 @@ export default catchFunc((file) => {
                 sprites.push(sprite);
             }
 
-            return sprites;
         });
 
-        return {sections};
+        return {sprites};
     });
 
-    const dumpMappings = catchFunc((env) => {
-        const [mappings] = mappingArgs;
-        if (!mappings) throw new Error('Sprite mappings are undefined');
 
+    const readMappings = createReader(mappingArgs[0]);
+    const readDPLCs = createReader(dplcArgs[0]);
+
+
+    const createWriter = (sectionList) => catchFunc((env) => {
         const global = {};
-        const sections = mappings.map(([, writeFrame]) => {
+        const sections = sectionList.map(([, writeFrame]) => {
             const sprites = toJS(env.mappings);
             return sprites.map((sprite, spriteIndex) => {
                 const ref = { global };
@@ -191,12 +192,18 @@ export default catchFunc((file) => {
             });
         });
 
-        return {sections};
+        const chunks = sections.flat(3);
+
+        return {sections, chunks};
     });
 
+    const writeMappings = createWriter(mappingArgs[0]);
+    const writeDPLCs = createWriter(dplcArgs[0]);
 
     return {
         readMappings,
-        dumpMappings,
+        readDPLCs,
+        writeMappings,
+        writeDPLCs,
     };
 });

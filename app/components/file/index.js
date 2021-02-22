@@ -5,7 +5,7 @@ import { workspace } from '#store/workspace';
 
 export const File = observer(() => {
     return (
-        <FileObject obj={workspace.file} isAbsolute />
+        <FileObject obj={workspace.file} />
     );
 });
 

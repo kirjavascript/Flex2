@@ -5,6 +5,7 @@ import { ObjectDef } from  './objectdef';
 import path from 'path';
 
 const fileState = new ObjectDef();
+fileState.isAbsolute = true;
 storage(fileState, 'file-state');
 
 class Workspace {

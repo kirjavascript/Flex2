@@ -1,33 +1,13 @@
 export { scripts } from './file';
 export { default as runScript } from './run-script';
 
-    // confirm output headers (done wrong format_
-    // binary out (flatten, strip out zero sized)
-    // asm out
-    // read
-    // file menu / remove brace
-//
 // comment = write(0, 'comment', comment)
 
 // padding / fill
 // optimizations(false);
 // loadASM();
-// customOffset()
-// mappingHeader -> index 0
 // reverse endianness
-// end tokens
 
-// ASM & BIN read / write
-
-// odd numbers of bits -
-// offset table built on other primitives (or default params)
-// assert everything on sprite is correcr
-// when write is a value of bigger than max safe int, or read value could be bbigger
-// read a byte at a time always
-
-// intermediate format for output
-
-// rwlayer
 // asm read/write
 //      use padded hex address for labels
 // bin read/write

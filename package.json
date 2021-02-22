@@ -21,7 +21,6 @@
     "dependencies": {
         "@babel/plugin-proposal-optional-chaining": "^7.12.7",
         "array-move": "^3.0.1",
-        "brace": "^0.10.0",
         "classnames": "^2.2.5",
         "color-diff": "^1.1.0",
         "d3-dispatch": "^1.0.3",

@@ -9,6 +9,7 @@ const {
     dc,
     nybble,
     endFrame,
+    signed,
 } = Flex2;
 
 mappings([
@@ -16,7 +17,7 @@ mappings([
     [
         ({ mapping, ref }, i) => {
             if (i === 0) ref.endIndex = read(dc.b);
-            mapping.top = read(dc.b);
+            mapping.top = read(dc.b, signed);
             read(nybble);
             mapping.width = read(2) + 1;
             mapping.height = read(2) + 1;
@@ -25,8 +26,8 @@ mappings([
             mapping.vflip = read(1);
             mapping.hflip = read(1);
             mapping.art = read(11);
-            mapping.left = read(dc.b);
-            if (i === ref.endIndex) return endFrame;
+            mapping.left = read(dc.b, signed);
+            if (i === ref.endIndex - 1) return endFrame;
         },
         ({ mapping, sprite }, i) => {
             if (i === 0) write(dc.b, sprite.length);
