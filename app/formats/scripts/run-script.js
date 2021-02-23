@@ -96,7 +96,7 @@ export default catchFunc((file) => {
 
     const readLimit = 1e3;
 
-    const createReader = (sectionList) => catchFunc((env, buffer) => {
+    const createReader = (sectionList) => catchFunc((buffer) => {
         const bitBuffer = [];
         let cursor = 0;
         let bufferOverflow = false;

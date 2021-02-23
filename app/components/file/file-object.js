@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { observer } from 'mobx-react';
 import { Item, Input, File as FileInput, Select, Checkbox, Button } from '#ui';
 import { scripts, runScript, parseASM } from '#formats/scripts';
 import { compressionFormats } from '#formats/compression';
+import ErrorMsg from './error';
 import { environment } from '#store/environment';
+import { workspace } from '#store/workspace';
 
 import { mappingFormats, dplcFormats } from '#formats/definitions';
 import { bufferToMappings, mappingsToBuffer } from '#formats/mapping';
@@ -13,23 +15,54 @@ import { inspect } from 'util';
 
 const compressionList = Object.keys(compressionFormats);
 
-export const FileObject = observer(({obj}) => {
+export const FileObject = observer(({ obj }) => {
     // TESTS!
 
-    const script = scripts.length && runScript(scripts[0].value);
+    const [mappingError, setMappingError] = useState();
+
+    const { isAbsolute } = obj; // set in store/workspace
+
+    const script = obj.format && runScript(obj.format);
+    const safeScript = script && !script.error;
+
+    function loadMappings() {
+        setMappingError();
+        if (safeScript && obj.mappings.path) {
+            const path = isAbsolute
+                ? obj.mappings.path
+                : workspace.absolutePath(obj.art.path);
+
+            try {
+                const buffer = obj.mappingsASM
+                    ? parseASM(readFileSync(path, 'utf8'))
+                    : readFileSync(path)
+
+                const mappings = script.readMappings(buffer)
+                if (mappings.error) throw mappings.error;
+                environment.mappings.replace(mappings.sprites);
+            } catch (e) {
+                setMappingError(e);
+            }
+        }
+    }
+
     // script && console.log(script);
 
     // const buffer = obj.mappings.path && readFileSync(obj.mappings.path, 'utf8');
-    const buffer = obj.mappings.path && readFileSync('/home/cake/dev/flex2_test/map_plant_s1.bin');
-    const asm = obj.mappings.path && readFileSync('/home/cake/dev/flex2_test/map_plant_s1.asm', 'utf8');
+    const buffer =
+        obj.mappings.path &&
+        readFileSync('/home/cake/dev/flex2_test/map_plant_s1.bin');
+    const asm =
+        obj.mappings.path &&
+        readFileSync('/home/cake/dev/flex2_test/map_plant_s1.asm', 'utf8');
     // console.log(buffer.length, parseASM(asm).length)
     // const t = parseASM(asm).filter((d, i) => buffer[i] !==  d)
     // console.log(t);
 
+    const mappings =
+        script && !script.error && script.readMappings(parseASM(asm));
 
-    const mappings = script && !script.error && script.readMappings(environment, parseASM(asm));
-
-    environment.mappings.replace(mappings.sprites && mappings.sprites)
+    // environment.mappings.replace(mappings.sprites && mappings.sprites)
 
     // const { frames, headerWords } = mappingsToBuffer(environment.mappings, mappingFormats['Sonic 1']);
     // const out = stuffToAsm(frames, 'LABEL', true);
@@ -37,10 +70,10 @@ export const FileObject = observer(({obj}) => {
     return (
         <div>
             <div className="file-object">
-                {script.error}
                 {mappings?.error?.message}
-                {script && !script.error &&  (<div className="menu-item">
-                    {/*
+                {script && !script.error && (
+                    <div className="menu-item">
+                        {/*
                     <pre style={{border: '1px solid black'}}>
                         {JSON.stringify(mappings, null, 4)}
                     </pre>
@@ -49,17 +82,19 @@ export const FileObject = observer(({obj}) => {
                         <pre> {inspect(parseASM(out).join`,` === [...buffer].join`,`, {depth: 9})} </pre>
                     <pre> {inspect(parseASM(out), {depth: 9})} </pre>
 
-                    */}
                     <pre> {inspect(mappings, {depth: 9})} </pre>
                     <div>
                         <pre>{asm}</pre>
                         {buffer.join` `}
                     </div>
-                </div>)}
+                    */}
+                    </div>
+                )}
                 <div className="menu-item">
                     <Item>Game Format</Item>
                     <Select options={scripts} store={obj} accessor="format" />
                 </div>
+                {script && <ErrorMsg error={script.error} />}
                 <div className="menu-item">
                     <Item color="blue">Object</Item>
                     <div className="saveload">
@@ -87,10 +122,11 @@ export const FileObject = observer(({obj}) => {
                 <div className="menu-item">
                     <Item color="yellow">Mappings</Item>
                     <div className="saveload">
-                        <Button color="green">load</Button>
+                        <Button color="green" onClick={loadMappings}>load</Button>
                         <Button color="orange">save</Button>
                     </div>
                 </div>
+                <ErrorMsg error={mappingError} />
                 <FileInput
                     label="Mappings"
                     store={obj.mappings}
@@ -106,7 +142,7 @@ export const FileObject = observer(({obj}) => {
 
                 <div className="menu-item">
                     <Item>DPLCs Enabled</Item>
-                    <Checkbox checked onChange={() => {}} />
+                    <Checkbox checked={obj.dplcs.enabled} onChange={() => {}} />
                 </div>
 
                 <div className="menu-item">

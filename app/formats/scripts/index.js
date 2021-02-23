@@ -2,17 +2,9 @@ export { scripts } from './file';
 export { parseASM } from './parse-asm';
 export { default as runScript } from './run-script';
 
-// comment = write(0, 'comment', comment)
-
-// padding / fill
+// remove @ deprecated
 // optimizations(false);
-// loadASM();
 // reverse endianness
-
-// asm read/write
-//      use padded hex address for labels
-// bin read/write
-//      can just flatten all the info
 
 // ASM parser: just read data, ignore everything else
 // use arcsecond or remove it

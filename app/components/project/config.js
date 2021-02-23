@@ -44,8 +44,8 @@ export class ProjectConfig extends Component {
                 </div>
 
                 {!!project.objects.length && <div className="panel">
-                    {project.objects.map((obj) => (
-                        <ObjectConfig obj={obj} key={obj.key}/>
+                    {project.objects.map((obj, i) => (
+                        <ObjectConfig obj={obj} key={i}/>
                     ))}
                 </div>}
 

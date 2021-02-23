@@ -8,6 +8,7 @@ export class ObjectDef {
         // if rehydrating...
         if (obj) {
             Object.assign(this, obj);
+            // @deprecated
             if (this.mappings.format != 'Custom') {
                 this.mappings.customDefinition = '';
             }
@@ -30,14 +31,14 @@ export class ObjectDef {
     @observable mappings = {
         path: '',
         format: 'Sonic 1',
-        customDefinition: '',
+        customDefinition: '', // @deprecated
         label: '',
     };
     @observable dplcs = {
         enabled: false,
         path: '',
         format: 'Sonic 1',
-        customDefinition: '',
+        customDefinition: '', // @deprecated
         label: '',
     };
 
@@ -49,14 +50,13 @@ export class ObjectDef {
         return extname(this.dplcs.path) === '.asm';
     }
 
-    @computed get key() {
-        return Math.random().toString(35).slice(2);
-    }
     @computed get linesLeft() {
         return this.palettes.reduce((a, c) => {
             return a - c.length;
         }, 4);
     }
+
+    // @deprecated
     @computed get mappingDefinition() {
         const { format, customDefinition } = this.mappings;
         if (format == 'Custom') {
@@ -66,6 +66,7 @@ export class ObjectDef {
             return mappingFormats[format];
         }
     }
+    // @deprecated
     @computed get dplcDefinition() {
         const { format, customDefinition } = this.dplcs;
         if (format == 'Custom') {
@@ -76,11 +77,13 @@ export class ObjectDef {
         }
     }
 
+    // @deprecated
     @action load = (callback) => {
         environment.loadObject(this);
         callback();
     };
 
+    // @deprecated
     @action save = (callback) => {
         environment.saveObject(this);
         callback();

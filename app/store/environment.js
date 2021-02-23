@@ -96,6 +96,8 @@ class Environment {
         return unique(activeTiles);
     }
 
+
+    // @deprecated
     @action loadObject = (obj) => {
         // load art
         if (obj.art.path) {
@@ -162,6 +164,7 @@ class Environment {
         }
     };
 
+    // @deprecated
     @action saveObject = (obj) => {
         if (obj.dplcs.enabled && !this.config.dplcsEnabled) {
             return errorMsg('Error', 'DPLCs required for saving object');
