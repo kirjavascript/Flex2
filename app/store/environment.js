@@ -117,7 +117,6 @@ class Environment {
             const mappingPath = workspace.absolutePath(obj.mappings.path);
             try {
                 const buffer = readFileSync(mappingPath);
-            console.log(asmToBin(buffer))
                 const newMappings = bufferToMappings(
                     obj.mappingsASM ? asmToBin(buffer) : buffer,
                     obj.mappingDefinition,

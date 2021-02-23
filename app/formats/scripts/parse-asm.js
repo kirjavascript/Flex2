@@ -2,6 +2,7 @@ import {
     regex,
     sequenceOf,
     str,
+    char,
     digits,
     choice,
     whitespace,

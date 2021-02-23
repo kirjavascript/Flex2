@@ -2,6 +2,10 @@ export { scripts } from './file';
 export { parseASM } from './parse-asm';
 export { default as runScript } from './run-script';
 
+    // TESTS!
+    // parseASM is slow
+    // add zero optimization
+
 // remove @ deprecated
 // optimizations(false);
 // reverse endianness

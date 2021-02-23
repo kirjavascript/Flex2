@@ -3,9 +3,13 @@ import { observer } from 'mobx-react';
 import { Item, Input, File as FileInput, Select, Checkbox, Button } from '#ui';
 import { scripts, runScript, parseASM } from '#formats/scripts';
 import { compressionFormats } from '#formats/compression';
-import ErrorMsg from './error';
 import { environment } from '#store/environment';
 import { workspace } from '#store/workspace';
+import ErrorMsg from './error';
+import SaveLoad from './save-load';
+import { promises } from 'fs';
+const fs = promises;
+
 
 import { mappingFormats, dplcFormats } from '#formats/definitions';
 import { bufferToMappings, mappingsToBuffer } from '#formats/mapping';
@@ -16,33 +20,37 @@ import { inspect } from 'util';
 const compressionList = Object.keys(compressionFormats);
 
 export const FileObject = observer(({ obj }) => {
-    // TESTS!
-
-    const [mappingError, setMappingError] = useState();
 
     const { isAbsolute } = obj; // set in store/workspace
 
     const script = obj.format && runScript(obj.format);
     const safeScript = script && !script.error;
 
-    function loadMappings() {
+    const [mappingError, setMappingError] = useState();
+
+    function loadMappings(e) {
         setMappingError();
         if (safeScript && obj.mappings.path) {
-            const path = isAbsolute
-                ? obj.mappings.path
-                : workspace.absolutePath(obj.art.path);
+            const done = SaveLoad.indicator(e);
+            requestAnimationFrame(async () => {
+                const path = isAbsolute
+                    ? obj.mappings.path
+                    : workspace.absolutePath(obj.art.path);
 
-            try {
-                const buffer = obj.mappingsASM
-                    ? parseASM(readFileSync(path, 'utf8'))
-                    : readFileSync(path)
+                try {
+                    const buffer = obj.mappingsASM
+                        ? parseASM(await fs.readFile(path, 'utf8'))
+                        : await fs.readFile(path)
 
-                const mappings = script.readMappings(buffer)
-                if (mappings.error) throw mappings.error;
-                environment.mappings.replace(mappings.sprites);
-            } catch (e) {
-                setMappingError(e);
-            }
+                    const mappings = script.readMappings(buffer)
+                    if (mappings.error) throw mappings.error;
+                    environment.mappings.replace(mappings.sprites);
+                } catch (e) {
+                    setMappingError(e);
+                } finally {
+                    done();
+                }
+            });
         }
     }
 
@@ -60,11 +68,12 @@ export const FileObject = observer(({ obj }) => {
     // console.log(t);
     //
     const sonicBIN = readFileSync('/home/cake/dev/flex2_test/Sonic.bin');
+    const sonicComp = readFileSync('/home/cake/dev/flex2_test/SonicComp.bin');
     const sonicASM = readFileSync('/home/cake/dev/flex2_test/Sonic.asm', 'utf8');
     // console.log([...sonicBIN].join`` === parseASM(sonicASM).join``)
 
-    const mappings =
-        script && !script.error && script.readMappings(sonicBIN);
+    // const mappings =
+    //     script && !script.error && script.readMappings(parseASM(sonicASM));
 
     // environment.mappings.replace(mappings.sprites && mappings.sprites)
 
@@ -86,18 +95,23 @@ export const FileObject = observer(({ obj }) => {
                     <pre> {inspect(parseASM(out), {depth: 9})} </pre>
 
 
+                    <pre> {inspect(mappings, {depth: 9})} </pre>
                     <div>
                         <pre>
-                        {inspect(parseASM(sonicASM), { depth: 9 })}
                         </pre>
 
-                    </div>
-                    */}
-                    <pre> {inspect(mappings, {depth: 9})} </pre>
-                        {/* <pre> */}
-                        {/* {inspect(mappings, { depth: 9 })} */}
-                        {/* </pre> */}
+                        <pre>
+                    </pre>
+                    // <pre> {inspect(require('mobx').toJS(environment.mappings), {depth: 9})} </pre>
 
+                        <pre> {inspect(mappings, { depth: 9 })} </pre>
+                        <pre> {inspect(parseASM(sonicASM), { depth: 9 })} </pre>
+                    </div>
+                        <pre> {inspect(parseASM(sonicASM), { depth: 9 })} </pre>
+                    */}
+
+                        <pre> {inspect([...sonicComp], { depth: 9 })} </pre>
+                        <pre> {inspect(parseASM(sonicASM), { depth: 9 })} </pre>
                     </div>
                 )}
                 <div className="menu-item">
@@ -131,10 +145,9 @@ export const FileObject = observer(({ obj }) => {
 
                 <div className="menu-item">
                     <Item color="yellow">Mappings</Item>
-                    <div className="saveload">
-                        <Button color="green" onClick={loadMappings}>load</Button>
-                        <Button color="orange">save</Button>
-                    </div>
+                    <SaveLoad
+                        load={loadMappings}
+                    />
                 </div>
                 <ErrorMsg error={mappingError} />
                 <FileInput

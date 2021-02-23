@@ -139,6 +139,8 @@ export default catchFunc((file) => {
                     const mapping = {};
                     const param = {
                         mapping,
+                        sprites,
+                        sprite,
                         ref,
                     };
                     const result = readFrame(param, frameIndex, spriteIndex);

@@ -3,7 +3,8 @@
 ## [1.0.0]
 - New mapping/DPLC engine
 - New ASM parser/writer
-- Fixed a keycombination event bug - #29
+- Fixed a keycombination event bug [#29](/../../issues/29)
+- Fixed corrupted art with some imports [#22](/../../issues/22)
 
 ## [0.0.8]
 - Changed default palette from Sonic 2 to the SCH unified palette

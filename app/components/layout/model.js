@@ -1,8 +1,8 @@
 import FlexLayout from 'flexlayout-react';
 
 window.resetLayout = () => {
-    localStorage.setItem('layout', null);
-    localStorage.setItem('layout-version', null);
+    localStorage.removeItem('layout');
+    localStorage.removeItem('layout-version');
     window.location.reload();
 };
 
