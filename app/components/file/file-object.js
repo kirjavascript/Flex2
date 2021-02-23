@@ -58,9 +58,13 @@ export const FileObject = observer(({ obj }) => {
     // console.log(buffer.length, parseASM(asm).length)
     // const t = parseASM(asm).filter((d, i) => buffer[i] !==  d)
     // console.log(t);
+    //
+    const sonicBIN = readFileSync('/home/cake/dev/flex2_test/Sonic.bin');
+    const sonicASM = readFileSync('/home/cake/dev/flex2_test/Sonic.asm', 'utf8');
+    // console.log([...sonicBIN].join`` === parseASM(sonicASM).join``)
 
     const mappings =
-        script && !script.error && script.readMappings(parseASM(asm));
+        script && !script.error && script.readMappings(sonicBIN);
 
     // environment.mappings.replace(mappings.sprites && mappings.sprites)
 
@@ -70,8 +74,7 @@ export const FileObject = observer(({ obj }) => {
     return (
         <div>
             <div className="file-object">
-                {mappings?.error?.message}
-                {script && !script.error && (
+                {safeScript && (
                     <div className="menu-item">
                         {/*
                     <pre style={{border: '1px solid black'}}>
@@ -82,12 +85,19 @@ export const FileObject = observer(({ obj }) => {
                         <pre> {inspect(parseASM(out).join`,` === [...buffer].join`,`, {depth: 9})} </pre>
                     <pre> {inspect(parseASM(out), {depth: 9})} </pre>
 
-                    <pre> {inspect(mappings, {depth: 9})} </pre>
+
                     <div>
-                        <pre>{asm}</pre>
-                        {buffer.join` `}
+                        <pre>
+                        {inspect(parseASM(sonicASM), { depth: 9 })}
+                        </pre>
+
                     </div>
                     */}
+                    <pre> {inspect(mappings, {depth: 9})} </pre>
+                        {/* <pre> */}
+                        {/* {inspect(mappings, { depth: 9 })} */}
+                        {/* </pre> */}
+
                     </div>
                 )}
                 <div className="menu-item">

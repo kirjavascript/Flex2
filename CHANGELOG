@@ -1,6 +1,9 @@
 # Changelog
 
 ## [1.0.0]
+- New mapping/DPLC engine
+- New ASM parser/writer
+- Fixed a keycombination event bug - #29
 
 ## [0.0.8]
 - Changed default palette from Sonic 2 to the SCH unified palette
