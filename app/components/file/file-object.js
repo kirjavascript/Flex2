@@ -107,10 +107,11 @@ export const FileObject = observer(({ obj }) => {
                         <pre> {inspect(mappings, { depth: 9 })} </pre>
                         <pre> {inspect(parseASM(sonicASM), { depth: 9 })} </pre>
                     </div>
-                        <pre> {inspect(parseASM(sonicASM), { depth: 9 })} </pre>
-                    */}
 
                         <pre> {inspect([...sonicComp], { depth: 9 })} </pre>
+                        <pre> {inspect(parseASM(asm), { depth: 9 })} </pre>
+                    */}
+
                         <pre> {inspect(parseASM(sonicASM), { depth: 9 })} </pre>
                     </div>
                 )}
@@ -121,17 +122,13 @@ export const FileObject = observer(({ obj }) => {
                 {script && <ErrorMsg error={script.error} />}
                 <div className="menu-item">
                     <Item color="blue">Object</Item>
-                    <div className="saveload">
-                        <Button color="green">load</Button>
-                        <Button color="orange">save</Button>
-                    </div>
+                    <SaveLoad
+                    />
                 </div>
                 <div className="menu-item">
                     <Item color="green">Art</Item>
-                    <div className="saveload">
-                        <Button color="green">load</Button>
-                        <Button color="orange">save</Button>
-                    </div>
+                    <SaveLoad
+                    />
                 </div>
                 <div className="menu-item">
                     <Item>Compression</Item>
@@ -170,10 +167,8 @@ export const FileObject = observer(({ obj }) => {
 
                 <div className="menu-item">
                     <Item color="red">DPLCs</Item>
-                    <div className="saveload">
-                        <Button color="green">load</Button>
-                        <Button color="orange">save</Button>
-                    </div>
+                    <SaveLoad
+                    />
                 </div>
                 <FileInput
                     label="Mappings"
@@ -189,10 +184,8 @@ export const FileObject = observer(({ obj }) => {
                 )}
                 <div className="menu-item">
                     <Item color="magenta">Palettes</Item>
-                    <div className="saveload">
-                        <Button color="green">load</Button>
-                        <Button color="orange">save</Button>
-                    </div>
+                    <SaveLoad
+                    />
                 </div>
                 {obj.palettes.map((palette, i) => {
                     if (palette.blank) {

@@ -2,7 +2,6 @@ import {
     regex,
     sequenceOf,
     str,
-    char,
     digits,
     choice,
     whitespace,
@@ -49,7 +48,8 @@ export function parseASM(text) {
         dc,
     ]));
 
-    const parsed = parser.run(text).result.filter(([type]) => type !== ignore);
+    // doing the whole file at once is slow, so we chunk it
+    const parsed = text.split('\n').map(line => parser.run(line).result).flat();
 
     const labelAddr = {};
     let cursor = 0;
