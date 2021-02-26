@@ -53,11 +53,22 @@ function makeOffsetTable({ read, write }) {
             for (let i = 0; i < 1e5 && i < a; i += 2) {
                 const header = read(constants.dc.w) & 0x7FFF;
                 headers.push(header);
-                if (header < a && !(header == 0)) {
+                if (header < a && !(header === 0)) {
                     a = header;
                 }
             }
             ref.global.headers = headers;
+            ref.global.cleanup.push(({ sprites }) => {
+                const clone = [...sprites];
+                sprites.splice(0, sprites.length);
+                headers.forEach(header => {
+                    if (header === 0) {
+                        sprites.push([]); // handle zero header optimization
+                    } else {
+                        sprites.push(clone.shift());
+                    }
+                });
+            });
             return constants.endSection;
         },
         ({ ref, sprite, sprites }, frameIndex, spriteIndex) => {
@@ -129,7 +140,7 @@ export default catchFunc((file) => {
             return parseInt(binString, 2);
         });
 
-        const global = {};
+        const global = { cleanup: [] };
         const sprites = [];
         sectionList.forEach(([readFrame]) => {
             read: for (let spriteIndex = 0; spriteIndex < readLimit; spriteIndex++) {
@@ -160,6 +171,8 @@ export default catchFunc((file) => {
             }
 
         });
+
+        global.cleanup.forEach(task => task({ sprites }));
 
         return {sprites};
     });

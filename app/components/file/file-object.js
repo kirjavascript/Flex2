@@ -14,6 +14,7 @@ const fs = promises;
 import { mappingFormats, dplcFormats } from '#formats/definitions';
 import { bufferToMappings, mappingsToBuffer } from '#formats/mapping';
 import { asmToBin, stuffToAsm } from '#formats/asm';
+import { toJS } from 'mobx';
 import { readFileSync } from 'fs';
 import { inspect } from 'util';
 
@@ -59,21 +60,21 @@ export const FileObject = observer(({ obj }) => {
     // const buffer = obj.mappings.path && readFileSync(obj.mappings.path, 'utf8');
     const buffer =
         obj.mappings.path &&
-        readFileSync('/home/cake/dev/flex2_test/map_plant_s1.bin');
+        readFileSync('/home/cake/dev/flex2_test/res/map_plant_s1.bin');
     const asm =
         obj.mappings.path &&
-        readFileSync('/home/cake/dev/flex2_test/map_plant_s1.asm', 'utf8');
+        readFileSync('/home/cake/dev/flex2_test/res/map_plant_s1.asm', 'utf8');
     // console.log(buffer.length, parseASM(asm).length)
     // const t = parseASM(asm).filter((d, i) => buffer[i] !==  d)
     // console.log(t);
     //
-    const sonicBIN = readFileSync('/home/cake/dev/flex2_test/Sonic.bin');
-    const sonicComp = readFileSync('/home/cake/dev/flex2_test/SonicComp.bin');
-    const sonicASM = readFileSync('/home/cake/dev/flex2_test/Sonic.asm', 'utf8');
+    const sonicBIN = readFileSync('/home/cake/dev/flex2_test/res/Sonic.bin');
+    const sonicComp = readFileSync('/home/cake/dev/flex2_test/res/SonicComp.bin');
+    const sonicASM = readFileSync('/home/cake/dev/flex2_test/res/Sonic.asm', 'utf8');
     // console.log([...sonicBIN].join`` === parseASM(sonicASM).join``)
 
-    // const mappings =
-    //     script && !script.error && script.readMappings(parseASM(sonicASM));
+    const mappings =
+        script && !script.error && script.readMappings(sonicBIN);
 
     // environment.mappings.replace(mappings.sprites && mappings.sprites)
 
@@ -109,10 +110,14 @@ export const FileObject = observer(({ obj }) => {
                     </div>
 
                         <pre> {inspect([...sonicComp], { depth: 9 })} </pre>
+
                         <pre> {inspect(parseASM(asm), { depth: 9 })} </pre>
+                        <pre> {inspect([...sonicBIN], { depth: 9 })} </pre>
+                        <pre> {inspect(parseASM(sonicASM), { depth: 9 })} </pre>
                     */}
 
-                        <pre> {inspect(parseASM(sonicASM), { depth: 9 })} </pre>
+                        <pre> {inspect(mappings, { depth: 9 })} </pre>
+                        <pre> {inspect(toJS(environment.mappings), { depth: 9 })} </pre>
                     </div>
                 )}
                 <div className="menu-item">

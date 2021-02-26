@@ -3,8 +3,8 @@ export { parseASM } from './parse-asm';
 export { default as runScript } from './run-script';
 
     // TESTS!
-    // parseASM is slow
     // add zero optimization
+    // sonic.asm
 
 // remove @ deprecated
 // optimizations(false);
