@@ -49,18 +49,22 @@ mappings([
     ],
 ]);
 
-dplcs({
-    header: offsetTable(dc.w),
-    sprites: [
-        (dplc, i) => {
-            if (i === 0) read(dc.b);
-            dplc.size = read(nybble);
-            dplc.art = read(nybble * 3);
+dplcs([
+    offsetTable(dc.w),
+    [
+        ({ mapping, ref }, i) => {
+            if (i === 0) {
+                ref.quantity = read(dc.b);
+                if (ref.quantity === 0) return skipFrame;
+            }
+            mapping.size = read(nybble) + 1;
+            mapping.art = read(nybble * 3);
+            if (i === ref.quantity - 1) return endFrame;
         },
-        (dplc, i) => {
-            if (i === 0) write(dc.b, dplc.parent.length);
-            write(nybble, dplc.size);
-            write(nybblr * 3, dplc.art);
+        ({ mapping, sprite }, i) => {
+            if (i === 0) write(dc.b, sprite.length);
+            write(nybble, mapping.size);
+            write(nybblr * 3, mapping.art);
         },
     ],
-});
+]);

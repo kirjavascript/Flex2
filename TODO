@@ -36,8 +36,6 @@ make decompression threaded
 ctrl+wheel for horiz scroll
 
 FILE MENU
-new / load save  on each thing
-load all / save all
 offset / size
 reuse for project
 
@@ -48,9 +46,6 @@ NEW MAPPING
 add checkbox to the modal (autodismiss [x])
 
 CUSTOM FORMATS
-
-TASKS
-buffer is deprecated on save
 ==
 ==
 ROTSPRITE

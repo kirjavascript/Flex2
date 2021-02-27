@@ -14,7 +14,7 @@ SaveLoad.indicator = (e) => {
     if (e) {
         const { textContent } = e.target;
         e.target.textContent = '...';
-        e.persist();
+        e.persist?.();
 
         return () => {
             e.target.textContent = textContent;

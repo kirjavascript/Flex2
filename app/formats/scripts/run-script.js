@@ -111,7 +111,7 @@ export default catchFunc((file) => {
 
     const readLimit = 1e3;
 
-    const createReader = (sectionList) => catchFunc((buffer) => {
+    const createReader = (sectionList = []) => catchFunc((buffer) => {
         const bitBuffer = [];
         let cursor = 0;
         let bufferOverflow = false;
@@ -159,9 +159,12 @@ export default catchFunc((file) => {
                         ref,
                     };
                     const result = readFrame(param, frameIndex, spriteIndex);
-                    mapping.priority = Boolean(mapping.priority);
-                    mapping.vflip = Boolean(mapping.vflip);
-                    mapping.hflip = Boolean(mapping.hflip);
+                    if ('priority' in mapping)
+                        mapping.priority = Boolean(mapping.priority);
+                    if ('vflip' in mapping)
+                        mapping.vflip = Boolean(mapping.vflip);
+                    if ('hflip' in mapping)
+                        mapping.hflip = Boolean(mapping.hflip);
                     if (result === constants.endSection || bufferOverflow) {
                         break read;
                     }
@@ -187,7 +190,7 @@ export default catchFunc((file) => {
     const readMappings = createReader(mappingArgs[0]);
     const readDPLCs = createReader(dplcArgs[0]);
 
-    const createWriter = (sectionList) => catchFunc((env) => {
+    const createWriter = (sectionList = []) => catchFunc((env) => {
         const global = {};
         const sections = sectionList.map(([, writeFrame]) => {
             const sprites = toJS(env.mappings);

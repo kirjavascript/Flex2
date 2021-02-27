@@ -47,9 +47,12 @@ export const FileObject = observer(({ obj }) => {
         }
     }
 
-    const [objectError, setObjectError] = useState();
+    const loadRef = useRef();
 
-    function loadObject(e) {
+    function loadObject() {
+        loadArt({ target: loadRef.current.childNodes[0] });
+        loadMappings({ target: loadRef.current.childNodes[1] });
+        loadDPLCs({ target: loadRef.current.childNodes[2] });
     }
 
     function saveObject(e) {
@@ -86,6 +89,21 @@ export const FileObject = observer(({ obj }) => {
         });
     }
 
+    const [dplcError, setDPLCError] = useState();
+
+    function loadDPLCs(e) {
+        ioWrap(obj.dplcs.path, setDPLCError, e, async path => {
+            const buffer = obj.dplcsASM
+                ? parseASM(await fs.readFile(path, 'utf8'))
+                : await fs.readFile(path)
+
+            const dplcs = script.readDPLCs(buffer)
+            if (dplcs.error) throw dplcs.error;
+            console.log(dplcs)
+            environment.dplcs.replace(dplcs.sprites);
+        });
+    }
+
     // script && console.log(script);
 
     // const buffer = obj.mappings.path && readFileSync(obj.mappings.path, 'utf8');
@@ -100,12 +118,13 @@ export const FileObject = observer(({ obj }) => {
     // console.log(t);
     //
     const sonicBIN = readFileSync('/home/cake/dev/flex2_test/res/Sonic2.bin');
+    const sonicDPLC = readFileSync('/home/cake/dev/flex2_test/res/SonicDPLC.asm', 'utf8');
     // const sonicASM = readFileSync('/home/cake/dev/flex2_test/res/Sonic.asm', 'utf8');
     // const sonicFlex = readFileSync('/home/cake/dev/flex2_test/res/SonicFlex.asm', 'utf8');
     // console.log([...sonicBIN].join`` === parseASM(sonicASM).join``)
 
     const mappings =
-        script && !script.error && script.readMappings(sonicBIN);
+        script && !script.error && script.readDPLCs(parseASM(sonicDPLC));
 
     // environment.mappings.replace(mappings.sprites && mappings.sprites)
 
@@ -151,9 +170,10 @@ export const FileObject = observer(({ obj }) => {
 
                         <pre> {inspect([...sonicComp], { depth: 9, maxArrayLength: Infinity })} </pre>
                         <pre> {inspect([...sonicBIN], { depth: 9, maxArrayLength: Infinity })} </pre>
-                        <pre> {inspect(mappings, { depth: 9 })} </pre>
                     */}
 
+                        <pre> {inspect(mappings, { depth: 9 })} </pre>
+                    <pre> {inspect(toJS(environment.dplcs), {depth: 9})} </pre>
                     </div>
                 )}
                 <div className="menu-item">
@@ -163,15 +183,17 @@ export const FileObject = observer(({ obj }) => {
                 {script && <ErrorMsg error={script.error} />}
                 <div className="menu-item">
                     <Item color="blue">Object</Item>
-                    <div>
-                        {Array.from({ length: 4 }, () => <span />)}
+                    <div className="load-ref">
+                        <div ref={loadRef}>
+                            {Array.from({ length: 4 }, (_, i) => <span key={i} />)}
+                        </div>
                         <SaveLoad
                             load={loadObject}
                             save={saveObject}
-                        />
+                        >
+                        </SaveLoad>
                     </div>
                 </div>
-                <ErrorMsg error={objectError} />
                 <div className="menu-item">
                     <Item color="green">Art</Item>
                     <SaveLoad
@@ -217,26 +239,32 @@ export const FileObject = observer(({ obj }) => {
 
                 <div className="menu-item">
                     <Item>DPLCs Enabled</Item>
-                    <Checkbox checked={obj.dplcs.enabled} onChange={() => {}} />
+                    <Checkbox checked={obj.dplcs.enabled} onChange={() => {
+                        obj.dplcs.enabled = !obj.dplcs.enabled;
+                    }} />
                 </div>
-
-                <div className="menu-item">
-                    <Item color="red">DPLCs</Item>
-                    <SaveLoad
-                    />
-                </div>
-                <FileInput
-                    label="Mappings"
-                    store={obj.dplcs}
-                    accessor="path"
-                    absolute={obj.isAbsolute}
-                />
-                {obj.dplcsASM && (
+                {obj.dplcs.enabled && (<>
                     <div className="menu-item">
-                        <Item>ASM Label</Item>
-                        <Input store={obj.dplcs} accessor="label" />
+                        <Item color="red">DPLCs</Item>
+                        <SaveLoad
+                            load={loadDPLCs}
+                        />
                     </div>
-                )}
+                    <ErrorMsg error={dplcError} />
+                    <FileInput
+                        label="Mappings"
+                        store={obj.dplcs}
+                        accessor="path"
+                        absolute={obj.isAbsolute}
+                    />
+                    {obj.dplcsASM && (
+                        <div className="menu-item">
+                            <Item>ASM Label</Item>
+                            <Input store={obj.dplcs} accessor="label" />
+                        </div>
+                    )}
+                </>)}
+
                 <div className="menu-item">
                     <Item color="magenta">Palettes</Item>
                     <SaveLoad
@@ -317,10 +345,3 @@ export const FileObject = observer(({ obj }) => {
         </div>
     );
 });
-
-// computed script for objectdef for format
-//
-// load/save for everything - add in environment
-// buttons for shit
-// fix up project screen to always be open
-// size / offset

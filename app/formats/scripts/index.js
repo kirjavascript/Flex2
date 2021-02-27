@@ -5,6 +5,8 @@ export { default as runScript } from './run-script';
     // TESTS!
     // add zero optimization
     // sonic.asm
+// project screen always open
+// art ffset
 
 // remove @ deprecated
 // optimizations(false);
