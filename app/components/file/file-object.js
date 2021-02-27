@@ -45,8 +45,7 @@ export const FileObject = observer(({ obj }) => {
 
                     const mappings = script.readMappings(buffer)
                     if (mappings.error) throw mappings.error;
-                    console.log(mappings);
-                    // environment.mappings.replace(mappings.sprites);
+                    environment.mappings.replace(mappings.sprites);
                 } catch (e) {
                     setMappingError(e);
                 } finally {
@@ -76,7 +75,7 @@ export const FileObject = observer(({ obj }) => {
     // console.log([...sonicBIN].join`` === parseASM(sonicASM).join``)
 
     const mappings =
-        script && !script.error && script.readMappings(parseASM(sonicFlex));
+        script && !script.error && script.readMappings(sonicComp);
 
     // environment.mappings.replace(mappings.sprites && mappings.sprites)
 
@@ -115,10 +114,14 @@ export const FileObject = observer(({ obj }) => {
 
                         <pre> {inspect(parseASM(asm), { depth: 9 })} </pre>
                         <pre> {inspect([...sonicBIN], { depth: 9 })} </pre>
-                    */}
-
-                        <pre> {inspect(mappings, { depth: 9 })} </pre>
                         <pre> {inspect(toJS(environment.mappings), { depth: 9 })} </pre>
+                        <pre> {inspect(parseASM(sonicASM), { depth: 9, maxArrayLength: Infinity })} </pre>
+                        <pre> {inspect(mappings, { depth: 9 })} </pre>
+                        <pre> {inspect(parseASM(sonicASM), { depth: 9, maxArrayLength: Infinity })} </pre>
+                    */}
+                        <pre> {inspect([...sonicComp], { depth: 9, maxArrayLength: Infinity })} </pre>
+                        <pre> {inspect([...sonicBIN], { depth: 9, maxArrayLength: Infinity })} </pre>
+
                     </div>
                 )}
                 <div className="menu-item">

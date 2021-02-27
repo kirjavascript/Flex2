@@ -5,6 +5,7 @@ const binary = Symbol('binary');
 const address = Symbol('address');
 const signed = Symbol('signed');
 const endFrame = Symbol('endFrame');
+const skipFrame = Symbol('skipFrame');
 const endSection = Symbol('endSection');
 
 export const constants = {
@@ -18,6 +19,7 @@ export const constants = {
     address,
     signed,
     endFrame,
+    skipFrame,
     endSection,
 };
 
@@ -57,7 +59,6 @@ function makeOffsetTable({ read, write }) {
                     a = header;
                 }
             }
-            console.log(headers);
             ref.global.cleanup.push(({ sprites }) => {
                 const clone = [...sprites];
                 sprites.splice(0, sprites.length);
@@ -160,6 +161,9 @@ export default catchFunc((file) => {
                     mapping.hflip = Boolean(mapping.hflip);
                     if (result === constants.endSection || bufferOverflow) {
                         break read;
+                    }
+                    if (result === constants.skipFrame) {
+                        break;
                     }
                     sprite.push(mapping);
                     if (result === constants.endFrame) {

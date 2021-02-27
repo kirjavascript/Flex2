@@ -9,6 +9,7 @@ const {
     dc,
     nybble,
     endFrame,
+    skipFrame,
     signed,
 } = Flex2;
 
@@ -16,7 +17,10 @@ mappings([
     offsetTable(dc.w, quantity => (quantity * 5) + 1),
     [
         ({ mapping, ref }, i) => {
-            if (i === 0) ref.endIndex = read(dc.b);
+            if (i === 0) {
+                ref.quantity = read(dc.b);
+                if (ref.quantity === 0) return skipFrame;
+            }
             mapping.top = read(dc.b, signed);
             read(nybble);
             mapping.width = read(2) + 1;
@@ -27,7 +31,7 @@ mappings([
             mapping.hflip = read(1);
             mapping.art = read(11);
             mapping.left = read(dc.b, signed);
-            if (i === ref.endIndex - 1) return endFrame;
+            if (i === ref.quantity - 1) return endFrame;
         },
         ({ mapping, sprite }, i) => {
             if (i === 0) write(dc.b, sprite.length);
