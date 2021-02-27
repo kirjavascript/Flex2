@@ -58,24 +58,23 @@ export const FileObject = observer(({ obj }) => {
     // script && console.log(script);
 
     // const buffer = obj.mappings.path && readFileSync(obj.mappings.path, 'utf8');
-    const buffer =
-        obj.mappings.path &&
-        readFileSync('/home/cake/dev/flex2_test/res/map_plant_s1.bin');
-    const asm =
-        obj.mappings.path &&
-        readFileSync('/home/cake/dev/flex2_test/res/map_plant_s1.asm', 'utf8');
+    // const buffer =
+    //     obj.mappings.path &&
+    //     readFileSync('/home/cake/dev/flex2_test/res/map_plant_s1.bin');
+    // const asm =
+    //     obj.mappings.path &&
+    //     readFileSync('/home/cake/dev/flex2_test/res/map_plant_s1.asm', 'utf8');
     // console.log(buffer.length, parseASM(asm).length)
     // const t = parseASM(asm).filter((d, i) => buffer[i] !==  d)
     // console.log(t);
     //
-    const sonicBIN = readFileSync('/home/cake/dev/flex2_test/res/Sonic.bin');
-    const sonicComp = readFileSync('/home/cake/dev/flex2_test/res/SonicComp.bin');
-    const sonicASM = readFileSync('/home/cake/dev/flex2_test/res/Sonic.asm', 'utf8');
-    const sonicFlex = readFileSync('/home/cake/dev/flex2_test/res/SonicFlex.asm', 'utf8');
+    const sonicBIN = readFileSync('/home/cake/dev/flex2_test/res/Sonic2.bin');
+    // const sonicASM = readFileSync('/home/cake/dev/flex2_test/res/Sonic.asm', 'utf8');
+    // const sonicFlex = readFileSync('/home/cake/dev/flex2_test/res/SonicFlex.asm', 'utf8');
     // console.log([...sonicBIN].join`` === parseASM(sonicASM).join``)
 
     const mappings =
-        script && !script.error && script.readMappings(sonicComp);
+        script && !script.error && script.readMappings(sonicBIN);
 
     // environment.mappings.replace(mappings.sprites && mappings.sprites)
 
@@ -118,9 +117,11 @@ export const FileObject = observer(({ obj }) => {
                         <pre> {inspect(parseASM(sonicASM), { depth: 9, maxArrayLength: Infinity })} </pre>
                         <pre> {inspect(mappings, { depth: 9 })} </pre>
                         <pre> {inspect(parseASM(sonicASM), { depth: 9, maxArrayLength: Infinity })} </pre>
-                    */}
+
                         <pre> {inspect([...sonicComp], { depth: 9, maxArrayLength: Infinity })} </pre>
                         <pre> {inspect([...sonicBIN], { depth: 9, maxArrayLength: Infinity })} </pre>
+                        <pre> {inspect(mappings, { depth: 9 })} </pre>
+                    */}
 
                     </div>
                 )}
