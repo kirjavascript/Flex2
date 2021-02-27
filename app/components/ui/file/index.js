@@ -74,8 +74,18 @@ export class File extends Component {
             <div className="file" {...otherProps}>
                 {accessor && store[accessor] ? (
                     <div className="file-info">
-                        <Input store={store} accessor={accessor} />
-                        <span onClick={this.onEmpty} className="clear">
+                        <Input
+                            store={store}
+                            accessor={accessor}
+                            className={dragging ? 'dragging' : ''}
+                            onDragOver={this.onDragOver}
+                            onDragLeave={this.onDragLeave}
+                            onDrop={this.onDrop}
+                        />
+                        <span
+                            onClick={this.onEmpty}
+                            className="clear"
+                        >
                             &nbsp;(clear)
                         </span>
                     </div>

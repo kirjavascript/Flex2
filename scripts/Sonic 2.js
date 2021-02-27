@@ -14,7 +14,7 @@ const {
 } = Flex2;
 
 mappings([
-    offsetTable(dc.w, quantity => (quantity * 8) + 1),
+    offsetTable(dc.w, quantity => (quantity * 8) + 2),
     [
         ({ mapping, ref }, i) => {
             if (i === 0) {

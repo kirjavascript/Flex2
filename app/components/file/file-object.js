@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { observer } from 'mobx-react';
 import { Item, Input, File as FileInput, Select, Checkbox, Button } from '#ui';
 import { scripts, runScript, parseASM } from '#formats/scripts';
@@ -47,6 +47,14 @@ export const FileObject = observer(({ obj }) => {
         }
     }
 
+    const [objectError, setObjectError] = useState();
+
+    function loadObject(e) {
+    }
+
+    function saveObject(e) {
+    }
+
     const [artError, setArtError] = useState();
 
     function loadArt(e) {
@@ -59,7 +67,8 @@ export const FileObject = observer(({ obj }) => {
 
     function saveArt(e) {
         ioWrap(obj.art.path, setArtError, e, async path => {
-            await writeFile(path, tilesToBuffer(environment.tiles));
+            const tiles = tilesToBuffer(environment.tiles, obj.art.compression);
+            await fs.writeFile(path, tiles);
         });
     }
 
@@ -154,9 +163,15 @@ export const FileObject = observer(({ obj }) => {
                 {script && <ErrorMsg error={script.error} />}
                 <div className="menu-item">
                     <Item color="blue">Object</Item>
-                    <SaveLoad
-                    />
+                    <div>
+                        {Array.from({ length: 4 }, () => <span />)}
+                        <SaveLoad
+                            load={loadObject}
+                            save={saveObject}
+                        />
+                    </div>
                 </div>
+                <ErrorMsg error={objectError} />
                 <div className="menu-item">
                     <Item color="green">Art</Item>
                     <SaveLoad
@@ -173,7 +188,12 @@ export const FileObject = observer(({ obj }) => {
                     />
                 </div>
                 <ErrorMsg error={artError} />
-                <FileInput label="Art" store={obj.art} accessor="path" />
+                <FileInput
+                    label="Art"
+                    store={obj.art}
+                    accessor="path"
+                    absolute={obj.isAbsolute}
+                />
 
                 <div className="menu-item">
                     <Item color="yellow">Mappings</Item>
