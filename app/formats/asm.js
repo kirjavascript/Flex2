@@ -1,3 +1,4 @@
+// @deprecated
 import chunk from 'lodash/chunk';
 
 const sizeLookup = {

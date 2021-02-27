@@ -4,6 +4,7 @@ import { Item, Input, File as FileInput, Select, Checkbox, Button } from '#ui';
 import { scripts, runScript, parseASM } from '#formats/scripts';
 import { compressionFormats } from '#formats/compression';
 import { bufferToTiles, tilesToBuffer } from '#formats/art';
+import { buffersToColors, colorsToBuffers } from '#formats/palette';
 import { environment } from '#store/environment';
 import { workspace } from '#store/workspace';
 import ErrorMsg from './error';
@@ -22,6 +23,8 @@ import { inspect } from 'util';
 const compressionList = Object.keys(compressionFormats);
 
 export const FileObject = observer(({ obj }) => {
+
+    scripts.length; // react to script updates
 
     const { isAbsolute } = obj; // set in store/workspace
 
@@ -57,14 +60,14 @@ export const FileObject = observer(({ obj }) => {
         }
     }
 
-    function saveObject(e) {
+    function saveObject() {
     }
 
     const [artError, setArtError] = useState();
 
     function loadArt(e) {
         ioWrap(obj.art.path, setArtError, e, async path => {
-            const buffer = await fs.readFile(path);
+            const buffer = (await fs.readFile(path)).slice(obj.art.offset || 0);
             const tiles = bufferToTiles(buffer, obj.art.compression);
             environment.tiles.replace(tiles);
         });
@@ -102,6 +105,35 @@ export const FileObject = observer(({ obj }) => {
             const dplcs = script.readDPLCs(buffer)
             if (dplcs.error) throw dplcs.error;
             environment.dplcs.replace(dplcs.sprites);
+        });
+    }
+
+    const [paletteError, setPaletteError] = useState();
+
+    function loadPalettes(e) {
+        ioWrap(true, setPaletteError, e, async ()  => {
+            let cursor = 0;
+            for (let i = 0; i < obj.palettes.length; i++) {
+                const { path: palPath, length, blank } = obj.palettes[i];
+
+                if (blank || cursor >= 4) {
+                    cursor += length;
+                    continue;
+                }
+                const path = isAbsolute
+                    ? palPath
+                    : workspace.absolutePath(palPath);
+                buffersToColors([{
+                    buffer: await fs.readFile(path),
+                    length,
+                }]).forEach(line => {
+                    if (cursor < 4) {
+                        environment.palettes[cursor] = line;
+                        cursor ++;
+                    }
+                });
+
+            }
         });
     }
 
@@ -210,6 +242,13 @@ export const FileObject = observer(({ obj }) => {
                         accessor="compression"
                     />
                 </div>
+                <div className="menu-item">
+                    <Item>Offset</Item>
+                    <Input
+                        store={obj.art}
+                        accessor="offset"
+                    />
+                </div>
                 <ErrorMsg error={artError} />
                 <FileInput
                     label="Art"
@@ -269,8 +308,10 @@ export const FileObject = observer(({ obj }) => {
                 <div className="menu-item">
                     <Item color="magenta">Palettes</Item>
                     <SaveLoad
+                        load={loadPalettes}
                     />
                 </div>
+                <ErrorMsg error={paletteError} />
                 {obj.palettes.map((palette, i) => {
                     if (palette.blank) {
                         return (
@@ -327,6 +368,7 @@ export const FileObject = observer(({ obj }) => {
                                     length: 1,
                                 });
                             }}
+                            absolute={obj.isAbsolute}
                         >
                             <div
                                 className="dashed-box new"

@@ -27,6 +27,7 @@ export class ObjectDef {
     @observable art = {
         path: '',
         compression: 'Uncompressed',
+        offset: 0,
     };
     @observable mappings = {
         path: '',

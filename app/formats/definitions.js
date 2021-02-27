@@ -1,3 +1,4 @@
+// @deprecated
 import { errorMsg } from '#util/dialog';
 
 export const mappingFormats = {

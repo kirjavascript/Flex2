@@ -1,3 +1,5 @@
+// @deprecated
+
 import { parseDef } from './definitions';
 import { errorMsg } from '#util/dialog';
 import flattenDeep from 'lodash/flattenDeep';

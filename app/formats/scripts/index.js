@@ -2,10 +2,10 @@ export { scripts } from './file';
 export { parseASM } from './parse-asm';
 export { default as runScript } from './run-script';
 
-    // TESTS!
     // add zero optimization
-    // sonic.asm
 // project screen always open
+// latest projects / ones in the root
+// ensSprite/emptySprite
 // art ffset
 
 // remove @ deprecated

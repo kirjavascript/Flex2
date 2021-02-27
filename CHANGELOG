@@ -1,9 +1,12 @@
 # Changelog
 
 ## [1.0.0]
-- New File menu
 - New mapping/DPLC engine
 - New ASM parser/writer
+- Added File menu
+    - Save/Load individual assets
+    - Art offset
+    - Blank entries in palette line
 - Fixed a keycombination event bug [#29](/../../issues/29)
 - Fixed corrupted art with transparent PNGs [#22](/../../issues/22)
 
