@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import { Item, Input, File as FileInput, Select, Checkbox, Button } from '#ui';
 import { scripts, runScript, parseASM } from '#formats/scripts';
 import { compressionFormats } from '#formats/compression';
+import { bufferToTiles, tilesToBuffer } from '#formats/art';
 import { environment } from '#store/environment';
 import { workspace } from '#store/workspace';
 import ErrorMsg from './error';
@@ -27,32 +28,53 @@ export const FileObject = observer(({ obj }) => {
     const script = obj.format && runScript(obj.format);
     const safeScript = script && !script.error;
 
-    const [mappingError, setMappingError] = useState();
-
-    function loadMappings(e) {
-        setMappingError();
-        if (safeScript && obj.mappings.path) {
+    function ioWrap(filePath, setError, e, cb) {
+        setError();
+        if (safeScript && filePath) {
             const done = SaveLoad.indicator(e);
             requestAnimationFrame(async () => {
                 const path = isAbsolute
-                    ? obj.mappings.path
-                    : workspace.absolutePath(obj.art.path);
-
+                    ? filePath
+                    : workspace.absolutePath(filePath);
                 try {
-                    const buffer = obj.mappingsASM
-                        ? parseASM(await fs.readFile(path, 'utf8'))
-                        : await fs.readFile(path)
-
-                    const mappings = script.readMappings(buffer)
-                    if (mappings.error) throw mappings.error;
-                    environment.mappings.replace(mappings.sprites);
+                    await cb(path);
                 } catch (e) {
-                    setMappingError(e);
+                    setError(e);
                 } finally {
                     done();
                 }
             });
         }
+    }
+
+    const [artError, setArtError] = useState();
+
+    function loadArt(e) {
+        ioWrap(obj.art.path, setArtError, e, async path => {
+            const buffer = await fs.readFile(path);
+            const tiles = bufferToTiles(buffer, obj.art.compression);
+            environment.tiles.replace(tiles);
+        });
+    }
+
+    function saveArt(e) {
+        ioWrap(obj.art.path, setArtError, e, async path => {
+            await writeFile(path, tilesToBuffer(environment.tiles));
+        });
+    }
+
+    const [mappingError, setMappingError] = useState();
+
+    function loadMappings(e) {
+        ioWrap(obj.mappings.path, setMappingError, e, async path => {
+            const buffer = obj.mappingsASM
+                ? parseASM(await fs.readFile(path, 'utf8'))
+                : await fs.readFile(path)
+
+            const mappings = script.readMappings(buffer)
+            if (mappings.error) throw mappings.error;
+            environment.mappings.replace(mappings.sprites);
+        });
     }
 
     // script && console.log(script);
@@ -138,6 +160,8 @@ export const FileObject = observer(({ obj }) => {
                 <div className="menu-item">
                     <Item color="green">Art</Item>
                     <SaveLoad
+                        load={loadArt}
+                        save={saveArt}
                     />
                 </div>
                 <div className="menu-item">
@@ -148,6 +172,7 @@ export const FileObject = observer(({ obj }) => {
                         accessor="compression"
                     />
                 </div>
+                <ErrorMsg error={artError} />
                 <FileInput label="Art" store={obj.art} accessor="path" />
 
                 <div className="menu-item">

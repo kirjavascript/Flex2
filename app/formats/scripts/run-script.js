@@ -52,7 +52,7 @@ function makeOffsetTable({ read, write }) {
         ({ ref }) => {
             let a = 0x7FFF;
             const headers = [];
-            for (let i = 0; i < 1e6 && i < a; i += 2) {
+            for (let i = 0; i < 1e5 && i < a; i += 2) {
                 const header = read(constants.dc.w) & 0x7FFF;
                 headers.push(header);
                 if (header < a && !(header === 0)) {
@@ -66,7 +66,10 @@ function makeOffsetTable({ read, write }) {
                     if (header === 0) {
                         sprites.push([]); // handle zero header optimization
                     } else {
-                        sprites.push(clone.shift());
+                        const sprite = clone.shift();
+                        if (sprite) {
+                            sprites.push(sprite);
+                        }
                     }
                 });
             });
