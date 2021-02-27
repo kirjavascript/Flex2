@@ -52,7 +52,9 @@ export const FileObject = observer(({ obj }) => {
     function loadObject() {
         loadArt({ target: loadRef.current.childNodes[0] });
         loadMappings({ target: loadRef.current.childNodes[1] });
-        loadDPLCs({ target: loadRef.current.childNodes[2] });
+        if (obj.dplcs.enabled) {
+            loadDPLCs({ target: loadRef.current.childNodes[2] });
+        }
     }
 
     function saveObject(e) {
@@ -99,7 +101,6 @@ export const FileObject = observer(({ obj }) => {
 
             const dplcs = script.readDPLCs(buffer)
             if (dplcs.error) throw dplcs.error;
-            console.log(dplcs)
             environment.dplcs.replace(dplcs.sprites);
         });
     }
@@ -117,14 +118,14 @@ export const FileObject = observer(({ obj }) => {
     // const t = parseASM(asm).filter((d, i) => buffer[i] !==  d)
     // console.log(t);
     //
-    const sonicBIN = readFileSync('/home/cake/dev/flex2_test/res/Sonic2.bin');
-    const sonicDPLC = readFileSync('/home/cake/dev/flex2_test/res/SonicDPLC.asm', 'utf8');
+    // const sonicBIN = readFileSync('/home/cake/dev/flex2_test/res/Sonic2.bin');
+    // const sonicDPLC = readFileSync('/home/cake/dev/flex2_test/res/SonicDPLC.asm', 'utf8');
     // const sonicASM = readFileSync('/home/cake/dev/flex2_test/res/Sonic.asm', 'utf8');
     // const sonicFlex = readFileSync('/home/cake/dev/flex2_test/res/SonicFlex.asm', 'utf8');
     // console.log([...sonicBIN].join`` === parseASM(sonicASM).join``)
 
-    const mappings =
-        script && !script.error && script.readDPLCs(parseASM(sonicDPLC));
+    // const mappings =
+    //     script && !script.error && script.readDPLCs(parseASM(sonicDPLC));
 
     // environment.mappings.replace(mappings.sprites && mappings.sprites)
 
@@ -170,10 +171,10 @@ export const FileObject = observer(({ obj }) => {
 
                         <pre> {inspect([...sonicComp], { depth: 9, maxArrayLength: Infinity })} </pre>
                         <pre> {inspect([...sonicBIN], { depth: 9, maxArrayLength: Infinity })} </pre>
-                    */}
-
                         <pre> {inspect(mappings, { depth: 9 })} </pre>
                     <pre> {inspect(toJS(environment.dplcs), {depth: 9})} </pre>
+                    */}
+
                     </div>
                 )}
                 <div className="menu-item">

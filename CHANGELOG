@@ -1,6 +1,7 @@
 # Changelog
 
 ## [1.0.0]
+- New File menu
 - New mapping/DPLC engine
 - New ASM parser/writer
 - Fixed a keycombination event bug [#29](/../../issues/29)

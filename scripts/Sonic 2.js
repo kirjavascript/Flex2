@@ -27,8 +27,8 @@ mappings([
             mapping.height = read(2) + 1;
             mapping.priority = read(1);
             mapping.palette = read(2);
-            mapping.yflip = read(1);
-            mapping.xflip = read(1);
+            mapping.vflip = read(1);
+            mapping.hflip = read(1);
             mapping.art = read(11);
             read(dc.w);
             mapping.left = read(dc.w, signed);
@@ -45,8 +45,8 @@ mappings([
             // 1 player
             write(1, mapping.priority);
             write(2, mapping.palette);
-            write(1, mapping.yflip);
-            write(1, mapping.xflip);
+            write(1, mapping.vflip);
+            write(1, mapping.hflip);
             write(11, mapping.offset);
             // 2 player
             write(1, mapping.priority);
@@ -60,18 +60,22 @@ mappings([
     ],
 ]);
 
-dplcs({
-    header: offsetTable(dc.w),
-    sprites: [
-        (dplc, i) => {
-            if (i === 0) read(dc.b);
-            dplc.size = read(nybble);
-            dplc.art = read(nybble * 3);
+dplcs([
+    offsetTable(dc.w),
+    [
+        ({ mapping, ref }, i) => {
+            if (i === 0) {
+                ref.quantity = read(dc.w);
+                if (ref.quantity === 0) return skipFrame;
+            }
+            mapping.size = read(nybble) + 1;
+            mapping.art = read(nybble * 3);
+            if (i === ref.quantity - 1) return endFrame;
         },
-        (dplc, i) => {
-            if (i === 0) write(dc.b, dplc.parent.length);
-            write(nybble, dplc.size);
-            write(nybblr * 3, dplc.art);
+        ({ mapping, sprite }, i) => {
+            if (i === 0) write(dc.w, sprite.length);
+            write(nybble, mapping.size);
+            write(nybblr * 3, mapping.art);
         },
     ],
-});
+]);
