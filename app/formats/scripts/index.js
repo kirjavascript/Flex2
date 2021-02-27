@@ -2,7 +2,8 @@ export { scripts } from './file';
 export { parseASM } from './parse-asm';
 export { default as runScript } from './run-script';
 
-    // add zero optimization
+    // add zero optimization (wite)
+// save/load DPLC enable / disable
 // project screen always open
 // latest projects / ones in the root
 // ensSprite/emptySprite

@@ -58,6 +58,7 @@ export const FileObject = observer(({ obj }) => {
         if (obj.dplcs.enabled) {
             loadDPLCs({ target: loadRef.current.childNodes[2] });
         }
+        loadPalettes({ target: loadRef.current.childNodes[3] });
     }
 
     function saveObject() {
@@ -115,7 +116,6 @@ export const FileObject = observer(({ obj }) => {
             let cursor = 0;
             for (let i = 0; i < obj.palettes.length; i++) {
                 const { path: palPath, length, blank } = obj.palettes[i];
-
                 if (blank || cursor >= 4) {
                     cursor += length;
                     continue;
@@ -129,10 +129,9 @@ export const FileObject = observer(({ obj }) => {
                 }]).forEach(line => {
                     if (cursor < 4) {
                         environment.palettes[cursor] = line;
-                        cursor ++;
+                        cursor++;
                     }
                 });
-
             }
         });
     }
