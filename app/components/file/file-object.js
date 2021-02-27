@@ -45,7 +45,8 @@ export const FileObject = observer(({ obj }) => {
 
                     const mappings = script.readMappings(buffer)
                     if (mappings.error) throw mappings.error;
-                    environment.mappings.replace(mappings.sprites);
+                    console.log(mappings);
+                    // environment.mappings.replace(mappings.sprites);
                 } catch (e) {
                     setMappingError(e);
                 } finally {
@@ -71,10 +72,11 @@ export const FileObject = observer(({ obj }) => {
     const sonicBIN = readFileSync('/home/cake/dev/flex2_test/res/Sonic.bin');
     const sonicComp = readFileSync('/home/cake/dev/flex2_test/res/SonicComp.bin');
     const sonicASM = readFileSync('/home/cake/dev/flex2_test/res/Sonic.asm', 'utf8');
+    const sonicFlex = readFileSync('/home/cake/dev/flex2_test/res/SonicFlex.asm', 'utf8');
     // console.log([...sonicBIN].join`` === parseASM(sonicASM).join``)
 
     const mappings =
-        script && !script.error && script.readMappings(sonicBIN);
+        script && !script.error && script.readMappings(parseASM(sonicFlex));
 
     // environment.mappings.replace(mappings.sprites && mappings.sprites)
 
@@ -113,7 +115,6 @@ export const FileObject = observer(({ obj }) => {
 
                         <pre> {inspect(parseASM(asm), { depth: 9 })} </pre>
                         <pre> {inspect([...sonicBIN], { depth: 9 })} </pre>
-                        <pre> {inspect(parseASM(sonicASM), { depth: 9 })} </pre>
                     */}
 
                         <pre> {inspect(mappings, { depth: 9 })} </pre>

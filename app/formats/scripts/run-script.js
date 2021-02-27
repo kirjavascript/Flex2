@@ -50,14 +50,14 @@ function makeOffsetTable({ read, write }) {
         ({ ref }) => {
             let a = 0x7FFF;
             const headers = [];
-            for (let i = 0; i < 1e5 && i < a; i += 2) {
+            for (let i = 0; i < 1e6 && i < a; i += 2) {
                 const header = read(constants.dc.w) & 0x7FFF;
                 headers.push(header);
                 if (header < a && !(header === 0)) {
                     a = header;
                 }
             }
-            ref.global.headers = headers;
+            console.log(headers);
             ref.global.cleanup.push(({ sprites }) => {
                 const clone = [...sprites];
                 sprites.splice(0, sprites.length);
