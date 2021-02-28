@@ -1,4 +1,4 @@
-// Flex 2 Mapping Definition - Sonic 2
+// Flex 2 Mapping Definition - Sonic 2 Special Stage
 
 const {
     mappings,
@@ -86,10 +86,10 @@ dplcs([
             mapping.art = getOffset(spriteIndex) + (read(nybble * 3) / 16);
             if (i === ref.quantity - 1) return endFrame;
         },
-        ({ mapping, sprite }, i) => {
+        ({ mapping, sprite }, i, spriteIndex) => {
             if (i === 0) write(dc.w, sprite.length);
             write(nybble, mapping.size);
-            write(nybblr * 3, mapping.art);
+            write(nybblr * 3, (mapping.art - getOffset(spriteIndex)) * 16);
         },
     ],
 ]);
