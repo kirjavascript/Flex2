@@ -14,7 +14,7 @@ const {
 } = Flex2;
 
 mappings([
-    offsetTable(dc.w, quantity => (quantity * 8) + 2),
+    offsetTable(dc.w),
     [
         ({ mapping, ref }, i) => {
             if (i === 0) {
@@ -47,13 +47,13 @@ mappings([
             write(2, mapping.palette);
             write(1, mapping.vflip);
             write(1, mapping.hflip);
-            write(11, mapping.offset);
+            write(11, mapping.art);
             // 2 player
             write(1, mapping.priority);
             write(2, mapping.palette);
-            write(1, mapping.yflip);
-            write(1, mapping.xflip);
-            write(11, Math.floor(mapping.offset / 2));
+            write(1, mapping.vflip);
+            write(1, mapping.hflip);
+            write(11, Math.floor(mapping.art / 2));
             // left
             write(dc.w, mapping.left);
         },

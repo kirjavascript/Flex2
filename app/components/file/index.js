@@ -8,10 +8,3 @@ export const File = observer(() => {
         <FileObject obj={workspace.file} />
     );
 });
-
-// computed script for objectdef for format
-//
-// load/save for everything - add in environment
-// buttons for shit
-// fix up project screen to always be open
-// size / offset

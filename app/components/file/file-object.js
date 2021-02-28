@@ -87,9 +87,9 @@ export const FileObject = observer(({ obj }) => {
         ioWrap(obj.mappings.path, setMappingError, e, async path => {
             const buffer = obj.mappingsASM
                 ? parseASM(await fs.readFile(path, 'utf8'))
-                : await fs.readFile(path)
+                : await fs.readFile(path);
 
-            const mappings = script.readMappings(buffer)
+            const mappings = script.readMappings(buffer);
             if (mappings.error) throw mappings.error;
             environment.mappings.replace(mappings.sprites);
         });
@@ -101,9 +101,9 @@ export const FileObject = observer(({ obj }) => {
         ioWrap(obj.dplcs.path, setDPLCError, e, async path => {
             const buffer = obj.dplcsASM
                 ? parseASM(await fs.readFile(path, 'utf8'))
-                : await fs.readFile(path)
+                : await fs.readFile(path);
 
-            const dplcs = script.readDPLCs(buffer)
+            const dplcs = script.readDPLCs(buffer);
             if (dplcs.error) throw dplcs.error;
             environment.dplcs.replace(dplcs.sprites);
         });
@@ -116,7 +116,7 @@ export const FileObject = observer(({ obj }) => {
             let cursor = 0;
             for (let i = 0; i < obj.palettes.length; i++) {
                 const { path: palPath, length, blank } = obj.palettes[i];
-                if (blank || cursor >= 4) {
+                if (!palPath || blank || cursor >= 4) {
                     cursor += length;
                     continue;
                 }
@@ -136,32 +136,17 @@ export const FileObject = observer(({ obj }) => {
         });
     }
 
-    // script && console.log(script);
 
-    // const buffer = obj.mappings.path && readFileSync(obj.mappings.path, 'utf8');
-    // const buffer =
-    //     obj.mappings.path &&
-    //     readFileSync('/home/cake/dev/flex2_test/res/map_plant_s1.bin');
-    // const asm =
-    //     obj.mappings.path &&
-    //     readFileSync('/home/cake/dev/flex2_test/res/map_plant_s1.asm', 'utf8');
-    // console.log(buffer.length, parseASM(asm).length)
-    // const t = parseASM(asm).filter((d, i) => buffer[i] !==  d)
-    // console.log(t);
-    //
-    // const sonicBIN = readFileSync('/home/cake/dev/flex2_test/res/Sonic2.bin');
+    const plant = readFileSync('/home/cake/dev/flex2_test/res/map_plant_s1.asm', 'utf8');
+    const sonicBIN = readFileSync('/home/cake/dev/flex2_test/res/Sonic2.bin');
     // const sonicDPLC = readFileSync('/home/cake/dev/flex2_test/res/SonicDPLC.asm', 'utf8');
     // const sonicASM = readFileSync('/home/cake/dev/flex2_test/res/Sonic.asm', 'utf8');
     // const sonicFlex = readFileSync('/home/cake/dev/flex2_test/res/SonicFlex.asm', 'utf8');
     // console.log([...sonicBIN].join`` === parseASM(sonicASM).join``)
 
-    // const mappings =
-    //     script && !script.error && script.readDPLCs(parseASM(sonicDPLC));
+    const mappings =
+        script && !script.error && script.writeMappings(environment);
 
-    // environment.mappings.replace(mappings.sprites && mappings.sprites)
-
-    // const { frames, headerWords } = mappingsToBuffer(environment.mappings, mappingFormats['Sonic 1']);
-    // const out = stuffToAsm(frames, 'LABEL', true);
 
     return (
         <div>
@@ -169,42 +154,17 @@ export const FileObject = observer(({ obj }) => {
                 {safeScript && (
                     <div className="menu-item">
                         {/*
-                    <pre style={{border: '1px solid black'}}>
-                        {JSON.stringify(mappings, null, 4)}
-                    </pre>
-                        <pre> {headerWords.map(d => d.map(d => '$' + d).join``).join`,`} </pre>
-                    <pre> {JSON.stringify(environment.mappings, null, 4)} </pre>
-                        <pre> {inspect(parseASM(out).join`,` === [...buffer].join`,`, {depth: 9})} </pre>
-                    <pre> {inspect(parseASM(out), {depth: 9})} </pre>
-
-
-                    <pre> {inspect(mappings, {depth: 9})} </pre>
-                    <div>
-                        <pre>
-                        </pre>
-
-                        <pre>
-                    </pre>
-                    // <pre> {inspect(require('mobx').toJS(environment.mappings), {depth: 9})} </pre>
-
-                        <pre> {inspect(mappings, { depth: 9 })} </pre>
-                        <pre> {inspect(parseASM(sonicASM), { depth: 9 })} </pre>
-                    </div>
-
-                        <pre> {inspect([...sonicComp], { depth: 9 })} </pre>
-
-                        <pre> {inspect(parseASM(asm), { depth: 9 })} </pre>
-                        <pre> {inspect([...sonicBIN], { depth: 9 })} </pre>
-                        <pre> {inspect(toJS(environment.mappings), { depth: 9 })} </pre>
-                        <pre> {inspect(parseASM(sonicASM), { depth: 9, maxArrayLength: Infinity })} </pre>
-                        <pre> {inspect(mappings, { depth: 9 })} </pre>
-                        <pre> {inspect(parseASM(sonicASM), { depth: 9, maxArrayLength: Infinity })} </pre>
-
                         <pre> {inspect([...sonicComp], { depth: 9, maxArrayLength: Infinity })} </pre>
-                        <pre> {inspect([...sonicBIN], { depth: 9, maxArrayLength: Infinity })} </pre>
                         <pre> {inspect(mappings, { depth: 9 })} </pre>
                     <pre> {inspect(toJS(environment.dplcs), {depth: 9})} </pre>
+
+
+                        <pre>
+                        {plant.replace(/.+\s.+\s.+\s.+\s/,'')}
+                        </pre>
+                        <pre> {inspect(mappings, { depth: 9 })} </pre>
                     */}
+
 
                     </div>
                 )}
@@ -253,7 +213,7 @@ export const FileObject = observer(({ obj }) => {
                     label="Art"
                     store={obj.art}
                     accessor="path"
-                    absolute={obj.isAbsolute}
+                    absolute={isAbsolute}
                 />
 
                 <div className="menu-item">
@@ -267,7 +227,7 @@ export const FileObject = observer(({ obj }) => {
                     label="Mappings"
                     store={obj.mappings}
                     accessor="path"
-                    absolute={obj.isAbsolute}
+                    absolute={isAbsolute}
                 />
                 {obj.mappingsASM && (
                     <div className="menu-item">
@@ -294,7 +254,7 @@ export const FileObject = observer(({ obj }) => {
                         label="Mappings"
                         store={obj.dplcs}
                         accessor="path"
-                        absolute={obj.isAbsolute}
+                        absolute={isAbsolute}
                     />
                     {obj.dplcsASM && (
                         <div className="menu-item">
@@ -342,7 +302,7 @@ export const FileObject = observer(({ obj }) => {
                                 label="Palette"
                                 store={palette}
                                 accessor="path"
-                                absolute={obj.isAbsolute}
+                                absolute={isAbsolute}
                             >
                                 <div
                                     className="dashed-box new"
@@ -367,7 +327,7 @@ export const FileObject = observer(({ obj }) => {
                                     length: 1,
                                 });
                             }}
-                            absolute={obj.isAbsolute}
+                            absolute={isAbsolute}
                         >
                             <div
                                 className="dashed-box new"

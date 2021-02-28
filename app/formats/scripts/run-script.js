@@ -48,7 +48,7 @@ function catchFunc(func) {
 }
 
 function makeOffsetTable({ read, write }) {
-    return (size = constants.dc.w, func) => [
+    return (size = constants.dc.w) => [
         ({ ref }) => {
             let a = 0x7FFF;
             const headers = [];
@@ -76,22 +76,23 @@ function makeOffsetTable({ read, write }) {
             return constants.endSection;
         },
         ({ ref, sprite, sprites }, frameIndex, spriteIndex) => {
-            if (spriteIndex === 0 && frameIndex === 0) {
-               ref.global[address] = sprites.length * size / constants.dc.b;
-            }
-            if (frameIndex === 0) {
+            if (frameIndex === 0 && spriteIndex == 0) {
+
+
                 // TODO: add initial header offset
+            // if (spriteIndex === 0 && frameIndex === 0) {
+            //    ref.global[address] = sprites.length * size / constants.dc.b;
+            // }
                 // console.log(ref.global[address].toString(16));
                 // console.log(sprite.length);
-                write(size, ref.global[address], address);
-                ref.global[address] += func(sprite.length);
+                // write(size, ref.global[address], address);
+                // ref.global[address] += func(sprite.length);
                 // 000c 0036 0068 00a2 00e4 00ee
             }
         },
     ];
 }
 
-// TODO: negative numbers in write
 
 export default catchFunc((file) => {
     const [write, setWrite] = useFunc();
@@ -190,6 +191,9 @@ export default catchFunc((file) => {
     const readMappings = createReader(mappingArgs[0]);
     const readDPLCs = createReader(dplcArgs[0]);
 
+    // TODO: signed numbers
+    // TODO: zero headers?
+    // remove offset table callback with cleanup
     const createWriter = (sectionList = []) => catchFunc((env) => {
         const global = {};
         const sections = sectionList.map(([, writeFrame]) => {
