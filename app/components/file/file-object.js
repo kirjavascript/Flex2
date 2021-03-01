@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { observer } from 'mobx-react';
 import { Item, Input, File as FileInput, Select, Checkbox, Button } from '#ui';
-import { scripts, runScript, parseASM, writeBIN } from '#formats/scripts';
+import { scripts, runScript, parseASM, writeBIN, writeASM } from '#formats/scripts';
 import { compressionFormats } from '#formats/compression';
 import { bufferToTiles, tilesToBuffer } from '#formats/art';
 import { buffersToColors, colorsToBuffers } from '#formats/palette';
@@ -190,7 +190,9 @@ export const FileObject = observer(({ obj }) => {
                         </pre>
                     */}
 
-                        <pre> {inspect(mappings, { depth: 9 })} </pre>
+                        <div>
+                        <pre>{writeASM(mappings)} </pre>
+                        </div>
 
                     </div>
                 )}

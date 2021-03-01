@@ -1,7 +1,4 @@
-
-export function writeBIN({ sections }) {
-    const chunks = sections.flat(3);
-
+export function chunkBytes(chunks) {
     const bytes = [];
     const bitBuffer = [];
 
@@ -13,7 +10,9 @@ export function writeBIN({ sections }) {
             bytes.push(byte);
         }
     });
+    return bytes;
+}
 
-
-    return Buffer.from(Uint8Array.from(bytes));
+export function writeBIN({ sections }) {
+    return Buffer.from(Uint8Array.from(chunkBytes(sections.flat(3))));
 }
