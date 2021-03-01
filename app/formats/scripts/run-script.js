@@ -49,11 +49,11 @@ function catchFunc(func) {
 
 function makeOffsetTable({ read, write }) {
     return (size = constants.dc.w) => [
-        ({ ref }) => {
+        () => ({ ref }) => {
             let a = 0x7FFF;
             const headers = [];
             for (let i = 0; i < 1e5 && i < a; i += 2) {
-                const header = read(constants.dc.w) & 0x7FFF;
+                const header = read(size) & 0x7FFF;
                 headers.push(header);
                 if (header < a && !(header === 0)) {
                     a = header;
@@ -75,19 +75,25 @@ function makeOffsetTable({ read, write }) {
             });
             return constants.endSection;
         },
-        ({ ref, sprite, sprites }, frameIndex, spriteIndex) => {
-            if (frameIndex === 0 && spriteIndex == 0) {
+        ({ ref }, spriteIndex) => {
+            if (spriteIndex === 0) {
+                ref.global.cleanup.push(({ sections }) => {
+                    const [header, mappings] = sections;
 
+                    let cursor = size * mappings.length; // bits
 
-                // TODO: add initial header offset
-            // if (spriteIndex === 0 && frameIndex === 0) {
-            //    ref.global[address] = sprites.length * size / constants.dc.b;
-            // }
-                // console.log(ref.global[address].toString(16));
-                // console.log(sprite.length);
-                // write(size, ref.global[address], address);
-                // ref.global[address] += func(sprite.length);
-                // 000c 0036 0068 00a2 00e4 00ee
+                    mappings.forEach((frames, i)=> {
+                        const addr = header[i];
+                        addr.push([[address, size, cursor / 8]]);
+
+                        frames.forEach(frame => {
+                            frame.forEach(([, size]) => {
+                                cursor += size;
+                            });
+                        })
+                    });
+
+                });
             }
         },
     ];
@@ -151,34 +157,33 @@ export default catchFunc((file) => {
             read: for (let spriteIndex = 0; spriteIndex < readLimit; spriteIndex++) {
                 const sprite = [];
                 const ref = { global };
-                for (let frameIndex = 0; frameIndex < readLimit; frameIndex++) {
-                    const mapping = {};
-                    const param = {
-                        mapping,
-                        sprites,
-                        sprite,
-                        ref,
-                    };
-                    const result = readFrame(param, frameIndex, spriteIndex);
-                    if ('priority' in mapping)
-                        mapping.priority = Boolean(mapping.priority);
-                    if ('vflip' in mapping)
-                        mapping.vflip = Boolean(mapping.vflip);
-                    if ('hflip' in mapping)
-                        mapping.hflip = Boolean(mapping.hflip);
-                    if (result === constants.endSection || bufferOverflow) {
-                        break read;
+                const readMapping = readFrame(spriteIndex);
+                if (readMapping) {
+                    for (let frameIndex = 0; frameIndex < readLimit; frameIndex++) {
+                        const mapping = {};
+                        const param = {
+                            mapping,
+                            sprites,
+                            sprite,
+                            ref,
+                        };
+                        const result = readMapping(param, frameIndex, spriteIndex);
+                        if ('priority' in mapping)
+                            mapping.priority = Boolean(mapping.priority);
+                        if ('vflip' in mapping)
+                            mapping.vflip = Boolean(mapping.vflip);
+                        if ('hflip' in mapping)
+                            mapping.hflip = Boolean(mapping.hflip);
+                        if (result === constants.endSection || bufferOverflow) {
+                            break read;
+                        }
+                        sprite.push(mapping);
+                        if (result === constants.endFrame) {
+                            break;
+                        }
                     }
-                    if (result === constants.skipFrame) {
-                        break;
-                    }
-                    sprite.push(mapping);
-                    if (result === constants.endFrame) {
-                        break;
-                    }
+                    sprites.push(sprite);
                 }
-
-                sprites.push(sprite);
             }
 
         });
@@ -192,33 +197,51 @@ export default catchFunc((file) => {
     const readDPLCs = createReader(dplcArgs[0]);
 
     // TODO: signed numbers
-    // TODO: zero headers?
-    // remove offset table callback with cleanup
-    const createWriter = (sectionList = []) => catchFunc((env) => {
-        const global = {};
+    const createWriter = (sectionList = []) => catchFunc((mappings) => {
+        const global = { cleanup: [] };
         const sections = sectionList.map(([, writeFrame]) => {
-            const sprites = toJS(env.mappings);
-            return sprites.map((sprite, spriteIndex) => {
+            const spriteList = toJS(mappings);
+            const sprites = [];
+
+            for (let spriteIndex = 0; spriteIndex < spriteList.length; spriteIndex++) {
+                const sprite = spriteList[spriteIndex];
                 const ref = { global };
                 const mappings = []
-                sprite.forEach((mapping, frameIndex) => {
-                    const frame = [];
-                    setWrite((size, data, type = binary) => {
-                        frame.push([type, size, +data]);
-                    });
-                    const param = {
-                        mapping,
-                        sprite,
-                        sprites,
-                        ref,
-                    };
-                    writeFrame(param, frameIndex, spriteIndex);
-                    mappings.push(frame);
+                setWrite((size, data, type = binary) => {
+                    mappings.push([[type, size, +data]]);
                 });
+                const writeMapping = writeFrame({ sprite, ref }, spriteIndex);
 
-                return mappings;
-            });
+                if (writeMapping) {
+                    for (let frameIndex = 0; frameIndex < sprite.length; frameIndex++) {
+                        const mapping = sprite[frameIndex];
+                        const frame = [];
+                        setWrite((size, data, type = binary) => {
+                            frame.push([type, size, +data]);
+                        });
+                        const param = {
+                            mapping,
+                            sprite,
+                            sprites,
+                            ref,
+                        };
+                        const result = writeMapping(param, frameIndex, spriteIndex);
+                        if (result === constants.endSection) {
+                            return sprites; // really end the section
+                        }
+                        mappings.push(frame);
+                        if (result === constants.endFrame) {
+                            break;
+                        }
+                    }
+                }
+                sprites.push(mappings);
+
+            }
+            return sprites;
         });
+
+        global.cleanup.forEach(task => task({ sections }));
 
         const chunks = sections.flat(3);
 

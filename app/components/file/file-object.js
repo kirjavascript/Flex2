@@ -145,7 +145,7 @@ export const FileObject = observer(({ obj }) => {
     // console.log([...sonicBIN].join`` === parseASM(sonicASM).join``)
 
     const mappings =
-        script && !script.error && script.writeMappings(environment);
+        script && !script.error && script.writeMappings(environment.mappings);
 
 
     return (
@@ -162,9 +162,9 @@ export const FileObject = observer(({ obj }) => {
                         <pre>
                         {plant.replace(/.+\s.+\s.+\s.+\s/,'')}
                         </pre>
-                        <pre> {inspect(mappings, { depth: 9 })} </pre>
                     */}
 
+                        <pre> {inspect(mappings, { depth: 9 })} </pre>
 
                     </div>
                 )}

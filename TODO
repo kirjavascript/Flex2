@@ -24,7 +24,6 @@ saving ArtC42 at all crashes
 show/hide collapse config state
 says open project when choosing mappings
 pink surrounding tiles sometimes breaks
-flex2_test/logo.png import is broken (alpha - works with exported flex file)
 tile deletes when drawing (unmap pieces / shortcuts in drawing mode)
 many writes while drawing
 project files easier to use / create
