@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { observer } from 'mobx-react';
 import { Item, Input, File as FileInput, Select, Checkbox, Button } from '#ui';
-import { scripts, runScript, parseASM } from '#formats/scripts';
+import { scripts, runScript, parseASM, writeBIN } from '#formats/scripts';
 import { compressionFormats } from '#formats/compression';
 import { bufferToTiles, tilesToBuffer } from '#formats/art';
 import { buffersToColors, colorsToBuffers } from '#formats/palette';
@@ -62,6 +62,12 @@ export const FileObject = observer(({ obj }) => {
     }
 
     function saveObject() {
+        saveArt({ target: loadRef.current.childNodes[0] });
+        saveMappings({ target: loadRef.current.childNodes[1] });
+        if (obj.dplcs.enabled) {
+            saveDPLCs({ target: loadRef.current.childNodes[2] });
+        }
+        // savePalettes({ target: loadRef.current.childNodes[3] });
     }
 
     const [artError, setArtError] = useState();
@@ -95,6 +101,16 @@ export const FileObject = observer(({ obj }) => {
         });
     }
 
+    function saveMappings(e) {
+        ioWrap(obj.mappings.path, setMappingError, e, async path => {
+            const mappings = script.writeMappings(environment.mappings);
+            if (mappings.error) throw mappings.error;
+            if (!obj.mappingsASM) {
+                await fs.writeFile(path, writeBIN(mappings));
+            }
+        });
+    }
+
     const [dplcError, setDPLCError] = useState();
 
     function loadDPLCs(e) {
@@ -106,6 +122,16 @@ export const FileObject = observer(({ obj }) => {
             const dplcs = script.readDPLCs(buffer);
             if (dplcs.error) throw dplcs.error;
             environment.dplcs.replace(dplcs.sprites);
+        });
+    }
+
+    function saveDPLCs(e) {
+        ioWrap(obj.dplcs.path, setMappingError, e, async path => {
+            const dplcs = script.writeDPLCs(environment.dplcs);
+            if (dplcs.error) throw dplcs.error;
+            if (!obj.dplcsASM) {
+                await fs.writeFile(path, writeBIN(dplcs));
+            }
         });
     }
 
@@ -220,6 +246,7 @@ export const FileObject = observer(({ obj }) => {
                     <Item color="yellow">Mappings</Item>
                     <SaveLoad
                         load={loadMappings}
+                        save={saveMappings}
                     />
                 </div>
                 <ErrorMsg error={mappingError} />
@@ -247,6 +274,7 @@ export const FileObject = observer(({ obj }) => {
                         <Item color="red">DPLCs</Item>
                         <SaveLoad
                             load={loadDPLCs}
+                            save={saveDPLCs}
                         />
                     </div>
                     <ErrorMsg error={dplcError} />

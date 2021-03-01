@@ -91,8 +91,8 @@ dplcs([
         ({ sprite }) => {
             write(dc.w, sprite.length);
             return ({ mapping }, _frameIndex, spriteIndex) => {
-                write(nybble, mapping.size);
-                write(nybblr * 3, (mapping.art - getOffset(spriteIndex)) * 16);
+                write(nybble, mapping.size - 1);
+                write(nybble * 3, (mapping.art - getOffset(spriteIndex)) * 16);
             };
         },
     ],

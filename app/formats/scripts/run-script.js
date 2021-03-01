@@ -182,8 +182,8 @@ export default catchFunc((file) => {
                             break;
                         }
                     }
-                    sprites.push(sprite);
                 }
+                sprites.push(sprite);
             }
 
         });
@@ -196,7 +196,13 @@ export default catchFunc((file) => {
     const readMappings = createReader(mappingArgs[0]);
     const readDPLCs = createReader(dplcArgs[0]);
 
-    // TODO: signed numbers
+    const unsign = (size, num) => {
+        if (num < 0) {
+            return num + (1 << size);
+        }
+        return num;
+    };
+
     const createWriter = (sectionList = []) => catchFunc((mappings) => {
         const global = { cleanup: [] };
         const sections = sectionList.map(([, writeFrame]) => {
@@ -208,7 +214,7 @@ export default catchFunc((file) => {
                 const ref = { global };
                 const mappings = []
                 setWrite((size, data, type = binary) => {
-                    mappings.push([[type, size, +data]]);
+                    mappings.push([[type, size, unsign(size, +data)]]);
                 });
                 const writeMapping = writeFrame({ sprite, ref }, spriteIndex);
 
@@ -217,7 +223,7 @@ export default catchFunc((file) => {
                         const mapping = sprite[frameIndex];
                         const frame = [];
                         setWrite((size, data, type = binary) => {
-                            frame.push([type, size, +data]);
+                            frame.push([type, size, unsign(size, +data)]);
                         });
                         const param = {
                             mapping,
@@ -243,9 +249,7 @@ export default catchFunc((file) => {
 
         global.cleanup.forEach(task => task({ sections }));
 
-        const chunks = sections.flat(3);
-
-        return {sections, chunks};
+        return {sections};
     });
 
     const writeMappings = createWriter(mappingArgs[0]);

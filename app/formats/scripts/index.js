@@ -1,10 +1,12 @@
 export { scripts } from './file';
 export { parseASM } from './parse-asm';
+export { writeBIN } from './write-bin';
 export { default as runScript } from './run-script';
 
-    // add zero optimization (wite)
+// load mapping empty frame bug
 // save/load DPLC enable / disable
 // project screen always open
+// save palette
 // latest projects / ones in the root
 // ensSprite/emptySprite
 // art ffset
