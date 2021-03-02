@@ -10,6 +10,7 @@ import { workspace } from '#store/workspace';
 import ErrorMsg from './error';
 import SaveLoad from './save-load';
 import { promises } from 'fs';
+import { basename } from 'path';
 const fs = promises;
 
 
@@ -107,6 +108,10 @@ export const FileObject = observer(({ obj }) => {
             if (mappings.error) throw mappings.error;
             if (!obj.mappingsASM) {
                 await fs.writeFile(path, writeBIN(mappings));
+            } else {
+                const label = obj.mappings.label
+                || basename(obj.mappings.path, '.asm');
+                await fs.writeFile(path, writeASM(label, mappings));
             }
         });
     }
@@ -131,6 +136,10 @@ export const FileObject = observer(({ obj }) => {
             if (dplcs.error) throw dplcs.error;
             if (!obj.dplcsASM) {
                 await fs.writeFile(path, writeBIN(dplcs));
+            } else {
+                const label = obj.dplcs.label
+                    || basename(obj.dplcs.path, '.asm');
+                await fs.writeFile(path, writeASM(label, dplcs));
             }
         });
     }
@@ -188,10 +197,10 @@ export const FileObject = observer(({ obj }) => {
                         <pre>
                         {plant.replace(/.+\s.+\s.+\s.+\s/,'')}
                         </pre>
+                        <pre>{writeASM(mappings)} </pre>
                     */}
 
                         <div>
-                        <pre>{writeASM(mappings)} </pre>
                         </div>
 
                     </div>

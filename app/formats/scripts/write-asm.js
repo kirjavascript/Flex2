@@ -7,8 +7,7 @@ const sizes = {
     32: 'l',
 };
 
-export function writeASM({ sections }) {
-    const baseLabel = 'test';
+export function writeASM(baseLabel, { sections }) {
     const getLabel = addr => `${baseLabel}_${addr.toString(16).toUpperCase()}`;
     let cursor = 0;
     const labels = [];
