@@ -18,8 +18,7 @@ mappings([
     [
         () => {
             const quantity = read(dc.w);
-            if (quantity === 0) return;
-            return ({ mapping }, frameIndex) => {
+            return quantity > 0 && (({ mapping }, frameIndex) => {
                 mapping.top = read(dc.b, signed);
                 read(nybble);
                 mapping.width = read(2) + 1;
@@ -32,7 +31,7 @@ mappings([
                 read(dc.w);
                 mapping.left = read(dc.w, signed);
                 if (frameIndex === quantity - 1) return endFrame;
-            };
+            });
         },
         ({ sprite }) => {
             write(dc.w, sprite.length);
@@ -67,12 +66,11 @@ dplcs([
     [
         () => {
             const quantity = read(dc.w);
-            if (quantity === 0) return;
-            return ({ mapping }, frameIndex) => {
+            return quantity > 0 && (({ mapping }, frameIndex) => {
                 mapping.size = read(nybble) + 1;
                 mapping.art = read(nybble * 3);
                 if (frameIndex === quantity - 1) return endFrame;
-            };
+            });
         },
         ({ sprite }) => {
             write(dc.w, sprite.length);
