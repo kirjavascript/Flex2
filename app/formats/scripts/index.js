@@ -5,7 +5,6 @@ export { writeASM } from './write-asm';
 export { default as runScript } from './run-script';
 
 // save/load DPLC enable / disable
-// save palette
 // replace project screen
 // project screen always open
 // latest projects / ones in the root
@@ -22,6 +21,7 @@ export { default as runScript } from './run-script';
 
 // formats to support
 
+// s3k sonic 1
 // kid chameleon
 // crackers
 // chaotix

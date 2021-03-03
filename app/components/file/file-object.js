@@ -95,6 +95,7 @@ export const FileObject = observer(({ obj }) => {
 
     function loadMappings(e) {
         ioWrap(obj.mappings.path, setMappingError, e, async (path) => {
+            if (!obj.dplcs.enabled) environment.config.dplcsEnabled = false;
             const buffer = obj.mappingsASM
                 ? parseASM(await fs.readFile(path, 'utf8'))
                 : await fs.readFile(path);
@@ -123,6 +124,7 @@ export const FileObject = observer(({ obj }) => {
 
     function loadDPLCs(e) {
         ioWrap(obj.dplcs.path, setDPLCError, e, async (path) => {
+            environment.config.dplcsEnabled = true;
             const buffer = obj.dplcsASM
                 ? parseASM(await fs.readFile(path, 'utf8'))
                 : await fs.readFile(path);
