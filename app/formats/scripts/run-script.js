@@ -90,7 +90,7 @@ function makeOffsetTable({ read, write }) {
                             frame.forEach(([, size]) => {
                                 cursor += size;
                             });
-                        })
+                        });
                     });
 
                 });

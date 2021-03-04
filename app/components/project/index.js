@@ -9,7 +9,7 @@ const Project = observer(() => {
     return (
         <>
             {workspace.projectPath}
-            <pre>{require('util').inspect(project.objects)}</pre>
+            <pre>{require('util').inspect(require('mobx').toJS(project))}</pre>
         </>
     );
 });

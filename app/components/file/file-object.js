@@ -17,15 +17,8 @@ import ErrorMsg from './error';
 import SaveLoad from './save-load';
 import { promises } from 'fs';
 import { basename } from 'path';
+
 const fs = promises;
-
-import { mappingFormats, dplcFormats } from '#formats/definitions';
-import { bufferToMappings, mappingsToBuffer } from '#formats/mapping';
-import { asmToBin, stuffToAsm } from '#formats/asm';
-import { toJS } from 'mobx';
-import { readFileSync } from 'fs';
-import { inspect } from 'util';
-
 const compressionList = Object.keys(compressionFormats);
 
 export const FileObject = observer(({ obj }) => {
