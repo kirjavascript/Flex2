@@ -1,18 +1,17 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { observer } from 'mobx-react';
-import { ProjectExplorer } from './menu';
-import { ProjectConfig } from './config';
+// import { ProjectExplorer } from './menu';
+// import { ProjectConfig } from './config';
 import { workspace } from '#store/workspace';
+import { project } from '#store/project';
 
-@observer
-export class Project extends Component {
+const Project = observer(() => {
+    return (
+        <>
+            {workspace.projectPath}
+            <pre>{require('util').inspect(project.objects)}</pre>
+        </>
+    );
+});
 
-    render() {
-        if (!workspace.projectPath) {
-            return <ProjectExplorer/>;
-        } else {
-            return <ProjectConfig/>;
-        }
-    }
-
-}
+export { Project } ;

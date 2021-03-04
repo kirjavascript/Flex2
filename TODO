@@ -3,6 +3,32 @@ DOC
 1.0.0 - breaking change to select mapping format
 megadrive sprite editor
 
+BUFFER
+==
+
+// replace project screen
+// project screen always open
+// latest projects / ones in the root
+// art ffset save message / input size
+// copy to project
+
+// remove @ deprecated
+// optimizations(false);
+// reverse endianness
+
+// other
+
+// need an external scrtipts folder copied to the root on bundle
+// example: HUD graphics
+
+// formats to support
+
+// s3k sonic
+// kid chameleon
+// crackers
+// chaotix
+// plane mappings / snap to
+// github issues
 
 ROADMAP
 file menu (offset loading) / create files
