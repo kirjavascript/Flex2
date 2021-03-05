@@ -1,7 +1,8 @@
 DOC
 ==
 1.0.0 - breaking change to select mapping format
-megadrive sprite editor
+megadrive sprite editor (kirjava.xyz
+spritesmind
 
 BUFFER
 ==
@@ -31,9 +32,7 @@ BUFFER
 // github issues
 
 ROADMAP
-file menu (offset loading) / create files
-    (OR add load/save to objectdef and add objectdev to project homescreen
-custom mapping formats / screen mappings format (!) -> spritesmind
+custom mapping formats / screen mappings format (!) ->
 project file tabs
     recent projects
 generate project files -> use to create s3portal
