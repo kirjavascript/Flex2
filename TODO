@@ -27,6 +27,8 @@ BUFFER
 
 // formats to support
 
+// fix s2 dplc
+/* https://github.com/Ralakimus/sonic-cd-r11a-disassembly */
 // s3k sonic
 // kid chameleon
 // crackers

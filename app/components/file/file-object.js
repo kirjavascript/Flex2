@@ -34,7 +34,7 @@ export const FileObject = observer(({ obj }) => {
         setError();
         if (script && !script.error && filePath) {
             const done = SaveLoad.indicator(e);
-            requestAnimationFrame(async () => {
+            requestIdleCallback(async () => {
                 const path = isAbsolute
                     ? filePath
                     : workspace.absolutePath(filePath);
@@ -147,7 +147,7 @@ export const FileObject = observer(({ obj }) => {
     const [paletteError, setPaletteError] = useState();
 
     function loadPalettes(e) {
-        ioWrap(true, setPaletteError, e, async () => {
+        ioWrap('dummy.bin', setPaletteError, e, async () => {
             let cursor = 0;
             for (let i = 0; i < obj.palettes.length; i++) {
                 const { path: palPath, length, blank } = obj.palettes[i];
@@ -174,7 +174,7 @@ export const FileObject = observer(({ obj }) => {
     }
 
     function savePalettes(e) {
-        ioWrap(true, setPaletteError, e, async () => {
+        ioWrap('dummy.bin', setPaletteError, e, async () => {
             let cursor = 0;
             for (let i = 0; i < obj.palettes.length; i++) {
                 const { path: palPath, length, blank } = obj.palettes[i];

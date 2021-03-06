@@ -135,6 +135,7 @@ export class NewMapping extends Component {
                                     </div>
                                 )
                             )}
+                            TODO: autodismiss
                         </div>
                     )}
                 </Spring>

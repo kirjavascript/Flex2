@@ -30,18 +30,22 @@ const getModel = (children) => ({
     },
 });
 
+const inspect = d => require('util').inspect(require('mobx').toJS(d));
+
+const Node = observer(({ node }) => {
+    const { project } = workspace;
+    return <div className="flexlayout__panel">
+        <pre>
+            {inspect(project.objects[node.getComponent()])}
+        </pre>
+
+        <FileObject obj={project.objects[node.getComponent()]} />
+    </div>
+});
+
 const Project = observer(() => {
 
     const { project } = workspace;
-
-    const factory = useCallback((node) => {
-        if (!node._visible) return false;
-        return <div className="flexlayout__panel">
-                {node.getComponent()}
-            </div>
-        ;
-
-    }, []);
 
     // const [model, setModel] = useState(() => json));
 
@@ -53,35 +57,27 @@ const Project = observer(() => {
 
     const model = FlexLayout.Model.fromJson(getModel(tabs));
 
-const inspect = d => require('util').inspect(require('mobx').toJS(d));
+    const factory = useCallback((node) => {
+        if (!node._visible) return false;
+        return <Node node={node} />;
+    }, []);
 
 // groups?
     return (
         <>
 
             {workspace.projectPath}
-            <pre>{inspect(project)}</pre>
             <FileInput
                 label="Project"
                 store={workspace}
                 accessor="projectPath"
                 absolute
             />
-            <div style={{display: 'none'}}>
                 <FlexLayout.Layout
                     model={model}
-                    factory={(node) => {
-                        if (!node._visible) return false;
-                        return <div className="flexlayout__panel">
-                            <pre>
-                                {inspect(project.objects[node.getComponent()])}
-                            </pre>
-                        </div>
-
-                    }}
+                    factory={factory}
                     onModelChange={console.log}
                 />
-            </div>
 
         </>
     );

@@ -55,7 +55,7 @@ dplcs([
     [
         () => {
             const quantity = read(dc.b);
-            return quantity > 0 && (({ mapping }) => {
+            return quantity > 0 && (({ mapping }, frameIndex) => {
                 mapping.size = read(nybble) + 1;
                 mapping.art = read(nybble * 3);
                 if (frameIndex === quantity - 1) return endFrame;

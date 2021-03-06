@@ -14,6 +14,7 @@ export class Project {
             try {
                 if (await exists(path)) {
                     const json = JSON.parse(await fs.readFile(path, 'utf8'));
+                    this.name = name;
                     this.objects.replace(
                         (json.objects || []).map((obj) => new ObjectDef(obj))
                     );
@@ -21,15 +22,17 @@ export class Project {
 
                 this.cleanup = autorun(() => {
                     const json = JSON.stringify({
-                        objects: this.objects
-                    });
+                        Flex: 2,
+                        name: this.name,
+                        objects: this.objects,
+                    }, null, 4);
                     (async () => {
                         this.error = undefined;
-                        try {
-                            await fs.writeFile(path, json, 'utf8');
-                        } catch (e) {
-                            this.error = e;
-                        }
+                        // try {
+                        //     await fs.writeFile(path, json, 'utf8');
+                        // } catch (e) {
+                        //     this.error = e;
+                        // }
                     })();
                 });
             } catch (e) {
@@ -40,9 +43,11 @@ export class Project {
     }
 
     @observable error;
+    @observable name = '';
     @observable objects = [];
 
-    @action newObject = () => {
+
+    @action addObj = () => {
         this.objects.push(new ObjectDef());
     };
 
