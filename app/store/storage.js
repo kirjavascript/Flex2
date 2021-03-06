@@ -1,23 +1,21 @@
 let saveData = true;
 
-export function storage(obj, name) {
+// no keys = save everything
 
+export function storage(obj, name, keys) {
     let saved = localStorage.getItem(name);
 
     if (saved != null) {
         try {
             saved = JSON.parse(saved);
 
-            Object
-                .keys(saved)
+            (keys || Object.keys(saved))
                 .forEach((prop) => {
                     if (Array.isArray(saved[prop])) {
                         obj[prop].replace(saved[prop]);
-                    }
-                    else if (typeof saved[prop] == 'object' && saved[prop]) {
+                    } else if (typeof saved[prop] == 'object' && saved[prop]) {
                         Object.assign(obj[prop], saved[prop]);
-                    }
-                    else {
+                    } else {
                         obj[prop] = saved[prop];
                     }
                 });
@@ -29,10 +27,16 @@ export function storage(obj, name) {
     // save on close
     window.addEventListener('beforeunload', () => {
         if (saveData) {
-            localStorage.setItem(name, JSON.stringify(obj));
+            const toSave = keys
+                ? keys.reduce((acc, key) => {
+                    acc[key] = obj[key];
+                    return acc;
+                }, {})
+                : obj;
+
+            localStorage.setItem(name, JSON.stringify(toSave));
         }
     });
-
 }
 
 window.resetStorage = () => {

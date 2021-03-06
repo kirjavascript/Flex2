@@ -1,6 +1,6 @@
 import { observable, computed, action, autorun } from 'mobx';
 import { storage } from './storage';
-import { project } from './project';
+import { Project } from './project';
 import { ObjectDef } from  './objectdef';
 import path from 'path';
 
@@ -13,17 +13,27 @@ class Workspace {
     @observable file = fileState;
 
     @observable projectPath = '';
+    @observable project;
 
-    @action newProject = ({name, path}) => {
+    @action newProject = (path) => {
+        this.closeProject();
+
         this.projectPath = path;
-        project.new({name, path});
+        this.project = new Project(path);
+        // this.projectPath = path;
+        // project.new({name, path});
     };
-    @action openProject = (path) => {
-        if (path) { this.projectPath = path; }
-        project.open();
+    @action openProject = () => {
+        // if (path) { this.projectPath = path; }
+        // project.open();
+        this.project = new Project(this.projectPath);
     };
     @action closeProject = () => {
-        this.projectPath = '';
+        if (this.project) {
+            this.projectPath = '';
+            this.project.cleanup();
+            this.project = undefined;
+        }
     };
 
     @action relativePath = (filepath) => {
@@ -35,7 +45,7 @@ class Workspace {
 }
 
 const workspace = new Workspace();
-storage(workspace, 'workspace');
+storage(workspace, 'workspace', ['projectPath']);
 if (workspace.projectPath) {
     workspace.openProject();
 }

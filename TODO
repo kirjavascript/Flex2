@@ -3,12 +3,15 @@ DOC
 1.0.0 - breaking change to select mapping format
 megadrive sprite editor (kirjava.xyz
 spritesmind
+data parser, not text
+post image of project / some custom mappings, saying it's ready for testing
 
 BUFFER
 ==
 
 // replace project screen
 // project screen always open
+// mapping debugger
 // latest projects / ones in the root
 // art ffset save message / input size
 // copy to project
@@ -28,6 +31,7 @@ BUFFER
 // kid chameleon
 // crackers
 // chaotix
+// streets of rage
 // plane mappings / snap to
 // github issues
 

@@ -26,6 +26,8 @@ export const FileObject = observer(({ obj }) => {
 
     const { isAbsolute } = obj; // set in store/workspace
 
+    const toggleDPLCs = () => (obj.dplcs.enabled = !obj.dplcs.enabled);
+
     const script = obj.format && runScript(obj.format);
 
     function ioWrap(filePath, setError, e, cb) {
@@ -259,13 +261,11 @@ export const FileObject = observer(({ obj }) => {
                     </div>
                 )}
 
-                <div className="menu-item">
+                <div className="menu-item" onClick={toggleDPLCs}>
                     <Item>DPLCs Enabled</Item>
                     <Checkbox
                         checked={obj.dplcs.enabled}
-                        onChange={() => {
-                            obj.dplcs.enabled = !obj.dplcs.enabled;
-                        }}
+                        readOnly
                     />
                 </div>
                 {obj.dplcs.enabled && (

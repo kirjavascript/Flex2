@@ -15,24 +15,20 @@ const DEFAULT_LAYOUT = {
     },
     'layout': {
         'type': 'row',
-        'id': '#1',
         'children': [
             {
                 'type': 'tabset',
                 'weight': 16.5,
-                'id': '#13',
                 'children': [
                     {
                         'type': 'tab',
                         'name': 'Art',
                         'component': 'art',
-                        'id': '#5'
                     },
                     {
                         'type': 'tab',
                         'name': 'Palettes',
                         'component': 'palettes',
-                        'id': '#4'
                     }
                 ]
             },
@@ -40,31 +36,26 @@ const DEFAULT_LAYOUT = {
                 'type': 'tabset',
                 'weight': 67,
                 'selected': 0,
-                'id': '#2',
                 'children': [
                     {
                         'type': 'tab',
                         'name': 'File',
                         'component': 'file',
-                        'id': '#14',
                     },
                     {
                         'type': 'tab',
                         'name': 'Project',
                         'component': 'project',
-                        'id': '#3',
                     },
                     {
                         'type': 'tab',
                         'name': 'Mappings',
                         'component': 'mappings',
-                        'id': '#7',
                     },
                     {
                         'type': 'tab',
                         'name': 'Documentation',
                         'component': 'documentation',
-                        'id': '#8',
                     },
                 ],
                 'active': true
@@ -72,13 +63,11 @@ const DEFAULT_LAYOUT = {
             {
                 'type': 'tabset',
                 'weight': 20.4,
-                'id': '#10',
                 'children': [
                     {
                         'type': 'tab',
                         'name': 'Sprites',
                         'component': 'sprites',
-                        'id': '#6'
                     },
                 ],
             },

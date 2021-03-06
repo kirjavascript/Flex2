@@ -1,6 +1,6 @@
 import React from 'react';
 
-export function Checkbox({ checked, onChange }) {
+export function Checkbox({ checked, onChange, ...props }) {
     return (
         <div
             className="checkbox"
@@ -23,6 +23,7 @@ export function Checkbox({ checked, onChange }) {
                 type="checkbox"
                 checked={checked}
                 onChange={onChange}
+                {...props}
             />
         </div>
     );

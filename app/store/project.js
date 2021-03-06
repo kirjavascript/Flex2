@@ -10,6 +10,12 @@ let disableWrite = false;
 
 export class Project {
 
+    constructor(path) {
+        if (path) {
+            // create or read
+        }
+    }
+
     description = 'Flex 2 Project File';
     @observable name = '';
     @observable objects = [];

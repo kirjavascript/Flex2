@@ -2,7 +2,7 @@ import { observable, computed, action } from 'mobx';
 import { extname } from 'path';
 
 export class ObjectDef {
-    constructor(parent, obj = void 0) {
+    constructor(parent, obj) {
         obj && Object.assign(this, obj);
         this.parent = parent;
     }
