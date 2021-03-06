@@ -1,10 +1,9 @@
-import { observable, computed, action } from 'mobx';
+import { observable, computed } from 'mobx';
 import { extname } from 'path';
 
 export class ObjectDef {
-    constructor(parent, obj) {
+    constructor(obj) {
         obj && Object.assign(this, obj);
-        this.parent = parent;
     }
 
     @observable format = '';
@@ -41,10 +40,5 @@ export class ObjectDef {
             return a - c.length;
         }, 4);
     }
-
-    @action remove = () => {
-        const newList = this.parent.objects.filter((d) => d != this);
-        this.parent.objects.replace(newList);
-    };
 
 }

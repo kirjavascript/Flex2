@@ -15,22 +15,12 @@ class Workspace {
     @observable projectPath = '';
     @observable project;
 
-    @action newProject = (path) => {
-        this.closeProject();
-
-        this.projectPath = path;
-        this.project = new Project(path);
-        // this.projectPath = path;
-        // project.new({name, path});
-    };
     @action openProject = () => {
-        // if (path) { this.projectPath = path; }
-        // project.open();
+        this.closeProject();
         this.project = new Project(this.projectPath);
     };
     @action closeProject = () => {
         if (this.project) {
-            this.projectPath = '';
             this.project.cleanup();
             this.project = undefined;
         }

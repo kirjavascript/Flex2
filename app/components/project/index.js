@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 // import { ProjectExplorer } from './menu';
 // import { ProjectConfig } from './config';
 import { workspace } from '#store/workspace';
-import { project } from '#store/project';
+// import { project } from '#store/project';
 import FlexLayout from 'flexlayout-react';
 import { FileObject } from '#components/file/file-object';
 
@@ -31,6 +31,8 @@ const getModel = (children) => ({
 });
 
 const Project = observer(() => {
+
+    const { project } = workspace;
 
     const factory = useCallback((node) => {
         if (!node._visible) return false;
@@ -63,6 +65,7 @@ const inspect = d => require('util').inspect(require('mobx').toJS(d));
                 label="Project"
                 store={workspace}
                 accessor="projectPath"
+                absolute
             />
             <div style={{display: 'none'}}>
                 <FlexLayout.Layout
