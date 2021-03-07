@@ -1,5 +1,4 @@
-import { observable, action, autorun } from 'mobx';
-import { ObjectDef } from '#store/objectdef';
+import { observable, autorun } from 'mobx';
 import { promises, exists as fsExists } from 'fs';
 import { promisify } from 'util';
 
@@ -14,10 +13,8 @@ export class Project {
             try {
                 if (await exists(path)) {
                     const json = JSON.parse(await fs.readFile(path, 'utf8'));
-                    this.name = name;
-                    this.objects.replace(
-                        (json.objects || []).map((obj) => new ObjectDef(obj))
-                    );
+                    this.name = json.name;
+                    this.objects.replace(json.objects);
                 }
 
                 this.cleanup = autorun(() => {
@@ -45,10 +42,4 @@ export class Project {
     @observable error;
     @observable name = '';
     @observable objects = [];
-
-
-    @action addObj = () => {
-        this.objects.push(new ObjectDef());
-    };
-
 }

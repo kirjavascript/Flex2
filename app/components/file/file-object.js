@@ -16,7 +16,7 @@ import { workspace } from '#store/workspace';
 import ErrorMsg from './error';
 import SaveLoad from './save-load';
 import { promises } from 'fs';
-import { basename } from 'path';
+import { basename, extname } from 'path';
 
 const fs = promises;
 const compressionList = Object.keys(compressionFormats);
@@ -25,6 +25,10 @@ export const FileObject = observer(({ obj }) => {
     scripts.length; // react to script updates
 
     const { isAbsolute } = obj; // set in store/workspace
+
+    const mappingsASM = extname(obj.mappings.path) === '.asm';
+    const dplcsASM = extname(obj.dplcs.path) === '.asm';
+    const linesLeft = obj.palettes.reduce((a, c) => a - c.length, 4);
 
     const toggleDPLCs = () => (obj.dplcs.enabled = !obj.dplcs.enabled);
 
@@ -91,7 +95,7 @@ export const FileObject = observer(({ obj }) => {
     function loadMappings(e) {
         ioWrap(obj.mappings.path, setMappingError, e, async (path) => {
             if (!obj.dplcs.enabled) environment.config.dplcsEnabled = false;
-            const buffer = obj.mappingsASM
+            const buffer = mappingsASM
                 ? parseASM(await fs.readFile(path, 'utf8'))
                 : await fs.readFile(path);
 
@@ -105,7 +109,7 @@ export const FileObject = observer(({ obj }) => {
         ioWrap(obj.mappings.path, setMappingError, e, async (path) => {
             const mappings = script.writeMappings(environment.mappings);
             if (mappings.error) throw mappings.error;
-            if (!obj.mappingsASM) {
+            if (!mappingsASM) {
                 await fs.writeFile(path, writeBIN(mappings));
             } else {
                 const label =
@@ -120,7 +124,7 @@ export const FileObject = observer(({ obj }) => {
     function loadDPLCs(e) {
         ioWrap(obj.dplcs.path, setDPLCError, e, async (path) => {
             environment.config.dplcsEnabled = true;
-            const buffer = obj.dplcsASM
+            const buffer = dplcsASM
                 ? parseASM(await fs.readFile(path, 'utf8'))
                 : await fs.readFile(path);
 
@@ -134,7 +138,7 @@ export const FileObject = observer(({ obj }) => {
         ioWrap(obj.dplcs.path, setMappingError, e, async (path) => {
             const dplcs = script.writeDPLCs(environment.dplcs);
             if (dplcs.error) throw dplcs.error;
-            if (!obj.dplcsASM) {
+            if (!dplcsASM) {
                 await fs.writeFile(path, writeBIN(dplcs));
             } else {
                 const label =
@@ -250,7 +254,7 @@ export const FileObject = observer(({ obj }) => {
                 accessor="path"
                 absolute={isAbsolute}
             />
-            {obj.mappingsASM && (
+            {mappingsASM && (
                 <div className="menu-item">
                     <Item>ASM Label</Item>
                     <Input store={obj.mappings} accessor="label" />
@@ -274,7 +278,7 @@ export const FileObject = observer(({ obj }) => {
                         accessor="path"
                         absolute={isAbsolute}
                     />
-                    {obj.dplcsASM && (
+                    {dplcsASM && (
                         <div className="menu-item">
                             <Item>ASM Label</Item>
                             <Input store={obj.dplcs} accessor="label" />
@@ -334,7 +338,7 @@ export const FileObject = observer(({ obj }) => {
                 );
             })}
 
-            {obj.linesLeft > 0 && (
+            {linesLeft > 0 && (
                 <>
                     <FileInput
                         label="Palette"

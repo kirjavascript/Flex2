@@ -1,11 +1,6 @@
-import { observable, computed } from 'mobx';
-import { extname } from 'path';
+import { observable } from 'mobx';
 
 export class ObjectDef {
-    constructor(obj) {
-        obj && Object.assign(this, obj);
-    }
-
     @observable format = '';
 
     @observable name = '';
@@ -17,28 +12,14 @@ export class ObjectDef {
     };
     @observable mappings = {
         path: '',
-        format: 'Sonic 1',
         label: '',
     };
     @observable dplcs = {
         enabled: false,
         path: '',
-        format: 'Sonic 1',
         label: '',
     };
 
-    @computed get mappingsASM() {
-        return extname(this.mappings.path) === '.asm';
-    }
-
-    @computed get dplcsASM() {
-        return extname(this.dplcs.path) === '.asm';
-    }
-
-    @computed get linesLeft() {
-        return this.palettes.reduce((a, c) => {
-            return a - c.length;
-        }, 4);
-    }
-
+    // turned into generic observables in project menu
+    // dont add methods because they will not work
 }
