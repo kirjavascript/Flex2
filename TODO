@@ -11,15 +11,18 @@ BUFFER
 
 // replace project screen
 // project screen always open
-// mapping debugger
+//
 // latest projects / ones in the root
+// format inheritance
+// keys as groups
+// tree ui
+
+// mapping debugger
 // art ffset save message / input size
 // copy to project
 // autodismiss
 // autozoom based on sprite size for sprites tab
 
-// remove @ deprecated
-// optimizations(false);
 // reverse endianness
 
 // other

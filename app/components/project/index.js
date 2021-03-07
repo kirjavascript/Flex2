@@ -19,6 +19,21 @@ const getModel = (children) => ({
         'tabSetEnableDivide': false,
         'tabSetEnableMaximize': false
     },
+    'borders': [
+        {
+	        "type": "border",
+          "location":"top",
+          "size": 300,
+          "children": [
+              {
+              "type": "tab",
+              "name": "Config",
+              "component": "config"
+              }
+            ]
+        },
+
+    ],
     'layout': {
         'type': 'row',
         'children': [
@@ -74,12 +89,12 @@ const Project = observer(() => {
         component: i,
     }))
 
-    tabs.unshift({
-        name: 'Config',
-        type: 'tab',
-        component: 'config',
-        enableDrag: false,
-    });
+    // tabs.unshift({
+    //     name: 'Config',
+    //     type: 'tab',
+    //     component: 'config',
+    //     enableDrag: false,
+    // });
 
     const model = FlexLayout.Model.fromJson(getModel(tabs));
 
