@@ -61,6 +61,7 @@
 }
 
 .raw-mapping-data {
+    box-sizing: content-box;
     position: absolute;
     z-index: 2;
     background-color: $black;

@@ -1,2 +1,64 @@
 .project {
+    box-sizing: border-box;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    .tree {
+        width: 400px;
+        height: 100%;
+    }
+    .input-sizer {
+        display: inline-grid;
+        vertical-align: top;
+        align-items: center;
+        position: relative;
+        // border: solid 1px;
+        // padding: .25em .5em;
+        // margin: 5px;
+
+        &.stacked {
+            padding: .5em;
+            align-items: stretch;
+
+            &::after,
+            input,
+            textarea {
+                grid-area: 2 / 1;
+            }
+        }
+
+        &::after,
+        input,
+        textarea {
+            width: auto;
+            min-width: 1em;
+            grid-area: 1 / 2;
+            font: inherit;
+            padding: 0.25em;
+            margin: 0;
+            resize: none;
+            background: none;
+            appearance: none;
+            border: none;
+        }
+
+        &::after {
+            content: attr(data-value) ' ';
+            visibility: hidden;
+            white-space: pre-wrap;
+        }
+
+        &:focus-within {
+            // outline: solid 1px blue;
+            box-shadow: 0px 2px 0px $white;
+
+            > span { color: blue; }
+
+            textarea:focus,
+            input:focus {
+                outline: none;
+            }
+        }
+    }
+
 }
