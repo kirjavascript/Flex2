@@ -1,20 +1,2 @@
-.project-menu {
-    height: 100%;
-    @extend .center;
-    .menu-item {
-        text-align: center;
-        background-color: $green;
-        color: $black;
-        font-family: Hack Bold;
-        padding: 2px 5px;
-        margin: 5px;
-        width: 200px;
-        font-size: 14px;
-        word-break: break-word;
-    }
-    input {
-        margin: 4px;
-        margin-bottom: 0px;
-        width: 200px;
-    }
+.project {
 }

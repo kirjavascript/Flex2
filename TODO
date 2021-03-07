@@ -15,6 +15,8 @@ BUFFER
 // latest projects / ones in the root
 // art ffset save message / input size
 // copy to project
+// autodismiss
+// autozoom based on sprite size for sprites tab
 
 // remove @ deprecated
 // optimizations(false);
@@ -42,22 +44,19 @@ custom mapping formats / screen mappings format (!) ->
 project file tabs
     recent projects
 generate project files -> use to create s3portal
+rotsprite
 export spritesheet
-rotsprite https://crates.io/crates/rotsprite
 animation editor
 ==
 BUGS
 
-max mapping qty limit
+max mapping qty limit (import screen limits too)
 mappings mode in fullscreen raw editor is borked
 saving 0 tile as nemesis crashes
 saving ArtC42 at all crashes
-show/hide collapse config state
-says open project when choosing mappings
 pink surrounding tiles sometimes breaks
 tile deletes when drawing (unmap pieces / shortcuts in drawing mode)
-many writes while drawing
-project files easier to use / create
+import history - many writes while drawing
 
 FEATURES
 set colour of art tiles
@@ -65,20 +64,15 @@ set colour of art tiles
 make decompression threaded
 ctrl+wheel for horiz scroll
 
-FILE MENU
-offset / size
-reuse for project
-
 PROJECTS
 copy object
 
 NEW MAPPING
 add checkbox to the modal (autodismiss [x])
 
-CUSTOM FORMATS
-==
 ==
 ROTSPRITE
+rotsprite https://crates.io/crates/rotsprite
 https://forums.sonicretro.org/index.php?threads/sprite-rotation-utility.8848/#post-159754
 ==
 copy / paste mappings

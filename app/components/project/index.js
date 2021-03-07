@@ -32,14 +32,33 @@ const getModel = (children) => ({
 
 const inspect = d => require('util').inspect(require('mobx').toJS(d));
 
+const Config = observer(() => {
+
+    return (
+        <>
+
+            {workspace.projectPath}
+            <FileInput
+                label="Project"
+                store={workspace}
+                accessor="projectPath"
+                absolute
+            />
+
+        </>
+    );
+});
+
 const Node = observer(({ node }) => {
     const { project } = workspace;
+    const component = node.getComponent();
+    if (component === 'config') return <Config />;
     return <div className="flexlayout__panel">
         <pre>
-            {inspect(project.objects[node.getComponent()])}
+            {inspect(project.objects[component])}
         </pre>
 
-        <FileObject obj={project.objects[node.getComponent()]} />
+        <FileObject obj={project.objects[component]} />
     </div>
 });
 
@@ -55,6 +74,13 @@ const Project = observer(() => {
         component: i,
     }))
 
+    tabs.unshift({
+        name: 'Config',
+        type: 'tab',
+        component: 'config',
+        enableDrag: false,
+    });
+
     const model = FlexLayout.Model.fromJson(getModel(tabs));
 
     const factory = useCallback((node) => {
@@ -62,24 +88,20 @@ const Project = observer(() => {
         return <Node node={node} />;
     }, []);
 
+    // have a project tab with the config with enableDrag: false,
+
 // groups?
     return (
-        <>
+        <div className="project">
 
-            {workspace.projectPath}
-            <FileInput
-                label="Project"
-                store={workspace}
-                accessor="projectPath"
-                absolute
-            />
+            <div className="layout">
                 <FlexLayout.Layout
                     model={model}
                     factory={factory}
                     onModelChange={console.log}
                 />
-
-        </>
+            </div>
+        </div>
     );
 });
 
