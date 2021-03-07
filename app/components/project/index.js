@@ -1,12 +1,11 @@
-import React, { useCallback, useState } from 'react';
+import React from 'react';
 import { observer } from 'mobx-react';
-// import { ProjectExplorer } from './menu';
-// import { ProjectConfig } from './config';
 import { workspace } from '#store/workspace';
-// import { project } from '#store/project';
 import { FileObject } from '#components/file/file-object';
-
-import { File as FileInput } from '#ui';
+import { ObjectDef } from '#store/objectdef';
+import { File as FileInput, Button, Item } from '#ui';
+import SortableTree from 'react-sortable-tree';
+import FileExplorerTheme from 'react-sortable-tree-theme-file-explorer';
 
 const inspect = (d) => require('util').inspect(require('mobx').toJS(d));
 
@@ -24,20 +23,6 @@ const Config = observer(() => {
     );
 });
 
-const Node = observer(({ node }) => {
-    const { project } = workspace;
-    const component = node.getComponent();
-    if (component === 'config') return <Config />;
-    return (
-        <div className="flexlayout__panel">
-            <pre>{inspect(project.objects[component])}</pre>
-
-            <FileObject obj={project.objects[component]} />
-        </div>
-    );
-});
-import SortableTree from 'react-sortable-tree';
-import FileExplorerTheme from 'react-sortable-tree-theme-file-explorer';
 
 function toTree(objects) {
     return objects.map((obj) => {
@@ -59,14 +44,30 @@ function fromTree(objects) {
     });
 }
 
-// make hydrating recursive
-
 const Project = observer(() => {
     const { project } = workspace;
+
+    const newFolder = () => {
+        project.objects.push({
+            name: 'folder',
+            children: [],
+            isDirectory: true,
+            expanded: true,
+        });
+    };
+
+    const newObject = () => {
+        project.objects.push(new ObjectDef());
+    };
 
     return (
         <div className="project">
             <div className="tree">
+                <div className="file-controls">
+                    <Item>New</Item>
+                    <Button color="blue" onClick={newObject}>object</Button>
+                    <Button color="yellow" onClick={newFolder}>folder</Button>
+                </div>
                 <SortableTree
                     treeData={toTree(project.objects)}
                     onChange={(tree) => project.objects.replace(fromTree(tree))}
@@ -75,10 +76,9 @@ const Project = observer(() => {
                     canDrop={({ nextParent }) =>
                         !nextParent || nextParent.isDirectory
                     }
-                    canNodeHaveChildren={(node) => (
-                        console.log(node), node.isDirectory
-                    )}
+                    canNodeHaveChildren={(node) => node.isDirectory}
                     generateNodeProps={(rowInfo) => ({
+                        // style
                         title: (
                             <>
                                 <label className="input-sizer">
@@ -128,27 +128,15 @@ const Project = observer(() => {
                                       OBJ
                                   </div>,
                               ],
-                        buttons: [<span>drag</span>],
+                        buttons: [<Button color="red">X</Button>],
                     })}
                 />
             </div>
 
-            <button
-                onClick={() => {
-                    project.objects.push({
-                        name: 'test',
-                        children: [],
-                        isDirectory: true,
-                        expanded: true,
-                    });
-                }}
-            >
-                asd
-            </button>
-            {false && project.objects.length && (
-                <FileObject obj={project.objects[0]} />
+        {project.objects.length && (
+            <FileObject obj={project.objects[0]} />
             )}
-            <pre style={{ width: 400 }}>{inspect(project.objects)}</pre>
+            {false && <pre style={{ width: 400 }}>{inspect(project.objects)}</pre>}
         </div>
     );
 });
