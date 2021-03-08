@@ -24,23 +24,25 @@ const Config = observer(() => {
 });
 
 
-function toTree(objects) {
-    return objects.map((obj) => {
+function toTree(objects, path = []) {
+    return objects.map((obj, i) => {
+        const nodePath = [...path, i];
         return {
             ...obj,
             ref: obj,
-            children: obj.children && toTree(obj.children),
+            path: nodePath,
+            children: obj.children && toTree(obj.children, nodePath),
         };
     });
 }
 
 function fromTree(objects) {
     return objects.map((obj) => {
-        return {
-            ...obj,
-            ref: undefined,
-            children: obj.children && fromTree(obj.children),
-        };
+        const node = { ...obj };
+        delete node.ref;
+        delete node.path;
+        if (obj.children) node.children = fromTree(obj.children);
+        return node;
     });
 }
 
@@ -48,7 +50,7 @@ const Project = observer(() => {
     const { project } = workspace;
 
     const newFolder = () => {
-        project.objects.push({
+        project.objects.unshift({
             name: 'folder',
             children: [],
             isDirectory: true,
@@ -57,8 +59,10 @@ const Project = observer(() => {
     };
 
     const newObject = () => {
-        project.objects.push(new ObjectDef());
+        project.objects.unshift(new ObjectDef());
     };
+
+    const obj = {};
 
     return (
         <div className="project">
@@ -124,19 +128,23 @@ const Project = observer(() => {
                                           width: 14,
                                           height: 16,
                                       }}
+                                      onClick={() => {
+                                          project.path.replace(rowInfo.node.path)
+                                      }}
                                   >
                                       OBJ
                                   </div>,
                               ],
+                        // TODO: dropdown
                         buttons: [<Button color="red">X</Button>],
                     })}
                 />
             </div>
 
-        {project.objects.length && (
+        {false && project.objects.length && (
             <FileObject obj={project.objects[0]} />
             )}
-            {false && <pre style={{ width: 400 }}>{inspect(project.objects)}</pre>}
+            {<pre style={{ width: 400 }}>{inspect(obj)}</pre>}
         </div>
     );
 });

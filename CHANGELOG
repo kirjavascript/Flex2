@@ -10,6 +10,7 @@
     - Art offset
     - Blank entries in palette line
 - Rebuilt Project screen
+    - Tree structure for projects
 - Fixed a keycombination event bug [#29](/../../issues/29)
 - Fixed corrupted art with transparent PNGs [#22](/../../issues/22)
 

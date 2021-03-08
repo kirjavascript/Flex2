@@ -14,13 +14,15 @@ export class Project {
                 if (await exists(path)) {
                     const json = JSON.parse(await fs.readFile(path, 'utf8'));
                     this.name = json.name;
-                    this.objects.replace(json.objects);
+                    this.path = json.path || [];
+                    this.objects.replace(json.objects || []);
                 }
 
                 this.cleanup = autorun(() => {
                     const json = JSON.stringify({
                         Flex: 2,
                         name: this.name,
+                        path: this.path,
                         objects: this.objects,
                     }, null, 4);
                     (async () => {
@@ -41,5 +43,6 @@ export class Project {
 
     @observable error;
     @observable name = '';
+    @observable path = [];
     @observable objects = [];
 }
