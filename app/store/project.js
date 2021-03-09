@@ -14,7 +14,7 @@ export class Project {
                 if (await exists(path)) {
                     const json = JSON.parse(await fs.readFile(path, 'utf8'));
                     this.name = json.name;
-                    this.path = json.path || [];
+                    this.node = json.node;
                     this.objects.replace(json.objects || []);
                 }
 
@@ -22,16 +22,16 @@ export class Project {
                     const json = JSON.stringify({
                         Flex: 2,
                         name: this.name,
-                        path: this.path,
+                        node: this.node,
                         objects: this.objects,
                     }, null, 4);
                     (async () => {
                         this.error = undefined;
-                        // try {
-                        //     await fs.writeFile(path, json, 'utf8');
-                        // } catch (e) {
-                        //     this.error = e;
-                        // }
+                        try {
+                            await fs.writeFile(path, json, 'utf8');
+                        } catch (e) {
+                            this.error = e;
+                        }
                     })();
                 });
             } catch (e) {
@@ -43,6 +43,6 @@ export class Project {
 
     @observable error;
     @observable name = '';
-    @observable path = [];
+    @observable node = '';
     @observable objects = [];
 }

@@ -2,18 +2,15 @@ import React, { Component } from 'react';
 import { environment } from '#store/environment';
 import { observer } from 'mobx-react';
 import { mappingState } from './state';
-import { uuid } from '#util/uuid';
+import { id } from '#util/uuid';
 import SVARS from '!!sass-variables-loader!#styles/variables.scss';
 
 @observer
 export class Selection extends Component {
-
-    id = uuid();
+    id = id();
 
     render() {
         const { color = 'blue', opacity = 0, offset = 0, width = 6, all } = this.props;
-        const { x, y } = mappingState;
-
         return <g>
                 <defs>
                     <SelectionLayer

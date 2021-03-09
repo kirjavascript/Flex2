@@ -56,7 +56,8 @@ module.exports = (env = {}, args = {}) => {
             }),
         ],
         resolve: {
-            extensions: ['.js', '.json', '.jsx'],
+            symlinks: false,
+            extensions: ['.js'],
             alias: {
                 '#store': __dirname + '/../app/store',
                 '#components': __dirname + '/../app/components',

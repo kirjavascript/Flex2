@@ -4,10 +4,11 @@ import { workspace } from '#store/workspace';
 import { FileObject } from '#components/file/file-object';
 import { ObjectDef } from '#store/objectdef';
 import { File as FileInput, Button, Item } from '#ui';
+import { uuid } from '#util/uuid';
 import SortableTree from 'react-sortable-tree';
 import FileExplorerTheme from 'react-sortable-tree-theme-file-explorer';
 
-const inspect = (d) => require('util').inspect(require('mobx').toJS(d));
+const inspect = (d) => require('util').inspect(require('mobx').toJS(d), {depth: 9});
 
 const Config = observer(() => {
     return (
@@ -24,14 +25,13 @@ const Config = observer(() => {
 });
 
 
-function toTree(objects, path = []) {
-    return objects.map((obj, i) => {
-        const nodePath = [...path, i];
+function toTree(objects) {
+    return objects.map((obj) => {
         return {
             ...obj,
+            uuid: obj.uuid || uuid(),
             ref: obj,
-            path: nodePath,
-            children: obj.children && toTree(obj.children, nodePath),
+            children: obj.children && toTree(obj.children),
         };
     });
 }
@@ -40,10 +40,21 @@ function fromTree(objects) {
     return objects.map((obj) => {
         const node = { ...obj };
         delete node.ref;
-        delete node.path;
         if (obj.children) node.children = fromTree(obj.children);
         return node;
     });
+}
+
+function findNode(tree, uuid) {
+    if (!uuid) return;
+    for (let i = 0; i < tree.length; i++) {
+        const item = tree[i];
+        if (item.uuid === uuid) return item;
+        if (item.children) {
+            const result = findNode(item.children, uuid);
+            if (result) return result;
+        }
+    }
 }
 
 const Project = observer(() => {
@@ -62,7 +73,9 @@ const Project = observer(() => {
         project.objects.unshift(new ObjectDef());
     };
 
-    const obj = {};
+    const tree = toTree(project.objects)
+
+    const node = findNode(tree, project.node);
 
     return (
         <div className="project">
@@ -73,7 +86,7 @@ const Project = observer(() => {
                     <Button color="yellow" onClick={newFolder}>folder</Button>
                 </div>
                 <SortableTree
-                    treeData={toTree(project.objects)}
+                    treeData={tree}
                     onChange={(tree) => project.objects.replace(fromTree(tree))}
                     theme={FileExplorerTheme}
                     canDrag={({ node }) => !node.dragDisabled}
@@ -129,22 +142,27 @@ const Project = observer(() => {
                                           height: 16,
                                       }}
                                       onClick={() => {
-                                          project.path.replace(rowInfo.node.path)
+                                          project.node = rowInfo.node.uuid;
                                       }}
                                   >
                                       OBJ
                                   </div>,
                               ],
                         // TODO: dropdown
-                        buttons: [<Button color="red">X</Button>],
+                        buttons: [''],
                     })}
                 />
             </div>
 
-        {false && project.objects.length && (
-            <FileObject obj={project.objects[0]} />
-            )}
-            {<pre style={{ width: 400 }}>{inspect(obj)}</pre>}
+            <div className="config">
+                {node && <>
+                    <div className="header">
+                        <Item>Game Format</Item>
+                        <Config />
+                    </div>
+                    <FileObject obj={node} />
+                </>}
+            </div>
         </div>
     );
 });

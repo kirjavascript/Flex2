@@ -2,12 +2,12 @@ import React, { Component } from 'react';
 import { environment } from '#store/environment';
 import { observer } from 'mobx-react';
 import { magenta } from '!!sass-variables-loader!#styles/variables.scss';
-import { uuid } from '#util/uuid';
+import { id } from '#util/uuid';
 
 @observer
 export class ActiveSelection extends Component {
 
-    id = uuid();
+    id = id();
 
     render() {
         return <svg

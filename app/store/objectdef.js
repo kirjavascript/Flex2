@@ -21,5 +21,5 @@ export class ObjectDef {
     };
 
     // turned into generic observables in project menu
-    // dont add methods because they will not work
+    // dont add methods and shit because they wont work
 }
