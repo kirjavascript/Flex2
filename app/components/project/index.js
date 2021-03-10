@@ -2,34 +2,15 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import { workspace } from '#store/workspace';
 import { FileObject } from '#components/file/file-object';
-import { ObjectDef } from '#store/objectdef';
+import ErrorMsg from '#components/file/error';
 import { File as FileInput, Button, Item } from '#ui';
-import { uuid } from '#util/uuid';
 import SortableTree from 'react-sortable-tree';
 import FileExplorerTheme from 'react-sortable-tree-theme-file-explorer';
-
-const inspect = (d) => require('util').inspect(require('mobx').toJS(d), {depth: 9});
-
-const Config = observer(() => {
-    return (
-        <>
-            {workspace.projectPath}
-            <FileInput
-                label="Project"
-                store={workspace}
-                accessor="projectPath"
-                absolute
-            />
-        </>
-    );
-});
-
 
 function toTree(objects) {
     return objects.map((obj) => {
         return {
             ...obj,
-            uuid: obj.uuid || uuid(),
             ref: obj,
             children: obj.children && toTree(obj.children),
         };
@@ -60,18 +41,23 @@ function findNode(tree, uuid) {
 const Project = observer(() => {
     const { project } = workspace;
 
-    const newFolder = () => {
-        project.objects.unshift({
-            name: 'folder',
-            children: [],
-            isDirectory: true,
-            expanded: true,
-        });
-    };
-
-    const newObject = () => {
-        project.objects.unshift(new ObjectDef());
-    };
+    if (!project) {
+        return <>
+            <FileInput
+                label="Project"
+                store={workspace}
+                accessor="projectPath"
+                onChange={path => {
+                    if (path) {
+                        workspace.openProject();
+                    }
+                }}
+                ext="json"
+                absolute
+            />
+            TODO: last used projects
+        </>;
+    }
 
     const tree = toTree(project.objects)
 
@@ -79,11 +65,12 @@ const Project = observer(() => {
 
     return (
         <div className="project">
+            <ErrorMsg error={project.error} />
             <div className="tree">
                 <div className="file-controls">
                     <Item>New</Item>
-                    <Button color="blue" onClick={newObject}>object</Button>
-                    <Button color="yellow" onClick={newFolder}>folder</Button>
+                    <Button color="blue" onClick={project.newObject}>object</Button>
+                    <Button color="yellow" onClick={project.newFolder}>folder</Button>
                 </div>
                 <SortableTree
                     treeData={tree}
@@ -156,10 +143,12 @@ const Project = observer(() => {
 
             <div className="config">
                 {node && <>
-                    <div className="header">
-                        <Item>Game Format</Item>
-                        <Config />
+                    <div>
+                        <Button color="magenta" onClick={workspace.closeProject}>close project</Button>
+                        <Item>Project</Item>
+                        {workspace.projectPath}
                     </div>
+                        <span>{node.name}</span>
                     <FileObject obj={node} />
                 </>}
             </div>

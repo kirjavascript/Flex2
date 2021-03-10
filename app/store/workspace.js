@@ -23,6 +23,7 @@ class Workspace {
         if (this.project) {
             this.project.cleanup();
             this.project = undefined;
+            this.projectPath = '';
         }
     };
 

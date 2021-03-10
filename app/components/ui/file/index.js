@@ -42,10 +42,12 @@ export class File extends Component {
     };
 
     createFile = () => {
+        const ext = this.props.ext || 'bin';
+        const extensions = this.props.ext ? [this.props.ext] : ['bin', 'asm'];
         dialog.showSaveDialog({
             title: `New ${this.props.label}`,
-            defaultPath: `${this.props.label.toLowerCase()}.bin`,
-            filters: [{name: `${this.props.label} File`, extensions: ['bin', 'asm']}],
+            defaultPath: `${this.props.label.toLowerCase()}.${ext}`,
+            filters: [{name: `${this.props.label} File`, extensions }],
         })
             .then(({ filePath }) => {
                 filePath && this.update(filePath);

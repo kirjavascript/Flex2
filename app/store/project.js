@@ -1,9 +1,16 @@
-import { observable, autorun } from 'mobx';
+import { observable, autorun, action } from 'mobx';
+import { uuid } from '#util/uuid';
+import { ObjectDef } from '#store/objectdef';
 import { promises, exists as fsExists } from 'fs';
 import { promisify } from 'util';
 
 const fs = promises;
 const exists = promisify(fsExists);
+
+const addUuid = (objects) => objects && objects.forEach((obj) => {
+    obj.uuid = obj.uuid || uuid();
+    obj.children && addUuid(obj.children);
+});
 
 export class Project {
 
@@ -15,6 +22,7 @@ export class Project {
                     const json = JSON.parse(await fs.readFile(path, 'utf8'));
                     this.name = json.name;
                     this.node = json.node;
+                    addUuid(json.objects);
                     this.objects.replace(json.objects || []);
                 }
 
@@ -45,4 +53,19 @@ export class Project {
     @observable name = '';
     @observable node = '';
     @observable objects = [];
+
+    @action newFolder = () => {
+        this.objects.unshift({
+            name: 'folder',
+            children: [],
+            isDirectory: true,
+            expanded: true,
+        });
+    };
+
+    @action newObject = () => {
+        const obj = new ObjectDef();
+        obj.uuid = uuid();
+        this.objects.unshift(obj);
+    };
 }
