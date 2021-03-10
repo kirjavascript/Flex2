@@ -24,7 +24,6 @@
     .tree {
         width: 330px;
         height: 100%;
-
         display: flex;
         flex-direction: column;
     }
@@ -37,6 +36,7 @@
         }
         .path {
             color: $white2;
+            line-height: 1.3em;
         }
     }
     .input-sizer {

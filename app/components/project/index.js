@@ -7,12 +7,14 @@ import { File as FileInput, Button, Item } from '#ui';
 import SortableTree from 'react-sortable-tree';
 import FileExplorerTheme from 'react-sortable-tree-theme-file-explorer';
 import { basename } from 'path';
+import objectMenu from './object-menu';
 
 function toTree(objects) {
     return objects.map((obj) => {
         return {
             ...obj,
             ref: obj,
+            parent: objects,
             children: obj.children && toTree(obj.children),
         };
     });
@@ -22,6 +24,7 @@ function fromTree(objects) {
     return objects.map((obj) => {
         const node = { ...obj };
         delete node.ref;
+        delete node.parent;
         if (obj.children) node.children = fromTree(obj.children);
         return node;
     });
@@ -41,7 +44,7 @@ const Project = observer(() => {
                         workspace.openProject();
                     }
                 }}
-                ext="json"
+                ext="flex.json"
                 absolute
             />
         </div>;
@@ -103,6 +106,9 @@ const Project = observer(() => {
                                               ? 'white'
                                               : 'gray',
                                       }}
+                                      onContextMenu={() => {
+                                          objectMenu(rowInfo.node);
+                                      }}
                                   />,
                               ]
                             : [
@@ -118,12 +124,14 @@ const Project = observer(() => {
                                       onClick={() => {
                                           project.node = rowInfo.node.uuid;
                                       }}
+                                      onContextMenu={() => {
+                                          objectMenu(rowInfo.node);
+                                      }}
                                   >
                                       OBJ
                                   </div>,
                               ],
-                        // TODO: dropdown right click
-                        buttons: [''],
+                        buttons: [],
                     })}
                 />
             </div>
@@ -145,12 +153,11 @@ const Project = observer(() => {
                         </Button>
                     </div>
                     <ErrorMsg error={project.error} />
-                    {node && <>
+                    {node &&
                         <div className="menu-item">
                             <Item>Object Name</Item>
                             <span> {node.name} </span>
-                        </div>
-                    </>}
+                        </div>}
                 </div>
                 {node && <FileObject obj={node} />}
             </div>
