@@ -1,4 +1,4 @@
-import { observable, autorun, action } from 'mobx';
+import { observable, autorun, action, computed } from 'mobx';
 import { uuid } from '#util/uuid';
 import { ObjectDef } from '#store/objectdef';
 import { promises, exists as fsExists } from 'fs';
@@ -7,16 +7,29 @@ import { promisify } from 'util';
 const fs = promises;
 const exists = promisify(fsExists);
 
-const addUuid = (objects) => objects && objects.forEach((obj) => {
-    obj.uuid = obj.uuid || uuid();
-    obj.children && addUuid(obj.children);
-});
+function addUuid(objects) {
+    objects && objects.forEach((obj) => {
+        obj.uuid = obj.uuid || uuid();
+        obj.children && addUuid(obj.children);
+    });
+}
+
+function findNode(tree, uuid) {
+    if (!uuid) return;
+    for (let i = 0; i < tree.length; i++) {
+        const item = tree[i];
+        if (item.uuid === uuid) return item;
+        if (item.children) {
+            const result = findNode(item.children, uuid);
+            if (result) return result;
+        }
+    }
+}
 
 export class Project {
 
     constructor(path) {
         (async () => {
-            this.error = undefined;
             try {
                 if (await exists(path)) {
                     const json = JSON.parse(await fs.readFile(path, 'utf8'));
@@ -53,6 +66,10 @@ export class Project {
     @observable name = '';
     @observable node = '';
     @observable objects = [];
+
+    @computed get nodeRef() {
+        return findNode(this.objects, this.node);
+    }
 
     @action newFolder = () => {
         this.objects.unshift({

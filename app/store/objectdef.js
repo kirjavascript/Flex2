@@ -3,7 +3,7 @@ import { observable } from 'mobx';
 export class ObjectDef {
     @observable format = '';
 
-    @observable name = '';
+    @observable name = 'object';
     @observable palettes = [];
     @observable art = {
         path: '',

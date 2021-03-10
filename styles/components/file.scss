@@ -1,14 +1,14 @@
+.menu-item {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
 .file-object {
     width: 100%;
     padding: 10px;
-
-    .menu-item {
-        display: flex;
-        flex-direction: row;
-        align-items: flex-start;
-        justify-content: space-between;
-        margin-bottom: 10px;
-    }
 
     .load-ref {
         display: flex;

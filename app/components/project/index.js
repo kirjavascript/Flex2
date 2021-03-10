@@ -6,6 +6,7 @@ import ErrorMsg from '#components/file/error';
 import { File as FileInput, Button, Item } from '#ui';
 import SortableTree from 'react-sortable-tree';
 import FileExplorerTheme from 'react-sortable-tree-theme-file-explorer';
+import { basename } from 'path';
 
 function toTree(objects) {
     return objects.map((obj) => {
@@ -24,18 +25,6 @@ function fromTree(objects) {
         if (obj.children) node.children = fromTree(obj.children);
         return node;
     });
-}
-
-function findNode(tree, uuid) {
-    if (!uuid) return;
-    for (let i = 0; i < tree.length; i++) {
-        const item = tree[i];
-        if (item.uuid === uuid) return item;
-        if (item.children) {
-            const result = findNode(item.children, uuid);
-            if (result) return result;
-        }
-    }
 }
 
 const Project = observer(() => {
@@ -60,11 +49,10 @@ const Project = observer(() => {
 
     const tree = toTree(project.objects)
 
-    const node = findNode(tree, project.node);
+    const node = project.nodeRef;
 
     return (
         <div className="project">
-            <ErrorMsg error={project.error} />
             <div className="tree">
                 <div className="file-controls">
                     <Item>New</Item>
@@ -134,22 +122,37 @@ const Project = observer(() => {
                                       OBJ
                                   </div>,
                               ],
-                        // TODO: dropdown
+                        // TODO: dropdown right click
                         buttons: [''],
                     })}
                 />
             </div>
 
             <div className="config">
-                {node && <>
-                    <div>
-                        <Button color="magenta" onClick={workspace.closeProject}>close project</Button>
+                <div className="config-data">
+                    <div className="menu-item">
                         <Item>Project</Item>
-                        {workspace.projectPath}
+                        <span
+                            className="path"
+                        >
+                            {basename(workspace.projectPath)}
+                        </span>
+                        <Button
+                            color="magenta"
+                            onClick={workspace.closeProject}
+                        >
+                            close
+                        </Button>
                     </div>
-                        <span>{node.name}</span>
-                    <FileObject obj={node} />
-                </>}
+                    <ErrorMsg error={project.error} />
+                    {node && <>
+                        <div className="menu-item">
+                            <Item>Object Name</Item>
+                            <span> {node.name} </span>
+                        </div>
+                    </>}
+                </div>
+                {node && <FileObject obj={node} />}
             </div>
         </div>
     );
