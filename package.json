@@ -41,7 +41,6 @@
         "react-masonry-component": "^6.2.1",
         "react-sortable-hoc": "^1.11.0",
         "react-sortable-tree": "^2.8.0",
-        "react-sortable-tree-theme-file-explorer": "^2.0.0",
         "react-spring": "^8.0.27",
         "victory": "^35.0.8"
     }

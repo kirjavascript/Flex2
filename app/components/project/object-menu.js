@@ -8,7 +8,6 @@ export default function(node) {
     const index = node.parent.findIndex(d => d === node.ref);
     menu.append(new MenuItem({
         label: 'copy',
-        // role: 'copy',
         click: () => {
             const clone = toJS(node.parent[index]);
             clone.uuid = uuid();
@@ -17,7 +16,6 @@ export default function(node) {
     }));
     menu.append(new MenuItem({
         label: 'delete',
-        // role: 'delete',
         submenu: [
             new MenuItem({
                 label: 'confirm delete',

@@ -5,9 +5,9 @@ import { FileObject } from '#components/file/file-object';
 import ErrorMsg from '#components/file/error';
 import { File as FileInput, Button, Item } from '#ui';
 import SortableTree from 'react-sortable-tree';
-import FileExplorerTheme from 'react-sortable-tree-theme-file-explorer';
 import { basename } from 'path';
 import objectMenu from './object-menu';
+import theme from './theme';
 
 function toTree(objects) {
     return objects.map((obj) => {
@@ -65,7 +65,7 @@ const Project = observer(() => {
                 <SortableTree
                     treeData={tree}
                     onChange={(tree) => project.objects.replace(fromTree(tree))}
-                    theme={FileExplorerTheme}
+                    theme={theme}
                     canDrag={({ node }) => !node.dragDisabled}
                     canDrop={({ nextParent }) =>
                         !nextParent || nextParent.isDirectory
