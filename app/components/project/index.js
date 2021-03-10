@@ -74,63 +74,61 @@ const Project = observer(() => {
                     generateNodeProps={(rowInfo) => ({
                         // style
                         title: (
-                            <>
-                                <label className="input-sizer">
-                                    <input
-                                        value={rowInfo.node.name}
-                                        onInput={(e) => {
-                                            rowInfo.node.ref.name =
-                                                e.target.parentNode.dataset.value =
-                                                e.target.value;
-                                        }}
-                                        size={rowInfo.node.name.length}
-                                        onChange={() => {}}
-                                    />
-                                </label>
-                            </>
+                            <label className="input-sizer">
+                                <input
+                                    value={rowInfo.node.name}
+                                    onInput={(e) => {
+                                        rowInfo.node.ref.name =
+                                            e.target.parentNode.dataset.value =
+                                            e.target.value;
+                                    }}
+                                    size={rowInfo.node.name.length}
+                                    onChange={() => {}}
+                                />
+                            </label>
                         ),
                         icons: rowInfo.node.isDirectory
                             ? [
-                                  <div
-                                      style={{
-                                          borderLeft: 'solid 8px gray',
-                                          borderBottom: 'solid 10px gray',
-                                          marginRight: 10,
-                                          boxSizing: 'border-box',
-                                          width: 16,
-                                          height: 12,
-                                          filter: rowInfo.node.expanded
-                                              ? 'drop-shadow(1px 0 0 gray) drop-shadow(0 1px 0 gray) drop-shadow(0 -1px 0 gray) drop-shadow(-1px 0 0 gray)'
-                                              : 'none',
-                                          borderColor: rowInfo.node.expanded
-                                              ? 'white'
-                                              : 'gray',
-                                      }}
-                                      onContextMenu={() => {
-                                          objectMenu(rowInfo.node);
-                                      }}
-                                  />,
-                              ]
+                                <div
+                                    style={{
+                                        borderLeft: 'solid 8px gray',
+                                        borderBottom: 'solid 10px gray',
+                                        marginRight: 10,
+                                        boxSizing: 'border-box',
+                                        width: 16,
+                                        height: 12,
+                                        filter: rowInfo.node.expanded
+                                            ? 'drop-shadow(1px 0 0 gray) drop-shadow(0 1px 0 gray) drop-shadow(0 -1px 0 gray) drop-shadow(-1px 0 0 gray)'
+                                            : 'none',
+                                        borderColor: rowInfo.node.expanded
+                                            ? 'white'
+                                            : 'gray',
+                                    }}
+                                    onContextMenu={() => {
+                                        objectMenu(rowInfo.node);
+                                    }}
+                                />,
+                            ]
                             : [
-                                  <div
-                                      style={{
-                                          border: 'solid 1px grey',
-                                          fontSize: 7,
-                                          textAlign: 'center',
-                                          marginRight: 10,
-                                          width: 14,
-                                          height: 16,
-                                      }}
-                                      onClick={() => {
-                                          project.node = rowInfo.node.uuid;
-                                      }}
-                                      onContextMenu={() => {
-                                          objectMenu(rowInfo.node);
-                                      }}
-                                  >
-                                      OBJ
-                                  </div>,
-                              ],
+                                <div
+                                    style={{
+                                        border: 'solid 1px grey',
+                                        fontSize: 7,
+                                        textAlign: 'center',
+                                        marginRight: 10,
+                                        width: 14,
+                                        height: 16,
+                                    }}
+                                    onClick={() => {
+                                        project.node = rowInfo.node.uuid;
+                                    }}
+                                    onContextMenu={() => {
+                                        objectMenu(rowInfo.node);
+                                    }}
+                                >
+                                    OBJ
+                                </div>,
+                            ],
                         buttons: [],
                     })}
                 />
@@ -154,10 +152,10 @@ const Project = observer(() => {
                     </div>
                     <ErrorMsg error={project.error} />
                     {node &&
-                        <div className="menu-item">
-                            <Item>Object Name</Item>
-                            <span> {node.name} </span>
-                        </div>}
+                    <div className="menu-item">
+                        <Item>Object Name</Item>
+                        <span> {node.name} </span>
+                    </div>}
                 </div>
                 {node && <FileObject obj={node} />}
             </div>

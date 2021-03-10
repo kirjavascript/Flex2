@@ -8,23 +8,24 @@ export default function(node) {
     const index = node.parent.findIndex(d => d === node.ref);
     menu.append(new MenuItem({
         label: 'copy',
+        // role: 'copy',
         click: () => {
             const clone = toJS(node.parent[index]);
             clone.uuid = uuid();
-            node.parent.push(clone);
+            node.parent.splice(index, 0, clone);
         },
     }));
     menu.append(new MenuItem({
         label: 'delete',
-        click: () => {
-            const message = node.children
-                ? 'delete this folder and its descendents?'
-                : 'delete this object?';
-            if (confirm(message)) {
-                node.parent.splice(index, 1);
-            }
-        },
+        // role: 'delete',
+        submenu: [
+            new MenuItem({
+                label: 'confirm delete',
+                click: () => {
+                    node.parent.splice(index, 1);
+                },
+            })
+        ],
     }));
-
     menu.popup(getCurrentWindow());
 }
