@@ -31,7 +31,7 @@ input {
     color: $white;
     font-family: Hack Bold;
     padding: 2px 5px;
-    width: 150px;
+    width: 159px;
     &:placeholder {
         color: $white2;
     }
@@ -43,14 +43,14 @@ input {
 .select {
     .Dropdown-placeholder {
         @extend input;
-        width: 148px;
+        width: 159px;
     }
     .Dropdown-menu {
         position: absolute;
         border: 1px solid $white2;
         color: $white;
         padding: 5px;
-        width: 148px;
+        width: 159px;
         margin-top: -1px;
         background-color: $black;
         z-index: 1;
@@ -108,7 +108,7 @@ input {
         align-items: center;
         cursor: pointer;
         border: 2px dashed $grey;
-        padding: 15px;
+        padding: 30px;
         border-radius: 5px;
         text-align: center;
         margin-right: 10px;

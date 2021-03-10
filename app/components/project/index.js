@@ -42,7 +42,7 @@ const Project = observer(() => {
     const { project } = workspace;
 
     if (!project) {
-        return <>
+        return <div className="project-open">
             <FileInput
                 label="Project"
                 store={workspace}
@@ -55,8 +55,7 @@ const Project = observer(() => {
                 ext="json"
                 absolute
             />
-            TODO: last used projects
-        </>;
+        </div>;
     }
 
     const tree = toTree(project.objects)

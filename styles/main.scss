@@ -15,6 +15,11 @@ html {
     user-select: none;
     overflow: hidden;
     cursor: default;
+    box-sizing: border-box;
+}
+
+*, *:before, *:after {
+    box-sizing: inherit;
 }
 
 img {

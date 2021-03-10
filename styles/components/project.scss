@@ -1,5 +1,15 @@
+.project-open {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 50px;
+    .dashed-box {
+        padding: 60px 15px;
+    }
+}
+
 .project {
-    box-sizing: border-box;
     height: 100%;
     display: flex;
     flex-direction: row;

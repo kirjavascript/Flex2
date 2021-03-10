@@ -32,11 +32,12 @@
         margin: 5px;
     }
     .item {
-        width: 200px;
+        width: 210px;
     }
 }
 
 .new-mapping {
+    box-sizing: content-box;
     position: absolute;
     background-color: $black;
     top: 15px;
@@ -55,6 +56,7 @@
 }
 
 .new-floating-piece .mapping {
+    box-sizing: content-box;
     z-index: 2;
     border: 1px solid transparent;
     background: rgba(97, 175, 239, 0.3);

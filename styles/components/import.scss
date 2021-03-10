@@ -35,6 +35,7 @@
     }
 
     .container {
+        box-sizing: content-box;
         overflow: auto;
         position: absolute;
         top: 15px;
