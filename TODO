@@ -2,6 +2,7 @@ DOC
 ==
 1.0.0 - breaking change to select mapping format
 megadrive sprite editor (kirjava.xyz
+project menu explain
 spritesmind
 data parser, not text
 post image of project / some custom mappings, saying it's ready for testing
@@ -27,6 +28,7 @@ BUFFER
 // fix s2 dplc
 // fix tails
 /* https://github.com/Ralakimus/sonic-cd-r11a-disassembly */
+/* http://info.sonicretro.org/Disassemblies */
 // s3k sonic
 // kid chameleon
 // crackers

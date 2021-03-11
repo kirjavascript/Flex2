@@ -3,16 +3,18 @@
 ## [1.0.0]
 - New mapping/DPLC engine
     - Real custom mappings
-    - Sonic 2 Special Stage added
+    - Sonic 2 Special Stage added [#21](/../../issues/21)
 - New ASM parser/writer
 - Added File menu
+    - Create new files / better file selection
     - Save/Load individual assets
     - Art offset
     - Blank entries in palette line
 - Rebuilt Project screen
     - Tree structure for projects
+    - Reuse file menu
 - Fixed a keycombination event bug [#29](/../../issues/29)
-- Fixed corrupted art with transparent PNGs [#22](/../../issues/22)
+- Fixed corrupted art when importing transparent PNGs [#22](/../../issues/22)
 
 ## [0.0.8]
 - Changed default palette from Sonic 2 to the SCH unified palette

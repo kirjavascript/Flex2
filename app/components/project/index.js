@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import { workspace } from '#store/workspace';
 import { FileObject } from '#components/file/file-object';
 import ErrorMsg from '#components/file/error';
-import { File as FileInput, Button, Item } from '#ui';
+import { File as FileInput, Button, Item, Input } from '#ui';
 import SortableTree from 'react-sortable-tree';
 import { basename } from 'path';
 import objectMenu from './object-menu';
@@ -74,7 +74,7 @@ const Project = observer(() => {
                     theme={theme}
                     canDrag={({ node }) => !node.dragDisabled}
                     canDrop={({ nextParent }) =>
-                        !nextParent || nextParent.isDirectory
+                        (!nextParent || nextParent.isDirectory)
                     }
                     canNodeHaveChildren={(node) => node.isDirectory}
                     generateNodeProps={(rowInfo) => ({
@@ -125,7 +125,7 @@ const Project = observer(() => {
                     {node && (
                         <div className="menu-item">
                             <Item>Object Name</Item>
-                            <span> {node.name} </span>
+                            <Input store={node} accessor="name" />
                         </div>
                     )}
                 </div>

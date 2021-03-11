@@ -7,10 +7,14 @@ import { promisify } from 'util';
 const fs = promises;
 const exists = promisify(fsExists);
 
-function addUuid(objects) {
+function hydrate(objects) {
+    // ensure objects have uuids and other backwards compat stuff
     objects && objects.forEach((obj) => {
         obj.uuid = obj.uuid || uuid();
-        obj.children && addUuid(obj.children);
+        if (obj.art) {
+            obj.art.offset = obj.art.offset || 0;
+        }
+        obj.children && hydrate(obj.children);
     });
 }
 
@@ -35,7 +39,7 @@ export class Project {
                     const json = JSON.parse(await fs.readFile(path, 'utf8'));
                     this.name = json.name;
                     this.node = json.node;
-                    addUuid(json.objects);
+                    hydrate(json.objects);
                     this.objects.replace(json.objects || []);
                 }
 
