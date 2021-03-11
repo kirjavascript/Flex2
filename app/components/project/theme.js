@@ -106,7 +106,7 @@ class FileThemeNodeContentRenderer extends Component {
             isSearchMatch,
             isSearchFocus,
             icons,
-            buttons,
+            onContextMenu,
             className,
             style,
             didDrop,
@@ -199,8 +199,9 @@ class FileThemeNodeContentRenderer extends Component {
                 <div
                     className={
                         'rowWrapper' +
-                        (!canDrag ? ` ${'rowWrapperDragDisabled'}` : '')
+                        (!canDrag ? ` rowWrapperDragDisabled` : '')
                     }
+                    onContextMenu={onContextMenu}
                 >
                     {/* Set the row preview to be used during drag and drop */}
                     {connectDragPreview(
@@ -210,16 +211,16 @@ class FileThemeNodeContentRenderer extends Component {
                                 className={
                                     'row' +
                                     (isLandingPadActive
-                                        ? ` ${'rowLandingPad'}`
+                                        ? ` rowLandingPad`
                                         : '') +
                                     (isLandingPadActive && !canDrop
-                                        ? ` ${'rowCancelPad'}`
+                                        ? ` rowCancelPad`
                                         : '') +
                                     (isSearchMatch
-                                        ? ` ${'rowSearchMatch'}`
+                                        ? ` rowSearchMatch`
                                         : '') +
                                     (isSearchFocus
-                                        ? ` ${'rowSearchFocus'}`
+                                        ? ` rowSearchFocus`
                                         : '') +
                                     (className ? ` ${className}` : '')
                                 }
@@ -232,7 +233,7 @@ class FileThemeNodeContentRenderer extends Component {
                                     className={
                                         'rowContents' +
                                         (!canDrag
-                                            ? ` ${'rowContentsDragDisabled'}`
+                                            ? ` rowContentsDragDisabled`
                                             : '')
                                     }
                                 >
@@ -256,17 +257,6 @@ class FileThemeNodeContentRenderer extends Component {
                                                 })
                                                 : nodeTitle}
                                         </span>
-                                    </div>
-
-                                    <div className={'rowToolbar'}>
-                                        {buttons.map((btn, index) => (
-                                            <div
-                                                key={index} // eslint-disable-line react/no-array-index-key
-                                                className={'toolbarButton'}
-                                            >
-                                                {btn}
-                                            </div>
-                                        ))}
                                     </div>
                                 </div>
                             </div>

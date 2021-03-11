@@ -1,4 +1,24 @@
 .tree {
+    .rst__tree > div > div:focus {
+        outline: none;
+    }
+    .folder {
+        border-Left: solid 8px $grey;
+        border-bottom: solid 10px $grey;
+        margin-right: 7px;
+        width: 16px;
+        height: 12px;
+        filter: drop-shadow(1px 0 0 $white) drop-shadow(0 1px 0 $white) drop-shadow(0 -1px 0 $white) drop-shadow(-1px 0 0 $white);
+        border-color: $white;
+    }
+    .object {
+        border: solid 1px $white2;
+        font-size: 6px;
+        text-align: center;
+        margin-right: 7px;
+        width: 14px;
+        height: 16px;
+    }
     .node {
         min-width: 100%;
         position: relative;
@@ -6,10 +26,10 @@
     .rowWrapper {
         height: 100%;
         box-sizing: border-box;
-        cursor: move;
+        cursor: grab;
 
         &:hover {
-            opacity: 0.7;
+            background-color: $grey;
         }
 
         &:active {
@@ -45,8 +65,8 @@
                  }
 
                  &::before {
-                     background-color: lightblue;
-                     border: 2px dotted black;
+                     background-color: $blue;
+                     border: 1px dotted $black;
                      content: '';
                      position: absolute;
                      top: 0;
@@ -64,7 +84,7 @@
         @extend .rowLandingPad;
 
         &::before {
-            background-color: #e6a8ad;
+            background-color: $red;
         }
     }
 
@@ -122,8 +142,8 @@
         z-index: 2;
         position: absolute;
         top: 45%;
-        width: 30px;
-        height: 30px;
+        width: 15px;
+        height: 15px;
         transform: translate3d(-50%, -50%, 0);
         cursor: pointer;
 
@@ -131,29 +151,20 @@
             content: '';
             position: absolute;
             transform-origin: 7px 4px;
-            transform: translate3d(-50%, -20%, 0);
+            transform: translate3d(-20%, -20%, 0);
             border: solid transparent 10px;
             border-left-width: 7px;
             border-right-width: 7px;
-            border-top-color: gray;
-        }
-
-        &:hover::after {
-            border-top-color: black;
+            border-top-color: $white;
         }
 
         &:focus {
             outline: none;
-
-            &::after {
-                filter: drop-shadow(0 0 1px #83bef9) drop-shadow(0 0 1px #83bef9)
-                drop-shadow(0 0 1px #83bef9);
-            }
         }
     }
 
     .expandButton::after {
-        transform: translate3d(-50%, -20%, 0) rotateZ(-90deg);
+        transform: translate3d(-20%, -20%, 0) rotateZ(-90deg);
     }
 
     /**

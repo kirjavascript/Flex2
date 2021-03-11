@@ -34,23 +34,25 @@ const Project = observer(() => {
     const { project } = workspace;
 
     if (!project) {
-        return <div className="project-open">
-            <FileInput
-                label="Project"
-                store={workspace}
-                accessor="projectPath"
-                onChange={path => {
-                    if (path) {
-                        workspace.openProject();
-                    }
-                }}
-                ext="flex.json"
-                absolute
-            />
-        </div>;
+        return (
+            <div className="project-open">
+                <FileInput
+                    label="Project"
+                    store={workspace}
+                    accessor="projectPath"
+                    onChange={(path) => {
+                        if (path) {
+                            workspace.openProject();
+                        }
+                    }}
+                    ext="flex.json"
+                    absolute
+                />
+            </div>
+        );
     }
 
-    const tree = toTree(project.objects)
+    const tree = toTree(project.objects);
 
     const node = project.nodeRef;
 
@@ -59,8 +61,12 @@ const Project = observer(() => {
             <div className="tree">
                 <div className="file-controls">
                     <Item>New</Item>
-                    <Button color="blue" onClick={project.newObject}>object</Button>
-                    <Button color="yellow" onClick={project.newFolder}>folder</Button>
+                    <Button color="blue" onClick={project.newObject}>
+                        object
+                    </Button>
+                    <Button color="yellow" onClick={project.newFolder}>
+                        folder
+                    </Button>
                 </div>
                 <SortableTree
                     treeData={tree}
@@ -72,7 +78,6 @@ const Project = observer(() => {
                     }
                     canNodeHaveChildren={(node) => node.isDirectory}
                     generateNodeProps={(rowInfo) => ({
-                        // style
                         title: (
                             <label className="input-sizer">
                                 <input
@@ -87,49 +92,17 @@ const Project = observer(() => {
                                 />
                             </label>
                         ),
+                        onContextMenu: () => {
+                            objectMenu(rowInfo.node);
+                        },
+                        onClick: () => {
+                            if (!rowInfo.node.isDirectory) {
+                                project.node = rowInfo.node.uuid;
+                            }
+                        },
                         icons: rowInfo.node.isDirectory
-                            ? [
-                                <div
-                                    style={{
-                                        borderLeft: 'solid 8px gray',
-                                        borderBottom: 'solid 10px gray',
-                                        marginRight: 10,
-                                        boxSizing: 'border-box',
-                                        width: 16,
-                                        height: 12,
-                                        filter: rowInfo.node.expanded
-                                            ? 'drop-shadow(1px 0 0 gray) drop-shadow(0 1px 0 gray) drop-shadow(0 -1px 0 gray) drop-shadow(-1px 0 0 gray)'
-                                            : 'none',
-                                        borderColor: rowInfo.node.expanded
-                                            ? 'white'
-                                            : 'gray',
-                                    }}
-                                    onContextMenu={() => {
-                                        objectMenu(rowInfo.node);
-                                    }}
-                                />,
-                            ]
-                            : [
-                                <div
-                                    style={{
-                                        border: 'solid 1px grey',
-                                        fontSize: 7,
-                                        textAlign: 'center',
-                                        marginRight: 10,
-                                        width: 14,
-                                        height: 16,
-                                    }}
-                                    onClick={() => {
-                                        project.node = rowInfo.node.uuid;
-                                    }}
-                                    onContextMenu={() => {
-                                        objectMenu(rowInfo.node);
-                                    }}
-                                >
-                                    OBJ
-                                </div>,
-                            ],
-                        buttons: [],
+                            ? [<div className="folder" />]
+                            : [<div className="object">OBJ</div>],
                     })}
                 />
             </div>
@@ -138,9 +111,7 @@ const Project = observer(() => {
                 <div className="config-data">
                     <div className="menu-item">
                         <Item>Project</Item>
-                        <span
-                            className="path"
-                        >
+                        <span className="path">
                             {basename(workspace.projectPath)}
                         </span>
                         <Button
@@ -151,11 +122,12 @@ const Project = observer(() => {
                         </Button>
                     </div>
                     <ErrorMsg error={project.error} />
-                    {node &&
-                    <div className="menu-item">
-                        <Item>Object Name</Item>
-                        <span> {node.name} </span>
-                    </div>}
+                    {node && (
+                        <div className="menu-item">
+                            <Item>Object Name</Item>
+                            <span> {node.name} </span>
+                        </div>
+                    )}
                 </div>
                 {node && <FileObject obj={node} />}
             </div>

@@ -7,6 +7,10 @@ export default function(node) {
     const menu = new Menu();
     const index = node.parent.findIndex(d => d === node.ref);
     menu.append(new MenuItem({
+        label: node.name,
+        enabled: false,
+    }));
+    menu.append(new MenuItem({
         label: 'copy',
         click: () => {
             const clone = toJS(node.parent[index]);
@@ -18,7 +22,7 @@ export default function(node) {
         label: 'delete',
         submenu: [
             new MenuItem({
-                label: 'confirm delete',
+                label: 'confirm',
                 click: () => {
                     node.parent.splice(index, 1);
                 },

@@ -9,13 +9,6 @@ post image of project / some custom mappings, saying it's ready for testing
 BUFFER
 ==
 
-// dropdown for delete / copy
-//
-// latest projects / ones in the root
-// format inheritance
-// keys as groups
-// tree ui / stack ui
-
 // mapping debugger
 // art ffset save message / input size
 // copy to project
@@ -32,6 +25,7 @@ BUFFER
 // formats to support
 
 // fix s2 dplc
+// fix tails
 /* https://github.com/Ralakimus/sonic-cd-r11a-disassembly */
 // s3k sonic
 // kid chameleon
@@ -43,8 +37,6 @@ BUFFER
 
 ROADMAP
 custom mapping formats / screen mappings format (!) ->
-project file tabs
-    recent projects
 generate project files -> use to create s3portal
 rotsprite
 export spritesheet
