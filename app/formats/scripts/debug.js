@@ -32,7 +32,7 @@ autorun(
         log.queue.length;
         log.drain();
     },
-    { delay: 400 },
+    { delay: 100 },
 );
 
 export const logger = (...args) => {

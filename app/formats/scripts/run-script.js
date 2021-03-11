@@ -1,5 +1,5 @@
 import { loadScript } from './file';
-import { logger } from '#components/file/map-debug';
+import { logger } from './debug';
 import { toJS } from 'mobx';
 
 const binary = Symbol('binary');
@@ -60,17 +60,13 @@ function makeOffsetTable({ read, write }) {
                     a = header;
                 }
             }
-            ref.global.cleanup.push(({ sprites }) => {
-                const clone = [...sprites];
+            ref.global.cleanup.push(({ sprites, spritesAddr }) => {
                 sprites.splice(0, sprites.length);
                 headers.forEach(header => {
                     if (header === 0) {
                         sprites.push([]); // handle zero header optimization
                     } else {
-                        const sprite = clone.shift();
-                        if (sprite) {
-                            sprites.push(sprite);
-                        }
+                        sprites.push(spritesAddr[header]);
                     }
                 });
             });
@@ -120,6 +116,7 @@ export default catchFunc((file) => {
     const readLimit = 1e3;
 
     const createReader = (sectionList = []) => catchFunc((buffer) => {
+        logger('buf length', buffer.length);
         const bitBuffer = [];
         let cursor = 0;
         let bufferOverflow = false;
@@ -134,6 +131,7 @@ export default catchFunc((file) => {
                     const bytesNeeded = Math.ceil(nextBitQty/8);
 
                     const bytes = Array.from(buffer.slice(cursor, cursor + bytesNeeded));
+                    logger('buffer', ...bytes.map(b => b.toString(16)))
 
                     const bits = bytes.map(d => d.toString(2).padStart(8, 0))
                         .join('')
@@ -144,26 +142,32 @@ export default catchFunc((file) => {
                     bitBuffer.push(...bits);
                 }
             }
+
             // flush the buffer
             const binString = bitBuffer.splice(0, size).join('')
             if (type === signed && binString[0] === '1') {
                 return ((1 << size) - parseInt(binString, 2)) * -1;
             }
             const value = parseInt(binString, 2);
-            logger('read', {size, value, type, cursor, len: buffer.length});
+            logger('read', {size, value}, cursor, binString);
             return value;
         });
 
         const global = { cleanup: [] };
         const sprites = [];
+        const spritesAddr = {};
         sectionList.forEach(([readFrame], i) => {
-            logger(`section `, i);
+            logger(`---section `, i);
             read: for (let spriteIndex = 0; spriteIndex < readLimit; spriteIndex++) {
+                logger(`--sprite ${spriteIndex.toString(16)} `);
                 const sprite = [];
                 const ref = { global };
+                spritesAddr[cursor] = sprite;
                 const readMapping = readFrame(spriteIndex);
                 if (readMapping) {
+                    logger('read mapping');
                     for (let frameIndex = 0; frameIndex < readLimit; frameIndex++) {
+                        logger(`-frame ${frameIndex.toString(16)} `);
                         const mapping = {};
                         const param = {
                             mapping,
@@ -181,8 +185,10 @@ export default catchFunc((file) => {
                         if (result === constants.endSection || bufferOverflow) {
                             break read;
                         }
+                        logger('mapping', mapping);
                         sprite.push(mapping);
                         if (result === constants.endFrame) {
+                            logger('end frame');
                             break;
                         }
                     }
@@ -192,7 +198,7 @@ export default catchFunc((file) => {
 
         });
 
-        global.cleanup.forEach(task => task({ sprites }));
+        global.cleanup.forEach(task => task({ sprites, spritesAddr }));
 
         return {sprites};
     });
