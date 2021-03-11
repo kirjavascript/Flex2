@@ -1,4 +1,5 @@
 import { loadScript } from './file';
+import { logger } from '#components/file/map-debug';
 import { toJS } from 'mobx';
 
 const binary = Symbol('binary');
@@ -148,12 +149,15 @@ export default catchFunc((file) => {
             if (type === signed && binString[0] === '1') {
                 return ((1 << size) - parseInt(binString, 2)) * -1;
             }
-            return parseInt(binString, 2);
+            const value = parseInt(binString, 2);
+            logger('read', {size, value, type, cursor, len: buffer.length});
+            return value;
         });
 
         const global = { cleanup: [] };
         const sprites = [];
-        sectionList.forEach(([readFrame]) => {
+        sectionList.forEach(([readFrame], i) => {
+            logger(`section `, i);
             read: for (let spriteIndex = 0; spriteIndex < readLimit; spriteIndex++) {
                 const sprite = [];
                 const ref = { global };

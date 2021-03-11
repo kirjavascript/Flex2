@@ -1,7 +1,8 @@
-const { writeFile } = require('fs');
+const { writeFile, unlinkSync } = require('fs');
 
 module.exports = (mainWindow) => {
     mainWindow.openDevTools();
+    unlinkSync('./static/bundles/main.js');
 
     // webpack reload
 
