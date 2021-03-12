@@ -21,7 +21,7 @@ class MapLogger {
     };
     @action clear = () => this.log.replace([]);
     @computed get output() {
-        return this.log.map((item, i) => item.join` `).join`\n`;
+        return this.log.map((item) => item.join` `).join`\n`;
     }
 }
 
@@ -38,8 +38,6 @@ autorun(
 export const logger = (...args) => {
     log.msg(...args);
 };
-
-window.logger = log;
 
 const Debug = observer(function () {
     return (

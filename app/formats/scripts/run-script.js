@@ -66,9 +66,14 @@ function makeOffsetTable({ read, write }) {
                     if (header === 0) {
                         sprites.push([]); // handle zero header optimization
                     } else {
-                        sprites.push(spritesAddr[header]);
+                        if (spritesAddr[header]) {
+                            sprites.push(spritesAddr[header]);
+                        } else {
+                            logger('error', 'no sprite at ' + header);
+                        }
                     }
                 });
+            console.log(spritesAddr);
             });
             return constants.endSection;
         },

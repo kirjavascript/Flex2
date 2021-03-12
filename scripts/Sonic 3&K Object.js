@@ -1,64 +1,76 @@
-// Flex2 mapping definition
+// Flex2 Mapping Definition - Sonic 3 Objects
 
 const {
-    label,
-    info,
+    mappings,
+    dplcs,
     offsetTable,
-    mapping,
-    mappingHeader,
     write,
     read,
-    nybble,
     dc,
+    nybble,
+    endFrame,
+    skipFrame,
+    signed,
 } = Flex2;
 
-label('Sonic 3&K Objects');
-offsetTable(dc.w);
-mappingHeader(
-    (_mappings) => read(dc.w),
-    (mappings) => write(dc.w, mappings.length),
-);
-mappings(
-    (mapping) => {
-        mapping.top = read(dc.b);
-        read(nybble);
-        mapping.width = read(2) + 1;
-        mapping.height = read(2) + 1;
-        mapping.priority = read(1);
-        mapping.palette = read(2);
-        mapping.yflip = read(1);
-        mapping.xflip = read(1);
-        mapping.offset = read(1);
-        mapping.left = read(dc.w);
-    },
-    (mapping) => {
-        // top
-        write(dc.b, mapping.top);
-        write(nybble, 0);
-        // size
-        write(2, mapping.width - 1);
-        write(2, mapping.height - 1);
-        // 1 player
-        write(1, mapping.priority);
-        write(2, mapping.palette);
-        write(1, mapping.yflip);
-        write(1, mapping.xflip);
-        write(11, mapping.offset);
-        // left
-        write(dc.w, mapping.left);
-    },
-);
-dplcHeader(
-    (_dplcs) => read(dc.w),
-    (dplcs) => write(dc.w, dplcs.length - 1),
-);
-dplcs(
-    (dplc) => {
-        dplc.offset = read(nybble * 3);
-        dplc.size = read(nybble);
-    },
-    (dplc) => {
-        write(nybblr * 3, dplc.offset);
-        write(nybble, dplc.size);
-    },
-);
+mappings([
+    offsetTable(dc.w),
+    [
+        () => {
+            const quantity = read(dc.w);
+            return quantity > 0 && (({ mapping }, frameIndex) => {
+                mapping.top = read(dc.b, signed);
+                read(nybble);
+                mapping.width = read(2) + 1;
+                mapping.height = read(2) + 1;
+                mapping.priority = read(1);
+                mapping.palette = read(2);
+                mapping.vflip = read(1);
+                mapping.hflip = read(1);
+                mapping.art = read(11);
+                mapping.left = read(dc.w, signed);
+                if (frameIndex === quantity - 1) return endFrame;
+            });
+        },
+        ({ sprite }) => {
+            write(dc.w, sprite.length);
+            return ({ mapping }) => {
+                // top
+                write(dc.b, mapping.top);
+                write(nybble, 0);
+                // size
+                write(2, mapping.width - 1);
+                write(2, mapping.height - 1);
+                // 1 player
+                write(1, mapping.priority);
+                write(2, mapping.palette);
+                write(1, mapping.vflip);
+                write(1, mapping.hflip);
+                write(11, mapping.offset);
+                // left
+                write(dc.w, mapping.left);
+            };
+        },
+    ],
+]);
+
+dplcs([
+    offsetTable(dc.w),
+    [
+        () => {
+            const quantity = read(dc.w);
+            return quantity > 0 && (({ mapping }, frameIndex) => {
+                mapping.art = read(nybble * 3);
+                mapping.size = read(nybble) + 1;
+                if (frameIndex === quantity - 1) return endFrame;
+            });
+        },
+        ({ sprite }) => {
+            write(dc.w, sprite.length);
+            return ({ mapping }) => {
+                write(nybble * 3, mapping.art);
+                write(nybble, mapping.size - 1);
+            };
+        },
+    ],
+]);
