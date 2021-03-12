@@ -39,6 +39,8 @@ export const logger = (...args) => {
     log.msg(...args);
 };
 
+window.log = log;
+
 const Debug = observer(function () {
     return (
         log.enabled && (
