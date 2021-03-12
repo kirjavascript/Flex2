@@ -16,7 +16,7 @@ import { workspace } from '#store/workspace';
 import ErrorMsg from './error';
 import SaveLoad from './save-load';
 import { promises } from 'fs';
-import { basename, extname } from 'path';
+import { extname } from 'path';
 
 const fs = promises;
 const compressionList = Object.keys(compressionFormats);
@@ -106,10 +106,9 @@ export const FileObject = observer(({ obj }) => {
                 obj.dplcs.enabled &&
                 environment.dplcs.length < mappings.sprites.length
             ) {
-                const qty = mappings.sprites.length - environment.dplcs.length;
-                for (let i = 0; i < qty; i++) {
-                    environment.dplcs.push([]);
-                }
+                environment.dplcs.push(...Array.from({
+                    length: mappings.sprites.length - environment.dplcs.length,
+                }, () => []));
             }
         });
     }
@@ -122,7 +121,7 @@ export const FileObject = observer(({ obj }) => {
                 await fs.writeFile(path, writeBIN(mappings));
             } else {
                 const label =
-                    obj.mappings.label || basename(obj.mappings.path, '.asm');
+                    obj.mappings.label || 'Mappings';
                 await fs.writeFile(path, writeASM(label, mappings));
             }
         });
@@ -151,7 +150,7 @@ export const FileObject = observer(({ obj }) => {
                 await fs.writeFile(path, writeBIN(dplcs));
             } else {
                 const label =
-                    obj.dplcs.label || basename(obj.dplcs.path, '.asm');
+                    obj.dplcs.label || 'DPLCS';
                 await fs.writeFile(path, writeASM(label, dplcs));
             }
         });
