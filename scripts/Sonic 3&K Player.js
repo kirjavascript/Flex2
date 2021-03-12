@@ -59,14 +59,14 @@ dplcs([
     [
         () => {
             const quantity = read(dc.w);
-            return quantity > 0 && (({ mapping }, frameIndex) => {
+            return (({ mapping }, frameIndex) => {
                 mapping.size = read(nybble) + 1;
                 mapping.art = read(nybble * 3);
-                if (frameIndex === quantity - 1) return endFrame;
+                if (frameIndex === quantity) return endFrame;
             });
         },
         ({ sprite }) => {
-            write(dc.w, sprite.length);
+            write(dc.w, sprite.length - 1);
             return ({ mapping }) => {
                 write(nybble, mapping.size - 1);
                 write(nybble * 3, mapping.art);

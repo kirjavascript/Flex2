@@ -57,7 +57,7 @@ const Debug = observer(function () {
                     position: 'absolute',
                     top: 0,
                     left: 0,
-                    zIndex: 1,
+                    zIndex: 10,
                 }}
             >
                 <div>

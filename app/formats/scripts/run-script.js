@@ -73,7 +73,6 @@ function makeOffsetTable({ read, write }) {
                         }
                     }
                 });
-            console.log(spritesAddr);
             });
             return constants.endSection;
         },
@@ -202,6 +201,7 @@ export default catchFunc((file) => {
             }
 
         });
+        logger('spritesAddr', spritesAddr);
 
         global.cleanup.forEach(task => task({ sprites, spritesAddr }));
 
