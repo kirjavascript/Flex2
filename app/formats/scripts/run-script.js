@@ -161,9 +161,9 @@ export default catchFunc((file) => {
         const sprites = [];
         const spritesAddr = {};
         sectionList.forEach(([readFrame], i) => {
-            logger(`---section `, i);
+            logger(`|> section `, i);
             read: for (let spriteIndex = 0; spriteIndex < readLimit; spriteIndex++) {
-                logger(`--sprite ${spriteIndex.toString(16)} `);
+                logger(`| sprite ${spriteIndex.toString(16)} `);
                 const sprite = [];
                 const ref = { global };
                 spritesAddr[cursor] = sprite;
@@ -171,7 +171,7 @@ export default catchFunc((file) => {
                 if (readMapping) {
                     logger('read mapping');
                     for (let frameIndex = 0; frameIndex < readLimit; frameIndex++) {
-                        logger(`-frame ${frameIndex.toString(16)} `);
+                        logger(`.frame ${frameIndex.toString(16)} `);
                         const mapping = {};
                         const param = {
                             mapping,

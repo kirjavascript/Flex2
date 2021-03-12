@@ -283,7 +283,7 @@ export class RawEditor extends Component {
                                 <SortableDPLCList
                                     axis="y"
                                     lockAxis="y"
-                                    items={dplcs}
+                                    items={dplcs || []}
                                     lockToContainerEdges={true}
                                     useDragHandle={true}
                                     onSortEnd={this.onSortEndDPLC}

@@ -1,4 +1,4 @@
-// Flex2 Mapping Definition - Sonic 3 Objects
+// Flex2 Mapping Definition - Sonic 3&K Objects
 
 const {
     mappings,
@@ -46,7 +46,7 @@ mappings([
                 write(2, mapping.palette);
                 write(1, mapping.vflip);
                 write(1, mapping.hflip);
-                write(11, mapping.offset);
+                write(11, mapping.art);
                 // left
                 write(dc.w, mapping.left);
             };

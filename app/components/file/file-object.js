@@ -102,6 +102,15 @@ export const FileObject = observer(({ obj }) => {
             const mappings = script.readMappings(buffer);
             if (mappings.error) throw mappings.error;
             environment.mappings.replace(mappings.sprites);
+            if (
+                obj.dplcs.enabled &&
+                environment.dplcs.length < mappings.sprites.length
+            ) {
+                const qty = mappings.sprites.length - environment.dplcs.length;
+                for (let i = 0; i < qty; i++) {
+                    environment.dplcs.push([]);
+                }
+            }
         });
     }
 

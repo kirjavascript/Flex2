@@ -1,9 +1,10 @@
 import React from 'react';
-import { observable, action, toJS, computed, runInAction, autorun } from 'mobx';
+import { observable, action, toJS, computed, autorun } from 'mobx';
 import { observer } from 'mobx-react';
 import { render } from 'react-dom';
 import util from 'util';
 import { Button } from '#ui';
+import { environment } from '#store/environment';
 
 const inspect = (obj) => util.inspect(toJS(obj));
 
@@ -36,10 +37,14 @@ autorun(
 );
 
 export const logger = (...args) => {
-    log.msg(...args);
+    log.enabled && log.msg(...args);
 };
 
-window.log = log;
+Object.defineProperty(window, 'log', {
+    get() {
+        log.enabled = true;
+    },
+});
 
 const Debug = observer(function () {
     return (
@@ -60,19 +65,50 @@ const Debug = observer(function () {
                     top: 0,
                     left: 0,
                     zIndex: 10,
+                    resize: 'both',
                 }}
             >
                 <div>
                     <Button
-                        color="green"
+                        color="red"
                         onClick={() => {
                             log.enabled = false;
                         }}
                     >
                         X
                     </Button>
-                    <Button color="green" onClick={log.clear}>
+                    <Button color="blue" onClick={log.clear}>
                         clear
+                    </Button>
+                    <Button
+                        color="yellow"
+                        onClick={() => {
+                            logger(environment.mappings);
+                        }}
+                    >
+                        mappings
+                    </Button>
+                    <Button
+                        color="magenta"
+                        onClick={() => {
+                            logger(environment.dplcs);
+                        }}
+                    >
+                        dplcs
+                    </Button>
+                    <Button
+                        onClick={() => {
+                            window.resetLayout();
+                        }}
+                    >
+                        clear layout
+                    </Button>
+                    <Button
+                        onClick={() => {
+                            window.resetStorage();
+                        }}
+                    >
+                        clear storage
                     </Button>
                 </div>
                 <pre>{log.output}</pre>
@@ -81,5 +117,4 @@ const Debug = observer(function () {
     );
 });
 
-__DEV__ &&
-    render(<Debug />, document.body.appendChild(document.createElement('div')));
+render(<Debug />, document.body.appendChild(document.createElement('div')));

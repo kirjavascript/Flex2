@@ -40,31 +40,56 @@ class Environment {
 
     @computed get sprites() {
         return this.mappings.map((mappingList, index) => {
-            let buffer = [];
-
-            const dplcsAvailable = this.config.dplcsEnabled && this.dplcs.length > index;
-
-            if (dplcsAvailable) {
+            if (this.config.dplcsEnabled && this.dplcs.length > index) {
+                const buffer = [];
                 this.dplcs[index].forEach(({art, size}) => {
                     Array.from({length: size}, (_, i) => {
                         if (this.tiles.length <= art + i) {
                             buffer.push([]);
-                        }
-                        else {
+                        } else {
                             buffer.push(this.tiles[art + i]);
                         }
                     });
                 });
-            }
-            else {
-                buffer = this.tiles;
+                return {
+                    index,
+                    buffer,
+                    mappings: mappingList,
+                    dplcs: this.dplcs[index],
+                };
+            } else {
+                return {
+                    index,
+                    buffer: this.tiles,
+                    mappings: mappingList,
+                };
             }
 
-            return {
-                index, buffer,
-                mappings: mappingList,
-                dplcs: dplcsAvailable && this.dplcs[index],
-            };
+
+            // let buffer = [];
+
+            // const dplcsAvailable = this.config.dplcsEnabled && this.dplcs.length > index;
+
+            // if (dplcsAvailable) {
+            //     this.dplcs[index].forEach(({art, size}) => {
+            //         Array.from({length: size}, (_, i) => {
+            //             if (this.tiles.length <= art + i) {
+            //                 buffer.push([]);
+            //             } else {
+            //                 buffer.push(this.tiles[art + i]);
+            //             }
+            //         });
+            //     });
+            // }
+            // else {
+            //     buffer = this.tiles;
+            // }
+
+            // return {
+            //     index, buffer,
+            //     mappings: mappingList,
+            //     dplcs: dplcsAvailable && this.dplcs[index],
+            // };
         });
     }
 
@@ -78,7 +103,7 @@ class Environment {
         const { config: { dplcsEnabled }, currentSprite: { mappings, dplcs } } = environment;
         let activeTiles = [];
 
-        const objs = (dplcsEnabled ? dplcs : mappings);
+        const objs = (dplcsEnabled && dplcs ? dplcs : mappings);
 
         if (!objs.length) return [];
 

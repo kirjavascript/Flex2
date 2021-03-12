@@ -41,7 +41,7 @@ export class Selection extends Component {
 class SelectionLayer extends Component {
     render() {
         const { extra, color, opacity, all, ...otherProps } = this.props;
-        const { buffer, index, mappings } = environment.currentSprite;
+        const { mappings } = environment.currentSprite;
         const { scale, x, y } = mappingState;
 
         return <g {...otherProps}>
