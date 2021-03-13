@@ -49,19 +49,32 @@ function catchFunc(func) {
 }
 
 function makeOffsetTable({ read, write }) {
-    return (size = constants.dc.w) => [
-        () => ({ ref }) => {
-            let a = 0x7FFF;
+    return (size = constants.dc.w, { items } = {}) => [
+        ({ getCursor }) => ({ ref }) => {
+            const cursor = getCursor();
+            if (!ref.global.a) {
+                ref.global.a = 0x7FFF;
+            }
             const headers = [];
-            for (let i = 0; i < 1e5 && i < a; i += 2) {
-                const header = read(size) & 0x7FFF;
+            for (let i = cursor; i < 1e5 && i < ref.global.a; i = getCursor()) {
+                const header = (read(size) & 0x7FFF) + cursor;
                 headers.push(header);
-                if (header < a && !(header === 0)) {
-                    a = header;
+                logger('= HEADER =', header);
+                // logger(a, header < a, header, cursor);
+                if (header < ref.global.a && !(header === 0)) {
+                    ref.global.a = header;
                 }
+                // logger('HEADER LIMIT', i, a, cursor, a - cursor);
+                if (items && headers.length >= items) break;
+            }
+            if (!ref.global.firstHeader) {
+                ref.global.firstHeader = true;
+                ref.global.cleanup.push(({ sprites }) => {
+                    sprites.splice(0, sprites.length);
+                    // sprites.push([]);
+                });
             }
             ref.global.cleanup.push(({ sprites, spritesAddr }) => {
-                sprites.splice(0, sprites.length);
                 headers.forEach(header => {
                     if (header === 0) {
                         sprites.push([]); // handle zero header optimization
@@ -157,21 +170,22 @@ export default catchFunc((file) => {
             return value;
         });
 
+        const getCursor = () => cursor;
         const global = { cleanup: [] };
         const sprites = [];
         const spritesAddr = {};
         sectionList.forEach(([readFrame], i) => {
-            logger(`|> section `, i);
+            logger(`====== SECTION ======`, i);
             read: for (let spriteIndex = 0; spriteIndex < readLimit; spriteIndex++) {
-                logger(`| sprite ${spriteIndex.toString(16)} `);
+                logger(`== SPRITE == ${spriteIndex.toString(16)} `);
                 const sprite = [];
                 const ref = { global };
                 spritesAddr[cursor] = sprite;
-                const readMapping = readFrame(spriteIndex);
+                const readMapping = readFrame({ getCursor }, spriteIndex);
                 if (readMapping) {
                     logger('read mapping');
                     for (let frameIndex = 0; frameIndex < readLimit; frameIndex++) {
-                        logger(`.frame ${frameIndex.toString(16)} `);
+                        logger(`= FRAME = ${frameIndex.toString(16)} `);
                         const mapping = {};
                         const param = {
                             mapping,

@@ -1,4 +1,4 @@
-// Flex2 Mapping Definition - Sonic 3&K Player
+// Flex2 Mapping Definition - Sonic 3&K Sonic
 
 const {
     mappings,
@@ -14,6 +14,7 @@ const {
 } = Flex2;
 
 mappings([
+    offsetTable(dc.w, { items: 251 }),
     offsetTable(dc.w),
     [
         () => {
@@ -55,6 +56,7 @@ mappings([
 ]);
 
 dplcs([
+    offsetTable(dc.w, { items: 251 }),
     offsetTable(dc.w),
     [
         () => {

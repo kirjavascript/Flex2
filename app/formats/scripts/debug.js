@@ -49,26 +49,11 @@ Object.defineProperty(window, 'log', {
 const Debug = observer(function () {
     return (
         log.enabled && (
-            <div
-                style={{
-                    border: '1px solid limegreen',
-                    borderRadius: 5,
-                    padding: 5,
-                    margin: 5,
-                    height: '100%',
-                    width: 500,
-                    overflowY: 'scroll',
-                    color: 'limegreen',
-                    backgroundColor: 'black',
-                    fontWeight: 'bold',
+            <>
+                <div style={{
                     position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    zIndex: 10,
-                    resize: 'both',
-                }}
-            >
-                <div>
+                    zIndex: 11,
+                }}>
                     <Button
                         color="red"
                         onClick={() => {
@@ -111,8 +96,29 @@ const Debug = observer(function () {
                         clear storage
                     </Button>
                 </div>
-                <pre>{log.output}</pre>
-            </div>
+                <div
+                    style={{
+                        border: '1px solid limegreen',
+                        borderRadius: 5,
+                        padding: 5,
+                        margin: 5,
+                        maxHeight: '100vh',
+                        width: 500,
+                        color: 'limegreen',
+                        backgroundColor: 'black',
+                        fontWeight: 'bold',
+                        position: 'absolute',
+                        top: 20,
+                        left: 0,
+                        bottom: 0,
+                        zIndex: 10,
+                        resize: 'both',
+                        overflowY: 'scroll',
+                    }}
+                >
+                    <pre>{log.output}</pre>
+                </div>
+            </>
         )
     );
 });
