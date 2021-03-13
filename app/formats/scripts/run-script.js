@@ -52,26 +52,26 @@ function makeOffsetTable({ read, write }) {
     return (size = constants.dc.w, { items } = {}) => [
         ({ getCursor }) => ({ ref }) => {
             const cursor = getCursor();
-            if (!ref.global.a) {
-                ref.global.a = 0x7FFF;
+            if (!ref.global.ptr) {
+                ref.global.ptr = 0x7FFF;
             }
             const headers = [];
-            for (let i = cursor; i < 1e5 && i < ref.global.a; i = getCursor()) {
+            // we keep searching for headers until either;
+            // - cursor reaches a header pointer value
+            // - items is exceeded
+            for (let i = cursor; i < 1e5 && i < ref.global.ptr; i = getCursor()) {
                 const header = (read(size) & 0x7FFF) + cursor;
                 headers.push(header);
                 logger('= HEADER =', header);
-                // logger(a, header < a, header, cursor);
-                if (header < ref.global.a && !(header === 0)) {
-                    ref.global.a = header;
+                if (header < ref.global.ptr && !(header === 0)) {
+                    ref.global.ptr = header;
                 }
-                // logger('HEADER LIMIT', i, a, cursor, a - cursor);
                 if (items && headers.length >= items) break;
             }
             if (!ref.global.firstHeader) {
                 ref.global.firstHeader = true;
                 ref.global.cleanup.push(({ sprites }) => {
                     sprites.splice(0, sprites.length);
-                    // sprites.push([]);
                 });
             }
             ref.global.cleanup.push(({ sprites, spritesAddr }) => {
