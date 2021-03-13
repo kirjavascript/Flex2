@@ -9,7 +9,7 @@ import { environment } from '#store/environment';
 const inspect = (obj) => util.inspect(toJS(obj));
 
 class MapLogger {
-    @observable enabled = true;
+    @observable enabled = false;
     @observable log = [];
     @observable queue = [];
     @action msg = (...objs) => {

@@ -23,6 +23,7 @@ const compressionList = Object.keys(compressionFormats);
 
 export const FileObject = observer(({ obj }) => {
     scripts.length; // react to script updates
+    const script = obj.format && runScript(obj.format);
 
     const { isAbsolute } = obj; // set in store/workspace
 
@@ -30,9 +31,9 @@ export const FileObject = observer(({ obj }) => {
     const dplcsASM = extname(obj.dplcs.path) === '.asm';
     const linesLeft = obj.palettes.reduce((a, c) => a - c.length, 4);
 
+    const scriptDPLCs = script && !script.error && script.hasDPLCs;
     const toggleDPLCs = () => (obj.dplcs.enabled = !obj.dplcs.enabled);
 
-    const script = obj.format && runScript(obj.format);
 
     function ioWrap(filePath, setError, e, cb) {
         setError();
@@ -143,7 +144,7 @@ export const FileObject = observer(({ obj }) => {
     }
 
     function saveDPLCs(e) {
-        ioWrap(obj.dplcs.path, setMappingError, e, async (path) => {
+        ioWrap(obj.dplcs.path, setDPLCError, e, async (path) => {
             const dplcs = script.writeDPLCs(environment.dplcs);
             if (dplcs.error) throw dplcs.error;
             if (!dplcsASM) {
@@ -269,28 +270,32 @@ export const FileObject = observer(({ obj }) => {
                 </div>
             )}
 
-            <div className="menu-item" onClick={toggleDPLCs}>
-                <Item>DPLCs Enabled</Item>
-                <Checkbox checked={obj.dplcs.enabled} readOnly />
-            </div>
-            {obj.dplcs.enabled && (
+            {scriptDPLCs && (
                 <>
-                    <div className="menu-item">
-                        <Item color="red">DPLCs</Item>
-                        <SaveLoad load={loadDPLCs} save={saveDPLCs} />
+                    <div className="menu-item" onClick={toggleDPLCs}>
+                        <Item>DPLCs Enabled</Item>
+                        <Checkbox checked={obj.dplcs.enabled} readOnly />
                     </div>
-                    <ErrorMsg error={dplcError} />
-                    <FileInput
-                        label="Mappings"
-                        store={obj.dplcs}
-                        accessor="path"
-                        absolute={isAbsolute}
-                    />
-                    {dplcsASM && (
-                        <div className="menu-item">
-                            <Item>ASM Label</Item>
-                            <Input store={obj.dplcs} accessor="label" />
-                        </div>
+                    {obj.dplcs.enabled && (
+                        <>
+                            <div className="menu-item">
+                                <Item color="red">DPLCs</Item>
+                                <SaveLoad load={loadDPLCs} save={saveDPLCs} />
+                            </div>
+                            <ErrorMsg error={dplcError} />
+                            <FileInput
+                                label="Mappings"
+                                store={obj.dplcs}
+                                accessor="path"
+                                absolute={isAbsolute}
+                            />
+                            {dplcsASM && (
+                                <div className="menu-item">
+                                    <Item>ASM Label</Item>
+                                    <Input store={obj.dplcs} accessor="label" />
+                                </div>
+                            )}
+                        </>
                     )}
                 </>
             )}

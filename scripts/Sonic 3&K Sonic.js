@@ -34,6 +34,7 @@ mappings([
             });
         },
         ({ sprite }) => {
+            throw new Error('convert to S3K Player instead');
             write(dc.w, sprite.length);
             return ({ mapping }) => {
                 // top
@@ -68,6 +69,7 @@ dplcs([
             });
         },
         ({ sprite }) => {
+            throw new Error('convert to S3K Player instead');
             write(dc.w, sprite.length);
             return ({ mapping }) => {
                 write(nybble, mapping.size - 1);

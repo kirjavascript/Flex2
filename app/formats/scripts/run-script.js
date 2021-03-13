@@ -286,8 +286,9 @@ export default catchFunc((file) => {
 
     return {
         readMappings,
-        readDPLCs,
         writeMappings,
+        hasDPLCs: !!dplcArgs[0],
+        readDPLCs,
         writeDPLCs,
     };
 });

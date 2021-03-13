@@ -26,15 +26,15 @@ BUFFER
 
 // formats to support
 
-/* https://github.com/Ralakimus/sonic-cd-r11a-disassembly */
-/* http://info.sonicretro.org/Disassemblies */
-// s3k sonic
 // kid chameleon
 // crackers
 // chaotix
+// s3k sonic saving
 // streets of rage
 // plane mappings / snap to
 // github issues
+/* https://github.com/Ralakimus/sonic-cd-r11a-disassembly */
+/* http://info.sonicretro.org/Disassemblies */
 
 ROADMAP
 custom mapping formats / screen mappings format (!) ->
