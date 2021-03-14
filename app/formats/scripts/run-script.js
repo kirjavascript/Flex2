@@ -52,15 +52,16 @@ function makeOffsetTable({ read, write }) {
     return (size = constants.dc.w, { items } = {}) => [
         ({ getCursor }) => ({ ref }) => {
             const cursor = getCursor();
+            const mask = (2 ** (size - 1)) - 1; // 0x7FFF for dc.w
             if (!ref.global.ptr) {
-                ref.global.ptr = 0x7FFF;
+                ref.global.ptr = mask;
             }
             const headers = [];
             // we keep searching for headers until either;
             // - cursor reaches a header pointer value
             // - items is exceeded
             for (let i = cursor; i < 1e5 && i < ref.global.ptr; i = getCursor()) {
-                const header = (read(size) & 0x7FFF) + cursor;
+                const header = (read(size) & mask) + cursor;
                 headers.push(header);
                 logger('= HEADER =', header);
                 if (header < ref.global.ptr && !(header === 0)) {

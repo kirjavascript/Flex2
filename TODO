@@ -10,19 +10,26 @@ post image of project / some custom mappings, saying it's ready for testing
 BUFFER
 ==
 
-// rawBytes()
-// art ffset save message / input size
+art()
+mappings()
+dplcs()
+palettes()
+
+definition([
+    many(art()),
+])
+
 // copy to project
-// autodismiss
 // autozoom based on sprite size for sprites tab
 
+// art ffset save message / input size
+// crackers first, then kd cham
+// UI by definition
+
 // reverse endianness
-// new mapping screen always show
+// rawBytes()
 
-// other
-
-// need an external scrtipts folder copied to the root on bundle
-// example: HUD graphics
+// go back to qiuu with questions
 
 // formats to support
 
@@ -30,10 +37,10 @@ BUFFER
 // crackers
 // chaotix
 // s3k sonic saving
-// streets of rage
 // plane mappings / snap to
+// ristar
 // github issues
-/* https://github.com/Ralakimus/sonic-cd-r11a-disassembly */
+/* https://raw.githubusercontent.com/Dandaman955/Streets-of-Rage-1-Disassembly-Redux/master/SoR.asm */
 /* http://info.sonicretro.org/Disassemblies */
 
 ROADMAP
@@ -55,16 +62,8 @@ import history - many writes while drawing
 
 FEATURES
 set colour of art tiles
-    radio button
 make decompression threaded
 ctrl+wheel for horiz scroll
-
-PROJECTS
-copy object
-
-NEW MAPPING
-add checkbox to the modal (autodismiss [x])
-
 ==
 ROTSPRITE
 rotsprite https://crates.io/crates/rotsprite

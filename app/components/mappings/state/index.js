@@ -7,6 +7,7 @@ import { optimizeCurrentDPLCs } from './optimize-dplcs';
 import { deleteUnusedTiles } from './delete-unused-tiles';
 import { toggleDPLCs } from './toggle-dplcs';
 import { arrangeTilesBySpriteOrder } from './arrange-tiles-by-sprite-order';
+import { storage } from '#store/storage';
 
 class MappingState {
 
@@ -131,6 +132,12 @@ class MappingState {
         piece: void 0,
     };
 
+    @observable autodismiss = true;
+
+    @action toggleAutodismiss = () => {
+        this.autodismiss = !this.autodismiss
+    };
+
     @action placeNewMapping = placeNewMapping;
 
     // active mappings
@@ -170,4 +177,5 @@ class MappingState {
 }
 
 const mappingState = new MappingState();
+storage(mappingState, 'mapping-state', ['autodismiss']);
 export { mappingState };

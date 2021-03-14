@@ -18,22 +18,26 @@ electron-packager ./static Flex2 --platform=linux --arch=x64 --asar --overwrite 
 electron-packager ./static Flex2 --platform=darwin --arch=x64 --asar --overwrite --package-manager yarn
 
 
+cp -r scripts Flex2-win32-ia32
 cd Flex2-win32-ia32
 zip -r ../flex2-win32-ia32.zip *
 cd ..
 rm -r Flex2-win32-ia32
 
+cp -r scripts Flex2-win32-x64
 cd Flex2-win32-x64
 zip -r ../flex2-win32-x64.zip *
 cd ..
 rm -r Flex2-win32-x64
 
+cp -r scripts Flex2-linux-x64
 cd Flex2-linux-x64
 chmod a+x Flex2
 tar cfvz ../flex2-linux-x64.tar.gz *
 cd ..
 rm -r Flex2-linux-x64
 
+cp -r scripts Flex2-darwin-x64
 cd Flex2-darwin-x64
 chmod a+x Flex2
 tar cfvz ../flex2-osx-x64.tar.gz *

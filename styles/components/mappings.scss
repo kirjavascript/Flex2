@@ -53,6 +53,15 @@
     .group {
         display: flex;
     }
+    .autodismiss {
+        display: flex;
+        justify-content: flex-end;
+        padding: 5px;
+        span {
+            margin-right: 5px;
+            line-height: 1.3em;
+        }
+    }
 }
 
 .new-floating-piece .mapping {

@@ -4,6 +4,7 @@
 - New mapping/DPLC engine
     - Real custom mappings
     - Sonic 2 Special Stage added [#21](/../../issues/21)
+    - Sonic 3&K Sonic/Supersonic partial support
 - New ASM parser/writer
 - Added File menu
     - Create new files / better file selection
@@ -13,6 +14,7 @@
 - Rebuilt Project screen
     - Tree structure for projects
     - Reuse file menu
+- New mapping autodismiss is configurable
 - Fixed a keycombination event bug [#29](/../../issues/29)
 - Fixed corrupted art when importing transparent PNGs [#22](/../../issues/22)
 

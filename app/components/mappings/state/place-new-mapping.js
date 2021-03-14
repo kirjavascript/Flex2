@@ -31,6 +31,8 @@ export function placeNewMapping() {
     );
     environment.config.currentTile += piece.width * piece.height;
     mappingState.newMapping.piece = void 0;
-    mappingState.newMapping.active = false;
+    if (mappingState.autodismiss) {
+        mappingState.newMapping.active = false;
+    }
     mappingState.optimizeCurrentDPLCs();
 }
