@@ -63,7 +63,7 @@ export const commands = [
         {
             map: 'n m', name: 'New Mapping', color: 'green',
             func: () => {
-                mappingState.newMapping.active = !mappingState.newMapping.active;
+                mappingState.toggleNewMapping();
             },
         },
         {
@@ -274,7 +274,7 @@ export const commands = [
         {
             map: 'r', name: 'Raw Editor', color: 'white', noMultiplier: true,
             func: () => {
-                mappingState.rawEditor.active = !mappingState.rawEditor.active;
+                mappingState.toggleRawEditor();
             },
         },
     ],

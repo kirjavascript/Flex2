@@ -53,10 +53,12 @@
     .group {
         display: flex;
     }
+    .row {
+        padding: 2px 5px;
+    }
     .autodismiss {
         display: flex;
         justify-content: flex-end;
-        padding: 5px;
         span {
             margin-right: 5px;
             line-height: 1.3em;
@@ -72,6 +74,11 @@
 }
 
 .raw-mapping-data {
+    .close {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
     box-sizing: content-box;
     position: absolute;
     z-index: 2;

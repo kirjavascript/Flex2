@@ -33,26 +33,7 @@ mappings([
                 if (frameIndex === quantity - 1) return endFrame;
             });
         },
-        ({ sprite }) => {
-            throw new Error('convert to S3K Player instead');
-            write(dc.w, sprite.length);
-            return ({ mapping }) => {
-                // top
-                write(dc.b, mapping.top);
-                write(nybble, 0);
-                // size
-                write(2, mapping.width - 1);
-                write(2, mapping.height - 1);
-                // 1 player
-                write(1, mapping.priority);
-                write(2, mapping.palette);
-                write(1, mapping.vflip);
-                write(1, mapping.hflip);
-                write(11, mapping.art);
-                // left
-                write(dc.w, mapping.left);
-            };
-        },
+        () => { throw new Error('convert to S3K Player instead'); },
     ],
 ]);
 
@@ -68,13 +49,6 @@ dplcs([
                 if (frameIndex + 1 === quantity) return endFrame;
             });
         },
-        ({ sprite }) => {
-            throw new Error('convert to S3K Player instead');
-            write(dc.w, sprite.length);
-            return ({ mapping }) => {
-                write(nybble, mapping.size - 1);
-                write(nybble * 3, mapping.art);
-            };
-        },
+        () => { throw new Error('convert to S3K Player instead'); },
     ],
 ]);

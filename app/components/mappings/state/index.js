@@ -125,11 +125,19 @@ class MappingState {
         active: false,
     };
 
+    @action toggleRawEditor = () => {
+        this.rawEditor.active = !this.rawEditor.active;
+    };
+
     // new mappings
 
     @observable newMapping = {
         active: false,
         piece: undefined,
+    };
+
+    @action toggleNewMapping = () => {
+        this.newMapping.active = !this.newMapping.active;
     };
 
     @observable autodismiss = true;

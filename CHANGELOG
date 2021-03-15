@@ -14,7 +14,9 @@
 - Rebuilt Project screen
     - Tree structure for projects
     - Reuse file menu
-- New mapping autodismiss is configurable
+- Mapping screen updates
+    - New mapping autodismiss is configurable
+    - Added 'close' to new mapping / raw editor
 - Fixed a keycombination event bug [#29](/../../issues/29)
 - Fixed corrupted art when importing transparent PNGs [#22](/../../issues/22)
 

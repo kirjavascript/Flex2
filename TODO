@@ -20,10 +20,9 @@ definition([
 ])
 
 // copy to project
-// autozoom based on sprite size for sprites tab
-// close button for new mapping screen / raw editor
-
 // art ffset save message / input size
+// autozoom based on sprite size for sprites tab
+
 // crackers first, then kd cham
 // UI by definition
 

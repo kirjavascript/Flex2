@@ -7,7 +7,7 @@ import { environment } from '#store/environment';
 import { observer } from 'mobx-react';
 import { Mapping } from './mapping';
 import { Spring } from 'react-spring/renderprops';
-import { Checkbox } from '#ui';
+import { Checkbox, Button } from '#ui';
 
 const baseConfig = {
     hflip: false,
@@ -18,13 +18,16 @@ const baseConfig = {
     priority: false,
 };
 
-const AutoDismiss = observer(() => (
-    <div className="autodismiss">
-        <span onClick={mappingState.toggleAutodismiss}>autodismiss</span>
-        <Checkbox
-            checked={mappingState.autodismiss}
-            onChange={mappingState.toggleAutodismiss}
-        />
+const BottomMenu = observer(() => (
+    <div className="row">
+        <Button color="magenta" onClick={mappingState.toggleNewMapping}>close</Button>
+        <div className="autodismiss">
+            <span onClick={mappingState.toggleAutodismiss}>autodismiss</span>
+            <Checkbox
+                checked={mappingState.autodismiss}
+                onChange={mappingState.toggleAutodismiss}
+            />
+        </div>
     </div>
 ));
 
@@ -155,7 +158,7 @@ export class NewMapping extends Component {
                                             })}
                                         </div>
                                     ))}
-                            <AutoDismiss />
+                            <BottomMenu />
                         </div>
                     )}
                 </Spring>
