@@ -137,7 +137,7 @@ let Dropdown = function (_Component) {
                     style: this.props.color && label[0] == '#' ? {
                         backgroundColor: label,
                         height: 15,
-                    } : void 0,
+                    } : undefined,
                 },
                 this.props.color && label[0] == '#' ? '' : label
               );
@@ -209,7 +209,7 @@ let Dropdown = function (_Component) {
                     style: this.props.color && placeHolderValue[0] == '#' ? {
                         backgroundColor: placeHolderValue,
                         height: 14,
-                    } : this.props.color ? { height: 14 } : void 0,
+                    } : this.props.color ? { height: 14 } : undefined,
                 },
         this.props.color && placeHolderValue[0] == '#' ? '' : placeHolderValue
       );

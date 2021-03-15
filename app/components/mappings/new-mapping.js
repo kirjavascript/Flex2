@@ -18,7 +18,6 @@ const baseConfig = {
     priority: false,
 };
 
-
 const AutoDismiss = observer(() => (
     <div className="autodismiss">
         <span onClick={mappingState.toggleAutodismiss}>autodismiss</span>
@@ -35,7 +34,7 @@ export class NewMapping extends Component {
         this.node = node;
     };
 
-    pos = [void 0, void 0];
+    pos = [undefined, undefined];
     mapDefz = [];
 
     dragPlacementFactory = (index) => {

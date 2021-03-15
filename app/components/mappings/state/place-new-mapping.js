@@ -3,7 +3,7 @@ import { mappingState } from './index';
 
 export function placeNewMapping() {
     if (!environment.mappings.length) {
-        mappingState.newMapping.piece = void 0;
+        mappingState.newMapping.piece = undefined;
         return;
     }
 
@@ -30,7 +30,7 @@ export function placeNewMapping() {
         Object.assign(piece, { left, top, art })
     );
     environment.config.currentTile += piece.width * piece.height;
-    mappingState.newMapping.piece = void 0;
+    mappingState.newMapping.piece = undefined;
     if (mappingState.autodismiss) {
         mappingState.newMapping.active = false;
     }

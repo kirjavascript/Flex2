@@ -92,7 +92,7 @@ class MappingState {
             };
         }
         else {
-            return void 0;
+            return undefined;
         }
     }
 
@@ -129,7 +129,7 @@ class MappingState {
 
     @observable newMapping = {
         active: false,
-        piece: void 0,
+        piece: undefined,
     };
 
     @observable autodismiss = true;

@@ -25,9 +25,9 @@ class ImportState {
     @observable scale = 4;
 
     @action reset = () => {
-        this.path = void 0;
-        this.canvas = void 0;
-        this.ctx = void 0;
+        this.path = undefined;
+        this.canvas = undefined;
+        this.ctx = undefined;
         this.spriteIndex = 0;
         this.auto = false;
         this.bboxes.replace([]);

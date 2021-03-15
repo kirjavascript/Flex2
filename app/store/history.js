@@ -5,7 +5,7 @@ import { environment } from './environment';
 
 const maxHistory = 1000;
 let past = [];
-let now = void 0;
+let now = undefined;
 let future = [];
 let timeTravelling = false;
 
