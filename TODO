@@ -19,7 +19,6 @@ definition([
     many(art()),
 ])
 
-// copy to project
 // art ffset save message / input size
 // autozoom based on sprite size for sprites tab
 

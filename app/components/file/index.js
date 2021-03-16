@@ -5,8 +5,6 @@ import { workspace } from '#store/workspace';
 import { Button } from '#ui';
 import { selectTab } from '#components/layout/model';
 
-// TODO: set focused obejct
-
 export const File = observer(() => {
     return (
         <>
