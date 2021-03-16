@@ -19,6 +19,7 @@ definition([
     many(art()),
 ])
 
+// fix file references when copying
 // art ffset save message / input size
 // autozoom based on sprite size for sprites tab
 
@@ -72,12 +73,8 @@ copy / paste mappings
 time travel for undo/redo
 import palette from spritesheet https://yarnpkg.com/en/package/node-vibrant
 ==
-use a repo url
-change sprite scroll speed
 drawing mode fill !
 S - scroll to sprite
-s3k sonic mapping definition / conversion tools
-create new file | newFactory={(path)=>{}}
 04:43:53 <%Lil-G> i mean so when you do "delete unused tiles" it doesn't delete the tiles the other object uses
 backdrop-filter
 Support MainMemory's macros formats

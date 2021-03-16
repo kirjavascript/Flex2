@@ -23,3 +23,16 @@ export class ObjectDef {
     // turned into generic observables in project menu
     // dont add methods and shit because they wont work
 }
+
+export function editPaths(obj, lambda) {
+    for (name in obj) {
+        if (name === 'path') {
+            obj[name] = lambda(obj[name]);
+        } else {
+            const item = obj[name];
+            if (typeof item === 'object' && item !== null) {
+                editPaths(item, lambda);
+            }
+        }
+    }
+}

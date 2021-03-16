@@ -89,12 +89,4 @@ export class Project {
         obj.uuid = uuid();
         this.objects.unshift(obj);
     };
-
-    @action copyFrom = (obj) => {
-        const clone = toJS(obj);
-        clone.name = 'file object';
-        clone.uuid = uuid();
-        this.node = clone.uuid;
-        this.objects.unshift(clone);
-    };
 }
