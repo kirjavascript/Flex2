@@ -1,4 +1,4 @@
-import { observable, autorun, action, computed } from 'mobx';
+import { observable, autorun, action, computed, toJS } from 'mobx';
 import { uuid } from '#util/uuid';
 import { ObjectDef } from '#store/objectdef';
 import { promises, exists as fsExists } from 'fs';
@@ -88,5 +88,13 @@ export class Project {
         const obj = new ObjectDef();
         obj.uuid = uuid();
         this.objects.unshift(obj);
+    };
+
+    @action copyFrom = (obj) => {
+        const clone = toJS(obj);
+        clone.name = 'file object';
+        clone.uuid = uuid();
+        this.node = clone.uuid;
+        this.objects.unshift(clone);
     };
 }

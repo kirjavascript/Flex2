@@ -9,7 +9,7 @@
 - Added File menu
     - Create new files / better file selection
     - Save/Load individual assets
-    - Art offset
+    - Art offset [#15](/../../issues/15)
     - Blank entries in palette line
 - Rebuilt Project screen
     - Tree structure for projects
