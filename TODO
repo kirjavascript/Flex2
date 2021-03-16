@@ -19,8 +19,6 @@ definition([
     many(art()),
 ])
 
-// fix file references when copying
-// art ffset save message / input size
 // autozoom based on sprite size for sprites tab
 
 // crackers first, then kd cham
