@@ -1,4 +1,4 @@
-import FlexLayout from 'flexlayout-react';
+import FlexLayout, { Actions } from 'flexlayout-react';
 
 window.resetLayout = () => {
     localStorage.removeItem('layout');
@@ -81,6 +81,18 @@ if (!version) {
     localStorage.setItem('layout-version', 1);
 }
 
+function findNode(name, children) {
+    if (!name) return;
+    for (let i = 0; i < children.length; i++) {
+        const child = children[i];
+        if (child.name === name) return child;
+        if (child.children) {
+            const result = findNode(name, child.children);
+            if (result) return result;
+        }
+    }
+}
+
 export const model = version && savedLayout
     ? FlexLayout.Model.fromJson(JSON.parse(savedLayout))
     : FlexLayout.Model.fromJson(DEFAULT_LAYOUT);
@@ -88,4 +100,12 @@ export const model = version && savedLayout
 
 export function saveModel(model) {
     localStorage.setItem('layout', JSON.stringify(model.toJson()));
+}
+
+export function selectTab(name) {
+    model.doAction(
+        Actions.selectTab(
+            findNode(name, model.toJson().layout.children).id,
+        ),
+    );
 }
