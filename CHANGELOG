@@ -6,17 +6,18 @@
     - Sonic 2 Special Stage added [#21](/../../issues/21)
     - Sonic 3&K Sonic/Supersonic partial support
 - New ASM parser/writer
-- Added File menu
+- Added File tab
     - Create new files / better file selection
     - Save/Load individual assets
     - Art offset [#15](/../../issues/15)
     - Blank entries in palette line
-- Rebuilt Project screen
+- Rebuilt Project tab
     - Tree structure for projects
     - Reuse file menu
-- Mapping screen updates
+- Mapping tab updates
     - New mapping autodismiss is configurable
     - Added 'close' to new mapping / raw editor
+- Sprites tab now autozooms depending on sprite size
 - Fixed a keycombination event bug [#29](/../../issues/29)
 - Fixed corrupted art when importing transparent PNGs [#22](/../../issues/22)
 

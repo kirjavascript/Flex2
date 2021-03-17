@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Tile } from '../art/tile';
-import { environment } from '#store/environment';
 import { observer } from 'mobx-react';
 
 @observer

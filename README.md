@@ -4,7 +4,7 @@
 </div>
 <br>
 
-Flex 2 is a multi-purpose sprite editor for the Sega Megadrive
+Flex 2 is a sprite editor for the Sega Megadrive
 
 # [download](https://github.com/kirjavascript/Flex2/releases)
 

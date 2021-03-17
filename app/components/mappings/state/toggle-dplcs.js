@@ -31,9 +31,6 @@ export function toggleDPLCs() {
 
             mappings.forEach((mapping) => {
                 const tileSize = mapping.width * mapping.height;
-                const existingIndex = newDPLCs.findIndex(({art, size}) => (
-                    art == mapping.art && size >= tileSize
-                ));
 
                 newDPLCs.push({
                     art: mapping.art,

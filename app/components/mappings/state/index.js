@@ -1,7 +1,7 @@
 import { observable, computed, action, autorun, toJS } from 'mobx';
 import { environment } from '#store/environment';
 import clamp from 'lodash/clamp';
-import { getCenter } from '#util/get-center';
+import { getCenter } from './bounds';
 import { placeNewMapping } from './place-new-mapping';
 import { optimizeCurrentDPLCs } from './optimize-dplcs';
 import { deleteUnusedTiles } from './delete-unused-tiles';

@@ -1,5 +1,5 @@
 import { environment } from '#store/environment';
-import { getCenter } from '#util/get-center';
+import { getCenter } from '../mappings/state/bounds';
 import { concatDPLCs } from '../mappings/state/concat-dplcs';
 
 function addTile(ctx, x, y, palette) {

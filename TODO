@@ -19,7 +19,9 @@ definition([
     many(art()),
 ])
 
-// autozoom based on sprite size for sprites tab
+// mapping limits
+// history / mapping drag slowdown
+// update documentation
 
 // crackers first, then kd cham
 // UI by definition
@@ -51,7 +53,6 @@ animation editor
 BUGS
 
 max mapping qty limit (import screen limits too)
-mappings mode in fullscreen raw editor is borked
 saving 0 tile as nemesis crashes
 saving ArtC42 at all crashes
 pink surrounding tiles sometimes breaks
