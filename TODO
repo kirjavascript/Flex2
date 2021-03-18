@@ -19,8 +19,7 @@ definition([
     many(art()),
 ])
 
-// mapping limits
-// history / mapping drag slowdown
+// history
 // update documentation
 
 // crackers first, then kd cham

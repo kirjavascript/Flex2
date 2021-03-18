@@ -1,5 +1,4 @@
 import { autorun, toJS } from 'mobx';
-import debounce from 'lodash/debounce';
 import throttle from 'lodash/throttle';
 import { environment } from './environment';
 
@@ -23,7 +22,7 @@ export function initHistory() {
 
         !timeTravelling && addHistory();
 
-    });
+    }, { delay: 200 });
 
 }
 
@@ -47,8 +46,8 @@ function setCurrent() {
     });
 }
 
-const addHistory = debounce(() => {
-
+const addHistory = () => {
+    console.log('add history');
     now && past.push(now);
 
     now = getCurrent();
@@ -58,8 +57,7 @@ const addHistory = debounce(() => {
     if (past.length >= maxHistory) {
         past.shift();
     }
-
-}, 200);
+};
 
 export const undo = throttle(() => {
     timeTravelling = true;
