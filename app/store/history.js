@@ -9,9 +9,7 @@ let future = [];
 let timeTravelling = false;
 
 export function initHistory() {
-
     autorun(() => {
-
         const { config, palettes, mappings, dplcs, tiles } = environment;
         // traverse everything we want to react to...
         config.dplcsEnabled;
@@ -20,10 +18,8 @@ export function initHistory() {
         mappings.forEach((a) => a.forEach((b) => Object.values(b)));
         dplcs.forEach((a) => a.forEach((b) => Object.values(b)));
 
-        !timeTravelling && addHistory();
-
+        addHistory();
     }, { delay: 200 });
-
 }
 
 function getCurrent() {
@@ -47,20 +43,23 @@ function setCurrent() {
 }
 
 const addHistory = () => {
-    console.log('add history');
-    now && past.push(now);
+    if (!timeTravelling) {
+        console.log('add history');
+        now && past.push(now);
 
-    now = getCurrent();
+        now = getCurrent();
 
-    future = [];
+        future = [];
 
-    if (past.length >= maxHistory) {
-        past.shift();
+        if (past.length >= maxHistory) {
+            past.shift();
+        }
     }
 };
 
 export const undo = throttle(() => {
     timeTravelling = true;
+    console.log(true);
 
     if (past.length) {
         future.push(now);
@@ -70,6 +69,7 @@ export const undo = throttle(() => {
         setCurrent();
     }
 
+    console.log(false);
     timeTravelling = false;
 }, 100);
 
