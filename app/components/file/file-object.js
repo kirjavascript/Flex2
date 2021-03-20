@@ -245,7 +245,7 @@ export const FileObject = observer(({ obj }) => {
             </div>
             <div className="menu-item">
                 <Item>Offset</Item>
-                <Input store={obj.art} accessor="offset" />
+                <Input store={obj.art} accessor="offset" isNumber />
             </div>
             <ErrorMsg error={artError} />
             <FileInput

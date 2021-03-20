@@ -22,13 +22,21 @@ You can cycle through options in dropdown boxes and increase/decrease numbers in
 
 The UI layout is fully customisable by moving or resizing tabs.
 
+## File Screen
+
+After selecting a game format, individual assets can be saved and loaded. Art based assetts can specify an offset to load from (for example, for loading HUD graphics from a VRAM dump).
+
+The 'label' specified in the mapping and DPLC definitions will be used as the main label in ASM file output.
+
+The file screen is reused for individual objects in projects.
+
 ## Project Files
 
 Project files serve as definitions for all the objects in your project. They should sit at the root of your project directory and be committed to version control. Project file configuration is autosaved.
 
-A key change from version 1 is that Flex no longer has a game mode. Data is saved and loaded as whatever the definition for the object says. This means you can mix formats (like S1 Mappings and S2 DPLCs for editing Sonic CD data), or even provide custom definitions.
+Projects consist of objects, which are definitions of the filepaths used for an object's assets, and folders, which can be used to organise objects into groups.
 
-The 'label' specified in the mapping and DPLC definitions is to use as the main label if one is required without the output.
+The filetree style menu on the left of the project screen allows you to drag and drop objects and folders to different places to more easily organise them. Right clicking gives you a menu for various operations for managing objects and folders, and each item can be renamed within the filetree as well as in the object configuration itself.
 
 ## Mapping Editor
 
@@ -44,7 +52,9 @@ The mapping editor has the following mouse interactions;
 
 ### New Mapping
 
-The new mapping overlay can be toggled with <kbd>nm</kbd>. To add a new mapping piece, drag it from the new mapping overlay to where in the mapping area you want it to display and the overlay will autodismiss.
+The new mapping overlay can be toggled with <kbd>nm</kbd>. To add a new mapping piece, drag it from the new mapping overlay to where in the mapping area you want it to display and the new mapping overlay will move out of the way.
+
+The overlay can be configured to autodismiss when placing a piece, or return to allow easily adding multiple pieces.
 
 ### Drawing Mode
 
@@ -60,7 +70,7 @@ Palette input will be normalised to Megadrive colours. To change the order of pa
 
 ## Sprites
 
-The Sprites tab gives an overview of your full object's data, allowing you to change sprites or reorder them by dragging and dropping.
+The Sprites tab gives an overview of your full object's data, allowing you to change sprites or reorder them by dragging and dropping. Each sprite will autozoom out to best fit the mapping for it in the frame.
 
 ## Importing
 
@@ -71,3 +81,11 @@ For importing a spritesheet, either the alpha channel or the top left pixel colo
 Mapping output can be configured to either reduce the number of tiles, or the number of mappings. The algorithm favours fewer horizontal sprites over vertical ones.
 
 Both methods of importing use CIEDE2000 nearest colour matching to the current palette.
+
+## Custom Mappings
+
+As of version 1.0.0, Flex 2 supports a wider array of mapping formats and allows you to specify your own. 
+
+The base mapping formats are provided in the `scripts/` directory. These can be modified to suit whatever format you decide to come up with.
+
+The definition file format is currently undocumented, and still being expanded on. If you have a request to add support for a new disassembly, or just want more information on the format - open an issue on github with your request.

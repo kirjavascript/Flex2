@@ -14,6 +14,12 @@
         font-weight: bold;
     }
 
+    code {
+        background-color: $grey;
+        padding: 1px 5px;
+        border-radius: 2px;
+    }
+
     table {
         background-color: $grey;
         padding: 5px;

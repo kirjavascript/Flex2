@@ -19,9 +19,9 @@ definition([
     many(art()),
 ])
 
-// history
-// update documentation
 // project files
+
+// provide a custom definition, but have a default
 
 // crackers first, then kd cham
 // UI by definition
@@ -72,6 +72,7 @@ copy / paste mappings
 time travel for undo/redo
 import palette from spritesheet https://yarnpkg.com/en/package/node-vibrant
 ==
+uses a grayscale copy of another frame that you selected separately from the current one as a "background" frame.
 drawing mode fill !
 S - scroll to sprite
 04:43:53 <%Lil-G> i mean so when you do "delete unused tiles" it doesn't delete the tiles the other object uses

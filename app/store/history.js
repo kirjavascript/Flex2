@@ -46,7 +46,6 @@ const addHistory = () => {
     if (timeTravelling) {
         timeTravelling = false;
     } else {
-        console.log('add history');
         now && past.push(now);
 
         now = getCurrent();
