@@ -3,9 +3,9 @@ import throttle from 'lodash/throttle';
 import { environment } from './environment';
 
 const maxHistory = 1000;
-let past = [];
-let now = undefined;
-let future = [];
+const past = [];
+const future = [];
+let now;
 let timeTravelling = false;
 
 export function initHistory() {
@@ -43,13 +43,15 @@ function setCurrent() {
 }
 
 const addHistory = () => {
-    if (!timeTravelling) {
+    if (timeTravelling) {
+        timeTravelling = false;
+    } else {
         console.log('add history');
         now && past.push(now);
 
         now = getCurrent();
 
-        future = [];
+        future.splice(0, future.length);
 
         if (past.length >= maxHistory) {
             past.shift();
@@ -59,7 +61,6 @@ const addHistory = () => {
 
 export const undo = throttle(() => {
     timeTravelling = true;
-    console.log(true);
 
     if (past.length) {
         future.push(now);
@@ -68,9 +69,6 @@ export const undo = throttle(() => {
 
         setCurrent();
     }
-
-    console.log(false);
-    timeTravelling = false;
 }, 100);
 
 export const redo = throttle(() => {
@@ -83,6 +81,4 @@ export const redo = throttle(() => {
 
         setCurrent();
     }
-
-    timeTravelling = false;
 }, 100);
