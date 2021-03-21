@@ -21,6 +21,7 @@ definition([
 
 // project files
 
+/* tile deletes when drawing (unmap pieces / shortcuts in drawing mode) */
 // provide a custom definition, but have a default
 
 // crackers first, then kd cham
@@ -44,7 +45,7 @@ definition([
 /* http://info.sonicretro.org/Disassemblies */
 
 ROADMAP
-custom mapping formats / screen mappings format (!) ->
+custom mapping formats
 generate project files -> use to create s3portal
 rotsprite
 export spritesheet
@@ -52,12 +53,9 @@ animation editor
 ==
 BUGS
 
-max mapping qty limit (import screen limits too)
 saving 0 tile as nemesis crashes
 saving ArtC42 at all crashes
 pink surrounding tiles sometimes breaks
-tile deletes when drawing (unmap pieces / shortcuts in drawing mode)
-import history - many writes while drawing
 
 FEATURES
 set colour of art tiles
@@ -68,6 +66,7 @@ ROTSPRITE
 rotsprite https://crates.io/crates/rotsprite
 https://forums.sonicretro.org/index.php?threads/sprite-rotation-utility.8848/#post-159754
 ==
+select multiple sprites at once to reorder
 copy / paste mappings
 time travel for undo/redo
 import palette from spritesheet https://yarnpkg.com/en/package/node-vibrant
