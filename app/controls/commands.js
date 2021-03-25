@@ -39,7 +39,6 @@ export function getCommandLabel(name) {
 }
 
 export const commands = [
-
     [
         {
             map: 'f12', name: 'DevTools', hidden: true,
@@ -131,7 +130,7 @@ export const commands = [
     [
         {
             map: 'h', name: 'Horizontal Flip', color: 'orange',
-            func: (e) => {
+            func: () => {
                 const { x } = mappingState.center || {};
                 mappingState.mutateActive((mapping) => {
                     mapping.hflip = !mapping.hflip;
@@ -142,7 +141,7 @@ export const commands = [
         },
         {
             map: 'v', name: 'Vertical Flip', color: 'orange',
-            func: (e) => {
+            func: () => {
                 const { y } = mappingState.center || {};
                 mappingState.mutateActive((mapping) => {
                     mapping.vflip = !mapping.vflip;
@@ -153,7 +152,7 @@ export const commands = [
         },
         {
             map: 'f', name: 'Toggle Priority', color: 'orange',
-            func: (e) => {
+            func: () => {
                 mappingState.mutateActive((mapping) => {
                     mapping.priority = !mapping.priority;
                 });
@@ -161,7 +160,7 @@ export const commands = [
         },
         {
             map: 'p', name: 'Shift Palette', color: 'orange',
-            func: (e) => {
+            func: () => {
                 mappingState.mutateActive((mapping) => {
                     mapping.palette = (mapping.palette+1) % 4;
                 });

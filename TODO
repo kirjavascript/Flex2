@@ -21,7 +21,7 @@ definition([
 
 // project files
 
-/* tile deletes when drawing (unmap pieces / shortcuts in drawing mode) */
+/* https://unix.stackexchange.com/questions/585645/launch-an-application-by-a-double-click */
 // provide a custom definition, but have a default
 
 // crackers first, then kd cham
