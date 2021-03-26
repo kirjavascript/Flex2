@@ -112,7 +112,7 @@ const Project = observer(() => {
                     <div className="menu-item">
                         <Item>Project</Item>
                         <span className="path">
-                            {basename(workspace.projectPath)}
+                            {project.name || basename(workspace.projectPath)}
                         </span>
                         <Button
                             color="magenta"

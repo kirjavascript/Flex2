@@ -4,9 +4,10 @@ const { readFileSync } = require('fs');
 const { join } = require('path');
 
 const base = __dirname + '/../../flex2_test/s1disasm/SonLVL INI Files/';
-const levels = ['objGHZ.ini'];
 const format = 'Sonic 1.js';
+const projectName = 'Sonic 1';
 const defaultCmp = 'Nemesis';
+const levels = ['obj.ini'];
 const pathMod = (str) => str.slice(3);
 const palettes = []; // TODO - use SonLVL.ini
 
@@ -31,7 +32,13 @@ levels.forEach(filename => {
                     obj[name] = prop;
                 }
             })
-        if (obj.name && obj.art && obj.mapasm) {
+
+        if (obj.xmlfile) {
+            const xml = readFileSync(join(base, obj.xmlfile), 'utf8');
+            console.log(xml);
+            process.exit()
+        }
+        if (obj.art && obj.mapasm) {
             const flexObj = {
                 name: obj.name,
                 palettes,
@@ -68,14 +75,10 @@ levels.forEach(filename => {
     objects.push(folder);
 });
 
+const config = {
+    Flex: 2,
+    name: projectName,
+    objects,
+}
 
-// [Sonic]
-// art=../artunc/Sonic.bin
-// artcmp=Uncompressed
-// mapasm=../_maps/Sonic.asm
-// dplcasm=../_maps/Sonic - Dynamic Gfx Script.asm
-// frame=1
-// [0D]
-// name=Signpost
-// art=../artnem/Signpost.bin
-// mapasm=../_maps/Signpost.asm
+// console.log(JSON.stringify(config, 0, 4));
