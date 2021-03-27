@@ -7,7 +7,6 @@ const base = __dirname + '/../../flex2_test/s1disasm/SonLVL INI Files/';
 const format = 'Sonic 1.js';
 const projectName = 'Sonic 1';
 const defaultCmp = 'Nemesis';
-// const folders = ['objGHZ.ini'];
 const folders = [
     'obj.ini',
     'objGHZ.ini',
@@ -17,7 +16,7 @@ const folders = [
     'objSLZ.ini',
     'objSYZ.ini',
 ];
-const pathMod = (str) => str.slice(3);
+const pathMod = (str) => str.slice(3).replace(/&amp;/g, '&').replace(/\|.+/, '');
 const basePalette = [
     { path: 'palette/Sonic.bin', length: 1 }
 ];
@@ -43,7 +42,9 @@ const sonlvl = readFileSync(join(base, 'SonLVL.ini'), 'utf8')
 
 parseINI(sonlvl).forEach(obj => {
     if (obj.objlst && obj.palette) {
-        paletteLookup[obj.objlst] = pathMod(obj.palette.split('|').pop().replace(/:.+/, ''));
+        paletteLookup[obj.objlst] = pathMod(
+            obj.palette.split('|').pop().replace(/:.+/, '')
+        );
     }
 })
 
@@ -89,7 +90,7 @@ folders.forEach(filename => {
                 flexObj.name = name[1];
             }
             const art = xml.match(/<ArtFile filename="(.+?)"/);
-            if (art) {
+            if (art && art[1] !== 'LevelArt') {
                 flexObj.art.path = pathMod(art[1]);
             }
             const map = xml.match(/<MapFile type="(.+?)" filename="(.+?)"/);
@@ -101,7 +102,7 @@ folders.forEach(filename => {
         }
         if (obj.art && obj.mapasm) {
             const flexObj = {
-                name: obj.name,
+                name: obj.name || '???',
                 palettes,
                 format,
                 art: {
@@ -121,7 +122,7 @@ folders.forEach(filename => {
             };
 
             if (obj.dplcasm) {
-                flexObj.dplcs.enabed = true;
+                flexObj.dplcs.enabled = true;
                 flexObj.dplcs.path = pathMod(obj.dplcasm);
             }
 

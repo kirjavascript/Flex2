@@ -21,6 +21,7 @@ definition([
 
 // project files
 // check palette copy to file works correctly
+// drag project error (check other files too)
 
 /* https://unix.stackexchange.com/questions/585645/launch-an-application-by-a-double-click */
 // provide a custom definition, but have a default
@@ -72,6 +73,7 @@ copy / paste mappings
 time travel for undo/redo
 import palette from spritesheet https://yarnpkg.com/en/package/node-vibrant
 ==
+21:08 <+dIRCord> <R​andomName> Not this. For example look at ArtScaled_EggRoboFly, which is art that's used by s3k art scaler. It's uncompressed art,tho it looks transformed in some way, but not like random mess of pixels.
 uses a grayscale copy of another frame that you selected separately from the current one as a "background" frame.
 drawing mode fill !
 S - scroll to sprite
