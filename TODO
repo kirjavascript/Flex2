@@ -20,6 +20,7 @@ definition([
 ])
 
 // project files
+// check palette is loading correctly in s1
 // provide custom art function
 
 /* https://unix.stackexchange.com/questions/585645/launch-an-application-by-a-double-click */
