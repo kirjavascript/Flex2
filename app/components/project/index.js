@@ -42,7 +42,8 @@ const Project = observer(() => {
                     accessor="projectPath"
                     onChange={(path) => {
                         if (path) {
-                            workspace.openProject();
+                            // rAF avoids 'hover while not dragging' error
+                            requestAnimationFrame(workspace.openProject);
                         }
                     }}
                     ext="flex.json"
