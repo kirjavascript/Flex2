@@ -16,10 +16,29 @@ const folders = [
     'objSLZ.ini',
     'objSYZ.ini',
 ];
-const pathMod = (str) => str.slice(3).replace(/&amp;/g, '&').replace(/\|.+/, '');
 const basePalette = [
     { path: 'palette/Sonic.bin', length: 1 }
 ];
+const pathMod = (str) => str.slice(3).replace(/&amp;/g, '&').replace(/\|.+/, '');
+
+const baseObj = {
+    name: '???',
+    format,
+    art: {
+        path: '',
+        compression: defaultCmp,
+        offset: 0,
+    },
+    mappings: {
+        path: '',
+        label: '',
+    },
+    dplcs: {
+        enabled: false,
+        path: '',
+        label: '',
+    },
+};
 
 function parseINI(ini) {
     ini = ini.match(/\[.+\][^[]+/gm);
@@ -63,27 +82,26 @@ folders.forEach(filename => {
 
     const ini = readFileSync(join(base, filename), 'utf8');
     parseINI(ini).forEach(obj => {
-        if (obj.xmlfile) {
+        if (obj.codefile)  {
+            const cs = readFileSync(join(base, obj.codefile), 'utf8');
+            const flexObj = { ...baseObj, palettes };
+            const name = cs.match(/Name\s+{\s+get { return "(.+?)"/)
+            if (name) {
+                flexObj.name = name[1];
+            }
+            const art = cs.match(/OpenArtFile\("(.+?)"/);
+            if (art) {
+                flexObj.art.path = pathMod(art[1]);
+            }
+            const map = cs.match(/artfile,(.+)?"(.+?)",/);
+            if (map) {
+                flexObj.mappings.path = pathMod(map[2]);
+            }
+            folder.children.push(flexObj);
+
+        } else if (obj.xmlfile) {
             const xml = readFileSync(join(base, obj.xmlfile), 'utf8');
-            const flexObj = {
-                name: '???',
-                palettes,
-                format,
-                art: {
-                    path: '',
-                    compression: defaultCmp,
-                    offset: 0,
-                },
-                mappings: {
-                    path: '',
-                    label: '',
-                },
-                dplcs: {
-                    enabled: false,
-                    path: '',
-                    label: '',
-                },
-            };
+            const flexObj = { ...baseObj, palettes };
 
             const name = xml.match(/Name="(.+?)"/);
             if (name) {
@@ -99,8 +117,7 @@ folders.forEach(filename => {
             }
 
             folder.children.push(flexObj);
-        }
-        if (obj.art && obj.mapasm) {
+        } else if (obj.art && obj.mapasm) {
             const flexObj = {
                 name: obj.name || '???',
                 palettes,
