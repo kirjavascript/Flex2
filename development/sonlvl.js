@@ -21,25 +21,6 @@ const basePalette = [
 ];
 const pathMod = (str) => str.slice(3).replace(/&amp;/g, '&').replace(/\|.+/, '');
 
-const baseObj = {
-    name: '???',
-    format,
-    art: {
-        path: '',
-        compression: defaultCmp,
-        offset: 0,
-    },
-    mappings: {
-        path: '',
-        label: '',
-    },
-    dplcs: {
-        enabled: false,
-        path: '',
-        label: '',
-    },
-};
-
 function parseINI(ini) {
     ini = ini.match(/\[.+\][^[]+/gm);
     return ini.map(sect => {
@@ -84,7 +65,14 @@ folders.forEach(filename => {
     parseINI(ini).forEach(obj => {
         if (obj.codefile)  {
             const cs = readFileSync(join(base, obj.codefile), 'utf8');
-            const flexObj = { ...baseObj, palettes };
+            const flexObj = {
+                name: '???',
+                format,
+                palettes,
+                art: { path: '', compression: defaultCmp, offset: 0, },
+                mappings: { path: '', label: '', },
+                dplcs: { enabled: false, path: '', label: '', },
+            };
             const name = cs.match(/Name\s+{\s+get { return "(.+?)"/)
             if (name) {
                 flexObj.name = name[1];
@@ -101,8 +89,14 @@ folders.forEach(filename => {
 
         } else if (obj.xmlfile) {
             const xml = readFileSync(join(base, obj.xmlfile), 'utf8');
-            const flexObj = { ...baseObj, palettes };
-
+            const flexObj = {
+                name: '???',
+                format,
+                palettes,
+                art: { path: '', compression: defaultCmp, offset: 0, },
+                mappings: { path: '', label: '', },
+                dplcs: { enabled: false, path: '', label: '', },
+            };
             const name = xml.match(/Name="(.+?)"/);
             if (name) {
                 flexObj.name = name[1];

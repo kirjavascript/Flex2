@@ -7,10 +7,11 @@
     - Sonic 3&K Sonic/Supersonic partial support
 - New ASM parser/writer
 - Added File tab
-    - Create new files / better file selection
+    - Create new files
     - Save/Load individual assets
     - Art offset [#15](/../../issues/15)
     - Blank entries in palette line
+    - Various UX improvements for file input
 - Rebuilt Project tab
     - Tree structure for projects
     - Reuse file menu
