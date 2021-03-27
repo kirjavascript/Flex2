@@ -23,9 +23,9 @@ const sizes = {
 export function parseASM(text) {
     const comment = regex(/^;.*$/m).map(() => [ignore]);
     const even = str('even').map(() => [ignore]);
-    const label = regex(/^[A-Z0-9_]+(\s+)?:/i).map(t => [lbl, t.replace(':', '')]);
+    const label = regex(/^[A-Z0-9_@]+(\s+)?:/i).map(t => [lbl, t.replace(':', '')]);
     const hex = regex(/^\$[A-F0-9]+/i).map(t => [data, parseInt(t.slice(1), 16)]);
-    const address = regex(/^[A-Z0-9_]+-[A-Z0-9_]+/i).map(t => [addr, t]);
+    const address = regex(/^[A-Z0-9_@]+-[A-Z0-9_@]+/i).map(t => [addr, t]);
 
     const value = choice([
         digits.map(t => [data, t]),
