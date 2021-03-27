@@ -35,8 +35,40 @@ levels.forEach(filename => {
 
         if (obj.xmlfile) {
             const xml = readFileSync(join(base, obj.xmlfile), 'utf8');
-            console.log(xml);
-            process.exit()
+            const flexObj = {
+                name: '???',
+                palettes,
+                format,
+                art: {
+                    path: '',
+                    compression: defaultCmp,
+                    offset: 0,
+                },
+                mappings: {
+                    path: '',
+                    label: '',
+                },
+                dplcs: {
+                    enabled: false,
+                    path: '',
+                    label: '',
+                },
+            };
+
+            const name = xml.match(/Name="(.+?)"/);
+            if (name) {
+                flexObj.name = name[1];
+            }
+            const art = xml.match(/<ArtFile filename="(.+?)"/);
+            if (art) {
+                flexObj.art.path = pathMod(art[1]);
+            }
+            const map = xml.match(/<MapFile type="(.+?)" filename="(.+?)"/);
+            if (map) {
+                flexObj.mappings.path = pathMod(map[2]);
+            }
+
+            folder.children.push(flexObj);
         }
         if (obj.art && obj.mapasm) {
             const flexObj = {
@@ -81,4 +113,4 @@ const config = {
     objects,
 }
 
-// console.log(JSON.stringify(config, 0, 4));
+console.log(JSON.stringify(config, 0, 4));
