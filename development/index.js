@@ -1,8 +1,10 @@
-const { writeFile, unlinkSync } = require('fs');
+const { writeFile, unlinkSync, existsSync } = require('fs');
 
 module.exports = (mainWindow) => {
     mainWindow.openDevTools();
-    unlinkSync('./static/bundles/main.js');
+    if (existsSync('./static/bundles/main.js')) {
+        unlinkSync('./static/bundles/main.js');
+    }
 
     // webpack reload
 

@@ -7,7 +7,16 @@ const base = __dirname + '/../../flex2_test/s1disasm/SonLVL INI Files/';
 const format = 'Sonic 1.js';
 const projectName = 'Sonic 1';
 const defaultCmp = 'Nemesis';
-const folders = ['objGHZ.ini'];
+// const folders = ['objGHZ.ini'];
+const folders = [
+    'obj.ini',
+    'objGHZ.ini',
+    'objLZ.ini',
+    'objMZ.ini',
+    'objSBZ.ini',
+    'objSLZ.ini',
+    'objSYZ.ini',
+];
 const pathMod = (str) => str.slice(3);
 const basePalette = [
     { path: 'palette/Sonic.bin', length: 1 }
@@ -45,7 +54,7 @@ folders.forEach(filename => {
         ? [...basePalette, { path: paletteLookup[filename], length: 3 }]
         : basePalette;
     const folder = {
-        name: filename,
+        name: filename.replace(/obj|\.ini/g, ''),
         children: [],
         isDirectory: true,
         expanded: false,
