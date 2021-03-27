@@ -7,23 +7,15 @@ const base = __dirname + '/../../flex2_test/s1disasm/SonLVL INI Files/';
 const format = 'Sonic 1.js';
 const projectName = 'Sonic 1';
 const defaultCmp = 'Nemesis';
-const levels = ['obj.ini'];
+const folders = ['objGHZ.ini'];
 const pathMod = (str) => str.slice(3);
-const palettes = []; // TODO - use SonLVL.ini
+const basePalette = [
+    { path: 'palette/Sonic.bin', length: 1 }
+];
 
-const objects = [];
-
-levels.forEach(filename => {
-    const folder = {
-        name: filename,
-        children: [],
-        isDirectory: true,
-        expanded: false,
-    };
-
-    ini = readFileSync(join(base, filename), 'utf8');
+function parseINI(ini) {
     ini = ini.match(/\[.+\][^[]+/gm);
-    ini.forEach(sect => {
+    return ini.map(sect => {
         const obj = {};
         sect.split('\n')
             .forEach(line => {
@@ -32,7 +24,35 @@ levels.forEach(filename => {
                     obj[name] = prop;
                 }
             })
+        return obj;
+    });
+}
 
+const paletteLookup = {};
+
+const sonlvl = readFileSync(join(base, 'SonLVL.ini'), 'utf8')
+
+parseINI(sonlvl).forEach(obj => {
+    if (obj.objlst && obj.palette) {
+        paletteLookup[obj.objlst] = pathMod(obj.palette.split('|').pop().replace(/:.+/, ''));
+    }
+})
+
+const objects = [];
+
+folders.forEach(filename => {
+    const palettes = paletteLookup[filename]
+        ? [...basePalette, { path: paletteLookup[filename], length: 3 }]
+        : basePalette;
+    const folder = {
+        name: filename,
+        children: [],
+        isDirectory: true,
+        expanded: false,
+    };
+
+    const ini = readFileSync(join(base, filename), 'utf8');
+    parseINI(ini).forEach(obj => {
         if (obj.xmlfile) {
             const xml = readFileSync(join(base, obj.xmlfile), 'utf8');
             const flexObj = {
