@@ -1,11 +1,8 @@
 DOC
 ==
 1.0.0 - breaking change to select mapping format
-megadrive sprite editor (kirjava.xyz
-project menu explain
-spritesmind
 data parser, not text
-post image of project / some custom mappings, saying it's ready for testing
+push project files to disassemblies
 
 BUFFER
 ==
@@ -19,9 +16,9 @@ definition([
     many(art()),
 ])
 
-// project files
-// check palette is loading correctly in s1
 // provide custom art function
+// custom asm parser
+// custom palettes
 
 /* https://unix.stackexchange.com/questions/585645/launch-an-application-by-a-double-click */
 // provide a custom definition, but have a default
@@ -47,7 +44,6 @@ definition([
 /* http://info.sonicretro.org/Disassemblies */
 
 ROADMAP
-custom mapping formats
 generate project files -> use to create s3portal
 rotsprite
 export spritesheet

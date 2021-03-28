@@ -22,7 +22,7 @@
 - Fixed a keycombination event bug [#29](/../../issues/29)
 - Fixed corrupted art when importing transparent PNGs [#22](/../../issues/22)
 - Performance improvements to remove lag
-- Created project files for s1disasm
+- Created project files for s1disasm, s2disasm
 
 ## [0.0.8]
 - Changed default palette from Sonic 2 to the SCH unified palette

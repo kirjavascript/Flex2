@@ -1,4 +1,9 @@
-.tree {
+.project .tree {
+    width: 330px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
     .rst__tree > div > div:focus {
         outline: none;
     }

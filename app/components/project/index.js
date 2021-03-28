@@ -89,6 +89,7 @@ const Project = observer(() => {
                                             e.target.value;
                                     }}
                                     size={rowInfo.node.name.length}
+                                    style={{ maxWidth: 160 }}
                                     onChange={() => {}}
                                 />
                             </label>
