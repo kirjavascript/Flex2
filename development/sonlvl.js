@@ -3,21 +3,25 @@
 const { readFileSync } = require('fs');
 const { join } = require('path');
 
-const base = __dirname + '/../../flex2_test/s1disasm/SonLVL INI Files/';
-const format = 'Sonic 1.js';
-const projectName = 'Sonic 1';
+const base = __dirname + '/../../flex2_test/s2disasm/SonLVL INI Files/';
+const format = 'Sonic 2.js';
+const projectName = 'Sonic 2';
 const defaultCmp = 'Nemesis';
 const folders = [
     'obj.ini',
-    'objGHZ.ini',
-    'objLZ.ini',
-    'objMZ.ini',
-    'objSBZ.ini',
-    'objSLZ.ini',
-    'objSYZ.ini',
+    'objARZ.ini',
+    'objMCZ.ini',
+    'objCNZ.ini',
+    'objMTZ.ini',
+    'objCPZ.ini',
+    'objOOZ.ini',
+    'objDEZ.ini',
+    'objSCZ.ini',
+    'objEHZ.ini',
+    'objWFZ.ini',
 ];
 const basePalette = [
-    { path: 'palette/Sonic.bin', length: 1 }
+    { path: 'art/palettes/SonicAndTails.bin', length: 1 }
 ];
 const pathMod = (str) => str.slice(3).replace(/&amp;/g, '&').replace(/\|.+/, '');
 
@@ -63,7 +67,44 @@ folders.forEach(filename => {
 
     const ini = readFileSync(join(base, filename), 'utf8');
     parseINI(ini).forEach(obj => {
-        if (obj.codefile)  {
+        if (obj.mapasm) {
+            obj.map = obj.mapasm
+        }
+        if (obj.dplcasm) {
+            obj.dplc = obj.dplcasm;
+        }
+        if (obj.art && obj.map) {
+            const flexObj = {
+                name: obj.name || '???',
+                palettes,
+                format,
+                art: {
+                    path: pathMod(obj.art),
+                    compression: defaultCmp,
+                    offset: 0,
+                },
+                mappings: {
+                    path: pathMod(obj.map),
+                    label: '',
+                },
+                dplcs: {
+                    enabled: false,
+                    path: '',
+                    label: '',
+                },
+            };
+
+            if (obj.dplc) {
+                flexObj.dplcs.enabled = true;
+                flexObj.dplcs.path = pathMod(obj.dplc);
+            }
+
+            if (obj.artcmp) {
+                flexObj.art.compression = obj.artcmp;
+            }
+
+            folder.children.push(flexObj);
+        } else if (obj.codefile)  {
             const cs = readFileSync(join(base, obj.codefile), 'utf8');
             const flexObj = {
                 name: '???',
@@ -108,37 +149,6 @@ folders.forEach(filename => {
             const map = xml.match(/<MapFile type="(.+?)" filename="(.+?)"/);
             if (map) {
                 flexObj.mappings.path = pathMod(map[2]);
-            }
-
-            folder.children.push(flexObj);
-        } else if (obj.art && obj.mapasm) {
-            const flexObj = {
-                name: obj.name || '???',
-                palettes,
-                format,
-                art: {
-                    path: pathMod(obj.art),
-                    compression: defaultCmp,
-                    offset: 0,
-                },
-                mappings: {
-                    path: pathMod(obj.mapasm),
-                    label: '',
-                },
-                dplcs: {
-                    enabled: false,
-                    path: '',
-                    label: '',
-                },
-            };
-
-            if (obj.dplcasm) {
-                flexObj.dplcs.enabled = true;
-                flexObj.dplcs.path = pathMod(obj.dplcasm);
-            }
-
-            if (obj.artcmp) {
-                flexObj.art.compression = obj.artcmp;
             }
 
             folder.children.push(flexObj);
