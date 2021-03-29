@@ -88,6 +88,6 @@ As of version 1.0.0, Flex 2 supports a wider array of formats and allows you to 
 
 The base formats are provided in the `scripts/` directory. These can be modified to suit whatever format you decide to come up with.
 
-You can provide custom mapping formats, DPLCs formats, art formats (including compression) and palette formats.
+You can provide custom mapping formats, DPLCs formats, art formats (including compression), and palette formats.
 
 The definition file format is currently undocumented, and still being expanded on. If you have a request to add support for a new disassembly, or just want more information on the format - open an issue on github with your request.

@@ -34,8 +34,8 @@ export const FileObject = observer(({ obj }) => {
 
     const scriptDPLCs = scriptSafe && script.DPLCs;
     const scriptArt = scriptSafe && script.art;
+    const scriptPalettes = scriptSafe && script.palettes;
     const toggleDPLCs = () => (obj.dplcs.enabled = !obj.dplcs.enabled);
-
 
     function ioWrap(filePath, setError, e, cb) {
         setError();
@@ -116,9 +116,16 @@ export const FileObject = observer(({ obj }) => {
                 obj.dplcs.enabled &&
                 environment.dplcs.length < mappings.sprites.length
             ) {
-                environment.dplcs.push(...Array.from({
-                    length: mappings.sprites.length - environment.dplcs.length,
-                }, () => []));
+                environment.dplcs.push(
+                    ...Array.from(
+                        {
+                            length:
+                                mappings.sprites.length -
+                                environment.dplcs.length,
+                        },
+                        () => [],
+                    ),
+                );
             }
         });
     }
@@ -130,8 +137,7 @@ export const FileObject = observer(({ obj }) => {
             if (!mappingsASM) {
                 await fs.writeFile(path, writeBIN(mappings));
             } else {
-                const label =
-                    obj.mappings.label || 'Mappings';
+                const label = obj.mappings.label || 'Mappings';
                 await fs.writeFile(path, writeASM(label, mappings));
             }
         });
@@ -159,8 +165,7 @@ export const FileObject = observer(({ obj }) => {
             if (!dplcsASM) {
                 await fs.writeFile(path, writeBIN(dplcs));
             } else {
-                const label =
-                    obj.dplcs.label || 'DPLCS';
+                const label = obj.dplcs.label || 'DPLCS';
                 await fs.writeFile(path, writeASM(label, dplcs));
             }
         });
@@ -180,12 +185,11 @@ export const FileObject = observer(({ obj }) => {
                 const path = isAbsolute
                     ? palPath
                     : workspace.absolutePath(palPath);
-                buffersToColors([
-                    {
-                        buffer: await fs.readFile(path),
-                        length,
-                    },
-                ]).forEach((line) => {
+
+                (scriptPalettes ? script.readPalettes : buffersToColors)({
+                    buffer: await fs.readFile(path),
+                    length,
+                }).forEach((line) => {
                     if (cursor < 4) {
                         environment.palettes[cursor] = line;
                         cursor++;
@@ -208,7 +212,9 @@ export const FileObject = observer(({ obj }) => {
                     ? palPath
                     : workspace.absolutePath(palPath);
 
-                const chunk = colorsToBuffers(
+                const chunk = (scriptPalettes
+                    ? script.writePalettes
+                    : colorsToBuffers)(
                     environment.palettes,
                     cursor,
                     cursor + length,

@@ -122,6 +122,7 @@ export default catchFunc((file) => {
     const [artArgs, artFunc] = useDef();
     const [mappingArgs, mappingFunc] = useDef();
     const [dplcArgs, dplcFunc] = useDef();
+    const [paletteArgs, paletteFunc] = useDef();
 
     (new Function('Flex2', loadScript(file)))({
         ...constants,
@@ -309,6 +310,16 @@ export default catchFunc((file) => {
             writeArt,
         });
     }
+
+    if (paletteArgs[0]) {
+        const [readPalettes, writePalettes] = paletteArgs[0];
+        Object.assign(methods, {
+            palettes: true,
+            readPalettes,
+            writePalettes,
+        });
+    }
+
 
     return methods;
 });

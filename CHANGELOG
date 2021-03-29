@@ -1,8 +1,9 @@
 # Changelog
 
 ## [1.0.0]
-- New mapping/DPLC engine
-    - Real custom mappings
+- New engine
+    - Real custom mappings & DPLCs
+    - Custom art formats (including compression)
     - Sonic 2 Special Stage added [#21](/../../issues/21)
     - Sonic 3&K Sonic/Supersonic partial support
 - New ASM parser/writer

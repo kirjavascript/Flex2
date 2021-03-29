@@ -15,23 +15,22 @@ export function hexToMDHex(color) {
         .join``;
 }
 
-export function buffersToColors(list) {
+export function buffersToColors({ buffer, length }) {
     let colors = [];
-    list.forEach(({buffer, length}) => {
-        const data = Uint8Array.from(buffer);
-        for (let i = 0; i < length * 32; i+=2) {
-            if (data.length <= i) {
-                throw new Error('Trying to load more palettes than exist');
-            }
-            const [b, gr] = [
-                data[i].toString(16),
-                data[i+1].toString(16).padStart(2, '0'),
-            ];
-            const [g, r] = [...gr];
-            colors.push(`#${r}${g}${b}`);
 
+    const data = Uint8Array.from(buffer);
+    for (let i = 0; i < length * 32; i+=2) {
+        if (data.length <= i) {
+            throw new Error('Trying to load more palettes than exist');
         }
-    });
+        const [b, gr] = [
+            data[i].toString(16),
+            data[i+1].toString(16).padStart(2, '0'),
+        ];
+        const [g, r] = [...gr];
+        colors.push(`#${r}${g}${b}`);
+
+    }
 
     return chunk(colors, 16).splice(0, 4);
 }
