@@ -24,6 +24,7 @@ const compressionList = Object.keys(compressionFormats);
 export const FileObject = observer(({ obj }) => {
     scripts.length; // react to script updates
     const script = obj.format && runScript(obj.format);
+    const scriptSafe = script && !script.error;
 
     const { isAbsolute } = obj; // set in store/workspace
 
@@ -31,13 +32,14 @@ export const FileObject = observer(({ obj }) => {
     const dplcsASM = extname(obj.dplcs.path) === '.asm';
     const linesLeft = obj.palettes.reduce((a, c) => a - c.length, 4);
 
-    const scriptDPLCs = script && !script.error && script.hasDPLCs;
+    const scriptDPLCs = scriptSafe && script.DPLCs;
+    const scriptArt = scriptSafe && script.art;
     const toggleDPLCs = () => (obj.dplcs.enabled = !obj.dplcs.enabled);
 
 
     function ioWrap(filePath, setError, e, cb) {
         setError();
-        if (script && !script.error && filePath) {
+        if (scriptSafe && filePath) {
             const done = SaveLoad.indicator(e);
             requestIdleCallback(async () => {
                 const path = isAbsolute
@@ -79,7 +81,9 @@ export const FileObject = observer(({ obj }) => {
     function loadArt(e) {
         ioWrap(obj.art.path, setArtError, e, async (path) => {
             const buffer = (await fs.readFile(path)).slice(obj.art.offset || 0);
-            const tiles = bufferToTiles(buffer, obj.art.compression);
+            const tiles = scriptArt
+                ? script.readArt(buffer)
+                : bufferToTiles(buffer, obj.art.compression);
             environment.tiles.replace(tiles);
         });
     }
@@ -89,7 +93,9 @@ export const FileObject = observer(({ obj }) => {
             if (obj.art.offset) {
                 throw new Error('Can only save art at offset 0');
             }
-            const tiles = tilesToBuffer(environment.tiles, obj.art.compression);
+            const tiles = scriptArt
+                ? script.writeArt(tiles)
+                : tilesToBuffer(environment.tiles, obj.art.compression);
             await fs.writeFile(path, tiles);
         });
     }
@@ -235,18 +241,22 @@ export const FileObject = observer(({ obj }) => {
                 <Item color="green">Art</Item>
                 <SaveLoad load={loadArt} save={saveArt} />
             </div>
-            <div className="menu-item">
-                <Item>Compression</Item>
-                <Select
-                    options={compressionList}
-                    store={obj.art}
-                    accessor="compression"
-                />
-            </div>
-            <div className="menu-item">
-                <Item>Offset</Item>
-                <Input store={obj.art} accessor="offset" isNumber />
-            </div>
+            {!scriptArt && (
+                <>
+                    <div className="menu-item">
+                        <Item>Compression</Item>
+                        <Select
+                            options={compressionList}
+                            store={obj.art}
+                            accessor="compression"
+                        />
+                    </div>
+                    <div className="menu-item">
+                        <Item>Offset</Item>
+                        <Input store={obj.art} accessor="offset" isNumber />
+                    </div>
+                </>
+            )}
             <ErrorMsg error={artError} />
             <FileInput
                 label="Art"

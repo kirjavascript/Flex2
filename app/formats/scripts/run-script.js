@@ -119,6 +119,7 @@ export default catchFunc((file) => {
     const [write, setWrite] = useFunc();
     const [read, setRead] = useFunc();
 
+    const [artArgs, artFunc] = useDef();
     const [mappingArgs, mappingFunc] = useDef();
     const [dplcArgs, dplcFunc] = useDef();
 
@@ -126,6 +127,7 @@ export default catchFunc((file) => {
         ...constants,
         write,
         read,
+        art: artFunc,
         mappings: mappingFunc,
         dplcs: dplcFunc,
         offsetTable: makeOffsetTable({ read, write }),
@@ -285,11 +287,28 @@ export default catchFunc((file) => {
     const writeMappings = createWriter(mappingArgs[0]);
     const writeDPLCs = createWriter(dplcArgs[0]);
 
-    return {
+    const methods = {
+        mappings: true,
         readMappings,
         writeMappings,
-        hasDPLCs: !!dplcArgs[0],
-        readDPLCs,
-        writeDPLCs,
     };
+
+    if (dplcArgs[0]) {
+        Object.assign(methods, {
+            DPLCs: true,
+            readDPLCs,
+            writeDPLCs,
+        });
+    }
+
+    if (artArgs[0]) {
+        const [readArt, writeArt] = artArgs[0];
+        Object.assign(methods, {
+            art: true,
+            readArt,
+            writeArt,
+        });
+    }
+
+    return methods;
 });

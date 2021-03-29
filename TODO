@@ -16,9 +16,8 @@ definition([
     many(art()),
 ])
 
-// provide custom art function
-// custom asm parser
 // custom palettes
+// custom asm parser
 
 /* https://unix.stackexchange.com/questions/585645/launch-an-application-by-a-double-click */
 // provide a custom definition, but have a default
@@ -33,8 +32,8 @@ definition([
 
 // formats to support
 
-// kid chameleon
 // crackers
+// kid chameleon
 // chaotix
 // s3k sonic saving
 // plane mappings / snap to
