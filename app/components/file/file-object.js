@@ -4,7 +4,7 @@ import { Item, Input, File as FileInput, Select, Checkbox, Button } from '#ui';
 import {
     scripts,
     runScript,
-    parseASM,
+    parseASM as parseASMInternal,
     writeBIN,
     writeASM,
 } from '#formats/scripts';
@@ -36,6 +36,7 @@ export const FileObject = observer(({ obj }) => {
     const scriptArt = scriptSafe && script.art;
     const scriptPalettes = scriptSafe && script.palettes;
     const toggleDPLCs = () => (obj.dplcs.enabled = !obj.dplcs.enabled);
+    const parseASM = (script.parseASM || parseASMInternal);
 
     function ioWrap(filePath, setError, e, cb) {
         setError();

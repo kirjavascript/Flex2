@@ -7,33 +7,12 @@ push project files to disassemblies
 BUFFER
 ==
 
-art()
-mappings()
-dplcs()
-palettes()
-
-definition([
-    many(art()),
-])
-
-// custom palettes
-// custom asm parser
-
-/* https://unix.stackexchange.com/questions/585645/launch-an-application-by-a-double-click */
-// provide a custom definition, but have a default
-
-// crackers first, then kd cham
-// UI by definition
-
-// reverse endianness
-// rawBytes()
-
-// go back to qiuu with questions
 
 // formats to support
 
 // crackers
 // kid chameleon
+    // go back to qiuu with questions
 // chaotix
 // s3k sonic saving
 // plane mappings / snap to

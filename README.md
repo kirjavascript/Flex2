@@ -90,4 +90,6 @@ The base formats are provided in the `scripts/` directory. These can be modified
 
 You can provide custom mapping formats, DPLCs formats, art formats (including compression), and palette formats.
 
+Ability to provide a custom ASM parser is also available.
+
 The definition file format is currently undocumented, and still being expanded on. If you have a request to add support for a new disassembly, or just want more information on the format - open an issue on github with your request.

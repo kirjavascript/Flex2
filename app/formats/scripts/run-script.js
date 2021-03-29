@@ -123,6 +123,7 @@ export default catchFunc((file) => {
     const [mappingArgs, mappingFunc] = useDef();
     const [dplcArgs, dplcFunc] = useDef();
     const [paletteArgs, paletteFunc] = useDef();
+    const [parseArgs, parseFunc] = useDef();
 
     (new Function('Flex2', loadScript(file)))({
         ...constants,
@@ -131,6 +132,8 @@ export default catchFunc((file) => {
         art: artFunc,
         mappings: mappingFunc,
         dplcs: dplcFunc,
+        palettes: paletteFunc,
+        parseASM: parseFunc,
         offsetTable: makeOffsetTable({ read, write }),
     });
 
@@ -320,6 +323,11 @@ export default catchFunc((file) => {
         });
     }
 
+    if (parseArgs[0]) {
+        Object.assign(methods, {
+            parseASM: parseArgs[0],
+        });
+    }
 
     return methods;
 });

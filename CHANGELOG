@@ -3,7 +3,8 @@
 ## [1.0.0]
 - New engine
     - Real custom mappings & DPLCs
-    - Custom art formats (including compression)
+    - Support for custom art formats (including compression)
+    - Support for custom palette formats
     - Sonic 2 Special Stage added [#21](/../../issues/21)
     - Sonic 3&K Sonic/Supersonic partial support
 - New ASM parser/writer
