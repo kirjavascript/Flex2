@@ -13,8 +13,6 @@ const {
     signed,
 } = Flex2;
 
-// Flex2.parseASM(() => {});
-
 mappings([
     offsetTable(dc.w),
     [

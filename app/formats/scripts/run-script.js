@@ -324,9 +324,7 @@ export default catchFunc((file) => {
     }
 
     if (parseArgs[0]) {
-        Object.assign(methods, {
-            parseASM: parseArgs[0],
-        });
+        methods.parseASM = parseArgs[0];
     }
 
     return methods;
