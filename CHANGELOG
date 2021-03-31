@@ -8,6 +8,7 @@
     - Sonic 2 Special Stage added [#21](/../../issues/21)
     - Sonic 3&K Sonic/Supersonic partial support
 - New ASM parser/writer
+    - Wider compatibility
     - Ability to provide a custom parser
 - Added File tab
     - Create new files
