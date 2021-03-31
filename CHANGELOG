@@ -27,6 +27,8 @@
 - Performance improvements to remove lag
 - Created project files for s1disasm, s2disasm
 
+This release contains a breaking change: Project files from previous versions will work, but game format will have to be reselected as it cannot be migrated.
+
 ## [0.0.8]
 - Changed default palette from Sonic 2 to the SCH unified palette
 - Fixed a bug that allows deleting mappings in drawing mode

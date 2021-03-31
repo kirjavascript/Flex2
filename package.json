@@ -1,6 +1,6 @@
 {
-    "version": "0.0.8",
-    "previewVersion": "1.0.0 & Knuckles",
+    "version": "1.0.0",
+    "previewVersion": "1.0.0",
     "scripts": {
         "start": "electron ./static --dev"
     },
