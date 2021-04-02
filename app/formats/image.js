@@ -4,18 +4,15 @@ import { writeFile } from 'fs';
 import { errorMsg } from '#util/dialog';
 import { colorMatch } from '#components/import/color-match';
 
-const debug = false;
+function exportSprite({ buffer, mappings }) {
 
-export function exportPNG() {
-    const { currentSprite: { buffer, mappings }, palettesRGB, sprites } = environment;
-
-    if (!mappings.length || !sprites.length) return;
+    const { palettesRGB } = environment;
 
     const canvas = document.createElement('canvas');
-    if (debug) {
-        canvas.className = 'canvas-debug';
-        canvas.style.width = '200px';
-        document.body.appendChild(canvas);
+    if (!mappings.length) {
+        canvas.width = 32;
+        canvas.height = 32;
+        return canvas;
     }
     const ctx = canvas.getContext('2d');
     let tileBuffer = ctx.getImageData(0, 0, 8, 8);
@@ -84,10 +81,64 @@ export function exportPNG() {
 
     });
 
+    return canvas;
+}
+
+
+export function exportSpritesheet() {
+    const { sprites } = environment;
+    if (!sprites.length) return;
+
+    const canvases = sprites.map(({ buffer, mappings }) => exportSprite({ buffer, mappings }));
+
+    const canvas = document.createElement('canvas');
+    canvas.width = 8;
+    canvas.height = 8;
+    const ctx = canvas.getContext('2d');
+    // canvas.className = 'canvas-debug';
+    // document.body.appendChild(canvas);
+
+    let cursor = 8;
+
+    canvases.forEach(current => {
+        const last = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const { width, height } = current;
+        const diff = width + 8;
+        canvas.width += diff
+        canvas.height = Math.max(canvas.height, height + 8);
+        ctx.putImageData(last, 0, 0);
+        ctx.drawImage(current, cursor, 8);
+        cursor += diff;
+    });
+
+    dialog.showSaveDialog({
+        title: 'Export Spritesheet',
+        defaultPath: `spritesheet.png`,
+        filters: [{name: 'PNG Image', extensions: ['png']}],
+    })
+        .then(({ filePath }) => {
+            if (filePath) {
+                const base64Data = canvas.toDataURL().replace(/data(.*?),/, '');
+                writeFile(filePath, Buffer.from(base64Data, 'base64'), (err, success) => {
+                    err && errorMsg('Error exporting spritesheet', String(err));
+                });
+            }
+        })
+        .catch(console.error);
+
+}
+
+export function exportPNG() {
+    const { currentSprite: { buffer, mappings }, sprites } = environment;
+
+    if (!mappings.length || !sprites.length) return;
+
+    const canvas = exportSprite({ buffer, mappings });
+
     dialog.showSaveDialog({
         title: 'Export Sprite',
         defaultPath: `0x${environment.config.currentSprite.toString(16).toUpperCase()}.png`,
-        filters: [{name: 'PNG Image File', extensions: ['png']}],
+        filters: [{name: 'PNG Image', extensions: ['png']}],
     })
         .then(({ filePath }) => {
             if (filePath) {
@@ -98,7 +149,6 @@ export function exportPNG() {
             }
         })
         .catch(console.error);
-
 }
 
 export async function importImg() {
@@ -170,7 +220,6 @@ export async function importImg() {
         }
 
     });
-
 }
 
 function flipBuffer(buffer, hflip, vflip) {

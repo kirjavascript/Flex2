@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.1.0]
+- Export spritesheet
+
 ## [1.0.0]
 - New engine
     - Real custom mappings & DPLCs

@@ -16,7 +16,7 @@ flatten(commands)
 
 // handle multiplier
 let multiplier = '';
-Mousetrap.bind(['0','1','2','3','4','5','6','7','8','9'], (e) => {
+Mousetrap.bind([...'0123456789'], (e) => {
     multiplier += String(e.key);
 });
 Mousetrap.bind('esc', () => {

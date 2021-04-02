@@ -54,8 +54,8 @@ a {
 .canvas-debug {
     position: absolute;
     z-index: 10;
-    bottom: 0;
-    left: 0;
+    bottom: 20px;
+    left: 20px;
     image-rendering: pixelated;
     background-color: rgba(255,0,0,0.5);
 }

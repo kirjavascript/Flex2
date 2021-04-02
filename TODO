@@ -1,13 +1,3 @@
-DOC
-==
-1.0.0 - breaking change to select mapping format
-data parser, not text
-push project files to disassemblies
-
-BUFFER
-==
-
-
 // formats to support
 
 // crackers
@@ -15,16 +5,14 @@ BUFFER
     // go back to qiuu with questions
 // chaotix
 // s3k sonic saving
-// plane mappings / snap to
 // ristar
 // github issues
 /* https://raw.githubusercontent.com/Dandaman955/Streets-of-Rage-1-Disassembly-Redux/master/SoR.asm */
 /* http://info.sonicretro.org/Disassemblies */
 
 ROADMAP
-generate project files -> use to create s3portal
+look at issues related to crashes
 rotsprite
-export spritesheet
 animation editor
 ==
 BUGS

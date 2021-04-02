@@ -2,7 +2,7 @@ import { environment } from '#store/environment';
 import { mappingState } from '#components/mappings/state';
 import { importState } from '#components/import/state';
 import { undo, redo } from '#store/history';
-import { exportPNG, importImg } from '#formats/image';
+import { exportPNG, importImg, exportSpritesheet } from '#formats/image';
 import { getDistance } from './distance';
 import { toJS } from 'mobx';
 
@@ -207,11 +207,15 @@ export const commands = [
 
     [
         {
-            map: 'e', name: 'Export PNG', color: 'blue', noMultiplier: true,
+            map: 'e', name: 'Export Image', color: 'blue', noMultiplier: true,
             func: () => exportPNG(),
         },
         {
-            map: 'i', name: 'Import Over Sprite', color: 'blue', noMultiplier: true,
+            map: 'E', name: 'Export Spritesheet', color: 'blue', noMultiplier: true,
+            func: () => exportSpritesheet(),
+        },
+        {
+            map: 'i', name: 'Import Image', color: 'blue', noMultiplier: true,
             func: () => importImg(),
         },
         {
@@ -226,7 +230,7 @@ export const commands = [
         {
             map: 'd s', name: 'Delete Sprite', color: 'red',
             func: () => {
-                const { currentSprite, dplcsEnabled } = environment.config;
+                const { currentSprite } = environment.config;
                 environment.mappings.splice(currentSprite, 1);
                 environment.dplcs.splice(currentSprite, 1);
             },
@@ -235,7 +239,7 @@ export const commands = [
             map: 'd m', name: 'Delete Mappings', color: 'red',
             func: () => {
                 const { selectedIndices, hasActive } = mappingState;
-                const { currentSprite, dplcsEnabled } = environment;
+                const { currentSprite } = environment;
                 if (hasActive) {
                     selectedIndices.forEach((i) => {
                         currentSprite.mappings[i].rip = true;
