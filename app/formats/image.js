@@ -89,28 +89,6 @@ export function exportSpritesheet() {
     const { sprites } = environment;
     if (!sprites.length) return;
 
-    const canvases = sprites.map(({ buffer, mappings }) => exportSprite({ buffer, mappings }));
-
-    const canvas = document.createElement('canvas');
-    canvas.width = 8;
-    canvas.height = 8;
-    const ctx = canvas.getContext('2d');
-    // canvas.className = 'canvas-debug';
-    // document.body.appendChild(canvas);
-
-    let cursor = 8;
-
-    canvases.forEach(current => {
-        const last = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const { width, height } = current;
-        const diff = width + 8;
-        canvas.width += diff
-        canvas.height = Math.max(canvas.height, height + 8);
-        ctx.putImageData(last, 0, 0);
-        ctx.drawImage(current, cursor, 8);
-        cursor += diff;
-    });
-
     dialog.showSaveDialog({
         title: 'Export Spritesheet',
         defaultPath: `spritesheet.png`,
@@ -118,6 +96,29 @@ export function exportSpritesheet() {
     })
         .then(({ filePath }) => {
             if (filePath) {
+
+                const canvases = sprites.map(({ buffer, mappings }) => exportSprite({ buffer, mappings }));
+
+                const canvas = document.createElement('canvas');
+                canvas.width = 8;
+                canvas.height = 8;
+                const ctx = canvas.getContext('2d');
+                // canvas.className = 'canvas-debug';
+                // document.body.appendChild(canvas);
+
+                let cursor = 8;
+
+                canvases.forEach(current => {
+                    const last = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    const { width, height } = current;
+                    const diff = width + 8;
+                    canvas.width += diff
+                    canvas.height = Math.max(canvas.height, height + 8);
+                    ctx.putImageData(last, 0, 0);
+                    ctx.drawImage(current, cursor, 8);
+                    cursor += diff;
+                });
+
                 const base64Data = canvas.toDataURL().replace(/data(.*?),/, '');
                 writeFile(filePath, Buffer.from(base64Data, 'base64'), (err, success) => {
                     err && errorMsg('Error exporting spritesheet', String(err));
