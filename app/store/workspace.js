@@ -23,7 +23,7 @@ class Workspace {
     };
     @action closeProject = () => {
         if (this.project) {
-            this.project.cleanup();
+            this.project.cleanup?.();
             this.project = undefined;
             this.projectPath = '';
         }

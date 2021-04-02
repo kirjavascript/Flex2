@@ -120,7 +120,7 @@ export function exportSpritesheet() {
                 });
 
                 const base64Data = canvas.toDataURL().replace(/data(.*?),/, '');
-                writeFile(filePath, Buffer.from(base64Data, 'base64'), (err, success) => {
+                writeFile(filePath, Buffer.from(base64Data, 'base64'), (err) => {
                     err && errorMsg('Error exporting spritesheet', String(err));
                 });
             }
