@@ -1,3 +1,17 @@
+<--- Last few GCs --->
+
+[13424:0x16b81c0b9000]  4101829 ms: Mark-sweep 2045.5 (2052.8) -> 2043.7 (2053.0) MB, 255.8 / 2.0 ms  (average mu = 0.098, current mu = 0.010) allocation failure scavenge might not succeed
+[13424:0x16b81c0b9000]  4102148 ms: Mark-sweep 2045.7 (2053.0) -> 2043.9 (2053.0) MB, 316.8 / 2.0 ms  (average mu = 0.053, current mu = 0.008) allocation failure scavenge might not succeed
+
+
+<--- JS stacktrace --->
+
+==== JS stack trace =========================================
+
+    0: ExitFrame [pc: 0x55a61ac44019]
+Security context: 0x08f21517ef51 <String[#39]: file://CD552D653EC98D0FCB75745E2A65E2F4>
+    1: e(aka e) [0x86cab96f1f1] [file:///home/dustin/Desktop/Tools/Flex2/resources/app.asar/bundles/main.js:~15] [pc=0x3b5492b0376c](this=0x2899d8a80469 <undefined>,2,0x065e2fb79cd1 <Object map = 0x24f968842f81>,0x067399efffd9 <Map map = 0x4f2b0400ca1>)
+    2: /* anonymous */(aka /* anonymous */) [0xb47f01db931] [f...
 // formats to support
 
 // crackers

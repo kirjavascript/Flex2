@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.2]
+- Assume undefined labels are at address 0 [#33](/../../issues/33)
+- Made generated mapping labels random
+- Made default format Sonic 1
+
+## [1.1.1]
+- allow closing a project when a broken one has been loaded
+
 ## [1.1.0]
 - Export spritesheet
 

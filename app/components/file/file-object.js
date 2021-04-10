@@ -17,6 +17,7 @@ import ErrorMsg from './error';
 import SaveLoad from './save-load';
 import { promises } from 'fs';
 import { extname } from 'path';
+import { uuid } from '#util/uuid';
 
 const fs = promises;
 const compressionList = Object.keys(compressionFormats);
@@ -138,7 +139,7 @@ export const FileObject = observer(({ obj }) => {
             if (!mappingsASM) {
                 await fs.writeFile(path, writeBIN(mappings));
             } else {
-                const label = obj.mappings.label || 'Mappings';
+                const label = obj.mappings.label || 'Map_' + uuid().slice(0, 4);
                 await fs.writeFile(path, writeASM(label, mappings));
             }
         });
@@ -166,7 +167,7 @@ export const FileObject = observer(({ obj }) => {
             if (!dplcsASM) {
                 await fs.writeFile(path, writeBIN(dplcs));
             } else {
-                const label = obj.dplcs.label || 'DPLCS';
+                const label = obj.dplcs.label || 'DPLC_' + uuid().slice(0, 4);
                 await fs.writeFile(path, writeASM(label, dplcs));
             }
         });

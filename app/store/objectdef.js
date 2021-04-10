@@ -1,7 +1,7 @@
 import { observable } from 'mobx';
 
 export class ObjectDef {
-    @observable format = '';
+    @observable format = 'Sonic 1.js';
 
     @observable name = 'object';
     @observable palettes = [];

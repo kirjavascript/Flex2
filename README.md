@@ -24,7 +24,7 @@ The UI layout is fully customisable by moving or resizing tabs.
 
 ## File Screen
 
-After selecting a game format, individual assets can be saved and loaded. Art based assetts can specify an offset to load from (for example, for loading HUD graphics from a VRAM dump). To load every asset at once, use the load/save in the 'Object' line.
+After selecting a game format, individual assets can be saved and loaded. Art based assets can specify an offset to load from (for example, for loading HUD graphics from a VRAM dump). To load every asset at once, use the load/save in the 'Object' line.
 
 The 'label' specified in the mapping and DPLC definitions will be used as the main label in ASM file output.
 

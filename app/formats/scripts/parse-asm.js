@@ -62,6 +62,8 @@ export function parseASM(text) {
         }
     });
 
+    const getLabelAddr = (label) => labelAddr[label] || 0;
+
     const bytes = [];
 
     parsed.forEach((item) => {
@@ -70,7 +72,7 @@ export function parseASM(text) {
             items.forEach(([type, value]) => {
                 if (type === addr) {
                     const [left, right] = value.toLowerCase().split('-');
-                    value = labelAddr[left] - labelAddr[right]; // mutate param (!)
+                    value = getLabelAddr(left) - getLabelAddr(right); // mutate param (!)
                 }
                 bytes.push(...Array.from({ length: size }, (_, i) => {
                     return (value >> (8 * i)) & 0xFF;
