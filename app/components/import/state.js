@@ -1,5 +1,5 @@
 import { observable, computed, action, autorun, toJS } from 'mobx';
-const { dialog } = require('electron').remote;
+const { dialog } = require('@electron/remote');
 import { errorMsg } from '#util/dialog';
 import { removeBackground } from './remove-background';
 import { colorMatch } from './color-match';

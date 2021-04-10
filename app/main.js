@@ -8,7 +8,6 @@ import React from 'react';
 import { render } from 'react-dom';
 import { Layout } from '#components/layout';
 import './components/import';
-import './util/debugger';
 
 render(
     <Layout/>,

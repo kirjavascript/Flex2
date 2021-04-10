@@ -1,4 +1,4 @@
-const { dialog } = require('electron').remote;
+const { dialog } = require('@electron/remote');
 
 export function errorMsg(title, message) {
     dialog.showMessageBox({

@@ -43,7 +43,7 @@ export const commands = [
         {
             map: 'f12', name: 'DevTools', hidden: true,
             func: () => {
-                require('electron').remote
+                require('@electron/remote')
                     .getCurrentWindow()
                     .webContents
                     .toggleDevTools();

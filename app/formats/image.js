@@ -1,5 +1,5 @@
 import { environment } from '#store/environment';
-const { dialog } = require('electron').remote;
+const { dialog } = require('@electron/remote');
 import { writeFile } from 'fs';
 import { errorMsg } from '#util/dialog';
 import { colorMatch } from '#components/import/color-match';

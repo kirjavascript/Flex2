@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import { workspace } from '#store/workspace';
 import { Input } from '#ui';
 
-const { dialog } = require('electron').remote;
+const { dialog } = require('@electron/remote');
 
 @observer
 export class File extends Component {

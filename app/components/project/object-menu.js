@@ -1,8 +1,7 @@
-import { remote } from 'electron';
 import { toJS } from 'mobx';
 import { uuid } from '#util/uuid';
 import { workspace } from '#store/workspace';
-const { getCurrentWindow, Menu, MenuItem } = remote;
+const { getCurrentWindow, Menu, MenuItem } = require('@electron/remote');
 
 export default function(node) {
     const menu = new Menu();
