@@ -117,9 +117,11 @@ export function exportSpritesheet() {
                     ctx.putImageData(last, 0, 0);
                     ctx.drawImage(current, cursor, 8);
                     cursor += diff;
+                    canvas.remove();
                 });
 
                 const base64Data = canvas.toDataURL().replace(/data(.*?),/, '');
+                canvas.remove();
                 writeFile(filePath, Buffer.from(base64Data, 'base64'), (err) => {
                     err && errorMsg('Error exporting spritesheet', String(err));
                 });
@@ -144,6 +146,7 @@ export function exportPNG() {
         .then(({ filePath }) => {
             if (filePath) {
                 const base64Data = canvas.toDataURL().replace(/data(.*?),/, '');
+                canvas.remove();
                 writeFile(filePath, Buffer.from(base64Data, 'base64'), (err, success) => {
                     err && errorMsg('Error exporting sprite', String(err));
                 });
@@ -221,6 +224,8 @@ export async function importImg() {
         }
 
     });
+
+    canvas.remove();
 }
 
 function flipBuffer(buffer, hflip, vflip) {
