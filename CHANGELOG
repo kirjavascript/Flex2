@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.1.3]
+- Upgrade to electron 12
+
 ## [1.1.2]
 - Assume undefined labels are at address 0 [#33](/../../issues/33)
 - Made generated mapping labels random

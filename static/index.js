@@ -2,7 +2,7 @@ const { app, BrowserWindow } = require('electron');
 const devMode = process.argv.includes('--dev');
 
 function createWindow() {
-    require('@electron/remote/main').initialize();
+    require('./remote/main').initialize();
     const mainWindow = new BrowserWindow({
         title: 'Flex 2',
         backgroundColor: '#282C34',
