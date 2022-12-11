@@ -4,8 +4,7 @@ import { observer } from 'mobx-react';
 import { mappingState } from './state';
 import { Select, Input } from '#ui';
 
-@observer
-export class PaletteHUD extends Component {
+export const PaletteHUD = observer(class PaletteHUD extends Component {
 
     render() {
         const { palettes } = environment;
@@ -44,4 +43,4 @@ export class PaletteHUD extends Component {
         </div>;
     }
 
-}
+});

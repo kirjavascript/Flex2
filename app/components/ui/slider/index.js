@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 
-@observer
-export class Slider extends Component {
+export const Slider = observer(class Slider extends Component {
 
     onChange = (e) => {
         const { store, accessor } = this.props;
@@ -28,4 +27,4 @@ export class Slider extends Component {
         </div>;
     }
 
-}
+});

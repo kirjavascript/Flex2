@@ -31,8 +31,7 @@ const BottomMenu = observer(() => (
     </div>
 ));
 
-@observer
-export class NewMapping extends Component {
+export const NewMapping = observer(class NewMapping extends Component {
     onRef = (node) => {
         this.node = node;
     };
@@ -165,4 +164,4 @@ export class NewMapping extends Component {
             </div>
         );
     }
-}
+});

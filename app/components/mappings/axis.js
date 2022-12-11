@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-// import { environment } from '#store/environment';
 import { observer } from 'mobx-react';
 import { mappingState } from './state';
 import { VictoryAxis } from 'victory';
-import { white } from '!!sass-variables-loader!#styles/variables.scss';
+import { white } from 'sass-variables';
 
 const style = {
     axis: {stroke: null},
@@ -18,8 +17,7 @@ function tickFormat(t) {
     return t < 0 ? `-0x${h}` : `0x${h}`;
 }
 
-@observer
-export class Axes extends Component {
+export const Axes = observer(class Axes extends Component {
 
     render() {
 
@@ -56,4 +54,4 @@ export class Axes extends Component {
         </g>
     }
 
-}
+});

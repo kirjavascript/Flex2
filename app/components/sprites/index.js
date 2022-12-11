@@ -6,8 +6,8 @@ import { SortableContainer, SortableElement } from 'react-sortable-hoc';
 import {
     baseSize,
     margin,
-} from '!!sass-variables-loader!#styles/components/sprites.scss';
-import { scrollbarWidth } from '!!sass-variables-loader!#styles/variables.scss';
+} from 'sass-variables';
+import { scrollbarWidth } from 'sass-variables';
 import { DimensionsComponent } from '#util/dimensions-component';
 
 const realBaseSize = parseInt(baseSize) + parseInt(margin) * 2;
@@ -99,8 +99,7 @@ const SortableList = SortableContainer(
     { withRef: true },
 );
 
-@observer
-export class Sprites extends DimensionsComponent {
+export const Sprites = observer(class Sprites extends DimensionsComponent {
     getContainer = () => {
         return document.querySelector('.spriteSortContainer');
     };
@@ -131,4 +130,4 @@ export class Sprites extends DimensionsComponent {
             </div>
         );
     }
-}
+});

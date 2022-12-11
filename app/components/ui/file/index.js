@@ -5,8 +5,7 @@ import { Input } from '#ui';
 
 const { dialog } = require('@electron/remote');
 
-@observer
-export class File extends Component {
+export const File = observer(class File extends Component {
     state = {
         dragging: false,
     };
@@ -114,4 +113,4 @@ export class File extends Component {
             </div>
         );
     }
-}
+});

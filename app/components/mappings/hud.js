@@ -5,8 +5,7 @@ import { mappingState } from './state';
 
 const numFmt = (num) => `${num<0?'-':''}0x${(Math.abs(+num)).toString(16).toUpperCase()}`;
 
-@observer
-export class HUD extends Component {
+export const HUD = observer(class HUD extends Component {
 
     render() {
         const { x, y, select: { active }, center, activeMappings, selectedIndices, newMapping } = mappingState;
@@ -53,4 +52,4 @@ export class HUD extends Component {
         </div>;
     }
 
-}
+});

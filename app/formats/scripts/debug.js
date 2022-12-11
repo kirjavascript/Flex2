@@ -1,5 +1,5 @@
 import React from 'react';
-import { observable, action, toJS, computed, autorun } from 'mobx';
+import { observable, action, toJS, computed, autorun, makeObservable } from 'mobx';
 import { observer } from 'mobx-react';
 import { render } from 'react-dom';
 import util from 'util';
@@ -9,19 +9,32 @@ import { environment } from '#store/environment';
 const inspect = (obj) => util.inspect(toJS(obj));
 
 class MapLogger {
-    @observable enabled = false;
-    @observable log = [];
-    @observable queue = [];
-    @action msg = (...objs) => {
+    enabled = false;
+    log = [];
+    queue = [];
+    msg = (...objs) => {
         this.queue.push(objs.map(inspect));
     };
-    @action drain = () => {
+    drain = () => {
         while (this.queue.length) {
             this.log.push(this.queue.shift());
         }
     };
-    @action clear = () => this.log.replace([]);
-    @computed get output() {
+    clear = () => this.log.replace([]);
+
+    constructor() {
+        makeObservable(this, {
+            enabled: observable,
+            log: observable,
+            queue: observable,
+            msg: action,
+            drain: action,
+            clear: action,
+            output: computed
+        });
+    }
+
+    get output() {
         return this.log.map((item) => item.join` `).join`\n`;
     }
 }

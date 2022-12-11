@@ -5,8 +5,7 @@ import { importState } from './state';
 import { Item, Select, Input } from '#ui';
 import { fuzzyAssert, zoomAssert } from '#util/assertions';
 
-@observer
-export class DetectSprites extends React.Component {
+export const DetectSprites = observer(class DetectSprites extends React.Component {
 
     render() {
         const { bboxes, scale } = importState;
@@ -92,4 +91,4 @@ export class DetectSprites extends React.Component {
             </div>
         </div>;
     }
-}
+});

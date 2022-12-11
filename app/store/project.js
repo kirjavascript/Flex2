@@ -1,4 +1,4 @@
-import { observable, autorun, action, computed, toJS } from 'mobx';
+import { observable, autorun, action, computed, toJS, makeObservable } from 'mobx';
 import { uuid } from '#util/uuid';
 import { ObjectDef } from '#store/objectdef';
 import { promises, exists as fsExists } from 'fs';
@@ -33,6 +33,16 @@ function findNode(tree, uuid) {
 export class Project {
 
     constructor(path) {
+        makeObservable(this, {
+            error: observable,
+            name: observable,
+            node: observable,
+            objects: observable,
+            nodeRef: computed,
+            newFolder: action,
+            newObject: action
+        });
+
         (async () => {
             try {
                 if (await exists(path)) {
@@ -63,19 +73,18 @@ export class Project {
                 this.error = e;
             }
         })();
-
     }
 
-    @observable error;
-    @observable name = '';
-    @observable node = '';
-    @observable objects = [];
+    error;
+    name = '';
+    node = '';
+    objects = [];
 
-    @computed get nodeRef() {
+    get nodeRef() {
         return findNode(this.objects, this.node);
     }
 
-    @action newFolder = () => {
+    newFolder = () => {
         this.objects.unshift({
             name: 'folder',
             children: [],
@@ -84,7 +93,7 @@ export class Project {
         });
     };
 
-    @action newObject = () => {
+    newObject = () => {
         const obj = new ObjectDef();
         obj.uuid = uuid();
         this.objects.unshift(obj);

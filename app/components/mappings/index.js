@@ -16,8 +16,7 @@ import { DragSelect, attachDragSelectToNode } from './drag-select';
 import { attachDragMoveToNode } from './drag-move';
 import { Commands } from './commands';
 
-@observer
-export class Mappings extends Component {
+export const Mappings = observer(class Mappings extends Component {
     mappingRef = (node) => {
         if (node) {
             this.mappingRefNode = node;
@@ -138,4 +137,4 @@ export class Mappings extends Component {
             </div>
         );
     }
-}
+});

@@ -4,8 +4,7 @@ import { observer } from 'mobx-react';
 import { select, event, mouse } from 'd3-selection';
 import { drag } from 'd3-drag';
 
-@observer
-export class Guidelines extends Component {
+export const Guidelines = observer(class Guidelines extends Component {
 
     onRefY = (node) => {
         if (node) {
@@ -66,4 +65,4 @@ export class Guidelines extends Component {
         </div>;
     }
 
-}
+});

@@ -1,4 +1,4 @@
-import { observable, computed, action, autorun } from 'mobx';
+import { observable, computed, action, autorun, makeObservable } from 'mobx';
 import range from 'lodash/range';
 import unique from 'lodash/uniq';
 import { storage } from './storage';
@@ -7,8 +7,7 @@ import { defaultPalettes } from '#formats/palette';
 import arrayMove from 'array-move';
 
 class Environment {
-
-    @observable config = {
+    config = {
         currentSprite: 0,
         currentTile: 0,
         transparency: true,
@@ -16,21 +15,39 @@ class Environment {
     };
 
     // palettes must use colours of the form #NNN
-    @observable palettes = defaultPalettes;
+    palettes = defaultPalettes;
 
-    @observable tiles = [
+    tiles = [
         // each tile is a length 16 array of palette line indexes
     ];
 
-    @observable mappings = [
+    mappings = [
         // {art, top, left, priority, palette, hflip, vflip, width, height}
     ];
 
-    @observable dplcs = [
+    dplcs = [
         // {art, size}
     ];
 
-    @computed get palettesRGB() {
+    constructor() {
+        makeObservable(this, {
+            config: observable,
+            palettes: observable,
+            tiles: observable,
+            mappings: observable,
+            dplcs: observable,
+            palettesRGB: computed,
+            sprites: computed,
+            currentSprite: computed,
+            activeTiles: computed,
+            swapSprite: action,
+            swapPalette: action,
+            resetPalettes: action,
+            doAction: action
+        });
+    }
+
+    get palettesRGB() {
         return this.palettes.map((palette) => (
             palette.map((color) => (
                 color.slice(1).split``.map((d) => parseInt(`${d}${d}`, 16))
@@ -38,7 +55,7 @@ class Environment {
         ));
     }
 
-    @computed get sprites() {
+    get sprites() {
         return this.mappings.map((mappingList, index) => {
             if (this.config.dplcsEnabled && this.dplcs.length > index) {
                 const buffer = [];
@@ -93,13 +110,13 @@ class Environment {
         });
     }
 
-    @computed get currentSprite() {
+    get currentSprite() {
         return this.sprites[this.config.currentSprite]
             || this.sprites[0]
             || { mappings: [], buffer: [], index: 0, dplcs: [], };
     }
 
-    @computed get activeTiles() {
+    get activeTiles() {
         const { config: { dplcsEnabled }, currentSprite: { mappings, dplcs } } = environment;
         let activeTiles = [];
 
@@ -114,7 +131,7 @@ class Environment {
         return unique(activeTiles);
     }
 
-    @action swapSprite = (oldIndex, newIndex) => {
+    swapSprite = (oldIndex, newIndex) => {
         if (oldIndex != newIndex) {
             this.config.dplcsEnabled &&
             this.dplcs.replace(arrayMove(this.dplcs, oldIndex, newIndex));
@@ -122,18 +139,17 @@ class Environment {
         }
     };
 
-    @action swapPalette = (oldIndex, newIndex) => {
+    swapPalette = (oldIndex, newIndex) => {
         if (oldIndex != newIndex) {
             this.palettes.replace(arrayMove(this.palettes, oldIndex, newIndex));
         }
     };
 
-    @action resetPalettes = () => {
+    resetPalettes = () => {
         this.palettes.replace(defaultPalettes);
     };
 
-    @action doAction = (callback) => { callback(this); };
-
+    doAction = (callback) => { callback(this); };
 }
 
 const environment = new Environment();

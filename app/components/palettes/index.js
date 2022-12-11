@@ -105,8 +105,7 @@ const SortableList = SortableContainer(
     { withRef: true },
 );
 
-@observer
-export class Palettes extends Component {
+export const Palettes = observer(class Palettes extends Component {
     state = { width: 0, height: 0, x: 0, y: 0, };
     mounted = false;
 
@@ -157,4 +156,4 @@ export class Palettes extends Component {
             </div>
         );
     }
-}
+});

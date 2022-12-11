@@ -3,12 +3,11 @@ import { environment } from '#store/environment';
 import { mappingState } from '../mappings/state';
 import { Tile } from './tile';
 import { observer } from 'mobx-react';
-import { scrollbarWidth } from '!!sass-variables-loader!#styles/variables.scss';
+import { scrollbarWidth } from 'sass-variables';
 import { DimensionsComponent } from '#util/dimensions-component';
 import { ActiveSelection } from './active-selection';
 
-@observer
-export class Art extends DimensionsComponent {
+export const Art = observer(class Art extends DimensionsComponent {
 
     mousedown = false;
     onMouseDown = () => { this.mousedown = true; };
@@ -83,4 +82,4 @@ export class Art extends DimensionsComponent {
         </div>;
     }
 
-}
+});

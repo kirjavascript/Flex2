@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import SVARS from '!!sass-variables-loader!#styles/variables.scss';
+import SVARS from 'sass-variables';
 import { observer } from 'mobx-react';
 
-@observer
-export class Item extends Component {
+export const Item = observer(class Item extends Component {
 
     render() {
         const { prefix, color, inverted, ...otherProps } = this.props;
@@ -27,4 +26,4 @@ export class Item extends Component {
         </div>;
     }
 
-}
+});

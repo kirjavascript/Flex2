@@ -5,8 +5,7 @@ import { importState } from './state';
 import { DetectSprites } from './ui-detect';
 import { ImportSprites } from './ui-import';
 
-@observer
-class Importer extends React.Component {
+const Importer = observer(class Importer extends React.Component {
 
     render() {
         const { config: { active }, sprites } = importState;
@@ -19,7 +18,7 @@ class Importer extends React.Component {
             return false;
         }
     }
-}
+});
 
 render(
     <Importer/>,

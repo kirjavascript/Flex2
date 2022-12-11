@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import { Tile } from '../art/tile';
 import { observer } from 'mobx-react';
 
-@observer
-export class Mapping extends Component {
+export const Mapping = observer(class Mapping extends Component {
 
     onRef = (node) => {
         if (node && this.props.wrapRef) {
@@ -44,4 +43,4 @@ export class Mapping extends Component {
         </div>;
     }
 
-}
+});

@@ -27,6 +27,7 @@ Security context: 0x08f21517ef51 <String[#39]: file://CD552D653EC98D0FCB75745E2A
 ROADMAP
 look at issues related to crashes
 rotsprite
+improve undo/redo when drawing pixels / moving things
 animation editor
     export to gif
 ==

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { black, grey, white2, white } from '!!sass-variables-loader!#styles/variables.scss';
+import { black, grey, white2, white } from 'sass-variables';
 import reactCSS from 'reactcss';
 
 import {
@@ -162,7 +162,6 @@ export const Sketch = ({
                 width,
                 padding: '10px 10px 0',
                 boxSizing: 'initial',
-                background: '#fff',
                 boxShadow:
                     '0 0 0 1px rgba(0,0,0,.15), 0 8px 16px rgba(0,0,0,.15)',
                 background: black,

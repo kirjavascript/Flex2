@@ -3,10 +3,9 @@ import { environment } from '#store/environment';
 import { observer } from 'mobx-react';
 import { mappingState } from './state';
 import { id } from '#util/uuid';
-import SVARS from '!!sass-variables-loader!#styles/variables.scss';
+import SVARS from 'sass-variables';
 
-@observer
-export class Selection extends Component {
+export const Selection = observer(class Selection extends Component {
     id = id();
 
     render() {
@@ -35,10 +34,9 @@ export class Selection extends Component {
         </g>;
     }
 
-}
+});
 
-@observer
-class SelectionLayer extends Component {
+const SelectionLayer = observer(class SelectionLayer extends Component {
     render() {
         const { extra, color, opacity, all, ...otherProps } = this.props;
         const { mappings } = environment.currentSprite;
@@ -66,4 +64,4 @@ class SelectionLayer extends Component {
             })}
         </g>;
     }
-}
+});

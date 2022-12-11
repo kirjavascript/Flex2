@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import SVARS from '!!sass-variables-loader!#styles/variables.scss';
+import SVARS from 'sass-variables';
 import { observer } from 'mobx-react';
 
-@observer
-export class Input extends Component {
+export const Input = observer(class Input extends Component {
 
     onChange = (e) => {
         const { store, accessor, assert = (d) => d } = this.props;
@@ -82,4 +81,4 @@ export class Input extends Component {
         </div>;
     }
 
-}
+});

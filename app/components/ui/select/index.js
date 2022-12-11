@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import Dropdown from './dist';
 
-@observer
-export class Select extends Component {
+export const Select = observer(class Select extends Component {
 
     options = () => {
         return this.props.options.map((option) => {
@@ -69,4 +68,4 @@ export class Select extends Component {
         </div>;
     }
 
-}
+});

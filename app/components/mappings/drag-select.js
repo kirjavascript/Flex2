@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { blue } from '!!sass-variables-loader!#styles/variables.scss';
+import { blue } from 'sass-variables';
 import { observer } from 'mobx-react';
 import { environment } from '#store/environment';
 import { mappingState } from './state';
@@ -86,8 +86,7 @@ function setSelectedMappings(node) {
     }
 }
 
-@observer
-export class DragSelect extends Component {
+export const DragSelect = observer(class DragSelect extends Component {
     render() {
         if (mappingState.select.active) {
             const { active, x, y, width, height } = mappingState.selectBBox;
@@ -114,4 +113,4 @@ export class DragSelect extends Component {
             );
         } else return false;
     }
-}
+});

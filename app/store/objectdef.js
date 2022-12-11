@@ -1,20 +1,20 @@
-import { observable } from 'mobx';
+import { observable, makeObservable } from 'mobx';
 
 export class ObjectDef {
-    @observable format = 'Sonic 1.js';
+    format = 'Sonic 1.js';
 
-    @observable name = 'object';
-    @observable palettes = [];
-    @observable art = {
+    name = 'object';
+    palettes = [];
+    art = {
         path: '',
         compression: 'Uncompressed',
         offset: 0,
     };
-    @observable mappings = {
+    mappings = {
         path: '',
         label: '',
     };
-    @observable dplcs = {
+    dplcs = {
         enabled: false,
         path: '',
         label: '',
@@ -22,6 +22,17 @@ export class ObjectDef {
 
     // turned into generic observables in project menu
     // dont add methods and shit because they wont work
+
+    constructor() {
+        makeObservable(this, {
+            format: observable,
+            name: observable,
+            palettes: observable,
+            art: observable,
+            mappings: observable,
+            dplcs: observable
+        });
+    }
 }
 
 export function editPaths(obj, lambda) {

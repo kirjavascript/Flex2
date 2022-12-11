@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { environment } from '#store/environment';
 import { observer } from 'mobx-react';
-import { magenta } from '!!sass-variables-loader!#styles/variables.scss';
+import { magenta } from 'sass-variables';
 import { id } from '#util/uuid';
 
-@observer
-export class ActiveSelection extends Component {
+export const ActiveSelection = observer(class ActiveSelection extends Component {
 
     id = id();
 
@@ -34,10 +33,9 @@ export class ActiveSelection extends Component {
         </svg>;
     }
 
-}
+});
 
-@observer
-class SelectionLayer extends Component {
+const SelectionLayer = observer(class SelectionLayer extends Component {
 
     render() {
         const { activeTiles } = environment;
@@ -74,4 +72,4 @@ class SelectionLayer extends Component {
             })}
         </g>;
     }
-}
+});

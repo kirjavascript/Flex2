@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import { environment } from '#store/environment';
 import { observer } from 'mobx-react';
 
-@observer
-export class Tile extends Component {
+export const Tile = observer(class Tile extends Component {
 
     render() {
         const { data = [], paletteLine = 0, scale = 4, ...otherProps } = this.props;
@@ -43,4 +42,4 @@ export class Tile extends Component {
         );
     }
 
-}
+});

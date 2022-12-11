@@ -5,8 +5,7 @@ import { importState } from './state';
 import { Item, Select, Input } from '#ui';
 import { zoomAssert, paletteLineAssert } from '#util/assertions';
 
-@observer
-export class ImportSprites extends React.Component {
+export const ImportSprites = observer(class ImportSprites extends React.Component {
 
     render() {
         const { scale, sprites, spriteIndex, mappings, importWidth, importHeight } = importState;
@@ -147,4 +146,4 @@ export class ImportSprites extends React.Component {
             </div>
         </div>;
     }
-}
+});

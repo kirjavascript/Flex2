@@ -1,4 +1,4 @@
-import { observable, toJS, action } from 'mobx';
+import { observable, toJS, action, makeObservable } from 'mobx';
 import { storage } from './storage';
 import { Project } from './project';
 import { ObjectDef, editPaths } from  './objectdef';
@@ -11,17 +11,16 @@ fileState.isAbsolute = true;
 storage(fileState, 'file-state');
 
 class Workspace {
+    file = fileState;
 
-    @observable file = fileState;
+    projectPath = '';
+    project;
 
-    @observable projectPath = '';
-    @observable project;
-
-    @action openProject = () => {
+    openProject = () => {
         this.closeProject();
         this.project = new Project(this.projectPath);
     };
-    @action closeProject = () => {
+    closeProject = () => {
         if (this.project) {
             this.project.cleanup?.();
             this.project = undefined;
@@ -29,14 +28,14 @@ class Workspace {
         }
     };
 
-    @action relativePath = (filepath) => {
+    relativePath = (filepath) => {
         return path.relative(path.dirname(this.projectPath), filepath);
     };
-    @action absolutePath = (filepath) => {
+    absolutePath = (filepath) => {
         return path.resolve(path.dirname(this.projectPath), filepath);
     };
 
-    @action fileToProject = () => {
+    fileToProject = () => {
         if (this.project) {
             const clone = toJS(this.file);
             editPaths(clone, this.relativePath);
@@ -48,12 +47,26 @@ class Workspace {
         }
     };
 
-    @action projectToFile = (node) => {
+    projectToFile = (node) => {
         const clone = toJS(node);
         editPaths(clone, this.absolutePath);
         Object.assign(this.file, clone);
         selectTab('File');
     };
+
+    constructor() {
+        makeObservable(this, {
+            file: observable,
+            projectPath: observable,
+            project: observable,
+            openProject: action,
+            closeProject: action,
+            relativePath: action,
+            absolutePath: action,
+            fileToProject: action,
+            projectToFile: action
+        });
+    }
 }
 
 const workspace = new Workspace();

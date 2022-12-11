@@ -3,11 +3,15 @@
 window.ELECTRON_DISABLE_SECURITY_WARNINGS = true;
 
 import './controls/keyboard';
-import 'mobx-react-lite/batchingForReactDom'
 import React from 'react';
 import { render } from 'react-dom';
 import { Layout } from '#components/layout';
 import './components/import';
+import { configure } from 'mobx';
+
+configure({
+    enforceActions: 'never',
+});
 
 render(
     <Layout/>,

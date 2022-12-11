@@ -6,8 +6,7 @@ import { commands, getCommandLabel } from '#controls/commands';
 import { mappingState } from './state';
 import { Item } from '#ui';
 
-@observer
-export class Commands extends Component {
+export const Commands = observer(class Commands extends Component {
 
     render() {
         const { baseWidth } = mappingState;
@@ -39,4 +38,4 @@ export class Commands extends Component {
             </Masonry>
         );
     }
-}
+});

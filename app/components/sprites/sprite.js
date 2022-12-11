@@ -3,12 +3,11 @@ import { environment } from '#store/environment';
 import { observer } from 'mobx-react';
 import { Mapping } from '#components/mappings/mapping';
 import { getBounds } from '#components/mappings/state/bounds';
-import SVARS from '!!sass-variables-loader!#styles/variables.scss';
+import SVARS from 'sass-variables';
 
 const { max, min, abs, floor } = Math;
 
-@observer
-export class Sprite extends Component {
+export const Sprite = observer(class Sprite extends Component {
 
     render() {
         const { config } = environment;
@@ -55,4 +54,4 @@ export class Sprite extends Component {
         </div>;
     }
 
-}
+});

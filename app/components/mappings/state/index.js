@@ -1,4 +1,4 @@
-import { observable, computed, action, autorun, toJS } from 'mobx';
+import { observable, computed, action, autorun, toJS, makeObservable } from 'mobx';
 import { environment } from '#store/environment';
 import clamp from 'lodash/clamp';
 import { getCenter } from './bounds';
@@ -10,27 +10,26 @@ import { arrangeTilesBySpriteOrder } from './arrange-tiles-by-sprite-order';
 import { storage } from '#store/storage';
 
 class MappingState {
-
     // viewing
 
-    @observable baseWidth = 600;
-    @observable scale = 4;
-    @observable x = 300;
-    @observable y = 300;
+    baseWidth = 600;
+    scale = 4;
+    x = 300;
+    y = 300;
 
-    @action resetPanAndZoom = () => {
+    resetPanAndZoom = () => {
         this.setZoom(4);
         this.x = 0|(this.baseWidth / 2);
         this.y = 300;
     };
 
-    @action setWidth = (width) => {
+    setWidth = (width) => {
         this.baseWidth = width;
         this.x = (width / 2)|0;
         this.y = 300;
     };
 
-    @action setZoom = (newScaleRaw) => {
+    setZoom = (newScaleRaw) => {
         if (this.newMapping.piece) return;
         const newScale = clamp(newScaleRaw, 1, 20);
         // adjust guidelines
@@ -43,22 +42,63 @@ class MappingState {
 
     // drawing mode
 
-    @observable drawIndexLeft = 1;
-    @observable drawIndexRight = 0;
-    @observable drawPalette = 0;
-    @observable mode = 'mapping';
+    drawIndexLeft = 1;
+    drawIndexRight = 0;
+    drawPalette = 0;
+    mode = 'mapping';
 
-    @action toggleMode = () => {
+    toggleMode = () => {
         this.mode = this.mode == 'mapping' ? 'drawing' : 'mapping';
     };
 
     // guidelines
 
-    @observable guidelines = {
+    guidelines = {
         x: 0, y: 0, enabled: false,
     };
 
-    @computed get guidelinesAbs() {
+    constructor() {
+        makeObservable(this, {
+            baseWidth: observable,
+            scale: observable,
+            x: observable,
+            y: observable,
+            resetPanAndZoom: action,
+            setWidth: action,
+            setZoom: action,
+            drawIndexLeft: observable,
+            drawIndexRight: observable,
+            drawPalette: observable,
+            mode: observable,
+            toggleMode: action,
+            guidelines: observable,
+            guidelinesAbs: computed,
+            selectedIndices: observable,
+            select: observable,
+            move: observable,
+            selectBBox: computed,
+            selectAll: action,
+            selectNone: action,
+            selectToggle: action,
+            rawEditor: observable,
+            toggleRawEditor: action,
+            newMapping: observable,
+            toggleNewMapping: action,
+            autodismiss: observable,
+            toggleAutodismiss: action,
+            placeNewMapping: action,
+            activeMappings: computed,
+            hasActive: computed,
+            mutateActive: action,
+            center: computed,
+            optimizeCurrentDPLCs: action,
+            deleteUnusedTiles: action,
+            toggleDPLCs: action,
+            arrangeTilesBySpriteOrder: action
+        });
+    }
+
+    get guidelinesAbs() {
         return {
             x: this.guidelines.x + this.x,
             y: this.guidelines.y + this.y,
@@ -67,21 +107,21 @@ class MappingState {
 
     // selections
 
-    @observable selectedIndices = [];
+    selectedIndices = [];
 
-    @observable select = {
+    select = {
         active: false,
         x0: 0, y0: 0,
         x1: 0, y1: 0,
     };
 
-    @observable move = {
+    move = {
         active: false,
         init: [],
         x: 0, y: 0,
-    }
+    };
 
-    @computed get selectBBox() {
+    get selectBBox() {
         const { active, x0, x1, y0, y1 } = this.select;
         if (active) {
             return {
@@ -96,18 +136,18 @@ class MappingState {
         }
     }
 
-    @action selectAll = () => {
+    selectAll = () => {
         if (this.move.active) return;
         const indices = environment.currentSprite.mappings.map((d, i) => i);
         this.selectedIndices.replace(indices);
     };
 
-    @action selectNone = () => {
+    selectNone = () => {
         if (this.move.active) return;
         this.selectedIndices.replace([]);
     };
 
-    @action selectToggle = (index) => {
+    selectToggle = (index) => {
         if (this.move.active) return;
         if (~this.selectedIndices.indexOf(index)) {
             this.selectedIndices.replace(this.selectedIndices.filter((i) => {
@@ -121,36 +161,36 @@ class MappingState {
 
     // raw editor
 
-    @observable rawEditor = {
+    rawEditor = {
         active: false,
     };
 
-    @action toggleRawEditor = () => {
+    toggleRawEditor = () => {
         this.rawEditor.active = !this.rawEditor.active;
     };
 
     // new mappings
 
-    @observable newMapping = {
+    newMapping = {
         active: false,
         piece: undefined,
     };
 
-    @action toggleNewMapping = () => {
+    toggleNewMapping = () => {
         this.newMapping.active = !this.newMapping.active;
     };
 
-    @observable autodismiss = true;
+    autodismiss = true;
 
-    @action toggleAutodismiss = () => {
+    toggleAutodismiss = () => {
         this.autodismiss = !this.autodismiss
     };
 
-    @action placeNewMapping = placeNewMapping;
+    placeNewMapping = placeNewMapping;
 
     // active mappings
 
-    @computed get activeMappings() {
+    get activeMappings() {
         return this.selectedIndices.reduce((a, c) => {
             const { mappings } = environment.currentSprite;
             if (mappings.length > c) {
@@ -160,16 +200,16 @@ class MappingState {
         }, []);
     }
 
-    @computed get hasActive() {
+    get hasActive() {
         return !!this.activeMappings.length;
     }
 
-    @action mutateActive = (callback) => {
+    mutateActive = (callback) => {
         if (!this.hasActive) return;
         this.activeMappings.forEach(callback);
     };
 
-    @computed get center() {
+    get center() {
         if (!this.activeMappings.length) return;
 
         return getCenter(this.activeMappings);
@@ -177,11 +217,10 @@ class MappingState {
 
     // imported stuff
 
-    @action optimizeCurrentDPLCs = optimizeCurrentDPLCs;
-    @action deleteUnusedTiles = deleteUnusedTiles;
-    @action toggleDPLCs = toggleDPLCs;
-    @action arrangeTilesBySpriteOrder = arrangeTilesBySpriteOrder;
-
+    optimizeCurrentDPLCs = optimizeCurrentDPLCs;
+    deleteUnusedTiles = deleteUnusedTiles;
+    toggleDPLCs = toggleDPLCs;
+    arrangeTilesBySpriteOrder = arrangeTilesBySpriteOrder;
 }
 
 const mappingState = new MappingState();

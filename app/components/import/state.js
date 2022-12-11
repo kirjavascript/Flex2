@@ -1,4 +1,4 @@
-import { observable, computed, action, autorun, toJS } from 'mobx';
+import { observable, computed, action, autorun, toJS, makeObservable } from 'mobx';
 const { dialog } = require('@electron/remote');
 import { errorMsg } from '#util/dialog';
 import { removeBackground } from './remove-background';
@@ -8,23 +8,22 @@ import { getMappings } from './generate-mappings';
 import { importSprite } from './import-sprite';
 
 class ImportState {
-
-    @observable config = {
+    config = {
         active: false,
     };
 
-    @observable bboxes = [];
-    @observable sprites = [];
-    @observable mappings = [];
-    @observable type = 'mappings';
-    @observable importWidth = 0;
-    @observable importHeight = 0;
-    @observable spriteIndex = 0;
-    @observable paletteLine = 0;
-    @observable fuzziness = 4;
-    @observable scale = 4;
+    bboxes = [];
+    sprites = [];
+    mappings = [];
+    type = 'mappings';
+    importWidth = 0;
+    importHeight = 0;
+    spriteIndex = 0;
+    paletteLine = 0;
+    fuzziness = 4;
+    scale = 4;
 
-    @action reset = () => {
+    reset = () => {
         this.path = undefined;
         this.canvas = undefined;
         this.ctx = undefined;
@@ -35,7 +34,7 @@ class ImportState {
         this.mappings.replace([]);
     };
 
-    @action newImport = () => {
+    newImport = () => {
 
         dialog.showOpenDialog({
             title: 'Import Spritesheet',
@@ -51,7 +50,7 @@ class ImportState {
             .catch(console.error);
     };
 
-    @action cancel = () => {
+    cancel = () => {
         this.reset();
         this.config.active = false;
     };
@@ -98,7 +97,7 @@ class ImportState {
         ctx.putImageData(buffer, 32, 32);
     };
 
-    @action getBBoxes = () => {
+    getBBoxes = () => {
         const { ctx, canvas } = this;
         const { width, height } = canvas;
         const buffer = ctx.getImageData(0, 0, width, height);
@@ -107,7 +106,7 @@ class ImportState {
         );
     };
 
-    @action importSprites = () => {
+    importSprites = () => {
         const { ctx, canvas } = this;
         const { width, height } = canvas;
         const buffer = ctx.getImageData(0, 0, width, height);
@@ -123,17 +122,47 @@ class ImportState {
         this.sprites.replace(sprites);
     };
 
-    @action backToDetect = () => {
+    backToDetect = () => {
         this.sprites.replace([]);
     };
 
+    constructor() {
+        makeObservable(this, {
+            config: observable,
+            bboxes: observable,
+            sprites: observable,
+            mappings: observable,
+            type: observable,
+            importWidth: observable,
+            importHeight: observable,
+            spriteIndex: observable,
+            paletteLine: observable,
+            fuzziness: observable,
+            scale: observable,
+            reset: action,
+            newImport: action,
+            cancel: action,
+            getBBoxes: action,
+            importSprites: action,
+            backToDetect: action,
+            currentSprite: computed,
+            tileQty: computed,
+            changePalette: action,
+            changeType: action,
+            importOne: action,
+            importAll: action,
+            next: action,
+            prev: action
+        });
+    }
+
     // import stuff
 
-    @computed get currentSprite() {
+    get currentSprite() {
         return this.sprites[this.spriteIndex];
     }
 
-    @computed get tileQty() {
+    get tileQty() {
         return this.mappings.reduce((a, c) => {
             return a + (c.width * c.height);
         }, 0);
@@ -167,30 +196,30 @@ class ImportState {
         }
     };
 
-    @action changePalette = () => {
+    changePalette = () => {
         const { canvas, ctx } = this;
         const { width, height, buffer } = this.currentSprite;
         const coloredBuffer = colorMatch(buffer, this.paletteLine);
         ctx.putImageData(coloredBuffer, 8, 8);
     };
 
-    @action changeType = () => {
+    changeType = () => {
         const { canvas, ctx, type } = this;
         this.mappings.replace(getMappings(canvas, ctx, type));
-    }
+    };
 
-    @action importOne = () => {
+    importOne = () => {
         const { ctx, mappings, paletteLine } = this;
         importSprite(ctx, mappings, paletteLine);
         this.next();
     };
 
-    @action importAll = () => {
+    importAll = () => {
         this.auto = true;
         this.spriteIndex = -1;
     };
 
-    @action next = () => {
+    next = () => {
         if (this.spriteIndex < this.sprites.length-1) {
             this.spriteIndex++;
         }
@@ -199,12 +228,11 @@ class ImportState {
         }
     };
 
-    @action prev = () => {
+    prev = () => {
         if (this.spriteIndex > 0) {
             this.spriteIndex--;
         }
     };
-
 }
 
 const importState = new ImportState();

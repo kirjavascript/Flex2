@@ -226,8 +226,7 @@ const SortableDPLCList = SortableContainer(
     { withRef: true },
 );
 
-@observer
-export class RawEditor extends Component {
+export const RawEditor = observer(class RawEditor extends Component {
     onSortEndMapping = ({ oldIndex, newIndex }) => {
         const {
             currentSprite: { mappings },
@@ -361,4 +360,4 @@ export class RawEditor extends Component {
             </Spring>
         );
     }
-}
+});

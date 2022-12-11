@@ -1,8 +1,7 @@
 #!/bin/zsh
 # copy latest version of electron remote
 cp -r node_modules/@electron/remote ./static
-# build webpack
-npx webpack --config development/webpack.config.js -p
+echo "TODO: prod build of js"
 electron-packager ./static Flex2 --platform=win32 --arch=x64 \
     --asar --overwrite --package-manager yarn \
     --win32metadata.CompanyName="Flex 2" \
