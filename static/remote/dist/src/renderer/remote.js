@@ -6,6 +6,7 @@ const type_utils_1 = require("../common/type-utils");
 const electron_1 = require("electron");
 const module_names_1 = require("../common/module-names");
 const get_electron_binding_1 = require("../common/get-electron-binding");
+const { Promise } = global;
 const callbacksRegistry = new callbacks_registry_1.CallbacksRegistry();
 const remoteObjectCache = new Map();
 const finalizationRegistry = new FinalizationRegistry((id) => {

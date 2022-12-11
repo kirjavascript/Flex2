@@ -74,9 +74,11 @@ module.exports = (mainWindow) => {
 
     buildSass();
 
-    require('chokidar')
-        .watch('./styles', { ignored: /[\/\\]\./ })
-        .on('change', buildSass);
+    if (devMode) {
+        require('chokidar')
+            .watch('./styles', { ignored: /[\/\\]\./ })
+            .on('change', buildSass);
+    }
 };
 
 const aliases = {

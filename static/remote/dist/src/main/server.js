@@ -3,13 +3,19 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.initialize = exports.isRemoteModuleEnabled = void 0;
+exports.initialize = exports.enable = exports.isRemoteModuleEnabled = void 0;
 const events_1 = require("events");
 const objects_registry_1 = __importDefault(require("./objects-registry"));
 const type_utils_1 = require("../common/type-utils");
 const electron_1 = require("electron");
 const get_electron_binding_1 = require("../common/get-electron-binding");
+const { Promise } = global;
 const v8Util = get_electron_binding_1.getElectronBinding('v8_util');
+const hasWebPrefsRemoteModuleAPI = (() => {
+    var _a, _b;
+    const electronVersion = Number((_b = (_a = process.versions.electron) === null || _a === void 0 ? void 0 : _a.split(".")) === null || _b === void 0 ? void 0 : _b[0]);
+    return Number.isNaN(electronVersion) || electronVersion < 14;
+})();
 // The internal properties of Function.
 const FUNCTION_PROPERTIES = [
     'length', 'name', 'arguments', 'caller', 'prototype'
@@ -293,19 +299,23 @@ const isRemoteModuleEnabledImpl = function (contents) {
 };
 const isRemoteModuleEnabledCache = new WeakMap();
 const isRemoteModuleEnabled = function (contents) {
-    if (!isRemoteModuleEnabledCache.has(contents)) {
+    if (hasWebPrefsRemoteModuleAPI && !isRemoteModuleEnabledCache.has(contents)) {
         isRemoteModuleEnabledCache.set(contents, isRemoteModuleEnabledImpl(contents));
     }
     return isRemoteModuleEnabledCache.get(contents);
 };
 exports.isRemoteModuleEnabled = isRemoteModuleEnabled;
+function enable(contents) {
+    isRemoteModuleEnabledCache.set(contents, true);
+}
+exports.enable = enable;
 const handleRemoteCommand = function (channel, handler) {
     electron_1.ipcMain.on(channel, (event, contextId, ...args) => {
         let returnValue;
         if (!exports.isRemoteModuleEnabled(event.sender)) {
             event.returnValue = {
                 type: 'exception',
-                value: valueToMeta(event.sender, contextId, new Error('@electron/remote is disabled for this WebContents. Set {enableRemoteModule: true} in WebPreferences to enable it.'))
+                value: valueToMeta(event.sender, contextId, new Error('@electron/remote is disabled for this WebContents. Call require("@electron/remote/main").enable(webContents) to enable it.'))
             };
             return;
         }
@@ -337,7 +347,7 @@ const logStack = function (contents, code, stack) {
 let initialized = false;
 function initialize() {
     if (initialized)
-        throw new Error('electron-remote has already been initialized');
+        throw new Error('@electron/remote has already been initialized');
     initialized = true;
     handleRemoteCommand("REMOTE_BROWSER_WRONG_CONTEXT_ERROR" /* BROWSER_WRONG_CONTEXT_ERROR */, function (event, contextId, passedContextId, id) {
         const objectId = [passedContextId, id];
@@ -431,7 +441,8 @@ function initialize() {
             return valueToMeta(event.sender, contextId, func(...args), true);
         }
         catch (error) {
-            const err = new Error(`Could not call remote function '${func.name || 'anonymous'}'. Check that the function signature is correct. Underlying error: ${error.message}\nUnderlying stack: ${error.stack}\n`);
+            const err = new Error(`Could not call remote function '${func.name || "anonymous"}'. Check that the function signature is correct. Underlying error: ${error}\n` +
+                (error instanceof Error ? `Underlying stack: ${error.stack}\n` : ""));
             err.cause = error;
             throw err;
         }
@@ -454,7 +465,8 @@ function initialize() {
             return valueToMeta(event.sender, contextId, object[method](...args), true);
         }
         catch (error) {
-            const err = new Error(`Could not call remote method '${method}'. Check that the method signature is correct. Underlying error: ${error.message}\nUnderlying stack: ${error.stack}\n`);
+            const err = new Error(`Could not call remote method '${method}'. Check that the method signature is correct. Underlying error: ${error}` +
+                (error instanceof Error ? `Underlying stack: ${error.stack}\n` : ""));
             err.cause = error;
             throw err;
         }
