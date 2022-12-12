@@ -1,6 +1,7 @@
 # Changelog
 
 ## [unreleased]
+- Add zoom slider in sprites tab
 
 ## [1.1.3]
 - Upgrade to electron 12

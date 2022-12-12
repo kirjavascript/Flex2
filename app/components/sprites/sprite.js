@@ -6,8 +6,6 @@ import { getBounds } from '#components/mappings/state/bounds';
 import SVARS from 'sass-variables';
 import { spriteState } from './state';
 
-const { max, min, abs, floor } = Math;
-
 export const Sprite = observer(class Sprite extends Component {
 
     render() {
@@ -16,8 +14,6 @@ export const Sprite = observer(class Sprite extends Component {
 
         const { index, mappings, buffer } = this.props.data;
 
-        // const scale = min(5, max(floor(100 / spriteState.zoom), 1));
-        const scale = spriteState.zoom;
         return <div
             className="sprite"
             style={{

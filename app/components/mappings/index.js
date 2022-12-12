@@ -12,6 +12,7 @@ import { PaletteHUD } from './hud-palette';
 import { Guidelines } from './guidelines';
 import { NewMapping } from './new-mapping';
 import { RawEditor } from './raw-editor';
+import { Rotate } from './rotate';
 import { DragSelect, attachDragSelectToNode } from './drag-select';
 import { attachDragMoveToNode } from './drag-move';
 import { Commands } from './commands';
@@ -57,6 +58,7 @@ export const Mappings = observer(class Mappings extends Component {
 
         return (
             <div className="mappings" ref={this.onRef}>
+                <Rotate />
                 <div
                     ref={this.mappingRef}
                     className="mappingContainer"

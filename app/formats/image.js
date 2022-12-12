@@ -4,7 +4,7 @@ import { writeFile } from 'fs';
 import { errorMsg } from '#util/dialog';
 import { colorMatch } from '#components/import/color-match';
 
-function exportSprite({ buffer, mappings }) {
+export function exportSprite({ buffer, mappings }) {
 
     const { palettesRGB } = environment;
 

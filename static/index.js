@@ -24,7 +24,9 @@ function createWindow() {
 
     mainWindow.on('ready-to-show', () => {
         mainWindow.show();
-        mainWindow.focus();
+        if (!devMode) {
+            mainWindow.focus();
+        }
     });
 
     if (devMode) {

@@ -16,9 +16,6 @@ export const Commands = observer(class Commands extends Component {
             <Masonry
                 className="commands"
                 style={{ width }}
-                ref={(node) => {
-                    window.NN=node
-                }}
             >
                 {commands.map((group, i) => (
                     <div key={i} className="group">
