@@ -4,6 +4,7 @@ import { observer } from 'mobx-react';
 import { Mapping } from '#components/mappings/mapping';
 import { getBounds } from '#components/mappings/state/bounds';
 import SVARS from 'sass-variables';
+import { spriteState } from './state';
 
 const { max, min, abs, floor } = Math;
 
@@ -15,15 +16,8 @@ export const Sprite = observer(class Sprite extends Component {
 
         const { index, mappings, buffer } = this.props.data;
 
-        let extent = 25;
-        if (mappings.length) {
-            const { minX, minY, maxX, maxY } = getBounds(mappings);
-
-            extent = max(abs(minX), maxX, abs(minY), maxY);
-        }
-
-        const scale = min(5, max(floor(100 / extent), 1));
-
+        // const scale = min(5, max(floor(100 / spriteState.zoom), 1));
+        const scale = spriteState.zoom;
         return <div
             className="sprite"
             style={{
@@ -45,7 +39,7 @@ export const Sprite = observer(class Sprite extends Component {
                     style={{zIndex: mappingIndex}}
                 >
                     <Mapping
-                        scale={scale}
+                        scale={spriteState.zoom}
                         data={mapping}
                         tileBuffer={buffer}
                     />

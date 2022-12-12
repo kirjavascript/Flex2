@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { environment } from '#store/environment';
+import { spriteState } from './state';
 import { observer } from 'mobx-react';
 import { Sprite } from './sprite';
 import { SortableContainer, SortableElement } from 'react-sortable-hoc';
+import { Slider } from '#ui';
 import {
     baseSize,
     margin,
@@ -127,6 +129,12 @@ export const Sprites = observer(class Sprites extends DimensionsComponent {
                         scroll={scroll}
                     />
                 </div>
+                <Slider
+                    store={spriteState}
+                    accessor="zoom"
+                    min="1"
+                    max="8"
+                />
             </div>
         );
     }
