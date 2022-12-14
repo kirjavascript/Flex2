@@ -1,34 +1,32 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { environment } from '#store/environment';
 import { observer } from 'mobx-react';
 import { exportSprite } from '#formats/image';
-import rotSprite, { Pixels } from '#util/rotsprite';
-import { Input, Slider, Item } from '#ui';
+import rotSprite, { Pixels, addMarginToImageData, getRotateDiagonal } from '#util/rotsprite';
+import { Input, Slider, Item, SelectBase, Button } from '#ui';
 import { mappingState } from './state';
 
 export const Rotate = observer(() => {
     const canvasRef = useRef();
+
+    const [value, setValue] = useState(0);
 
     useEffect(() => {
         const spriteCanv = exportSprite(environment.currentSprite);
         const spriteCtx = spriteCanv.getContext('2d');
 
         const { width, height } = spriteCanv;
-        spriteCtx.scale(2, 2)
 
         const imageData = spriteCtx.getImageData(0, 0, width, height);
 
-        const diagonal =
-            1 + (0 | (2 * Math.sqrt(width ** 2 / 4 + height ** 2 / 4)));
+        const { diagonal, xMargin, yMargin } = getRotateDiagonal(width, height);
 
-        const xMargin = (diagonal - width) / 2;
-        const yMargin = (diagonal - height) / 2;
-
-        spriteCanv.width = diagonal;
-        spriteCanv.height = diagonal;
-        spriteCtx.putImageData(imageData, xMargin, yMargin);
-
-        const spriteData = spriteCtx.getImageData(0, 0, diagonal, diagonal);
+        const spriteData = addMarginToImageData(
+            spriteCtx,
+            imageData,
+            xMargin,
+            yMargin,
+        );
 
         const data = new Uint32Array(diagonal ** 2);
 
@@ -64,9 +62,6 @@ export const Rotate = observer(() => {
         canvas.width = diagonal;
         canvas.height = diagonal;
         ctx.putImageData(rotatedData, 0, 0);
-        canvas.style.width = '400px';
-        canvas.style.imageRendering = 'pixelated';
-        canvas.style.backgroundColor = 'red';
     }, [environment.currentSprite, mappingState.rotateAngle]);
 
     const assertInput = (num) => {
@@ -79,6 +74,11 @@ export const Rotate = observer(() => {
         <div className="rotsprite">
             <Item>Rotate Sprite</Item>
             <canvas ref={canvasRef} />
+            <SelectBase
+                options={[...Array(7).keys()].map(d => String(d*90))}
+                value={value}
+                onChange={e => setValue(e.value)}
+            />
             <Input
                 store={mappingState}
                 assert={assertInput}
@@ -92,6 +92,8 @@ export const Rotate = observer(() => {
                 store={mappingState}
                 accessor="rotateAngle"
             />
+            <Button color="red">Reimport</Button>
+            <Button color="magenta">close</Button>
         </div>
     );
 });

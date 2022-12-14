@@ -69,3 +69,15 @@ export const Select = observer(class Select extends Component {
     }
 
 });
+
+export function SelectBase({ label, ...props }) {
+    return <div className="row select">
+        {label && <span>
+            {label}
+            &emsp;
+    </span>}
+        <Dropdown
+            {...props}
+        />
+    </div>;
+}

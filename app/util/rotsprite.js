@@ -1,6 +1,6 @@
 // original algorithm Xenowhirl
 // stole code from ChaseMor/pxt-arcade-rotsprite
-// generated the rest with chatGPT
+// some generated with chatGPT
 
 export default function rotSprite(image, angle) {
     image = scale2xImage(image);
@@ -19,6 +19,7 @@ function scale2xImage(original) {
             const b = original.getPixel(x + 1, y);
             const c = original.getPixel(x - 1, y);
             const d = original.getPixel(x, y + 1);
+
             if (c == a && c != d && a != b) {
                 scaled.setPixel(x << 1, y << 1, a);
             } else {
@@ -43,6 +44,7 @@ function scale2xImage(original) {
     }
     return scaled;
 }
+
 function rotateAndReduceImage(original, angle) {
     let rotated = Pixels.create(original.width >> 3, original.height >> 3);
 
@@ -112,4 +114,67 @@ export class Pixels {
         }
         return clonedImage;
     };
+
+    scale = (factor) => {
+        // Calculate the new dimensions of the scaled image
+        const scaledWidth = this.width * factor;
+        const scaledHeight = this.height * factor;
+
+        // Create a new Image object with the new dimensions
+        const scaledImage = new Pixels(scaledWidth, scaledHeight);
+
+        // Loop through the pixels of the scaled image
+        for (let y = 0; y < scaledHeight; y++) {
+            for (let x = 0; x < scaledWidth; x++) {
+                // Calculate the coordinates of the corresponding pixel in the original image
+                const originalX = Math.floor(x / factor);
+                const originalY = Math.floor(y / factor);
+
+                // Set the pixel in the scaled image to the nearest pixel in the original image
+                scaledImage.setPixel(x, y, this.getPixel(originalX, originalY));
+            }
+        }
+
+        return scaledImage;
+    };
+}
+
+
+export function addMarginToImageData(ctx, imageData, xMargin, yMargin) {
+  // Create a new ImageData object with the new dimensions, including the margin.
+  const newImageData = ctx.createImageData(
+    imageData.width + xMargin * 2,
+    imageData.height + yMargin * 2
+  );
+
+  // Loop through the original image data and copy the pixel values to the new
+  // ImageData object, taking the margin into account.
+  for (let row = 0; row < imageData.height; row++) {
+    for (let col = 0; col < imageData.width; col++) {
+      const sourcePixel = [        imageData.data[(row * imageData.width + col) * 4 + 0],
+        imageData.data[(row * imageData.width + col) * 4 + 1],
+        imageData.data[(row * imageData.width + col) * 4 + 2],
+        imageData.data[(row * imageData.width + col) * 4 + 3]
+      ];
+
+      const destRow = row + yMargin;
+      const destCol = col + xMargin;
+      for (let i = 0; i < 4; i++) {
+        newImageData.data[(destRow * newImageData.width + destCol) * 4 + i] =
+          sourcePixel[i];
+      }
+    }
+  }
+
+  return newImageData;
+}
+
+export function getRotateDiagonal(width, height) {
+    const diagonal =
+        1 + (0 | (2 * Math.sqrt(width ** 2 / 4 + height ** 2 / 4)));
+
+    const xMargin = Math.round((diagonal - width) / 2);
+    const yMargin = Math.round((diagonal - height) / 2);
+
+    return { diagonal: xMargin * 2 + width, xMargin, yMargin };
 }

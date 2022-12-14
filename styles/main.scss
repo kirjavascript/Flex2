@@ -52,12 +52,15 @@ a {
     z-index: -1;
 }
 
+canvas {
+    image-rendering: pixelated;
+}
+
 .canvas-debug {
     position: absolute;
     z-index: 10;
     bottom: 20px;
     left: 20px;
-    image-rendering: pixelated;
     background-color: rgba(255,0,0,0.5);
 }
 
