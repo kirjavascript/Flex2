@@ -1,0 +1,16 @@
+.rotsprite {
+    .close {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+    box-sizing: content-box;
+    position: absolute;
+    z-index: 2;
+    background-color: $black;
+    left: 15px;
+    right: 15px;
+    box-shadow: 2px 2px 4px $black;
+    padding: 15px;
+    margin-top: 100px;
+}

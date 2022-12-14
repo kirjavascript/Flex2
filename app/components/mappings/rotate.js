@@ -1,33 +1,48 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { environment } from '#store/environment';
+import { observer } from 'mobx-react';
 import { exportSprite } from '#formats/image';
 import rotSprite, { Pixels } from '#util/rotsprite';
+import { Input, Slider, Item } from '#ui';
+import { mappingState } from './state';
 
-export function Rotate() {
-    return null;
+export const Rotate = observer(() => {
     const canvasRef = useRef();
-    const [angle, setAngle] = useState(45);
 
     useEffect(() => {
-        const canvas = canvasRef.current;
-        const ctx = canvas.getContext('2d');
-
         const spriteCanv = exportSprite(environment.currentSprite);
         const spriteCtx = spriteCanv.getContext('2d');
 
-        const imageData = spriteCtx.getImageData(0, 0, canvas.width, canvas.height);
-        const data = new Uint32Array(imageData.width * imageData.height);
+        const { width, height } = spriteCanv;
+        spriteCtx.scale(2, 2)
 
-        for (let i = 0; i < imageData.data.length; i += 4) {
-            const r = imageData.data[i];
-            const g = imageData.data[i + 1];
-            const b = imageData.data[i + 2];
-            data[i / 4] = (r << 16) + (g << 8) + b;
+        const imageData = spriteCtx.getImageData(0, 0, width, height);
+
+        const diagonal =
+            1 + (0 | (2 * Math.sqrt(width ** 2 / 4 + height ** 2 / 4)));
+
+        const xMargin = (diagonal - width) / 2;
+        const yMargin = (diagonal - height) / 2;
+
+        spriteCanv.width = diagonal;
+        spriteCanv.height = diagonal;
+        spriteCtx.putImageData(imageData, xMargin, yMargin);
+
+        const spriteData = spriteCtx.getImageData(0, 0, diagonal, diagonal);
+
+        const data = new Uint32Array(diagonal ** 2);
+
+        for (let i = 0; i < spriteData.data.length; i += 4) {
+            const r = spriteData.data[i];
+            const g = spriteData.data[i + 1];
+            const b = spriteData.data[i + 2];
+            const a = spriteData.data[i + 3];
+            data[i / 4] = (a << 24) + (r << 16) + (g << 8) + b;
         }
 
         const rotated = rotSprite(
-            new Pixels(imageData.width, imageData.height, data),
-            angle
+            new Pixels(diagonal, diagonal, data),
+            (mappingState.rotateAngle * Math.PI) / 180,
         ).pixels;
 
         const pixelData = new Uint8ClampedArray(data.length * 4);
@@ -35,24 +50,48 @@ export function Rotate() {
         for (let i = 0; i < data.length; i++) {
             const value = rotated[i];
 
-            pixelData[i * 4] = (value >> 16) & 0xFF;
-            pixelData[i * 4 + 1] = (value >> 8) & 0xFF;
-            pixelData[i * 4 + 2] = value & 0xFF;
-            pixelData[i * 4 + 3] = 255;
+            pixelData[i * 4] = (value >> 16) & 0xff;
+            pixelData[i * 4 + 1] = (value >> 8) & 0xff;
+            pixelData[i * 4 + 2] = value & 0xff;
+            pixelData[i * 4 + 3] = (value >> 24) & 0xff;
         }
 
-        const imageData2 = new ImageData(pixelData, canvas.width, canvas.height);
+        const rotatedData = new ImageData(pixelData, diagonal, diagonal);
 
-        canvas.width = spriteCanv.width;
-        canvas.height = spriteCanv.height;
-        ctx.putImageData(imageData2, 0, 0);
-        canvas.style.width = '200px';
+        const canvas = canvasRef.current;
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = diagonal;
+        canvas.height = diagonal;
+        ctx.putImageData(rotatedData, 0, 0);
+        canvas.style.width = '400px';
         canvas.style.imageRendering = 'pixelated';
+        canvas.style.backgroundColor = 'red';
+    }, [environment.currentSprite, mappingState.rotateAngle]);
 
+    const assertInput = (num) => {
+        const value = Math.max(0, Math.min(360, num));
+        if (Number.isNaN(value)) return 0;
+        return value;
+    };
 
-    }, [environment.currentSprite, angle]);
-    return <>
-       <canvas ref={canvasRef} />
-       <input className="slider" type="range" min="0" step="0.01" max="6.5" value={angle} onChange={e => setAngle(e.target.value)} />
-    </>
-}
+    return (
+        <div className="rotsprite">
+            <Item>Rotate Sprite</Item>
+            <canvas ref={canvasRef} />
+            <Input
+                store={mappingState}
+                assert={assertInput}
+                accessor="rotateAngle"
+                isNumber
+            />
+            <Slider
+                min="0"
+                step="1"
+                max="360"
+                store={mappingState}
+                accessor="rotateAngle"
+            />
+        </div>
+    );
+});

@@ -1,4 +1,4 @@
-import { observable, computed, action, autorun, toJS, makeObservable } from 'mobx';
+import { observable, computed, action, makeObservable } from 'mobx';
 import { environment } from '#store/environment';
 import clamp from 'lodash/clamp';
 import { getCenter } from './bounds';
@@ -16,6 +16,7 @@ class MappingState {
     scale = 4;
     x = 300;
     y = 300;
+    rotateAngle = 0;
 
     resetPanAndZoom = () => {
         this.setZoom(4);
@@ -63,6 +64,7 @@ class MappingState {
             scale: observable,
             x: observable,
             y: observable,
+            rotateAngle: observable,
             resetPanAndZoom: action,
             setWidth: action,
             setZoom: action,

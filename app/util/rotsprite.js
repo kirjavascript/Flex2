@@ -77,7 +77,7 @@ export class Pixels {
     // The width and height of the image in pixels
     width;
     height;
-    // A Uint8Array representing the colors of the pixels in the image
+    // A Uint32Array representing the colors of the pixels in the image
     pixels;
 
     // Constructor to create a new Image object with the given dimensions

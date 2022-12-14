@@ -21,15 +21,15 @@ export const Input = observer(class Input extends Component {
     };
 
     onKeyDown = (e) => {
-        if (e.key == 'Escape') {
+        if (e.key === 'Escape') {
             e.target.blur();
         }
         else if (this.props.isNumber) {
-            if (e.key == 'ArrowUp') {
+            if (e.key === 'ArrowUp') {
                 this.mutateNum(1);
                 e.preventDefault();
             }
-            else if (e.key == 'ArrowDown') {
+            else if (e.key === 'ArrowDown') {
                 this.mutateNum(-1);
                 e.preventDefault();
             }

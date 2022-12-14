@@ -58,7 +58,6 @@ export const Mappings = observer(class Mappings extends Component {
 
         return (
             <div className="mappings" ref={this.onRef}>
-                <Rotate />
                 <div
                     ref={this.mappingRef}
                     className="mappingContainer"
@@ -134,6 +133,7 @@ export const Mappings = observer(class Mappings extends Component {
                 />
 
                 <RawEditor />
+                <Rotate />
 
                 <Commands />
             </div>
