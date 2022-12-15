@@ -1,4 +1,4 @@
-import { observable, computed, action, makeObservable } from 'mobx';
+import { observable, computed, action, makeObservable, observe } from 'mobx';
 import { environment } from '#store/environment';
 import clamp from 'lodash/clamp';
 import { getCenter } from './bounds';
@@ -16,7 +16,6 @@ class MappingState {
     scale = 4;
     x = 300;
     y = 300;
-    rotateAngle = 0;
 
     resetPanAndZoom = () => {
         this.setZoom(4);
@@ -64,7 +63,7 @@ class MappingState {
             scale: observable,
             x: observable,
             y: observable,
-            rotateAngle: observable,
+            rotate: observable,
             resetPanAndZoom: action,
             setWidth: action,
             setZoom: action,
@@ -97,6 +96,20 @@ class MappingState {
             deleteUnusedTiles: action,
             toggleDPLCs: action,
             arrangeTilesBySpriteOrder: action
+        });
+
+        // ensure only one modal is open at once
+        const modals = ['newMapping', 'rawEditor', 'rotate'];
+        modals.forEach(modal => {
+            observe(this[modal], value => {
+                if (value.name === 'active' && value.object.active) {
+                    modals.forEach(otherModal => {
+                        if (otherModal !== modal) {
+                            this[otherModal].active = false;
+                        }
+                    });
+                }
+            });
         });
     }
 
@@ -159,6 +172,13 @@ class MappingState {
         else {
             this.selectedIndices.push(index);
         }
+    };
+
+    // rotsprite
+
+    rotate = {
+        angle: 0,
+        active: false,
     };
 
     // raw editor
