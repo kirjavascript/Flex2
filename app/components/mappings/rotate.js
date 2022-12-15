@@ -6,6 +6,8 @@ import { rotateImageData } from '#util/rotsprite';
 import { Input, Slider, Item, Button, Modal } from '#ui';
 import { mappingState } from './state';
 
+import { importState } from '../import/state';
+
 function rotateCurrentSprite(canvas, angle) {
     const spriteCanv = exportSprite(environment.currentSprite);
     const spriteCtx = spriteCanv.getContext('2d');
@@ -40,6 +42,11 @@ export const Rotate = observer(() => {
         if (Number.isNaN(value)) return 0;
         return value;
     };
+
+    function reImport() {
+        importState.rotCanvas = canvasRef.current;
+        importState.config.active = true;
+    }
 
     return (
         <Modal
@@ -86,7 +93,7 @@ export const Rotate = observer(() => {
                 <Button color="magenta" onClick={mappingState.toggleRotate}>
                     close
                 </Button>
-                <Button color="red">Reimport</Button>
+                <Button color="red" onClick={reImport}>Reimport</Button>
             </div>
         </Modal>
     );

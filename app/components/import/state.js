@@ -63,21 +63,29 @@ class ImportState {
         this.canvas = node;
         this.ctx = node.getContext('2d');
 
-        const img = new Image();
+        if (this.path) {
+            const img = new Image();
 
-        img.onload = () => {
-            node.width = img.width;
-            node.height = img.height;
-            this.ctx.drawImage(img, 0, 0);
+            img.onload = () => {
+                node.width = img.width;
+                node.height = img.height;
+                this.ctx.drawImage(img, 0, 0);
+                requestAnimationFrame(this.loaded);
+            };
+
+            img.onerror = (e) => {
+                errorMsg('Import Error', `Error loading ${this.path}`);
+                this.cancel();
+            };
+
+            img.src = this.path;
+
+        } else if (this.rotCanvas) {
+            console.log(this.rotCanvas);
+            this.ctx.drawImage(this.rotCanvas, 0, 0);
+            delete this.rotCanvas;
             requestAnimationFrame(this.loaded);
-        };
-
-        img.onerror = (e) => {
-            errorMsg('Import Error', `Error loading ${this.path}`);
-            this.cancel();
-        };
-
-        img.src = this.path;
+        }
     };
 
     loaded = () => {
