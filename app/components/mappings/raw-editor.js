@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Spring } from 'react-spring/renderprops';
 import {
     SortableContainer,
     SortableElement,
@@ -9,7 +8,7 @@ import arrayMove from 'array-move';
 import { mappingState } from './state';
 import { environment } from '#store/environment';
 import { observer } from 'mobx-react';
-import { Select, Input, Item, Button } from '#ui';
+import { Select, Input, Item, Button, Modal } from '#ui';
 import { Tile } from '../art/tile';
 import {
     isNumber,
@@ -226,138 +225,111 @@ const SortableDPLCList = SortableContainer(
     { withRef: true },
 );
 
-export const RawEditor = observer(class RawEditor extends Component {
-    onSortEndMapping = ({ oldIndex, newIndex }) => {
-        const {
-            currentSprite: { mappings },
-        } = environment;
-        mappings.replace(arrayMove(mappings, oldIndex, newIndex));
-    };
+export const RawEditor = observer(
+    class RawEditor extends Component {
+        onSortEndMapping = ({ oldIndex, newIndex }) => {
+            const {
+                currentSprite: { mappings },
+            } = environment;
+            mappings.replace(arrayMove(mappings, oldIndex, newIndex));
+        };
 
-    addNewMapping = () => {
-        const {
-            currentSprite: { mappings },
-        } = environment;
-        mappings.push({
-            art: 0,
-            priority: false,
-            left: 0,
-            top: 0,
-            width: 1,
-            height: 1,
-            vflip: false,
-            hflip: false,
-            palette: 0,
-        });
-    };
+        addNewMapping = () => {
+            const {
+                currentSprite: { mappings },
+            } = environment;
+            mappings.push({
+                art: 0,
+                priority: false,
+                left: 0,
+                top: 0,
+                width: 1,
+                height: 1,
+                vflip: false,
+                hflip: false,
+                palette: 0,
+            });
+        };
 
-    onSortEndDPLC = ({ oldIndex, newIndex }) => {
-        const {
-            currentSprite: { dplcs },
-        } = environment;
-        dplcs.replace(arrayMove(dplcs, oldIndex, newIndex));
-    };
+        onSortEndDPLC = ({ oldIndex, newIndex }) => {
+            const {
+                currentSprite: { dplcs },
+            } = environment;
+            dplcs.replace(arrayMove(dplcs, oldIndex, newIndex));
+        };
 
-    addNewDPLC = () => {
-        const {
-            currentSprite: { dplcs },
-        } = environment;
-        dplcs.push({
-            art: 0,
-            size: 1,
-        });
-    };
+        addNewDPLC = () => {
+            const {
+                currentSprite: { dplcs },
+            } = environment;
+            dplcs.push({
+                art: 0,
+                size: 1,
+            });
+        };
 
-    getTop = () => {
-        const {
-            rawEditor: { active },
-        } = mappingState;
-        return active ? 15 : -100;
-    };
+        render() {
+            const {
+                currentSprite: { mappings, dplcs },
+                config: { currentTile, dplcsEnabled },
+            } = environment;
+            const {
+                rawEditor: { active },
+            } = mappingState;
 
-    getOpacity = () => {
-        const {
-            rawEditor: { active },
-        } = mappingState;
-        return active ? 1 : 0;
-    };
-
-    render() {
-        const {
-            currentSprite: { mappings, dplcs },
-            config: { currentTile, dplcsEnabled },
-        } = environment;
-        const {
-            scale,
-            rawEditor: { active },
-        } = mappingState;
-
-        return (
-            <Spring
-                from={{
-                    top: this.getTop(),
-                    opacity: this.getOpacity(),
-                }}
-                to={{
-                    top: this.getTop(),
-                    opacity: this.getOpacity(),
-                }}
-            >
-                {(style) =>
-                    style.opacity > 0.01 && (
-                        <div className="raw-mapping-data" style={style}>
-                            <div className="close">
-                                <Item>Raw Mapping Editor</Item>
-                                <Button
-                                    color="magenta"
-                                    onClick={mappingState.toggleRawEditor}
-                                >
-                                    close
-                                </Button>
-                            </div>
-                            <SortableMappingList
+            return (
+                <Modal
+                    spring={{
+                        top: active ? 15 : -100,
+                        opacity: active ? 1 : 0,
+                    }}
+                    className="raw-mapping-data"
+                >
+                    <div className="close">
+                        <Item>Raw Mapping Editor</Item>
+                        <Button
+                            color="magenta"
+                            onClick={mappingState.toggleRawEditor}
+                        >
+                            close
+                        </Button>
+                    </div>
+                    <SortableMappingList
+                        axis="y"
+                        lockAxis="y"
+                        items={mappings}
+                        lockToContainerEdges={true}
+                        useDragHandle={true}
+                        onSortEnd={this.onSortEndMapping}
+                    />
+                    <Item onClick={this.addNewMapping} inverted>
+                        Add New Mapping
+                    </Item>
+                    {dplcsEnabled && (
+                        <div className="raw-dplc-data">
+                            <SortableDPLCList
                                 axis="y"
                                 lockAxis="y"
-                                items={mappings}
+                                items={dplcs || []}
                                 lockToContainerEdges={true}
                                 useDragHandle={true}
-                                onSortEnd={this.onSortEndMapping}
+                                onSortEnd={this.onSortEndDPLC}
                             />
-                            <Item onClick={this.addNewMapping} inverted>
-                                Add New Mapping
-                            </Item>
-                            {dplcsEnabled && (
-                                <div className="raw-dplc-data">
-                                    <SortableDPLCList
-                                        axis="y"
-                                        lockAxis="y"
-                                        items={dplcs || []}
-                                        lockToContainerEdges={true}
-                                        useDragHandle={true}
-                                        onSortEnd={this.onSortEndDPLC}
-                                    />
-                                    <div className="buttons">
-                                        <Item
-                                            onClick={this.addNewDPLC}
-                                            inverted
-                                        >
-                                            Add New DPLC
-                                        </Item>
-                                        <Item
-                                            onClick={
-                                                mappingState.optimizeCurrentDPLCs
-                                            }
-                                            inverted
-                                        >
-                                            Optimise DPLCs
-                                        </Item>
-                                    </div>
-                                </div>
-                            )}
+                            <div className="buttons">
+                                <Item onClick={this.addNewDPLC} inverted>
+                                    Add New DPLC
+                                </Item>
+                                <Item
+                                    onClick={mappingState.optimizeCurrentDPLCs}
+                                    inverted
+                                >
+                                    Optimise DPLCs
+                                </Item>
+                            </div>
                         </div>
-                    )
-                }
-            </Spring>
-        );
-    }
-});
+                    )}
+                </Modal>
+            );
+        }
+    },
+);
