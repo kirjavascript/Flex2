@@ -63,7 +63,6 @@ class MappingState {
             scale: observable,
             x: observable,
             y: observable,
-            rotate: observable,
             resetPanAndZoom: action,
             setWidth: action,
             setZoom: action,
@@ -81,6 +80,8 @@ class MappingState {
             selectAll: action,
             selectNone: action,
             selectToggle: action,
+            rotate: observable,
+            toggleRotate: action,
             rawEditor: observable,
             toggleRawEditor: action,
             newMapping: observable,
@@ -179,6 +180,10 @@ class MappingState {
     rotate = {
         angle: 0,
         active: false,
+    };
+
+    toggleRotate = () => {
+        this.rotate.active = !this.rotate.active;
     };
 
     // raw editor

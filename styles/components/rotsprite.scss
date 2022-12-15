@@ -1,18 +1,33 @@
 .rotsprite {
-    z-index: 3;
-    // left: 15px;
-    // right: 15px;
-
     canvas {
         background-image: url(../images/t.png);
         border: 3px solid $grey;
         width: 400px;
         height: 400px;
+        margin: 10px;
     }
 
-    .close {
+    .angles {
+        margin: 10px;
+        .numbers {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .ui-input {
+            display: inline;
+        }
+        .ui-input input, .button {
+            text-align: center;
+            width: 30px;
+            margin: 0;
+        }
+    }
+
+    .actions {
         display: flex;
         justify-content: space-between;
-        margin-bottom: 10px;
+        margin: 10px;
+        margin-bottom: 0;
     }
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { environment } from '#store/environment';
 import { observer } from 'mobx-react';
 import { exportSprite } from '#formats/image';
@@ -7,13 +7,11 @@ import rotSprite, {
     addMarginToImageData,
     getRotateDiagonal,
 } from '#util/rotsprite';
-import { Input, Slider, Item, SelectBase, Button, Modal } from '#ui';
+import { Input, Slider, Item, Button, Modal } from '#ui';
 import { mappingState } from './state';
 
 export const Rotate = observer(() => {
     const canvasRef = useRef();
-
-    const [value, setValue] = useState(0);
 
     useEffect(() => {
         if (!canvasRef.current) return;
@@ -75,42 +73,55 @@ export const Rotate = observer(() => {
         return value;
     };
 
-    // mappingState.rotateShow
+    const { active } = mappingState.rotate;
 
     return (
-        <>
-            {String(!!value)}
-            <SelectBase
-                options={[...Array(2).keys()].map((d) => String(d))}
-                value={value}
-                onChange={(e) => setValue(e.value === '1')}
-            />
+        <Modal
+            className="rotsprite"
+            spring={{
+                top: active ? 15 : -100,
+                opacity: active ? 1 : 0,
+            }}
+        >
+            <Item>Rotate Sprite</Item>
+            <canvas ref={canvasRef} />
+            <div className="angles">
+                <div className="numbers">
+                    {Array.from({ length: 8 }, (_, i) => {
+                        const angle = i * 45;
+                        return (
+                            <Button
+                                key={i}
+                                onClick={() => {
+                                    mappingState.rotate.angle = angle;
+                                }}
+                            >
+                                {angle}
+                            </Button>
+                        );
+                    })}
+                    <Input
+                        store={mappingState.rotate}
+                        assert={assertInput}
+                        accessor="angle"
+                        isNumber
+                    />
+                </div>
 
-            <Modal
-                className="rotsprite"
-                spring={{
-                    top: value ? -150 : 50,
-                    opacity: value ? 1 : 0.5,
-                }}
-            >
-                <Item>Rotate Sprite</Item>
-                <canvas ref={canvasRef} />
-                <Input
-                    store={mappingState.rotate}
-                    assert={assertInput}
-                    accessor="angle"
-                    isNumber
-                />
-                <Slider
-                    min="0"
-                    step="1"
-                    max="360"
-                    store={mappingState.rotate}
-                    accessor="angle"
-                />
+                    <Slider
+                        min="0"
+                        step="1"
+                        max="360"
+                        store={mappingState.rotate}
+                        accessor="angle"
+                    />
+            </div>
+            <div className="actions">
+                <Button color="magenta" onClick={mappingState.toggleRotate}>
+                    close
+                </Button>
                 <Button color="red">Reimport</Button>
-                <Button color="magenta">close</Button>
-            </Modal>
-        </>
+            </div>
+        </Modal>
     );
 });

@@ -280,6 +280,12 @@ export const commands = [
                 mappingState.toggleRawEditor();
             },
         },
+        {
+            map: 'R', name: 'Rotate Sprite', color: 'white', noMultiplier: true,
+            func: () => {
+                mappingState.toggleRotate();
+            },
+        },
     ],
 
     [
