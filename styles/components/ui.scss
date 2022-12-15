@@ -170,3 +170,12 @@ input {
     }
 
 }
+
+.modal {
+    box-sizing: content-box;
+    position: absolute;
+    z-index: 1;
+    background-color: $black;
+    box-shadow: 2px 2px 4px $black;
+    padding: 15px;
+}

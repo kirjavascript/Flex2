@@ -3,7 +3,7 @@ import { environment } from '#store/environment';
 import { observer } from 'mobx-react';
 import { exportSprite } from '#formats/image';
 import rotSprite, { Pixels, addMarginToImageData, getRotateDiagonal } from '#util/rotsprite';
-import { Input, Slider, Item, SelectBase, Button } from '#ui';
+import { Input, Slider, Item, SelectBase, Button, Modal } from '#ui';
 import { mappingState } from './state';
 
 export const Rotate = observer(() => {
@@ -12,6 +12,7 @@ export const Rotate = observer(() => {
     const [value, setValue] = useState(0);
 
     useEffect(() => {
+        if (!canvasRef.current) return;
         const spriteCanv = exportSprite(environment.currentSprite);
         const spriteCtx = spriteCanv.getContext('2d');
 
@@ -71,14 +72,20 @@ export const Rotate = observer(() => {
     };
 
     return (
-        <div className="rotsprite">
+        <>
+            {String(!!value)}
+            <SelectBase
+                options={[...Array(2).keys()].map(d => String(d))}
+                value={value}
+                onChange={e => setValue(e.value==='1')}
+            />
+
+        <Modal className="rotsprite" spring={({
+            top: value ? -150 : 50,
+            opacity: value? 1 : 0.5,
+        })}>
             <Item>Rotate Sprite</Item>
             <canvas ref={canvasRef} />
-            <SelectBase
-                options={[...Array(7).keys()].map(d => String(d*90))}
-                value={value}
-                onChange={e => setValue(e.value)}
-            />
             <Input
                 store={mappingState}
                 assert={assertInput}
@@ -94,6 +101,7 @@ export const Rotate = observer(() => {
             />
             <Button color="red">Reimport</Button>
             <Button color="magenta">close</Button>
-        </div>
+        </Modal>
+        </>
     );
 });
