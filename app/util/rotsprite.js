@@ -139,34 +139,35 @@ export class Pixels {
     };
 }
 
+export function addMarginToImageData(imageData, xMargin, yMargin) {
+    // Create a new ImageData object with the new dimensions, including the margin.
+    const newImageData = new ImageData(
+        imageData.width + xMargin * 2,
+        imageData.height + yMargin * 2,
+    );
 
-export function addMarginToImageData(ctx, imageData, xMargin, yMargin) {
-  // Create a new ImageData object with the new dimensions, including the margin.
-  const newImageData = ctx.createImageData(
-    imageData.width + xMargin * 2,
-    imageData.height + yMargin * 2
-  );
+    // Loop through the original image data and copy the pixel values to the new
+    // ImageData object, taking the margin into account.
+    for (let row = 0; row < imageData.height; row++) {
+        for (let col = 0; col < imageData.width; col++) {
+            const sourcePixel = [
+                imageData.data[(row * imageData.width + col) * 4 + 0],
+                imageData.data[(row * imageData.width + col) * 4 + 1],
+                imageData.data[(row * imageData.width + col) * 4 + 2],
+                imageData.data[(row * imageData.width + col) * 4 + 3],
+            ];
 
-  // Loop through the original image data and copy the pixel values to the new
-  // ImageData object, taking the margin into account.
-  for (let row = 0; row < imageData.height; row++) {
-    for (let col = 0; col < imageData.width; col++) {
-      const sourcePixel = [        imageData.data[(row * imageData.width + col) * 4 + 0],
-        imageData.data[(row * imageData.width + col) * 4 + 1],
-        imageData.data[(row * imageData.width + col) * 4 + 2],
-        imageData.data[(row * imageData.width + col) * 4 + 3]
-      ];
-
-      const destRow = row + yMargin;
-      const destCol = col + xMargin;
-      for (let i = 0; i < 4; i++) {
-        newImageData.data[(destRow * newImageData.width + destCol) * 4 + i] =
-          sourcePixel[i];
-      }
+            const destRow = row + yMargin;
+            const destCol = col + xMargin;
+            for (let i = 0; i < 4; i++) {
+                newImageData.data[
+                    (destRow * newImageData.width + destCol) * 4 + i
+                ] = sourcePixel[i];
+            }
+        }
     }
-  }
 
-  return newImageData;
+    return newImageData;
 }
 
 export function getRotateDiagonal(width, height) {
@@ -177,4 +178,42 @@ export function getRotateDiagonal(width, height) {
     const yMargin = Math.round((diagonal - height) / 2);
 
     return { diagonal: xMargin * 2 + width, xMargin, yMargin };
+}
+
+export function rotateImageData(imageData, angle, width, height) {
+    const { diagonal, xMargin, yMargin } = getRotateDiagonal(width, height);
+
+    const spriteData = addMarginToImageData(
+        imageData,
+        xMargin,
+        yMargin,
+    );
+
+    const data = new Uint32Array(diagonal ** 2);
+
+    for (let i = 0; i < spriteData.data.length; i += 4) {
+        const r = spriteData.data[i];
+        const g = spriteData.data[i + 1];
+        const b = spriteData.data[i + 2];
+        const a = spriteData.data[i + 3];
+        data[i / 4] = (a << 24) + (r << 16) + (g << 8) + b;
+    }
+
+    const rotated = rotSprite(
+        new Pixels(diagonal, diagonal, data),
+        (angle * Math.PI) / 180,
+    ).pixels;
+
+    const pixelData = new Uint8ClampedArray(data.length * 4);
+
+    for (let i = 0; i < data.length; i++) {
+        const value = rotated[i];
+
+        pixelData[i * 4] = (value >> 16) & 0xff;
+        pixelData[i * 4 + 1] = (value >> 8) & 0xff;
+        pixelData[i * 4 + 2] = value & 0xff;
+        pixelData[i * 4 + 3] = (value >> 24) & 0xff;
+    }
+
+    return new ImageData(pixelData, diagonal, diagonal);
 }

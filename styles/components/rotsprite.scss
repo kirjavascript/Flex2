@@ -1,14 +1,16 @@
 .rotsprite {
+    padding: 20px;
     canvas {
         background-image: url(../images/t.png);
         border: 3px solid $grey;
         width: 400px;
         height: 400px;
-        margin: 10px;
+        margin: 10px 0;
     }
 
     .angles {
-        margin: 10px;
+        margin: 10px 0;
+        margin-top: 0;
         .numbers {
             display: flex;
             justify-content: space-between;
@@ -27,7 +29,7 @@
     .actions {
         display: flex;
         justify-content: space-between;
-        margin: 10px;
+        margin: 10px 0;
         margin-bottom: 0;
     }
 }
