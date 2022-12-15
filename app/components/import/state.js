@@ -81,10 +81,14 @@ class ImportState {
             img.src = this.path;
 
         } else if (this.rotCanvas) {
-            console.log(this.rotCanvas);
             this.ctx.drawImage(this.rotCanvas, 0, 0);
             delete this.rotCanvas;
-            requestAnimationFrame(this.loaded);
+            requestAnimationFrame(() => {
+                this.loaded();
+                importState.getBBoxes();
+                importState.importSprites();
+                importState.importAll();
+            });
         }
     };
 

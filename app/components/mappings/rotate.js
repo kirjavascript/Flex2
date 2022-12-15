@@ -46,6 +46,7 @@ export const Rotate = observer(() => {
     function reImport() {
         importState.rotCanvas = canvasRef.current;
         importState.config.active = true;
+        mappingState.rotate.active = false;
     }
 
     return (
