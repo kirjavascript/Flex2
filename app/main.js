@@ -10,7 +10,7 @@ import './components/import';
 import { configure } from 'mobx';
 
 configure({
-    enforceActions: 'never',
+    enforceActions: 'never', // legacy design choice
 });
 
 render(

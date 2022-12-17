@@ -94,7 +94,7 @@ export const Rotate = observer(() => {
                 <Button color="magenta" onClick={mappingState.toggleRotate}>
                     close
                 </Button>
-                <Button color="red" onClick={reImport}>Reimport</Button>
+                <Button color="red" onClick={reImport}>Import</Button>
             </div>
         </Modal>
     );

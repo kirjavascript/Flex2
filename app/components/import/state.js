@@ -25,6 +25,7 @@ class ImportState {
 
     reset = () => {
         this.path = undefined;
+        this.rotCanvas = undefined;
         this.canvas = undefined;
         this.ctx = undefined;
         this.spriteIndex = 0;
@@ -82,12 +83,10 @@ class ImportState {
 
         } else if (this.rotCanvas) {
             this.ctx.drawImage(this.rotCanvas, 0, 0);
-            delete this.rotCanvas;
             requestAnimationFrame(() => {
                 this.loaded();
                 importState.getBBoxes();
                 importState.importSprites();
-                importState.importAll();
             });
         }
     };

@@ -12,11 +12,17 @@
 
 ROADMAP
 look at issues related to crashes
-rotsprite
 drawing mode bugs
 improve undo/redo when drawing pixels / moving things
 animation editor
     export to gif
+
+
+rotsprite
+==
+better alg
+going back when making mappings
+
 ==
 BUGS
 
@@ -29,15 +35,14 @@ set colour of art tiles
 make decompression threaded
 ctrl+wheel for horiz scroll
 ==
-ROTSPRITE
-rotsprite https://crates.io/crates/rotsprite
-https://forums.sonicretro.org/index.php?threads/sprite-rotation-utility.8848/#post-159754
-==
 select multiple sprites at once to reorder
 copy / paste mappings
 time travel for undo/redo
 import palette from spritesheet https://yarnpkg.com/en/package/node-vibrant
 ==
+Speaking of Flex2, will there be a way for sprite sheets to not load already compressed tiles? It seems like every time I add new sprites, it makes duplicates of the same tiles leading me to manually remove it myself or overlap the mappings.
+
+
 22:04 <+dIRCord> <M​ainMemory> > Art is easy ␤> Each byte encodes one pixel, both nybbles have the color index ␤> And then each column is stored all in one go, no breaking into tiles ␤> In other words, it's pretty much a headerless 8bpp bitmap ␤> I think the color index is duplicated over both nybbles for speed, but I never looked at the algorithm
 21:08 <+dIRCord> <R​andomName> Not this. For example look at ArtScaled_EggRoboFly, which is art that's used by s3k art scaler. It's uncompressed art,tho it looks transformed in some way, but not like random mess of pixels.
 uses a grayscale copy of another frame that you selected separately from the current one as a "background" frame.
