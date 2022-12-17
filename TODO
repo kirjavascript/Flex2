@@ -13,18 +13,17 @@
 ROADMAP
 look at issues related to crashes
 drawing mode bugs
+    disable mapping editing
 improve undo/redo when drawing pixels / moving things
 animation editor
     export to gif
 
 
-rotsprite
-==
-better alg
-going back when making mappings
 
 ==
 BUGS
+
+TODO: load / save / load broken in sonic CD
 
 saving 0 tile as nemesis crashes
 saving ArtC42 at all crashes

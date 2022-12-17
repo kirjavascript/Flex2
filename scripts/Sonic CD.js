@@ -33,7 +33,7 @@ mappings([
             });
         },
         ({ sprite }) => {
-            write(dc.w, sprite.length);
+            write(dc.b, sprite.length);
             return ({ mapping }) => {
                 write(dc.b, mapping.top);
                 write(nybble, 0);

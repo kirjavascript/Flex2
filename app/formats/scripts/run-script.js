@@ -184,6 +184,7 @@ export default catchFunc((file) => {
         sectionList.forEach(([readFrame], i) => {
             logger(`====== SECTION ======`, i);
             read: for (let spriteIndex = 0; spriteIndex < readLimit; spriteIndex++) {
+                if (cursor >= buffer.length) break;
                 logger(`== SPRITE == ${spriteIndex.toString(16)} `);
                 const sprite = [];
                 const ref = { global };

@@ -5,6 +5,7 @@ import { render } from 'react-dom';
 import util from 'util';
 import { Button } from '#ui';
 import { environment } from '#store/environment';
+import { storage } from '#store/storage';
 
 const inspect = (obj) => util.inspect(toJS(obj));
 
@@ -40,6 +41,7 @@ class MapLogger {
 }
 
 const log = new MapLogger();
+storage(log, 'map-logger', ['enabled']);
 
 autorun(
     () => {
