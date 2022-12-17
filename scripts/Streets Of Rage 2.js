@@ -41,26 +41,18 @@ mappings([
             const quantity = read(dc.w);
             read(dc.w);
             read(dc.w);
-                // console.log(1);
-            // console.log(quantity);
             return quantity > 0 && (({ mapping }, i) => {
-                mapping.art = read(dc.b);
-                mapping.left = read(dc.b);
-                mapping.top = read(dc.b);
                 read(dc.b);
-                read(dc.b);
-                read(dc.b);
-
-
-                // mapping.top = read(dc.b, signed);
-                // read(nybble);
-                // mapping.width = read(2) + 1;
-                // mapping.height = read(2) + 1;
-                // mapping.priority = read(1);
-                // mapping.palette = read(2);
-                // mapping.vflip = read(1);
-                // mapping.hflip = read(1);
-                // mapping.left = read(dc.b, signed);
+                mapping.left = read(dc.b, signed);
+                mapping.top = read(dc.b, signed);
+                read(nybble);
+                mapping.width = read(2) + 1;
+                mapping.height = read(2) + 1
+                mapping.art = read(dc.w);
+                mapping.priority = false;
+                mapping.vflip = false;
+                mapping.hflip = false;
+                mapping.palette = 0;
                 if (i === quantity) return endFrame;
             });
         },
