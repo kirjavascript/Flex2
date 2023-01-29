@@ -9,7 +9,7 @@ import {
     Checkboard,
     EditableInput,
 } from 'react-color/lib/components/common';
-import color from 'react-color/lib/helpers/color';
+import { isValidHex } from 'react-color/lib/helpers/color';
 
 export const SketchFields = ({ onChange, rgb, hsl, hex, disableAlpha }) => {
     const styles = reactCSS(
@@ -59,7 +59,7 @@ export const SketchFields = ({ onChange, rgb, hsl, hex, disableAlpha }) => {
 
     const handleChange = (data, e) => {
         if (data.hex) {
-            color.isValidHex(data.hex) &&
+            isValidHex(data.hex) &&
                 onChange(
                     {
                         hex: data.hex,

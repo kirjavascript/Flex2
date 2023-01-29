@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.2.1]
+- Fix bug in color picker that stopped you entering hex values
+
 ## [1.2.0]
 - Sprite Rotation
 - Add zoom slider in sprites tab
