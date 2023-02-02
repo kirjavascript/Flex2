@@ -1,5 +1,8 @@
 # Changelog
 
+## [unreleased]
+- Fix Sonic 3 Object null sprites
+
 ## [1.2.1]
 - Fix bug in color picker that stopped you entering hex values
 
