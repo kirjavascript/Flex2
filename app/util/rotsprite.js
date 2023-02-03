@@ -1,8 +1,57 @@
+export function getRotateDiagonal(width, height) {
+    const diagonal =
+        1 + (0 | (2 * Math.sqrt(width ** 2 / 4 + height ** 2 / 4)));
+
+    const xMargin = Math.round((diagonal - width) / 2);
+    const yMargin = Math.round((diagonal - height) / 2);
+
+    return { diagonal: xMargin * 2 + width, xMargin, yMargin };
+}
+
+export function rotateImageData(imageData, angle, width, height) {
+    const { diagonal, xMargin, yMargin } = getRotateDiagonal(width, height);
+
+    const spriteData = addMarginToImageData(
+        imageData,
+        xMargin,
+        yMargin,
+    );
+
+    const data = new Uint32Array(diagonal ** 2);
+
+    for (let i = 0; i < spriteData.data.length; i += 4) {
+        const r = spriteData.data[i];
+        const g = spriteData.data[i + 1];
+        const b = spriteData.data[i + 2];
+        const a = spriteData.data[i + 3];
+        data[i / 4] = (a << 24) + (r << 16) + (g << 8) + b;
+    }
+
+    const rotated = rotSprite(
+        new Pixels(diagonal, diagonal, data),
+        (angle * Math.PI) / 180,
+    ).pixels;
+
+    const pixelData = new Uint8ClampedArray(data.length * 4);
+
+    for (let i = 0; i < data.length; i++) {
+        const value = rotated[i];
+
+        pixelData[i * 4] = (value >> 16) & 0xff;
+        pixelData[i * 4 + 1] = (value >> 8) & 0xff;
+        pixelData[i * 4 + 2] = value & 0xff;
+        pixelData[i * 4 + 3] = (value >> 24) & 0xff;
+    }
+
+    return new ImageData(pixelData, diagonal, diagonal);
+}
+
+// rotsprite
 // original algorithm Xenowhirl
 // stole code from ChaseMor/pxt-arcade-rotsprite
 // some generated with chatGPT
 
-export default function rotSprite(image, angle) {
+function rotSprite(image, angle) {
     image = scale2xImage(image);
     image = scale2xImage(image);
     image = scale2xImage(image);
@@ -168,52 +217,4 @@ export function addMarginToImageData(imageData, xMargin, yMargin) {
     }
 
     return newImageData;
-}
-
-export function getRotateDiagonal(width, height) {
-    const diagonal =
-        1 + (0 | (2 * Math.sqrt(width ** 2 / 4 + height ** 2 / 4)));
-
-    const xMargin = Math.round((diagonal - width) / 2);
-    const yMargin = Math.round((diagonal - height) / 2);
-
-    return { diagonal: xMargin * 2 + width, xMargin, yMargin };
-}
-
-export function rotateImageData(imageData, angle, width, height) {
-    const { diagonal, xMargin, yMargin } = getRotateDiagonal(width, height);
-
-    const spriteData = addMarginToImageData(
-        imageData,
-        xMargin,
-        yMargin,
-    );
-
-    const data = new Uint32Array(diagonal ** 2);
-
-    for (let i = 0; i < spriteData.data.length; i += 4) {
-        const r = spriteData.data[i];
-        const g = spriteData.data[i + 1];
-        const b = spriteData.data[i + 2];
-        const a = spriteData.data[i + 3];
-        data[i / 4] = (a << 24) + (r << 16) + (g << 8) + b;
-    }
-
-    const rotated = rotSprite(
-        new Pixels(diagonal, diagonal, data),
-        (angle * Math.PI) / 180,
-    ).pixels;
-
-    const pixelData = new Uint8ClampedArray(data.length * 4);
-
-    for (let i = 0; i < data.length; i++) {
-        const value = rotated[i];
-
-        pixelData[i * 4] = (value >> 16) & 0xff;
-        pixelData[i * 4 + 1] = (value >> 8) & 0xff;
-        pixelData[i * 4 + 2] = value & 0xff;
-        pixelData[i * 4 + 3] = (value >> 24) & 0xff;
-    }
-
-    return new ImageData(pixelData, diagonal, diagonal);
 }
