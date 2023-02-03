@@ -1,3 +1,7 @@
+// 3 shears
+
+// common
+
 export function getRotateDiagonal(width, height) {
     const diagonal =
         1 + (0 | (2 * Math.sqrt(width ** 2 / 4 + height ** 2 / 4)));
@@ -7,6 +11,12 @@ export function getRotateDiagonal(width, height) {
 
     return { diagonal: xMargin * 2 + width, xMargin, yMargin };
 }
+
+// rotsprite
+//
+// original algorithm Xenowhirl
+// stole code from ChaseMor/pxt-arcade-rotsprite
+// some generated with chatGPT
 
 export function rotateImageData(imageData, angle, width, height) {
     const { diagonal, xMargin, yMargin } = getRotateDiagonal(width, height);
@@ -45,11 +55,6 @@ export function rotateImageData(imageData, angle, width, height) {
 
     return new ImageData(pixelData, diagonal, diagonal);
 }
-
-// rotsprite
-// original algorithm Xenowhirl
-// stole code from ChaseMor/pxt-arcade-rotsprite
-// some generated with chatGPT
 
 function rotSprite(image, angle) {
     image = scale2xImage(image);

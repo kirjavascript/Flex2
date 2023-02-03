@@ -20,47 +20,88 @@ function rotateCurrentSprite(canvas, angle) {
     // canvas.height = rotatedData.height;
     // ctx.putImageData(rotatedData, 0, 0);
 
+    function flipImageData(imageData) {
+        const { width, height, data } = imageData;
+        const rotatedImageData = new ImageData(width, height);
+        const rotatedData = rotatedImageData.data;
 
-    // add padding
-    const { diagonal, xMargin, yMargin } = getRotateDiagonal(spriteCanv.width, spriteCanv.height);
+        for (let y = 0; y < height; y++) {
+            for (let x = 0; x < width; x++) {
+                const srcIndex = (y * width + x) * 4;
+                const dstIndex = ((height - y - 1) * width + (width - x - 1)) * 4;
+                rotatedData[dstIndex + 0] = data[srcIndex + 0];
+                rotatedData[dstIndex + 1] = data[srcIndex + 1];
+                rotatedData[dstIndex + 2] = data[srcIndex + 2];
+                rotatedData[dstIndex + 3] = data[srcIndex + 3];
+            }
+        }
+
+        return rotatedImageData;
+    }
+
+    const flipped = angle > 90 && angle < 270;
+    // TODO: fix flip clipping
+    // TODO: fix padding clipping
+
+    let { diagonal, xMargin, yMargin } = getRotateDiagonal(
+        spriteCanv.width,
+        spriteCanv.height,
+    );
     const width = diagonal;
     const height = diagonal;
 
-    const copy = spriteCtx.getImageData(0, 0, spriteCanv.width, spriteCanv.height);
+    const copy = spriteCtx.getImageData(
+        0,
+        0,
+        spriteCanv.width,
+        spriteCanv.height,
+    );
 
     spriteCanv.width = diagonal;
     spriteCanv.height = diagonal;
 
-    spriteCtx.putImageData(copy, xMargin, yMargin);
+    spriteCtx.putImageData(flipped ? flipImageData(copy) : copy, xMargin, yMargin);
 
     const ctx = canvas.getContext('2d');
     canvas.width = width;
     canvas.height = height;
 
+
+    if (flipped) {
+        // // flip spriteCanv using ctx as a buffer
+        // ctx.save();
+        // ctx.translate(width / 2, height / 2);
+        // ctx.rotate(Math.PI);
+        // ctx.drawImage(spriteCanv, -width / 2, -width / 2);
+        // ctx.restore();
+        // spriteCtx.clearRect(0, 0, width, height);
+        // spriteCtx.drawImage(canvas, 0, 0, width, height);
+        // ctx.clearRect(0, 0, width, height);
+    }
+
     // rotate
 
-    const theta = angle * Math.PI / 180;
-    const alpha = -Math.tan(theta/2);
+    const clampedAngle = flipped ? angle - 180 : angle;
+    const theta = (clampedAngle * Math.PI) / 180;
+    const alpha = -Math.tan(theta / 2);
     const beta = Math.sin(theta);
 
-
-
     for (let y = 0; y < height; ++y) {
-        const shear = Math.round((y - height/2) * alpha);
+        const shear = Math.round((y - height / 2) * alpha);
         ctx.drawImage(spriteCanv, 0, y, width, 1, shear, y, width, 1);
     }
     spriteCtx.clearRect(0, 0, width, height);
     spriteCtx.drawImage(canvas, 0, 0);
     ctx.clearRect(0, 0, width, height);
     for (let x = 0; x < width; ++x) {
-        const shear = Math.round((x - width/2) * beta);
+        const shear = Math.round((x - width / 2) * beta);
         ctx.drawImage(spriteCanv, x, 0, 1, height, x, shear, 1, height);
     }
     spriteCtx.clearRect(0, 0, width, height);
     spriteCtx.drawImage(canvas, 0, 0);
     ctx.clearRect(0, 0, width, height);
     for (let y = 0; y < height; ++y) {
-        const shear = Math.round((y - height/2) * alpha);
+        const shear = Math.round((y - height / 2) * alpha);
         ctx.drawImage(spriteCanv, 0, y, width, 1, shear, y, width, 1);
     }
 }
@@ -138,7 +179,9 @@ export const Rotate = observer(() => {
                 <Button color="magenta" onClick={mappingState.toggleRotate}>
                     close
                 </Button>
-                <Button color="red" onClick={reImport}>Import</Button>
+                <Button color="red" onClick={reImport}>
+                    Import
+                </Button>
             </div>
         </Modal>
     );
