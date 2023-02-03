@@ -1,6 +1,7 @@
 # Changelog
 
-## [unreleased]
+## [1.2.2]
+- Added sprite rotation algorithm: 3 shears
 - Fix Sonic 3 Object null sprites
 
 ## [1.2.1]

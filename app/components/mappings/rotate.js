@@ -16,7 +16,6 @@ function rotateCurrentSprite(canvas, angle, algorithm) {
     } else {
         threeShears(spriteCanv, canvas, angle);
     }
-
 }
 
 export const Rotate = observer(() => {

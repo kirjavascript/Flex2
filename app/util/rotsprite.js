@@ -1,16 +1,19 @@
 // 3 shears
 
-
 export function threeShears(spriteCanv, canvas, angle) {
     const spriteCtx = spriteCanv.getContext('2d');
 
     const flipped = angle > 90 && angle < 270;
-    // TODO: fix padding clipping
 
-    let { diagonal, xMargin, yMargin } = getRotateDiagonal(
+    const diag = getRotateDiagonal(
         spriteCanv.width,
         spriteCanv.height,
     );
+    const minXPad = 1 + (0 | (spriteCanv.width / 2));
+    const overflow = diag.xMargin < minXPad ? minXPad - diag.xMargin : 0;
+    const diagonal = diag.diagonal + overflow * 2;
+    const xMargin = diag.xMargin + overflow;
+    const yMargin = diag.yMargin + overflow;
     const width = diagonal;
     const height = diagonal;
 
@@ -21,29 +24,29 @@ export function threeShears(spriteCanv, canvas, angle) {
         spriteCanv.height,
     );
 
+
     spriteCanv.width = diagonal;
-    spriteCanv.height = diagonal;
+    spriteCanv.height = spriteCanv.width;
 
     if (flipped) {
-        spriteCtx.putImageData(flipImageData(copy), xMargin+1, yMargin+1);
+        spriteCtx.putImageData(
+            flipImageData(copy),
+             xMargin + 1,
+             yMargin + 1,
+        );
     } else {
         spriteCtx.putImageData(copy, xMargin, yMargin);
-
     }
 
     const ctx = canvas.getContext('2d');
-    canvas.width = width;
-    canvas.height = height;
-
-    // ctx.drawImage(spriteCanv,0,0);
-    // return;
+    canvas.width = diagonal;
+    canvas.height = diagonal;
 
     // rotate
 
     const clampedAngle = flipped ? angle - 180 : angle;
     const theta = (clampedAngle * Math.PI) / 180;
     const alpha = -Math.tan(theta / 2);
-    const beta = Math.sin(theta);
 
     for (let y = 0; y < height; ++y) {
         const shear = Math.round((y - height / 2) * alpha);
@@ -53,7 +56,7 @@ export function threeShears(spriteCanv, canvas, angle) {
     spriteCtx.drawImage(canvas, 0, 0);
     ctx.clearRect(0, 0, width, height);
     for (let x = 0; x < width; ++x) {
-        const shear = Math.round((x - width / 2) * beta);
+        const shear = Math.round((x - width / 2) * Math.sin(theta));
         ctx.drawImage(spriteCanv, x, 0, 1, height, x, shear, 1, height);
     }
     spriteCtx.clearRect(0, 0, width, height);
@@ -63,6 +66,12 @@ export function threeShears(spriteCanv, canvas, angle) {
         const shear = Math.round((y - height / 2) * alpha);
         ctx.drawImage(spriteCanv, 0, y, width, 1, shear, y, width, 1);
     }
+
+    // crop overflow
+    const inner = ctx.getImageData(overflow, overflow, diag.diagonal, diag.diagonal);
+    canvas.width = diag.diagonal;
+    canvas.height = diag.diagonal;
+    ctx.putImageData(inner, 0, 0);
 }
 
 function flipImageData(imageData) {
@@ -84,7 +93,6 @@ function flipImageData(imageData) {
     return rotatedImageData;
 }
 
-
 // common
 
 function getRotateDiagonal(width, height) {
@@ -103,7 +111,6 @@ function getRotateDiagonal(width, height) {
 // stole code from ChaseMor/pxt-arcade-rotsprite
 // some generated with chatGPT
 
-
 export function rotsprite(spriteCanv, canvas, angle) {
     const spriteCtx = spriteCanv.getContext('2d');
     const { width, height } = spriteCanv;
@@ -119,11 +126,7 @@ export function rotsprite(spriteCanv, canvas, angle) {
 function rotateImageData(imageData, angle, width, height) {
     const { diagonal, xMargin, yMargin } = getRotateDiagonal(width, height);
 
-    const spriteData = addMarginToImageData(
-        imageData,
-        xMargin,
-        yMargin,
-    );
+    const spriteData = addMarginToImageData(imageData, xMargin, yMargin);
 
     const data = new Uint32Array(diagonal ** 2);
 
