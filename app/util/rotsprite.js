@@ -1,8 +1,93 @@
 // 3 shears
 
+
+export function threeShears(spriteCanv, canvas, angle) {
+    const spriteCtx = spriteCanv.getContext('2d');
+
+    const flipped = angle > 90 && angle < 270;
+    // TODO: fix padding clipping
+
+    let { diagonal, xMargin, yMargin } = getRotateDiagonal(
+        spriteCanv.width,
+        spriteCanv.height,
+    );
+    const width = diagonal;
+    const height = diagonal;
+
+    const copy = spriteCtx.getImageData(
+        0,
+        0,
+        spriteCanv.width,
+        spriteCanv.height,
+    );
+
+    spriteCanv.width = diagonal;
+    spriteCanv.height = diagonal;
+
+    if (flipped) {
+        spriteCtx.putImageData(flipImageData(copy), xMargin+1, yMargin+1);
+    } else {
+        spriteCtx.putImageData(copy, xMargin, yMargin);
+
+    }
+
+    const ctx = canvas.getContext('2d');
+    canvas.width = width;
+    canvas.height = height;
+
+    // ctx.drawImage(spriteCanv,0,0);
+    // return;
+
+    // rotate
+
+    const clampedAngle = flipped ? angle - 180 : angle;
+    const theta = (clampedAngle * Math.PI) / 180;
+    const alpha = -Math.tan(theta / 2);
+    const beta = Math.sin(theta);
+
+    for (let y = 0; y < height; ++y) {
+        const shear = Math.round((y - height / 2) * alpha);
+        ctx.drawImage(spriteCanv, 0, y, width, 1, shear, y, width, 1);
+    }
+    spriteCtx.clearRect(0, 0, width, height);
+    spriteCtx.drawImage(canvas, 0, 0);
+    ctx.clearRect(0, 0, width, height);
+    for (let x = 0; x < width; ++x) {
+        const shear = Math.round((x - width / 2) * beta);
+        ctx.drawImage(spriteCanv, x, 0, 1, height, x, shear, 1, height);
+    }
+    spriteCtx.clearRect(0, 0, width, height);
+    spriteCtx.drawImage(canvas, 0, 0);
+    ctx.clearRect(0, 0, width, height);
+    for (let y = 0; y < height; ++y) {
+        const shear = Math.round((y - height / 2) * alpha);
+        ctx.drawImage(spriteCanv, 0, y, width, 1, shear, y, width, 1);
+    }
+}
+
+function flipImageData(imageData) {
+    const { width, height, data } = imageData;
+    const rotatedImageData = new ImageData(width, height);
+    const rotatedData = rotatedImageData.data;
+
+    for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+            const srcIndex = (y * width + x) * 4;
+            const dstIndex = ((height - y - 1) * width + (width - x - 1)) * 4;
+            rotatedData[dstIndex + 0] = data[srcIndex + 0];
+            rotatedData[dstIndex + 1] = data[srcIndex + 1];
+            rotatedData[dstIndex + 2] = data[srcIndex + 2];
+            rotatedData[dstIndex + 3] = data[srcIndex + 3];
+        }
+    }
+
+    return rotatedImageData;
+}
+
+
 // common
 
-export function getRotateDiagonal(width, height) {
+function getRotateDiagonal(width, height) {
     const diagonal =
         1 + (0 | (2 * Math.sqrt(width ** 2 / 4 + height ** 2 / 4)));
 
@@ -18,7 +103,20 @@ export function getRotateDiagonal(width, height) {
 // stole code from ChaseMor/pxt-arcade-rotsprite
 // some generated with chatGPT
 
-export function rotateImageData(imageData, angle, width, height) {
+
+export function rotsprite(spriteCanv, canvas, angle) {
+    const spriteCtx = spriteCanv.getContext('2d');
+    const { width, height } = spriteCanv;
+    const imageData = spriteCtx.getImageData(0, 0, width, height);
+    const rotatedData = rotateImageData(imageData, angle, width, height);
+
+    const ctx = canvas.getContext('2d');
+    canvas.width = rotatedData.width;
+    canvas.height = rotatedData.height;
+    ctx.putImageData(rotatedData, 0, 0);
+}
+
+function rotateImageData(imageData, angle, width, height) {
     const { diagonal, xMargin, yMargin } = getRotateDiagonal(width, height);
 
     const spriteData = addMarginToImageData(
@@ -37,7 +135,7 @@ export function rotateImageData(imageData, angle, width, height) {
         data[i / 4] = (a << 24) + (r << 16) + (g << 8) + b;
     }
 
-    const rotated = rotSprite(
+    const rotated = rotspriteAlg(
         new Pixels(diagonal, diagonal, data),
         (angle * Math.PI) / 180,
     ).pixels;
@@ -56,7 +154,7 @@ export function rotateImageData(imageData, angle, width, height) {
     return new ImageData(pixelData, diagonal, diagonal);
 }
 
-function rotSprite(image, angle) {
+function rotspriteAlg(image, angle) {
     image = scale2xImage(image);
     image = scale2xImage(image);
     image = scale2xImage(image);
@@ -129,7 +227,7 @@ function rotateAndReduceImage(original, angle) {
     return rotated;
 }
 
-export class Pixels {
+class Pixels {
     // The width and height of the image in pixels
     width;
     height;
@@ -193,7 +291,7 @@ export class Pixels {
     };
 }
 
-export function addMarginToImageData(imageData, xMargin, yMargin) {
+function addMarginToImageData(imageData, xMargin, yMargin) {
     // Create a new ImageData object with the new dimensions, including the margin.
     const newImageData = new ImageData(
         imageData.width + xMargin * 2,

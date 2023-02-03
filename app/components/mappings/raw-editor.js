@@ -291,7 +291,7 @@ export const RawEditor = observer(
                             color="magenta"
                             onClick={mappingState.toggleRawEditor}
                         >
-                            close
+                            Close
                         </Button>
                     </div>
                     <SortableMappingList
