@@ -1,4 +1,4 @@
-import { observable, computed, action, autorun, toJS, makeObservable } from 'mobx';
+import { observable, computed, action, makeObservable } from 'mobx';
 const { dialog } = require('@electron/remote');
 import { errorMsg } from '#util/dialog';
 import { removeBackground } from './remove-background';
@@ -6,6 +6,7 @@ import { colorMatch } from './color-match';
 import { getSpriteBBoxes } from './get-sprite';
 import { getMappings } from './generate-mappings';
 import { importSprite } from './import-sprite';
+import { readFile } from 'fs';
 
 class ImportState {
     config = {
@@ -65,21 +66,27 @@ class ImportState {
         this.ctx = node.getContext('2d');
 
         if (this.path) {
-            const img = new Image();
-
-            img.onload = () => {
-                node.width = img.width;
-                node.height = img.height;
-                this.ctx.drawImage(img, 0, 0);
-                requestAnimationFrame(this.loaded);
-            };
-
-            img.onerror = (e) => {
-                errorMsg('Import Error', `Error loading ${this.path}`);
-                this.cancel();
-            };
-
-            img.src = this.path;
+            readFile(this.path, (_err, data) => {
+                if (data) {
+                    const blob = new Blob([data]);
+                    const url = URL.createObjectURL(blob);
+                    const img = new Image();
+                    img.onload = () => {
+                        node.width = img.width;
+                        node.height = img.height;
+                        this.ctx.drawImage(img, 0, 0);
+                        requestAnimationFrame(this.loaded);
+                        URL.revokeObjectURL(url);
+                    };
+                    img.onerror = (e) => {
+                        errorMsg('Import Error', `Error loading ${this.path}`);
+                        this.cancel();
+                    };
+                    img.src = url;
+                } else {
+                    errorMsg('Import Error', `Error loading ${this.path}`);
+                }
+            });
 
         } else if (this.rotCanvas) {
             this.ctx.drawImage(this.rotCanvas, 0, 0);

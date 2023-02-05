@@ -1,6 +1,6 @@
 import { environment } from '#store/environment';
 const { dialog } = require('@electron/remote');
-import { writeFile } from 'fs';
+import { readFile, writeFile } from 'fs';
 import { errorMsg } from '#util/dialog';
 import { colorMatch } from '#components/import/color-match';
 
@@ -172,10 +172,21 @@ export async function importImg() {
     // load image
 
     const img = await (new Promise((resolve) => {
-        const img = new Image();
-        img.onload = () => { resolve(img); };
-        img.onerror = (e) => { resolve(null); };
-        img.src = path;
+        readFile(path, (_err, data) => {
+            if (data) {
+                const blob = new Blob([data]);
+                const url = URL.createObjectURL(blob);
+                const img = new Image();
+                img.onload = () => {
+                    resolve(img);
+                    URL.revokeObjectURL(url);
+                };
+                img.onerror = (e) => { resolve(null); };
+                img.src = url;
+            } else {
+                resolve(null);
+            }
+        });
     }));
 
     if (!img) return errorMsg('Import Error', `Error loading ${path}`);

@@ -1,5 +1,9 @@
 # Changelog
 
+## [unreleased]
+- Change DPLC limit to 255
+- Fix issue where image data would be cached incorrectly
+
 ## [1.2.2]
 - Added sprite rotation algorithm: 3 shears
 - Fix Sonic 3 Object null sprites
@@ -10,9 +14,6 @@
 ## [1.2.0]
 - Sprite Rotation
 - Add zoom slider in sprites tab
-
-## [1.1.3]
-- Upgrade to electron 12
 
 ## [1.1.2]
 - Assume undefined labels are at address 0 [#33](/../../issues/33)
