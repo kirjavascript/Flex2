@@ -29,6 +29,8 @@ exports.browserModuleNames = [
     'powerMonitor',
     'powerSaveBlocker',
     'protocol',
+    'pushNotifications',
+    'safeStorage',
     'screen',
     'session',
     'ShareMenu',
@@ -36,13 +38,14 @@ exports.browserModuleNames = [
     'TopLevelWindow',
     'TouchBar',
     'Tray',
+    'utilityProcess',
     'View',
     'webContents',
     'WebContentsView',
     'webFrameMain',
 ].concat(exports.commonModuleNames);
 const features = get_electron_binding_1.getElectronBinding('features');
-if (!features || features.isDesktopCapturerEnabled()) {
+if (!features || !features.isDesktopCapturerEnabled || features.isDesktopCapturerEnabled()) {
     exports.browserModuleNames.push('desktopCapturer');
 }
 if (!features || features.isViewApiEnabled()) {

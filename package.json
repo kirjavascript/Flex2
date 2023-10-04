@@ -9,7 +9,7 @@
         "node-sass": "git+https://github.com/TomiBelan/node-sass-wasm#built/master"
     },
     "dependencies": {
-        "@electron/remote": "^1.1.0",
+        "@electron/remote": "^2.0.11",
         "@react-spring/web": "^9.6.0",
         "arcsecond": "^3.1.2",
         "array-move": "^3.0.1",
@@ -18,7 +18,7 @@
         "d3-dispatch": "^1.0.3",
         "d3-drag": "^1.2.5",
         "d3-selection": "^1.1.0",
-        "electron": "13.6.9",
+        "electron": "^26.2.4",
         "flexlayout-react": "^0.4.5",
         "lodash": "^4.17.19",
         "marked": "^0.3.6",

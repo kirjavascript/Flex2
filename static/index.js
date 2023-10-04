@@ -19,6 +19,8 @@ function createWindow() {
         },
     });
 
+    require('./remote/main').enable(mainWindow.webContents);
+
     mainWindow.setMenu(null);
     mainWindow.loadFile('./index.html');
 

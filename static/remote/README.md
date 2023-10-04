@@ -1,5 +1,8 @@
 # @electron/remote
 
+[![CircleCI build status](https://circleci.com/gh/electron/remote/tree/main.svg?style=shield)](https://circleci.com/gh/electron/remote/tree/main)
+[![npm version](http://img.shields.io/npm/v/@electron/remote.svg)](https://npmjs.org/package/@electron/remote)
+
 `@electron/remote` is an [Electron](https://electronjs.org) module that bridges
 JavaScript objects from the main process to the renderer process. This lets you
 access main-process-only objects as if they were available in the renderer
@@ -7,7 +10,7 @@ process.
 
 > ⚠️ **Warning!** This module has [many subtle
 > pitfalls][remote-considered-harmful]. There is almost always a better way to
-> accomplish your task than using this module. For example, [`ipcRenderer.invoke`](https://www.electronjs.org/docs/api/ipc-renderer#ipcrendererinvokechannel-args) can serve many common use cases.
+> accomplish your task than using this module. For example, [`ipcRenderer.invoke`](https://www.electronjs.org/docs/latest/api/ipc-renderer#ipcrendererinvokechannel-args) can serve many common use cases.
 
 `@electron/remote` is a replacement for the built-in `remote` module in
 Electron, which is deprecated and will eventually be removed.
@@ -52,11 +55,12 @@ configure your bundler appropriately to package the code of `@electron/remote`
 in the preload script. Of course, [using `@electron/remote` makes the sandbox
 much less effective][remote-considered-harmful].
 
-**Note:** `@electron/remote` respects the `enableRemoteModule` WebPreferences
+**Note:** In `electron >= 14.0.0`, you must use the new `enable` API to enable the remote module for each desired `WebContents` separately: `require("@electron/remote/main").enable(webContents)`.
+
+In `electron < 14.0.0`, `@electron/remote` respects the `enableRemoteModule` WebPreferences
 value. You must pass `{ webPreferences: { enableRemoteModule: true } }` to
 the constructor of `BrowserWindow`s that should be granted permission to use
 `@electron/remote`.
-
 
 # API Reference
 
@@ -85,9 +89,11 @@ of the remote module:
 require('@electron/remote/main').initialize()
 ```
 
-**Note:** The remote module can be disabled for security reasons in the following contexts:
-- [`BrowserWindow`](browser-window.md) - by setting the `enableRemoteModule` option to `false`.
-- [`<webview>`](webview-tag.md) - by setting the `enableremotemodule` attribute to `false`.
+**Note:** In `electron >= 14.0.0` the remote module is disabled by default for any `WebContents` instance and is only enabled for specified `WebContents` after explicitly calling `require("@electron/remote/main").enable(webContents)`.
+
+In `electron < 14.0.0` the remote module can be disabled for security reasons in the following contexts:
+- [`BrowserWindow`](https://www.electronjs.org/docs/latest/api/browser-window) - by setting the `enableRemoteModule` option to `false`.
+- [`<webview>`](https://www.electronjs.org/docs/latest/api/webview-tag) - by setting the `enableremotemodule` attribute to `false`.
 
 ## Remote Objects
 
@@ -214,8 +220,8 @@ e.g.
 ```sh
 project/
 ├── main
-│   ├── foo.js
-│   └── index.js
+│   ├── foo.js
+│   └── index.js
 ├── package.json
 └── renderer
     └── index.js
