@@ -21,7 +21,7 @@
 - Made default format Sonic 1
 
 ## [1.1.1]
-- allow closing a project when a broken one has been loaded
+- Allow closing a project when a broken one has been loaded
 
 ## [1.1.0]
 - Export spritesheet

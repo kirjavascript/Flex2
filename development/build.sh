@@ -2,22 +2,22 @@
 # copy latest version of electron remote
 cp -r node_modules/@electron/remote ./static
 node -e "require('./development/build')()"
-electron-packager ./static Flex2 --platform=win32 --arch=x64 \
+npx electron-packager ./static Flex2 --platform=win32 --arch=x64 \
     --asar --overwrite --package-manager yarn \
     --win32metadata.CompanyName="Flex 2" \
     --win32metadata.FileDescription="Flex 2" \
     --win32metadata.ProductName="Flex 2" \
     --appCopyright="kirjavascript" \
     --icon=./development/icon.ico
-electron-packager ./static Flex2 --platform=win32 --arch=ia32 \
+npx electron-packager ./static Flex2 --platform=win32 --arch=ia32 \
     --asar --overwrite --package-manager yarn \
     --win32metadata.CompanyName="Flex 2" \
     --win32metadata.FileDescription="Flex 2" \
     --win32metadata.ProductName="Flex 2" \
     --appCopyright="kirjavascript" \
     --icon=./development/icon.ico
-electron-packager ./static Flex2 --platform=linux --arch=x64 --asar --overwrite --package-manager yarn
-electron-packager ./static Flex2 --platform=darwin --arch=x64 --asar --overwrite --package-manager yarn
+npx electron-packager ./static Flex2 --platform=linux --arch=x64 --asar --overwrite --package-manager yarn
+npx electron-packager ./static Flex2 --platform=darwin --arch=x64 --asar --overwrite --package-manager yarn
 
 
 cp -r scripts Flex2-win32-ia32
