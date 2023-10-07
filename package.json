@@ -15,6 +15,7 @@
         "array-move": "^3.0.1",
         "classnames": "^2.2.5",
         "color-diff": "^1.1.0",
+        "comlink": "^4.4.1",
         "d3-dispatch": "^1.0.3",
         "d3-drag": "^1.2.5",
         "d3-selection": "^1.1.0",

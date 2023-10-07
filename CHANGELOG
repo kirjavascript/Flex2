@@ -2,7 +2,9 @@
 
 ## [unreleased]
 - Change DPLC limit to 255
+- Make (de)compression threaded
 - Fix issue where image data would be cached incorrectly
+- Electron updated to v26
 
 ## [1.2.2]
 - Added sprite rotation algorithm: 3 shears

@@ -1,3 +1,5 @@
+import * as Comlink from 'comlink';
+
 export const compressionFormats = {
     'Uncompressed': undefined,
     'Nemesis': 'nemesis',
@@ -12,49 +14,19 @@ export const compressionFormats = {
     'RLE': 'snkrle',
 };
 
-export function decompress(buffer, compression) {
+const worker = Comlink.wrap(new Worker('bundles/compression-worker.js'));
+
+export async function decompress(buffer, compression) {
     const operation = compressionFormats[compression];
 
     if (!operation) return new Uint8Array(buffer);
-    else return mdcomp(`_${operation}_decode`, buffer);
+    else return await worker.mdcomp(`_${operation}_decode`, buffer);
 
 }
 
-export function compress(buffer, compression) {
+export async function compress(buffer, compression) {
     const operation = compressionFormats[compression];
 
     if (!operation) return buffer;
-    else return mdcomp(`_${operation}_encode`, buffer);
-}
-
-
-function mdcomp(func, data) {
-    const operation = Module[func];
-    const sp = Module.stackSave();
-    try {
-        const dataPtr = _malloc(data.length);
-        try {
-            writeArrayToMemory(data, dataPtr);
-            const outputPtrPtr = Module.stackAlloc(4);
-            const outputSizePtr = Module.stackAlloc(4);
-            if (operation(dataPtr, data.length, outputPtrPtr, outputSizePtr)) {
-                const outputPtr = HEAP32[outputPtrPtr >> 2];
-                try {
-                    const outputSize = HEAP32[outputSizePtr >> 2];
-                    const output = new Uint8Array(outputSize);
-                    let outputBuffer = outputPtr;
-                    for (let i=0; i < outputSize; i++) {
-                        output[i] = HEAP8[outputBuffer++];
-                    }
-                    return output;
-                } finally {
-                    _free(outputPtr);
-                }
-            }
-        } finally {
-            _free(dataPtr);
-        }
-    } finally {
-        Module.stackRestore(sp);
-    }
+    else return await worker.mdcomp(`_${operation}_encode`, buffer);
 }

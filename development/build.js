@@ -3,19 +3,22 @@ const esbuild = require('esbuild');
 const path = require('path');
 
 module.exports = (mainWindow) => {
-    const { writeFile, unlinkSync, existsSync } = fs;
+    const { writeFile, rmSync, readdirSync } = fs;
 
     mainWindow?.openDevTools();
-    if (existsSync('./static/bundles/main.js')) {
-        unlinkSync('./static/bundles/main.js');
-    }
+
+    const outdir = './static/bundles';
+    readdirSync(outdir).forEach((f) => rmSync(`${outdir}/${f}`));
 
     const devMode = !!mainWindow;
 
     esbuild
         .build({
-            entryPoints: ['./app/main.js'],
-            outdir: './static/bundles',
+            outdir,
+            entryPoints: {
+                main: './app/main.js',
+                'compression-worker': './app/formats/compression-worker.js',
+            },
             bundle: true,
             watch: devMode,
             sourcemap: devMode,

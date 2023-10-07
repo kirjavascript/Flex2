@@ -10,6 +10,13 @@
 /* https://raw.githubusercontent.com/Dandaman955/Streets-of-Rage-1-Disassembly-Redux/master/SoR.asm */
 /* http://info.sonicretro.org/Disassemblies */
 
+
+macros for mappings
+    format hooks for defining asm output
+    define macro files in script??
+
+return rotsprite
+
 ROADMAP
 look at issues related to crashes
 drawing mode bugs
@@ -31,7 +38,6 @@ pink surrounding tiles sometimes breaks
 
 FEATURES
 set colour of art tiles
-make decompression threaded
 ctrl+wheel for horiz scroll
 ==
 select multiple sprites at once to reorder

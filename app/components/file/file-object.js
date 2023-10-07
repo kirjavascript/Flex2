@@ -8,7 +8,7 @@ import {
     writeBIN,
     writeASM,
 } from '#formats/scripts';
-import { compressionFormats } from '#formats/compression';
+import { decompress, compress, compressionFormats } from '#formats/compression';
 import { bufferToTiles, tilesToBuffer } from '#formats/art';
 import { buffersToColors, colorsToBuffers } from '#formats/palette';
 import { environment } from '#store/environment';
@@ -37,7 +37,7 @@ export const FileObject = observer(({ obj }) => {
     const scriptArt = scriptSafe && script.art;
     const scriptPalettes = scriptSafe && script.palettes;
     const toggleDPLCs = () => (obj.dplcs.enabled = !obj.dplcs.enabled);
-    const parseASM = ((scriptSafe && script.parseASM) || parseASMInternal);
+    const parseASM = (scriptSafe && script.parseASM) || parseASMInternal;
 
     function ioWrap(filePath, setError, e, cb) {
         setError();
@@ -83,10 +83,16 @@ export const FileObject = observer(({ obj }) => {
     function loadArt(e) {
         ioWrap(obj.art.path, setArtError, e, async (path) => {
             const buffer = (await fs.readFile(path)).slice(obj.art.offset || 0);
-            const tiles = scriptArt
-                ? script.readArt(buffer)
-                : bufferToTiles(buffer, obj.art.compression);
-            environment.tiles.replace(tiles);
+
+            if (scriptArt) {
+                environment.tiles.replace(script.readArt(buffer));
+            } else {
+                const decompBuffer = await decompress(
+                    buffer,
+                    obj.art.compression,
+                );
+                environment.tiles.replace(bufferToTiles(decompBuffer));
+            }
         });
     }
 
@@ -99,6 +105,16 @@ export const FileObject = observer(({ obj }) => {
                 ? script.writeArt(tiles)
                 : tilesToBuffer(environment.tiles, obj.art.compression);
             await fs.writeFile(path, tiles);
+
+            if (scriptArt) {
+                await fs.writeFile(path, script.writeArt(tiles));
+            } else {
+                const buffer = tilesToBuffer(environment.tiles);
+                await fs.writeFile(
+                    path,
+                    Buffer.from(await compress(buffer, obj.art.compression)),
+                );
+            }
         });
     }
 
@@ -214,13 +230,9 @@ export const FileObject = observer(({ obj }) => {
                     ? palPath
                     : workspace.absolutePath(palPath);
 
-                const chunk = (scriptPalettes
-                    ? script.writePalettes
-                    : colorsToBuffers)(
-                    environment.palettes,
-                    cursor,
-                    cursor + length,
-                );
+                const chunk = (
+                    scriptPalettes ? script.writePalettes : colorsToBuffers
+                )(environment.palettes, cursor, cursor + length);
                 await fs.writeFile(path, chunk);
                 cursor += length;
             }
