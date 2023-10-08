@@ -18,6 +18,7 @@ module.exports = (mainWindow) => {
             entryPoints: {
                 main: './app/main.js',
                 'compression-worker': './app/formats/compression-worker.js',
+                'asl-worker': './app/formats/asm/asl-worker.js',
             },
             bundle: true,
             watch: devMode,
@@ -52,6 +53,7 @@ module.exports = (mainWindow) => {
             loader: {
                 '.js': 'jsx',
                 '.md': 'text',
+                '.msg': 'binary',
             },
         })
         .catch(() => {

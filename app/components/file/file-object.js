@@ -8,6 +8,8 @@ import {
     writeBIN,
     writeASM,
 } from '#formats/scripts';
+import { assemble } from '#formats/asm';
+
 import { decompress, compress, compressionFormats } from '#formats/compression';
 import { bufferToTiles, tilesToBuffer } from '#formats/art';
 import { buffersToColors, colorsToBuffers } from '#formats/palette';
@@ -123,6 +125,11 @@ export const FileObject = observer(({ obj }) => {
     function loadMappings(e) {
         ioWrap(obj.mappings.path, setMappingError, e, async (path) => {
             if (!obj.dplcs.enabled) environment.config.dplcsEnabled = false;
+
+            if (mappingsASM) {
+                await assemble(await fs.readFile(path, 'utf8'))
+            }
+
             const buffer = mappingsASM
                 ? parseASM(await fs.readFile(path, 'utf8'))
                 : await fs.readFile(path);

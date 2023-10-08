@@ -318,7 +318,7 @@ var ICASEFS = 'ICASEFS is no longer included by default; build with -licasefs.js
 var JSFILEFS = 'JSFILEFS is no longer included by default; build with -ljsfilefs.js';
 var OPFS = 'OPFS is no longer included by default; build with -lopfs.js';
 
-
+var NODEFS = 'NODEFS is no longer included by default; build with -lnodefs.js';
 
 assert(!ENVIRONMENT_IS_SHELL, "shell environment detected but not enabled at build time.  Add 'shell' to `-sENVIRONMENT` to enable.");
 
@@ -369,10 +369,6 @@ function assert(condition, text) {
 
 // We used to include malloc/free by default in the past. Show a helpful error in
 // builds with assertions.
-function _free() {
-  // Show a helpful error since we used to include free by default in the past.
-  abort("free() called but not included in the build - add '_free' to EXPORTED_FUNCTIONS");
-}
 
 // Memory management
 
@@ -1976,485 +1972,6 @@ function dbg(text) {
   
   
   
-  
-  
-  var ERRNO_CODES = {
-  };
-  
-  var NODEFS = {
-  isWindows:false,
-  staticInit() {
-        NODEFS.isWindows = !!process.platform.match(/^win/);
-        var flags = process.binding("constants");
-        // Node.js 4 compatibility: it has no namespaces for constants
-        if (flags["fs"]) {
-          flags = flags["fs"];
-        }
-        NODEFS.flagsForNodeMap = {
-          "1024": flags["O_APPEND"],
-          "64": flags["O_CREAT"],
-          "128": flags["O_EXCL"],
-          "256": flags["O_NOCTTY"],
-          "0": flags["O_RDONLY"],
-          "2": flags["O_RDWR"],
-          "4096": flags["O_SYNC"],
-          "512": flags["O_TRUNC"],
-          "1": flags["O_WRONLY"],
-          "131072": flags["O_NOFOLLOW"],
-        };
-        // The 0 define must match on both sides, as otherwise we would not
-        // know to add it.
-        assert(NODEFS.flagsForNodeMap["0"] === 0);
-      },
-  convertNodeCode(e) {
-        var code = e.code;
-        assert(code in ERRNO_CODES, `unexpected node error code: ${code} (${e})`);
-        return ERRNO_CODES[code];
-      },
-  mount(mount) {
-        assert(ENVIRONMENT_IS_NODE);
-        return NODEFS.createNode(null, '/', NODEFS.getMode(mount.opts.root), 0);
-      },
-  createNode(parent, name, mode, dev) {
-        if (!FS.isDir(mode) && !FS.isFile(mode) && !FS.isLink(mode)) {
-          throw new FS.ErrnoError(28);
-        }
-        var node = FS.createNode(parent, name, mode);
-        node.node_ops = NODEFS.node_ops;
-        node.stream_ops = NODEFS.stream_ops;
-        return node;
-      },
-  getMode(path) {
-        var stat;
-        try {
-          stat = fs.lstatSync(path);
-          if (NODEFS.isWindows) {
-            // Node.js on Windows never represents permission bit 'x', so
-            // propagate read bits to execute bits
-            stat.mode = stat.mode | ((stat.mode & 292) >> 2);
-          }
-        } catch (e) {
-          if (!e.code) throw e;
-          throw new FS.ErrnoError(NODEFS.convertNodeCode(e));
-        }
-        return stat.mode;
-      },
-  realPath(node) {
-        var parts = [];
-        while (node.parent !== node) {
-          parts.push(node.name);
-          node = node.parent;
-        }
-        parts.push(node.mount.opts.root);
-        parts.reverse();
-        return PATH.join.apply(null, parts);
-      },
-  flagsForNode(flags) {
-        flags &= ~2097152; // Ignore this flag from musl, otherwise node.js fails to open the file.
-        flags &= ~2048; // Ignore this flag from musl, otherwise node.js fails to open the file.
-        flags &= ~32768; // Ignore this flag from musl, otherwise node.js fails to open the file.
-        flags &= ~524288; // Some applications may pass it; it makes no sense for a single process.
-        flags &= ~65536; // Node.js doesn't need this passed in, it errors.
-        var newFlags = 0;
-        for (var k in NODEFS.flagsForNodeMap) {
-          if (flags & k) {
-            newFlags |= NODEFS.flagsForNodeMap[k];
-            flags ^= k;
-          }
-        }
-        if (flags) {
-          throw new FS.ErrnoError(28);
-        }
-        return newFlags;
-      },
-  node_ops:{
-  getattr(node) {
-          var path = NODEFS.realPath(node);
-          var stat;
-          try {
-            stat = fs.lstatSync(path);
-          } catch (e) {
-            if (!e.code) throw e;
-            throw new FS.ErrnoError(NODEFS.convertNodeCode(e));
-          }
-          // node.js v0.10.20 doesn't report blksize and blocks on Windows. Fake them with default blksize of 4096.
-          // See http://support.microsoft.com/kb/140365
-          if (NODEFS.isWindows && !stat.blksize) {
-            stat.blksize = 4096;
-          }
-          if (NODEFS.isWindows && !stat.blocks) {
-            stat.blocks = (stat.size+stat.blksize-1)/stat.blksize|0;
-          }
-          return {
-            dev: stat.dev,
-            ino: stat.ino,
-            mode: stat.mode,
-            nlink: stat.nlink,
-            uid: stat.uid,
-            gid: stat.gid,
-            rdev: stat.rdev,
-            size: stat.size,
-            atime: stat.atime,
-            mtime: stat.mtime,
-            ctime: stat.ctime,
-            blksize: stat.blksize,
-            blocks: stat.blocks
-          };
-        },
-  setattr(node, attr) {
-          var path = NODEFS.realPath(node);
-          try {
-            if (attr.mode !== undefined) {
-              fs.chmodSync(path, attr.mode);
-              // update the common node structure mode as well
-              node.mode = attr.mode;
-            }
-            if (attr.timestamp !== undefined) {
-              var date = new Date(attr.timestamp);
-              fs.utimesSync(path, date, date);
-            }
-            if (attr.size !== undefined) {
-              fs.truncateSync(path, attr.size);
-            }
-          } catch (e) {
-            if (!e.code) throw e;
-            throw new FS.ErrnoError(NODEFS.convertNodeCode(e));
-          }
-        },
-  lookup(parent, name) {
-          var path = PATH.join2(NODEFS.realPath(parent), name);
-          var mode = NODEFS.getMode(path);
-          return NODEFS.createNode(parent, name, mode);
-        },
-  mknod(parent, name, mode, dev) {
-          var node = NODEFS.createNode(parent, name, mode, dev);
-          // create the backing node for this in the fs root as well
-          var path = NODEFS.realPath(node);
-          try {
-            if (FS.isDir(node.mode)) {
-              fs.mkdirSync(path, node.mode);
-            } else {
-              fs.writeFileSync(path, '', { mode: node.mode });
-            }
-          } catch (e) {
-            if (!e.code) throw e;
-            throw new FS.ErrnoError(NODEFS.convertNodeCode(e));
-          }
-          return node;
-        },
-  rename(oldNode, newDir, newName) {
-          var oldPath = NODEFS.realPath(oldNode);
-          var newPath = PATH.join2(NODEFS.realPath(newDir), newName);
-          try {
-            fs.renameSync(oldPath, newPath);
-          } catch (e) {
-            if (!e.code) throw e;
-            throw new FS.ErrnoError(NODEFS.convertNodeCode(e));
-          }
-          oldNode.name = newName;
-        },
-  unlink(parent, name) {
-          var path = PATH.join2(NODEFS.realPath(parent), name);
-          try {
-            fs.unlinkSync(path);
-          } catch (e) {
-            if (!e.code) throw e;
-            throw new FS.ErrnoError(NODEFS.convertNodeCode(e));
-          }
-        },
-  rmdir(parent, name) {
-          var path = PATH.join2(NODEFS.realPath(parent), name);
-          try {
-            fs.rmdirSync(path);
-          } catch (e) {
-            if (!e.code) throw e;
-            throw new FS.ErrnoError(NODEFS.convertNodeCode(e));
-          }
-        },
-  readdir(node) {
-          var path = NODEFS.realPath(node);
-          try {
-            return fs.readdirSync(path);
-          } catch (e) {
-            if (!e.code) throw e;
-            throw new FS.ErrnoError(NODEFS.convertNodeCode(e));
-          }
-        },
-  symlink(parent, newName, oldPath) {
-          var newPath = PATH.join2(NODEFS.realPath(parent), newName);
-          try {
-            fs.symlinkSync(oldPath, newPath);
-          } catch (e) {
-            if (!e.code) throw e;
-            throw new FS.ErrnoError(NODEFS.convertNodeCode(e));
-          }
-        },
-  readlink(node) {
-          var path = NODEFS.realPath(node);
-          try {
-            path = fs.readlinkSync(path);
-            path = nodePath.relative(nodePath.resolve(node.mount.opts.root), path);
-            return path;
-          } catch (e) {
-            if (!e.code) throw e;
-            // node under windows can return code 'UNKNOWN' here:
-            // https://github.com/emscripten-core/emscripten/issues/15468
-            if (e.code === 'UNKNOWN') throw new FS.ErrnoError(28);
-            throw new FS.ErrnoError(NODEFS.convertNodeCode(e));
-          }
-        },
-  },
-  stream_ops:{
-  open(stream) {
-          var path = NODEFS.realPath(stream.node);
-          try {
-            if (FS.isFile(stream.node.mode)) {
-              stream.nfd = fs.openSync(path, NODEFS.flagsForNode(stream.flags));
-            }
-          } catch (e) {
-            if (!e.code) throw e;
-            throw new FS.ErrnoError(NODEFS.convertNodeCode(e));
-          }
-        },
-  close(stream) {
-          try {
-            if (FS.isFile(stream.node.mode) && stream.nfd) {
-              fs.closeSync(stream.nfd);
-            }
-          } catch (e) {
-            if (!e.code) throw e;
-            throw new FS.ErrnoError(NODEFS.convertNodeCode(e));
-          }
-        },
-  read(stream, buffer, offset, length, position) {
-          // Node.js < 6 compatibility: node errors on 0 length reads
-          if (length === 0) return 0;
-          try {
-            return fs.readSync(stream.nfd, new Int8Array(buffer.buffer, offset, length), { position: position });
-          } catch (e) {
-            throw new FS.ErrnoError(NODEFS.convertNodeCode(e));
-          }
-        },
-  write(stream, buffer, offset, length, position) {
-          try {
-            return fs.writeSync(stream.nfd, new Int8Array(buffer.buffer, offset, length), { position: position });
-          } catch (e) {
-            throw new FS.ErrnoError(NODEFS.convertNodeCode(e));
-          }
-        },
-  llseek(stream, offset, whence) {
-          var position = offset;
-          if (whence === 1) {
-            position += stream.position;
-          } else if (whence === 2) {
-            if (FS.isFile(stream.node.mode)) {
-              try {
-                var stat = fs.fstatSync(stream.nfd);
-                position += stat.size;
-              } catch (e) {
-                throw new FS.ErrnoError(NODEFS.convertNodeCode(e));
-              }
-            }
-          }
-  
-          if (position < 0) {
-            throw new FS.ErrnoError(28);
-          }
-  
-          return position;
-        },
-  mmap(stream, length, position, prot, flags) {
-          if (!FS.isFile(stream.node.mode)) {
-            throw new FS.ErrnoError(43);
-          }
-  
-          var ptr = mmapAlloc(length);
-  
-          NODEFS.stream_ops.read(stream, HEAP8, ptr, length, position);
-          return { ptr, allocated: true };
-        },
-  msync(stream, buffer, offset, length, mmapFlags) {
-          NODEFS.stream_ops.write(stream, buffer, 0, length, offset, false);
-          // should we check if bytesWritten and length are the same?
-          return 0;
-        },
-  },
-  };
-  
-  
-  
-  
-  
-  var NODERAWFS = {
-  lookup(parent, name) {
-        assert(parent)
-        assert(parent.path)
-        return FS.lookupPath(`${parent.path}/${name}`).node;
-      },
-  lookupPath(path, opts = {}) {
-        if (opts.parent) {
-          path = nodePath.dirname(path);
-        }
-        var st = fs.lstatSync(path);
-        var mode = NODEFS.getMode(path);
-        return { path, node: { id: st.ino, mode, node_ops: NODERAWFS, path }};
-      },
-  createStandardStreams() {
-        FS.createStream({ nfd: 0, position: 0, path: '', flags: 0, tty: true, seekable: false }, 0);
-        for (var i = 1; i < 3; i++) {
-          FS.createStream({ nfd: i, position: 0, path: '', flags: 577, tty: true, seekable: false }, i);
-        }
-      },
-  cwd() { return process.cwd(); },
-  chdir() { process.chdir.apply(void 0, arguments); },
-  mknod(path, mode) {
-        if (FS.isDir(path)) {
-          fs.mkdirSync(path, mode);
-        } else {
-          fs.writeFileSync(path, '', { mode: mode });
-        }
-      },
-  mkdir() { fs.mkdirSync.apply(void 0, arguments); },
-  symlink() { fs.symlinkSync.apply(void 0, arguments); },
-  rename() { fs.renameSync.apply(void 0, arguments); },
-  rmdir() { fs.rmdirSync.apply(void 0, arguments); },
-  readdir() { return ['.', '..'].concat(fs.readdirSync.apply(void 0, arguments)); },
-  unlink() { fs.unlinkSync.apply(void 0, arguments); },
-  readlink() { return fs.readlinkSync.apply(void 0, arguments); },
-  stat() { return fs.statSync.apply(void 0, arguments); },
-  lstat() { return fs.lstatSync.apply(void 0, arguments); },
-  chmod() { fs.chmodSync.apply(void 0, arguments); },
-  fchmod(fd, mode) {
-        var stream = FS.getStreamChecked(fd);
-        fs.fchmodSync(stream.nfd, mode);
-      },
-  chown() { fs.chownSync.apply(void 0, arguments); },
-  fchown(fd, owner, group) {
-        var stream = FS.getStreamChecked(fd);
-        fs.fchownSync(stream.nfd, owner, group);
-      },
-  truncate() { fs.truncateSync.apply(void 0, arguments); },
-  ftruncate(fd, len) {
-        // See https://github.com/nodejs/node/issues/35632
-        if (len < 0) {
-          throw new FS.ErrnoError(28);
-        }
-        var stream = FS.getStreamChecked(fd);
-        fs.ftruncateSync(stream.nfd, len);
-      },
-  utime(path, atime, mtime) { fs.utimesSync(path, atime/1000, mtime/1000); },
-  open(path, flags, mode) {
-        if (typeof flags == "string") {
-          flags = FS_modeStringToFlags(flags)
-        }
-        var pathTruncated = path.split('/').map(function(s) { return s.substr(0, 255); }).join('/');
-        var nfd = fs.openSync(pathTruncated, NODEFS.flagsForNode(flags), mode);
-        var st = fs.fstatSync(nfd);
-        if (flags & 65536 && !st.isDirectory()) {
-          fs.closeSync(nfd);
-          throw new FS.ErrnoError(ERRNO_CODES.ENOTDIR);
-        }
-        var newMode = NODEFS.getMode(pathTruncated);
-        var node = { id: st.ino, mode: newMode, node_ops: NODERAWFS, path }
-        return FS.createStream({ nfd, position: 0, path, flags, node, seekable: true });
-      },
-  createStream(stream, fd) {
-        // Call the original FS.createStream
-        var rtn = VFS.createStream(stream, fd);
-        if (typeof rtn.shared.refcnt == 'undefined') {
-          rtn.shared.refcnt = 1;
-        } else {
-          rtn.shared.refcnt++;
-        }
-        return rtn;
-      },
-  close(stream) {
-        VFS.closeStream(stream.fd);
-        if (!stream.stream_ops && --stream.shared.refcnt === 0) {
-          // This stream is created by our Node.js filesystem, close the
-          // native file descriptor when its reference count drops to 0.
-          fs.closeSync(stream.nfd);
-        }
-      },
-  llseek(stream, offset, whence) {
-        if (stream.stream_ops) {
-          // this stream is created by in-memory filesystem
-          return VFS.llseek(stream, offset, whence);
-        }
-        var position = offset;
-        if (whence === 1) {
-          position += stream.position;
-        } else if (whence === 2) {
-          position += fs.fstatSync(stream.nfd).size;
-        } else if (whence !== 0) {
-          throw new FS.ErrnoError(28);
-        }
-  
-        if (position < 0) {
-          throw new FS.ErrnoError(28);
-        }
-        stream.position = position;
-        return position;
-      },
-  read(stream, buffer, offset, length, position) {
-        if (stream.stream_ops) {
-          // this stream is created by in-memory filesystem
-          return VFS.read(stream, buffer, offset, length, position);
-        }
-        var seeking = typeof position != 'undefined';
-        if (!seeking && stream.seekable) position = stream.position;
-        var bytesRead = fs.readSync(stream.nfd, new Int8Array(buffer.buffer, offset, length), { position: position });
-        // update position marker when non-seeking
-        if (!seeking) stream.position += bytesRead;
-        return bytesRead;
-      },
-  write(stream, buffer, offset, length, position) {
-        if (stream.stream_ops) {
-          // this stream is created by in-memory filesystem
-          return VFS.write(stream, buffer, offset, length, position);
-        }
-        if (stream.flags & +"1024") {
-          // seek to the end before writing in append mode
-          FS.llseek(stream, 0, +"2");
-        }
-        var seeking = typeof position != 'undefined';
-        if (!seeking && stream.seekable) position = stream.position;
-        var bytesWritten = fs.writeSync(stream.nfd, new Int8Array(buffer.buffer, offset, length), { position: position });
-        // update position marker when non-seeking
-        if (!seeking) stream.position += bytesWritten;
-        return bytesWritten;
-      },
-  allocate() {
-        throw new FS.ErrnoError(138);
-      },
-  mmap(stream, length, position, prot, flags) {
-        if (stream.stream_ops) {
-          // this stream is created by in-memory filesystem
-          return VFS.mmap(stream, length, position, prot, flags);
-        }
-  
-        var ptr = mmapAlloc(length);
-        FS.read(stream, HEAP8, ptr, length, position);
-        return { ptr, allocated: true };
-      },
-  msync(stream, buffer, offset, length, mmapFlags) {
-        if (stream.stream_ops) {
-          // this stream is created by in-memory filesystem
-          return VFS.msync(stream, buffer, offset, length, mmapFlags);
-        }
-  
-        FS.write(stream, buffer, 0, length, offset);
-        // should we check if bytesWritten and length are the same?
-        return 0;
-      },
-  munmap() {
-        return 0;
-      },
-  ioctl() {
-        throw new FS.ErrnoError(59);
-      },
-  };
-  
   var ERRNO_MESSAGES = {
   0:"Success",
   1:"Arg list too long",
@@ -2577,6 +2094,8 @@ function dbg(text) {
   156:"Level 2 not synchronized",
   };
   
+  var ERRNO_CODES = {
+  };
   
   var demangle = (func) => {
       warnOnce('warning: build with -sDEMANGLE_SUPPORT to link in libcxxabi demangling');
@@ -3812,7 +3331,6 @@ function dbg(text) {
   
         FS.filesystems = {
           'MEMFS': MEMFS,
-          'NODEFS': NODEFS,
         };
       },
   init(input, output, error) {
@@ -4739,6 +4257,12 @@ function dbg(text) {
       return ret;
     };
 
+
+
+
+
+  var FS_unlink = (path) => FS.unlink(path);
+
   var FSNode = /** @constructor */ function(parent, name, mode, rdev) {
     if (!parent) {
       parent = this;  // root node sets parent to itself
@@ -4785,8 +4309,7 @@ function dbg(text) {
   });
   FS.FSNode = FSNode;
   FS.createPreloadedFile = FS_createPreloadedFile;
-  FS.staticInit();;
-if (ENVIRONMENT_IS_NODE) { NODEFS.staticInit(); };
+  FS.staticInit();Module["FS_createPath"] = FS.createPath;Module["FS_createDataFile"] = FS.createDataFile;Module["FS_createPreloadedFile"] = FS.createPreloadedFile;Module["FS_unlink"] = FS.unlink;Module["FS_createLazyFile"] = FS.createLazyFile;Module["FS_createDevice"] = FS.createDevice;;
 ERRNO_CODES = {
       'EPERM': 63,
       'ENOENT': 44,
@@ -4910,27 +4433,6 @@ ERRNO_CODES = {
       'EOWNERDEAD': 62,
       'ESTRPIPE': 135,
     };;
-
-      if (ENVIRONMENT_IS_NODE) {
-        var _wrapNodeError = function(func) {
-          return function() {
-            try {
-              return func.apply(this, arguments)
-            } catch (e) {
-              if (e.code) {
-                throw new FS.ErrnoError(ERRNO_CODES[e.code]);
-              }
-              throw e;
-            }
-          }
-        };
-        var VFS = Object.assign({}, FS);
-        for (var _key in NODERAWFS) {
-          FS[_key] = _wrapNodeError(NODERAWFS[_key]);
-        }
-      } else {
-        throw new Error("NODERAWFS is currently only supported on Node.js environment.")
-      };
 function checkIncomingModuleAPI() {
   ignoredModuleProp('fetchSettings');
 }
@@ -4972,6 +4474,7 @@ var _main = Module['_main'] = createExportWrapper('__main_argc_argv');
 var ___errno_location = createExportWrapper('__errno_location');
 var _fflush = Module['_fflush'] = createExportWrapper('fflush');
 var _malloc = createExportWrapper('malloc');
+var _free = createExportWrapper('free');
 var setTempRet0 = createExportWrapper('setTempRet0');
 var _emscripten_stack_init = () => (_emscripten_stack_init = wasmExports['emscripten_stack_init'])();
 var _emscripten_stack_get_free = () => (_emscripten_stack_get_free = wasmExports['emscripten_stack_get_free'])();
@@ -4987,6 +4490,46 @@ var dynCall_jiji = Module['dynCall_jiji'] = createExportWrapper('dynCall_jiji');
 // include: postamble.js
 // === Auto-generated postamble setup entry stuff ===
 
+// include: base64Utils.js
+// Converts a string of base64 into a byte array.
+// Throws error on invalid input.
+function intArrayFromBase64(s) {
+  if (typeof ENVIRONMENT_IS_NODE != 'undefined' && ENVIRONMENT_IS_NODE) {
+    var buf = Buffer.from(s, 'base64');
+    return new Uint8Array(buf.buffer, buf.byteOffset, buf.length);
+  }
+
+  try {
+    var decoded = atob(s);
+    var bytes = new Uint8Array(decoded.length);
+    for (var i = 0 ; i < decoded.length ; ++i) {
+      bytes[i] = decoded.charCodeAt(i);
+    }
+    return bytes;
+  } catch (_) {
+    throw new Error('Converting base64 string to bytes failed.');
+  }
+}
+
+// If filename is a base64 data URI, parses and returns data (Buffer on node,
+// Uint8Array otherwise). If filename is not a base64 data URI, returns undefined.
+function tryParseAsDataURI(filename) {
+  if (!isDataURI(filename)) {
+    return;
+  }
+
+  return intArrayFromBase64(filename.slice(dataURIPrefix.length));
+}
+// end include: base64Utils.js
+Module['addRunDependency'] = addRunDependency;
+Module['removeRunDependency'] = removeRunDependency;
+Module['FS_createPath'] = FS.createPath;
+Module['FS_createLazyFile'] = FS.createLazyFile;
+Module['FS_createDevice'] = FS.createDevice;
+Module['FS_createPreloadedFile'] = FS.createPreloadedFile;
+Module['FS'] = FS;
+Module['FS_createDataFile'] = FS.createDataFile;
+Module['FS_unlink'] = FS.unlink;
 var missingLibrarySymbols = [
   'writeI53ToI64',
   'writeI53ToI64Clamped',
@@ -5119,7 +4662,6 @@ var missingLibrarySymbols = [
   'setMainLoop',
   'getSocketFromFD',
   'getSocketAddress',
-  'FS_unlink',
   'FS_mkdirTree',
   '_setNetworkCallback',
   'heapObjectForWebGLType',
@@ -5160,13 +4702,8 @@ var unexportedSymbols = [
   'addOnPreMain',
   'addOnExit',
   'addOnPostRun',
-  'addRunDependency',
-  'removeRunDependency',
   'FS_createFolder',
-  'FS_createPath',
-  'FS_createLazyFile',
   'FS_createLink',
-  'FS_createDevice',
   'FS_readFile',
   'out',
   'err',
@@ -5246,13 +4783,10 @@ var unexportedSymbols = [
   'wget',
   'SYSCALLS',
   'preloadPlugins',
-  'FS_createPreloadedFile',
   'FS_modeStringToFlags',
   'FS_getMode',
   'FS_stdin_getChar_buffer',
   'FS_stdin_getChar',
-  'FS',
-  'FS_createDataFile',
   'MEMFS',
   'TTY',
   'PIPEFS',
@@ -5271,8 +4805,6 @@ var unexportedSymbols = [
   'SDL_gfx',
   'allocateUTF8',
   'allocateUTF8OnStack',
-  'NODEFS',
-  'NODERAWFS',
 ];
 unexportedSymbols.forEach(unexportedRuntimeSymbol);
 
