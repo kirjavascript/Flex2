@@ -3,10 +3,17 @@ import { Item } from '#ui';
 
 function ErrorMsg({ error }) {
     return (
-        !!error &&
-        <div className="menu-item">
-            <Item color="red">{error.name}: {error.message}</Item>
-        </div>
+        !!error && (
+            <div className="menu-item">
+                <Item color="red">
+                    {error.name}:{' '}
+                    {error.message
+                        .split('\n')
+                        .reduce((acc, cur, i) => [...acc, <br key={i} />, cur])}
+                    <br />
+                </Item>
+            </div>
+        )
     );
 }
 

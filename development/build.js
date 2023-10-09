@@ -19,6 +19,7 @@ module.exports = (mainWindow) => {
                 main: './app/main.js',
                 'compression-worker': './app/formats/compression-worker.js',
                 'asl-worker': './app/formats/asm/asl-worker.js',
+                'p2bin-worker': './app/formats/asm/p2bin-worker.js',
             },
             bundle: true,
             watch: devMode,
