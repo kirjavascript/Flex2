@@ -8,7 +8,6 @@ import {
     writeBIN,
     writeASM,
 } from '#formats/scripts';
-import { assemble } from '#formats/asm';
 
 import { decompress, compress, compressionFormats } from '#formats/compression';
 import { bufferToTiles, tilesToBuffer } from '#formats/art';
