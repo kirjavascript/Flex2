@@ -4,11 +4,19 @@ import asmsg from './messages/as.msg';
 import ioerrsmsg from './messages/ioerrs.msg';
 import cmdargmsg from './messages/cmdarg.msg';
 import p2binmsg from './messages/p2bin.msg';
+import toolsmsg from './messages/tools.msg';
 
-const messages = {
+const asMessages = {
     asmsg,
     ioerrsmsg,
     cmdargmsg,
+};
+
+const p2binMessages = {
+    p2binmsg,
+    ioerrsmsg,
+    cmdargmsg,
+    toolsmsg,
 };
 
 export async function assemble(
@@ -17,32 +25,27 @@ export async function assemble(
         filename: 'code.asm',
     },
 ) {
-    console.time('assemble');
-
     const aslWorker = new Worker('bundles/asl-worker.js');
     const asl = Comlink.wrap(aslWorker);
 
-    const pFile = await asl.assemble(prelude + code, { messages, filename });
+    const pFile = await asl.assemble(prelude + code, {
+        messages: asMessages,
+        filename,
+    });
     aslWorker.terminate();
-
-    console.log(pFile);
 
     const p2binWorker = new Worker('bundles/p2bin-worker.js');
     const p2bin = Comlink.wrap(p2binWorker);
     const bin = await p2bin.binary(pFile, {
-        messages: { p2binmsg },
+        messages: p2binMessages,
     });
     p2binWorker.terminate();
-
-    console.log(bin);
-
-    console.timeEnd('assemble');
 
     return bin;
 }
 
 const prelude = `SonicMappingsVer := 2
-
+SonicDplcVer = 2
 ; macro to declare a mappings table (taken from Sonic 2 Hg disassembly)
 mappingsTable macro {INTLABEL}
 __LABEL__ label *
