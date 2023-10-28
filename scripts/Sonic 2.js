@@ -83,19 +83,47 @@ dplcs([
     ],
 ]);
 
-asm(({ addScript, importScript }) => {
+asm(({ addScript, importScript, writeMappings }) => {
     addScript(`
 SonicMappingsVer := 2
 SonicDplcVer = 2
     `);
     importScript('MapMacros.asm');
 
-    // writeMappings(({ sprite }) => {
+    writeMappings(({ label, sprites, renderHex }) => {
+        const list = [];
 
-    //     // write(dc.w, sprite.length);
-    //     // return ({ mapping }) => {
-    //     //     write(nybble, mapping.size - 1);
-    //     //     write(nybble * 3, mapping.art);
-    //     // };
-    // });
+        list.push(`${label}: mappingsTable`);
+        sprites.forEach((_, i) => {
+	        list.push(`\tmappingsTableEntry.w\tMap_Sonic_${i}`);
+        });
+        list.push('');
+
+        sprites.forEach((sprite, i) => {
+            list.push(`${label}_${i}:\tspriteHeader`);
+
+            sprite.mappings.forEach(mapping => {
+                const pieceInfo = [
+                    mapping.left,
+                    mapping.top,
+                    mapping.width,
+                    mapping.height,
+                    mapping.art,
+                    mapping.hflip,
+                    mapping.vflip,
+                    mapping.palette,
+                    mapping.priority,
+                ].map(renderHex).join(', ');
+
+                list.push(` spritePiece ${pieceInfo}`);
+            });
+
+            list.push(`${label}_${i}_End`);
+            list.push('');
+        });
+
+        list.push('\teven');
+
+        return list.join('\n');
+    });
 });

@@ -22,6 +22,7 @@ redo tile rendering
 remove rotsprite
 
 ROADMAP
+
 drawing mode bugs
     disable mapping editing
 improve undo/redo when drawing pixels / moving things
@@ -32,9 +33,6 @@ animation editor
 BUGS
 
 TODO: load / save / load broken in sonic CD
-
-saving 0 tile as nemesis crashes
-saving ArtC42 at all crashes
 pink surrounding tiles sometimes breaks
 
 FEATURES
@@ -45,8 +43,6 @@ select multiple sprites at once to reorder
 copy / paste mappings
 time travel for undo/redo
 import palette from spritesheet https://yarnpkg.com/en/package/node-vibrant
-==
-Speaking of Flex2, will there be a way for sprite sheets to not load already compressed tiles? It seems like every time I add new sprites, it makes duplicates of the same tiles leading me to manually remove it myself or overlap the mappings.
 
 
 22:04 <+dIRCord> <M​ainMemory> > Art is easy ␤> Each byte encodes one pixel, both nybbles have the color index ␤> And then each column is stored all in one go, no breaking into tiles ␤> In other words, it's pretty much a headerless 8bpp bitmap ␤> I think the color index is duplicated over both nybbles for speed, but I never looked at the algorithm

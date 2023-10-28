@@ -161,13 +161,18 @@ export const FileObject = observer(({ obj }) => {
     function saveMappings(e) {
         ioWrap(obj.mappings.path, setMappingError, e, async (path) => {
             const mappings = script.writeMappings(environment.mappings);
-            console.log(mappings);
             if (mappings.error) throw mappings.error;
             if (!mappingsASM) {
                 await fs.writeFile(path, writeBIN(mappings));
             } else {
                 const label = obj.mappings.label || 'Map_' + uuid().slice(0, 4);
-                await fs.writeFile(path, writeASM(label, mappings));
+                const asmOutput = script.generateMappingsASM({
+                    label,
+                    listing: mappings,
+                    sprites: environment.sprites,
+                });
+
+                await fs.writeFile(path, asmOutput);
             }
         });
     }

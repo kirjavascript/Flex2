@@ -72,7 +72,7 @@ export const Input = observer(class Input extends Component {
             </span>}
             <input
                 style={color && {color: SVARS[color]}}
-                value={store[accessor] || ''}
+                value={store[accessor] ?? ''}
                 onChange={this.onChange}
                 onKeyDown={this.onKeyDown}
                 ref={this.inputRef}

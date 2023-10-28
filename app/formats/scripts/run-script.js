@@ -1,4 +1,5 @@
 import { loadScript, scriptDir } from './file';
+import { writeASM } from '#formats/scripts';
 import { logger } from './debug';
 import { toJS } from 'mobx';
 import fs from 'fs';
@@ -25,7 +26,6 @@ export const constants = {
     skipFrame,
     endSection,
 };
-
 
 function useDef() {
     let def = [];
@@ -243,6 +243,8 @@ export default catchFunc((file) => {
     };
 
     const createWriter = (sectionList = []) => catchFunc((mappings) => {
+        // mapping output format is [type, size, data]
+
         const global = { cleanup: [] };
         const sections = sectionList.map(([, writeFrame]) => {
             const spriteList = toJS(mappings);
@@ -326,6 +328,7 @@ export default catchFunc((file) => {
         });
     }
 
+
     const asm = {
         basic: false,
         prelude: `
@@ -339,6 +342,9 @@ paddingSoFar		set paddingSoFar+1
     };
 
     if (asmArgs[0]) {
+        const [writeMappingsArgs, writeMappingsFunc] = useDef();
+        const [writeDPLCsArgs, writeDPLCsFunc] = useDef();
+
         function basic() {
             asm.basic = true;
         }
@@ -354,25 +360,52 @@ paddingSoFar		set paddingSoFar+1
             }
         }
 
-        function writeMappings(func) {
-            return func()
-        }
-
-        function writeDPLCs() {
-
-        }
-// export function writeASM(baseLabel, { sections }) {
-
         asmArgs[0]({
             basic,
             addScript,
             importScript,
-            writeMappings,
-            writeDPLCs,
+            writeMappings: writeMappingsFunc,
+            writeDPLCs: writeDPLCsFunc,
         });
+
+        if (writeMappingsArgs[0]) {
+            asm.writeMappings = writeMappingsArgs[0];
+        }
+
+        if (writeDPLCsArgs[0]) {
+            asm.writeDPLCs = writeDPLCs[0];
+        }
     }
 
     exports.asm = asm;
+
+    const renderHex = num => {
+        let out = '';
+        if (num < 0) out += '-';
+        num = Math.abs(num);
+        if (num > 9) out += '$';
+        out += num.toString(16).toUpperCase();
+        return out;
+    };
+
+    exports.generateMappingsASM = function({
+        label,
+        sprites,
+        listing,
+    }) {
+        if (!asm.writeMappings) {
+            return writeASM(label, listing);
+        }
+
+        return asm.writeMappings({
+            label, sprites, listing,
+            renderHex,
+        });
+    };
+
+    exports.generateDPLCsASM = function() {
+
+    };
 
     return exports;
 });
