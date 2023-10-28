@@ -1,8 +1,8 @@
 import { loadScript, scriptDir } from './file';
-import fs from 'fs';
-import { join } from 'path';
 import { logger } from './debug';
 import { toJS } from 'mobx';
+import fs from 'fs';
+import { join } from 'path';
 
 const binary = Symbol('binary');
 const address = Symbol('address');
@@ -354,10 +354,21 @@ paddingSoFar		set paddingSoFar+1
             }
         }
 
+        function writeMappings(func) {
+            return func()
+        }
+
+        function writeDPLCs() {
+
+        }
+// export function writeASM(baseLabel, { sections }) {
+
         asmArgs[0]({
             basic,
             addScript,
             importScript,
+            writeMappings,
+            writeDPLCs,
         });
     }
 

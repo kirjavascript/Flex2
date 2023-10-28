@@ -20,7 +20,7 @@ const sizes = {
     l: 4,
 };
 
-// use with asm(({ basic }) => basic())
+// fallback JS assembler, use with asm(({ basic }) => basic())
 export function parseASMBasic(text) {
     const comment = regex(/^;.*$/m).map(() => [ignore]);
     const even = str('even').map(() => [ignore]);

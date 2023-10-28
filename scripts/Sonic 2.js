@@ -89,4 +89,13 @@ SonicMappingsVer := 2
 SonicDplcVer = 2
     `);
     importScript('MapMacros.asm');
+
+    // writeMappings(({ sprite }) => {
+
+    //     // write(dc.w, sprite.length);
+    //     // return ({ mapping }) => {
+    //     //     write(nybble, mapping.size - 1);
+    //     //     write(nybble * 3, mapping.art);
+    //     // };
+    // });
 });

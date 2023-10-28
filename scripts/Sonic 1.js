@@ -11,6 +11,7 @@ const {
     endFrame,
     skipFrame,
     signed,
+    asm,
 } = Flex2;
 
 mappings([

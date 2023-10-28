@@ -56,13 +56,11 @@ export const FileObject = observer(({ obj }) => {
         if (isASM) {
             const contents = await fs.readFile(path, 'utf8');
 
-            console.time(path);
             if (script.asm.basic) return await parseASMBasic(contents);
 
             const buffer = await assemble(script.asm.prelude + contents, {
                 filename: basename(path),
             });
-            console.timeEnd(path);
 
             return buffer;
         }
@@ -163,6 +161,7 @@ export const FileObject = observer(({ obj }) => {
     function saveMappings(e) {
         ioWrap(obj.mappings.path, setMappingError, e, async (path) => {
             const mappings = script.writeMappings(environment.mappings);
+            console.log(mappings);
             if (mappings.error) throw mappings.error;
             if (!mappingsASM) {
                 await fs.writeFile(path, writeBIN(mappings));

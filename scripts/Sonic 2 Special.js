@@ -72,7 +72,7 @@ function getOffset(i) {
     if (i < 0x24) return 0x29E;
     if (i < 0x2B) return 0x2AE;
     if (i < 0x32) return 0x2E3;
-    return 0x31E;
+    return i;
 }
 
 dplcs([
