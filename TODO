@@ -12,20 +12,21 @@
 
 
 macros for mappings
+    specify mapmacros in definition
     format hooks for defining asm output
     define macro files in script??
+    fix prelude
+    perf
 
-return rotsprite
+redo tile rendering
+remove rotsprite
 
 ROADMAP
-look at issues related to crashes
 drawing mode bugs
     disable mapping editing
 improve undo/redo when drawing pixels / moving things
 animation editor
     export to gif
-
-
 
 ==
 BUGS

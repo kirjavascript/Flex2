@@ -11,6 +11,7 @@ const {
     endFrame,
     skipFrame,
     signed,
+    asm,
 } = Flex2;
 
 mappings([
@@ -81,3 +82,11 @@ dplcs([
         },
     ],
 ]);
+
+asm(({ addScript, importScript }) => {
+    addScript(`
+SonicMappingsVer := 2
+SonicDplcVer = 2
+    `);
+    importScript('MapMacros.asm');
+});

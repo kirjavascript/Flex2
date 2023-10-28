@@ -70,3 +70,11 @@ dplcs([
         },
     ],
 ]);
+
+asm(({ addScript, importScript }) => {
+    addScript(`
+SonicMappingsVer := 1
+SonicDplcVer = 1
+    `);
+    importScript('MapMacros.asm');
+});

@@ -1,4 +1,6 @@
-import { loadScript } from './file';
+import { loadScript, scriptDir } from './file';
+import fs from 'fs';
+import { join } from 'path';
 import { logger } from './debug';
 import { toJS } from 'mobx';
 
@@ -123,7 +125,7 @@ export default catchFunc((file) => {
     const [mappingArgs, mappingFunc] = useDef();
     const [dplcArgs, dplcFunc] = useDef();
     const [paletteArgs, paletteFunc] = useDef();
-    const [parseArgs, parseFunc] = useDef();
+    const [asmArgs, asmFunc] = useDef();
 
     (new Function('Flex2', loadScript(file)))({
         ...constants,
@@ -133,7 +135,7 @@ export default catchFunc((file) => {
         mappings: mappingFunc,
         dplcs: dplcFunc,
         palettes: paletteFunc,
-        parseASM: parseFunc,
+        asm: asmFunc,
         offsetTable: makeOffsetTable({ read, write }),
     });
 
@@ -292,14 +294,14 @@ export default catchFunc((file) => {
     const writeMappings = createWriter(mappingArgs[0]);
     const writeDPLCs = createWriter(dplcArgs[0]);
 
-    const methods = {
+    const exports = {
         mappings: true,
         readMappings,
         writeMappings,
     };
 
     if (dplcArgs[0]) {
-        Object.assign(methods, {
+        Object.assign(exports, {
             DPLCs: true,
             readDPLCs,
             writeDPLCs,
@@ -308,7 +310,7 @@ export default catchFunc((file) => {
 
     if (artArgs[0]) {
         const [readArt, writeArt] = artArgs[0];
-        Object.assign(methods, {
+        Object.assign(exports, {
             art: true,
             readArt,
             writeArt,
@@ -317,16 +319,49 @@ export default catchFunc((file) => {
 
     if (paletteArgs[0]) {
         const [readPalettes, writePalettes] = paletteArgs[0];
-        Object.assign(methods, {
+        Object.assign(exports, {
             palettes: true,
             readPalettes,
             writePalettes,
         });
     }
 
-    if (parseArgs[0]) {
-        methods.parseASM = parseArgs[0];
+    const asm = {
+        basic: false,
+        prelude: `
+even macro
+    if (*)&1
+paddingSoFar		set paddingSoFar+1
+        dc.b 0 ;ds.b 1
+    endif
+    endm
+        `,
+    };
+
+    if (asmArgs[0]) {
+        function basic() {
+            asm.basic = true;
+        }
+
+        function addScript(code) {
+            asm.prelude += code;
+        }
+
+        function importScript(path) {
+            const contents = fs.readFileSync(join(scriptDir, path), 'utf8');
+            if (contents) {
+                asm.prelude += contents;
+            }
+        }
+
+        asmArgs[0]({
+            basic,
+            addScript,
+            importScript,
+        });
     }
 
-    return methods;
+    exports.asm = asm;
+
+    return exports;
 });

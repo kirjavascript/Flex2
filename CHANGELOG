@@ -1,10 +1,11 @@
 # Changelog
 
 ## [unreleased]
-- Change DPLC limit to 255
+- Assembler now uses AS Macro Assembler for full macro support
+- MapMacros.asm definitions added
 - Make (de)compression threaded
+- Change DPLC limit to 255
 - Fix issue where image data would be cached incorrectly
-- Electron updated to v26
 
 ## [1.2.2]
 - Added sprite rotation algorithm: 3 shears

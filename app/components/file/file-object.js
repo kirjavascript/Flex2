@@ -1,13 +1,8 @@
 import React, { useState, useRef } from 'react';
 import { observer } from 'mobx-react';
 import { Item, Input, File as FileInput, Select, Checkbox, Button } from '#ui';
-import {
-    scripts,
-    runScript,
-    parseASM as parseASMInternal,
-    writeBIN,
-    writeASM,
-} from '#formats/scripts';
+import { scripts, runScript, writeBIN, writeASM, parseASMBasic } from '#formats/scripts';
+import { assemble } from '#formats/asm';
 
 import { decompress, compress, compressionFormats } from '#formats/compression';
 import { bufferToTiles, tilesToBuffer } from '#formats/art';
@@ -17,11 +12,13 @@ import { workspace } from '#store/workspace';
 import ErrorMsg from './error';
 import SaveLoad from './save-load';
 import { promises } from 'fs';
-import { extname } from 'path';
+import { extname, basename } from 'path';
 import { uuid } from '#util/uuid';
 
 const fs = promises;
 const compressionList = Object.keys(compressionFormats);
+
+const isASM = (path) => ['.asm', '.s'].includes(extname(path));
 
 export const FileObject = observer(({ obj }) => {
     scripts.length; // react to script updates
@@ -30,15 +27,11 @@ export const FileObject = observer(({ obj }) => {
 
     const { isAbsolute } = obj; // set in store/workspace
 
-    const mappingsASM = extname(obj.mappings.path) === '.asm';
-    const dplcsASM = extname(obj.dplcs.path) === '.asm';
+    const mappingsASM = isASM(obj.mappings.path);
+    const dplcsASM = isASM(obj.dplcs.path);
     const linesLeft = obj.palettes.reduce((a, c) => a - c.length, 4);
 
-    const scriptDPLCs = scriptSafe && script.DPLCs;
-    const scriptArt = scriptSafe && script.art;
-    const scriptPalettes = scriptSafe && script.palettes;
     const toggleDPLCs = () => (obj.dplcs.enabled = !obj.dplcs.enabled);
-    const parseASM = (scriptSafe && script.parseASM) || parseASMInternal;
 
     function ioWrap(filePath, setError, e, cb) {
         setError();
@@ -59,9 +52,28 @@ export const FileObject = observer(({ obj }) => {
         }
     }
 
+    async function getBuffer(path, isASM) {
+        if (isASM) {
+            const contents = await fs.readFile(path, 'utf8');
+
+            console.time(path);
+            if (script.asm.basic) return await parseASMBasic(contents);
+
+            const buffer = await assemble(script.asm.prelude + contents, {
+                filename: basename(path),
+            });
+            console.timeEnd(path);
+
+            return buffer;
+        }
+
+        return await fs.readFile(path);
+    }
+
     const loadRef = useRef();
 
     function loadObject() {
+        loadRef.current.childNodes.forEach(n => { n.textContent = ''; });
         loadArt({ target: loadRef.current.childNodes[0] });
         loadMappings({ target: loadRef.current.childNodes[1] });
         if (obj.dplcs.enabled) {
@@ -71,6 +83,7 @@ export const FileObject = observer(({ obj }) => {
     }
 
     function saveObject() {
+        loadRef.current.childNodes.forEach(n => { n.textContent = ''; });
         saveArt({ target: loadRef.current.childNodes[0] });
         saveMappings({ target: loadRef.current.childNodes[1] });
         if (obj.dplcs.enabled) {
@@ -85,7 +98,7 @@ export const FileObject = observer(({ obj }) => {
         ioWrap(obj.art.path, setArtError, e, async (path) => {
             const buffer = (await fs.readFile(path)).slice(obj.art.offset || 0);
 
-            if (scriptArt) {
+            if (script.art) {
                 environment.tiles.replace(script.readArt(buffer));
             } else {
                 const decompBuffer = await decompress(
@@ -102,12 +115,12 @@ export const FileObject = observer(({ obj }) => {
             if (obj.art.offset) {
                 throw new Error('Can only save art at offset 0');
             }
-            const tiles = scriptArt
+            const tiles = script.art
                 ? script.writeArt(tiles)
                 : tilesToBuffer(environment.tiles, obj.art.compression);
             await fs.writeFile(path, tiles);
 
-            if (scriptArt) {
+            if (script.art) {
                 await fs.writeFile(path, script.writeArt(tiles));
             } else {
                 const buffer = tilesToBuffer(environment.tiles);
@@ -124,10 +137,7 @@ export const FileObject = observer(({ obj }) => {
     function loadMappings(e) {
         ioWrap(obj.mappings.path, setMappingError, e, async (path) => {
             if (!obj.dplcs.enabled) environment.config.dplcsEnabled = false;
-
-            const buffer = mappingsASM
-                ? parseASM(await fs.readFile(path, 'utf8'))
-                : await fs.readFile(path);
+            const buffer = await getBuffer(path, mappingsASM);
 
             const mappings = script.readMappings(buffer);
             if (mappings.error) throw mappings.error;
@@ -168,9 +178,7 @@ export const FileObject = observer(({ obj }) => {
     function loadDPLCs(e) {
         ioWrap(obj.dplcs.path, setDPLCError, e, async (path) => {
             environment.config.dplcsEnabled = true;
-            const buffer = dplcsASM
-                ? parseASM(await fs.readFile(path, 'utf8'))
-                : await fs.readFile(path);
+            const buffer = await getBuffer(path, dplcsASM);
 
             const dplcs = script.readDPLCs(buffer);
             if (dplcs.error) throw dplcs.error;
@@ -206,7 +214,7 @@ export const FileObject = observer(({ obj }) => {
                     ? palPath
                     : workspace.absolutePath(palPath);
 
-                (scriptPalettes ? script.readPalettes : buffersToColors)({
+                (script.palettes ? script.readPalettes : buffersToColors)({
                     buffer: await fs.readFile(path),
                     length,
                 }).forEach((line) => {
@@ -233,7 +241,7 @@ export const FileObject = observer(({ obj }) => {
                     : workspace.absolutePath(palPath);
 
                 const chunk = (
-                    scriptPalettes ? script.writePalettes : colorsToBuffers
+                    script.palettes ? script.writePalettes : colorsToBuffers
                 )(environment.palettes, cursor, cursor + length);
                 await fs.writeFile(path, chunk);
                 cursor += length;
@@ -263,7 +271,7 @@ export const FileObject = observer(({ obj }) => {
                 <Item color="green">Art</Item>
                 <SaveLoad load={loadArt} save={saveArt} />
             </div>
-            {!scriptArt && (
+            {!script.art && (
                 <>
                     <div className="menu-item">
                         <Item>Compression</Item>
@@ -305,7 +313,7 @@ export const FileObject = observer(({ obj }) => {
                 </div>
             )}
 
-            {scriptDPLCs && (
+            {script.PLCs && (
                 <>
                     <div className="menu-item" onClick={toggleDPLCs}>
                         <Item>DPLCs Enabled</Item>
