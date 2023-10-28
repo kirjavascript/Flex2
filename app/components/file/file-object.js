@@ -198,7 +198,13 @@ export const FileObject = observer(({ obj }) => {
                 await fs.writeFile(path, writeBIN(dplcs));
             } else {
                 const label = obj.dplcs.label || 'DPLC_' + uuid().slice(0, 4);
-                await fs.writeFile(path, writeASM(label, dplcs));
+                const asmOutput = script.generateDPLCsASM({
+                    label,
+                    listing: dplcs,
+                    sprites: environment.sprites,
+                });
+
+                await fs.writeFile(path, asmOutput);
             }
         });
     }
@@ -317,7 +323,7 @@ export const FileObject = observer(({ obj }) => {
                 </div>
             )}
 
-            {script.PLCs && (
+            {script.DPLCs && (
                 <>
                     <div className="menu-item" onClick={toggleDPLCs}>
                         <Item>DPLCs Enabled</Item>

@@ -12,11 +12,8 @@
 
 
 macros for mappings
-    specify mapmacros in definition
-    format hooks for defining asm output
-    define macro files in script??
-    fix prelude
     perf
+    autoload mapping label if blank
 
 redo tile rendering
 remove rotsprite

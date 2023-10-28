@@ -78,4 +78,71 @@ SonicMappingsVer := 1
 SonicDplcVer = 1
     `);
     importScript('MapMacros.asm');
+
+    writeMappings(({ label, sprites, renderHex }) => {
+        const list = [];
+
+        list.push(`${label}: mappingsTable`);
+        sprites.forEach((_, i) => {
+	        list.push(`\tmappingsTableEntry.w\t${label}_${i}`);
+        });
+        list.push('');
+
+        sprites.forEach((sprite, i) => {
+            list.push(`${label}_${i}:\tspriteHeader`);
+
+            sprite.mappings.forEach(mapping => {
+                const pieceInfo = [
+                    mapping.left,
+                    mapping.top,
+                    mapping.width,
+                    mapping.height,
+                    mapping.art,
+                    mapping.hflip,
+                    mapping.vflip,
+                    mapping.palette,
+                    mapping.priority,
+                ].map(renderHex).join(', ');
+
+                list.push(` spritePiece ${pieceInfo}`);
+            });
+
+            list.push(`${label}_${i}_End`);
+            list.push('');
+        });
+
+        list.push('\teven');
+
+        return list.join('\n');
+    });
+
+    writeDPLCs(({ label, sprites, renderHex }) => {
+        const list = [];
+
+        list.push(`${label}: mappingsTable`);
+        sprites.forEach((_, i) => {
+	        list.push(`\tmappingsTableEntry.w\t${label}_${i}`);
+        });
+        list.push('');
+
+        sprites.forEach((sprite, i) => {
+            list.push(`${label}_${i}:\tdplcHeader`);
+
+            sprite.dplcs.forEach(dplc => {
+                const pieceInfo = [
+                    dplc.size,
+                    dplc.art,
+                ].map(renderHex).join(', ');
+
+                list.push(` dplcEntry ${pieceInfo}`);
+            });
+
+            list.push(`${label}_${i}_End`);
+            list.push('');
+        });
+
+        list.push('\teven');
+
+        return list.join('\n');
+    });
 });

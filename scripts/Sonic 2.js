@@ -83,7 +83,7 @@ dplcs([
     ],
 ]);
 
-asm(({ addScript, importScript, writeMappings }) => {
+asm(({ addScript, importScript, writeMappings, writeDPLCs }) => {
     addScript(`
 SonicMappingsVer := 2
 SonicDplcVer = 2
@@ -95,7 +95,7 @@ SonicDplcVer = 2
 
         list.push(`${label}: mappingsTable`);
         sprites.forEach((_, i) => {
-	        list.push(`\tmappingsTableEntry.w\tMap_Sonic_${i}`);
+	        list.push(`\tmappingsTableEntry.w\t${label}_${i}`);
         });
         list.push('');
 
@@ -116,6 +116,36 @@ SonicDplcVer = 2
                 ].map(renderHex).join(', ');
 
                 list.push(` spritePiece ${pieceInfo}`);
+            });
+
+            list.push(`${label}_${i}_End`);
+            list.push('');
+        });
+
+        list.push('\teven');
+
+        return list.join('\n');
+    });
+
+    writeDPLCs(({ label, sprites, renderHex }) => {
+        const list = [];
+
+        list.push(`${label}: mappingsTable`);
+        sprites.forEach((_, i) => {
+	        list.push(`\tmappingsTableEntry.w\t${label}_${i}`);
+        });
+        list.push('');
+
+        sprites.forEach((sprite, i) => {
+            list.push(`${label}_${i}:\tdplcHeader`);
+
+            sprite.dplcs.forEach(dplc => {
+                const pieceInfo = [
+                    dplc.size,
+                    dplc.art,
+                ].map(renderHex).join(', ');
+
+                list.push(` dplcEntry ${pieceInfo}`);
             });
 
             list.push(`${label}_${i}_End`);

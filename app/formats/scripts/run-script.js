@@ -373,7 +373,7 @@ paddingSoFar		set paddingSoFar+1
         }
 
         if (writeDPLCsArgs[0]) {
-            asm.writeDPLCs = writeDPLCs[0];
+            asm.writeDPLCs = writeDPLCsArgs[0];
         }
     }
 
@@ -403,8 +403,19 @@ paddingSoFar		set paddingSoFar+1
         });
     };
 
-    exports.generateDPLCsASM = function() {
+    exports.generateDPLCsASM = function({
+        label,
+        sprites,
+        listing,
+    }) {
+        if (!asm.writeDPLCs) {
+            return writeASM(label, listing);
+        }
 
+        return asm.writeDPLCs({
+            label, sprites, listing,
+            renderHex,
+        });
     };
 
     return exports;

@@ -3,6 +3,7 @@
 ## [unreleased]
 - Assembler now uses AS Macro Assembler for full macro support
 - MapMacros.asm definitions added
+- Custom ASM output support added
 - Make (de)compression threaded
 - Change DPLC limit to 255
 - Fix issue where image data would be cached incorrectly
