@@ -75,10 +75,15 @@ dplcs([
 asm(({ addScript, importScript }) => {
     addScript(`
 SonicMappingsVer := 1
-SonicDplcVer = 1
+SonicDplcVer := 1
     `);
     importScript('MapMacros.asm');
 
+    /**
+     * MapMacros Mapping output
+     *
+     * delete this function to output raw data instead
+     */
     writeMappings(({ label, sprites, renderHex }) => {
         const list = [];
 
@@ -116,6 +121,11 @@ SonicDplcVer = 1
         return list.join('\n');
     });
 
+    /**
+     * MapMacros DPLC output
+     *
+     * delete this function to output raw data instead
+     */
     writeDPLCs(({ label, sprites, renderHex }) => {
         const list = [];
 
