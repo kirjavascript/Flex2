@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { observer } from 'mobx-react';
 import { Item, Input, File as FileInput, Select, Checkbox, Button } from '#ui';
-import { scripts, runScript, writeBIN, writeASM, parseASMBasic } from '#formats/scripts';
+import { scripts, runScript, writeBIN, parseASMBasic } from '#formats/scripts';
 import { assemble } from '#formats/asm';
 
 import { decompress, compress, compressionFormats } from '#formats/compression';

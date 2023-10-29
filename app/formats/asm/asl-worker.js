@@ -8,7 +8,7 @@ function assemble(code, { messages, filename }) {
     return new Promise((resolve, reject) => {
         self.Module = {
             locateFile: url => `../wasm/${url}`,
-            arguments: ['-q', '-xx', '-L', filename],
+            arguments: ['-q', '-xx', filename],
             print: (text) => {
                 if (text === endStr) return handleResult(resolve, reject);
                 console.log('asl: ' + text);

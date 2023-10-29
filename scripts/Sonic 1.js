@@ -72,7 +72,7 @@ dplcs([
     ],
 ]);
 
-asm(({ addScript, importScript }) => {
+asm(({ addScript, importScript, writeMappings, writeDPLCs }) => {
     addScript(`
 SonicMappingsVer := 1
 SonicDplcVer := 1
