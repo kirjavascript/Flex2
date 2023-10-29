@@ -15,6 +15,8 @@ macros for mappings
     perf
     autoload mapping label if blank
 
+metadata for mappings
+
 redo tile rendering
 remove rotsprite
 

@@ -3,6 +3,7 @@ const { dialog } = require('@electron/remote');
 import { readFile, writeFile } from 'fs';
 import { errorMsg } from '#util/dialog';
 import { colorMatch } from '#components/import/color-match';
+import { removeBackground } from '#components/import/remove-background';
 
 export function exportSprite({ buffer, mappings }) {
 
@@ -207,6 +208,9 @@ export async function importImg() {
     canvas.height = img.height;
     const ctx = canvas.getContext('2d');
     ctx.drawImage(img, 0, 0);
+
+    // remove background if not transparent
+    ctx.putImageData(removeBackground(ctx.getImageData(0, 0, img.width, img.height)), 0, 0);
 
     // convert to tiles
 

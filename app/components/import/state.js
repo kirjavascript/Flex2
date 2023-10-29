@@ -125,14 +125,11 @@ class ImportState {
     };
 
     importSprites = () => {
-        const { ctx, canvas } = this;
-        const { width, height } = canvas;
-        const buffer = ctx.getImageData(0, 0, width, height);
         const sprites = this.bboxes.map(({x, y, width, height}) => {
             return {
                 width,
                 height,
-                buffer: ctx.getImageData(x, y, width, height),
+                buffer: this.ctx.getImageData(x, y, width, height),
             };
         });
 

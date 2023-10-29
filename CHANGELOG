@@ -1,12 +1,13 @@
 # Changelog
 
-## [unreleased]
+## [1.3.0]
 - Assembler now uses AS Macro Assembler for full macro support
-- MapMacros.asm definitions added
+- MapMacros.asm definitions added for Sonic 1 and 2
 - Custom ASM output support added
 - Make (de)compression threaded
 - Change DPLC limit to 255
 - Fix issue where image data would be cached incorrectly
+- Fix transparent background colour when importing images over the current sprite
 
 ## [1.2.2]
 - Added sprite rotation algorithm: 3 shears

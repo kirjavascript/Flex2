@@ -82,7 +82,7 @@ SonicDplcVer := 1
     /**
      * MapMacros Mapping output
      *
-     * delete this function to output raw data instead
+     * remove this to output raw data instead
      */
     writeMappings(({ label, sprites, renderHex }) => {
         const list = [];
@@ -124,7 +124,7 @@ SonicDplcVer := 1
     /**
      * MapMacros DPLC output
      *
-     * delete this function to output raw data instead
+     * remove this to output raw data instead
      */
     writeDPLCs(({ label, sprites, renderHex }) => {
         const list = [];

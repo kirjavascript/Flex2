@@ -33,7 +33,7 @@ mappings([
                 if (frameIndex === quantity - 1) return endFrame;
             });
         },
-        () => { throw new Error('convert to S3K Player instead'); },
+        () => { throw new Error('unsupported'); },
     ],
 ]);
 
@@ -49,6 +49,6 @@ dplcs([
                 if (frameIndex + 1 === quantity) return endFrame;
             });
         },
-        () => { throw new Error('convert to S3K Player instead'); },
+        () => { throw new Error('unsupported'); },
     ],
 ]);
