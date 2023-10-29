@@ -19,6 +19,22 @@ const p2binMessages = {
     toolsmsg,
 };
 
+function atLabels(code) {
+    const labels = /^@[a-zA-Z0-9_$]+\s*:/gm;
+
+    while (true) {
+        const result = labels.exec(code);
+        if (!result) break;
+        const label = result[0].slice(0, -1);
+
+        if (label.startsWith('@')) {
+            code = code.replace(new RegExp(label, 'g'), `._at_${label.slice(1)}`);
+        }
+    }
+
+    return code;
+}
+
 export async function assemble(
     code,
     { filename } = {
@@ -28,7 +44,7 @@ export async function assemble(
     const aslWorker = new Worker('bundles/asl-worker.js');
     const asl = Comlink.wrap(aslWorker);
 
-    const pFile = await asl.assemble(code, {
+    const pFile = await asl.assemble(atLabels(code), {
         messages: asMessages,
         filename,
     });

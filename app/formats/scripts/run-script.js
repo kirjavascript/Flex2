@@ -334,7 +334,6 @@ export default catchFunc((file) => {
         prelude: `
 even macro
     if (*)&1
-paddingSoFar		set paddingSoFar+1
         dc.b 0 ;ds.b 1
     endif
     endm
