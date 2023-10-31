@@ -26,10 +26,7 @@ function atLabels(code) {
         const result = labels.exec(code);
         if (!result) break;
         const label = result[0].slice(0, -1);
-
-        if (label.startsWith('@')) {
-            code = code.replace(new RegExp(label, 'g'), `._at_${label.slice(1)}`);
-        }
+        code = code.replace(new RegExp(label, 'g'), `._at_${label.slice(1)}`);
     }
 
     return code;
