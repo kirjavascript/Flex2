@@ -180,10 +180,7 @@ class MappingState {
     rotate = {
         angle: 0,
         active: false,
-        algorithm: '3 shears',
     };
-
-    rotateAlgOptions = ['3 shears', 'rotsprite'];
 
     toggleRotate = () => {
         this.rotate.active = !this.rotate.active;

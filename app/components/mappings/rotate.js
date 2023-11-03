@@ -2,37 +2,33 @@ import React, { useEffect, useRef } from 'react';
 import { environment } from '#store/environment';
 import { observer } from 'mobx-react';
 import { exportSprite } from '#formats/image';
-import { rotsprite, threeShears } from '#util/rotsprite';
-import { Input, Slider, Item, Button, Modal, Select } from '#ui';
+import { threeShears } from '#util/rotsprite';
+import { Input, Slider, Item, Button, Modal } from '#ui';
 import { mappingState } from './state';
 
 import { importState } from '../import/state';
 
-function rotateCurrentSprite(canvas, angle, algorithm) {
+function rotateCurrentSprite(canvas, angle) {
     const spriteCanv = exportSprite(environment.currentSprite);
 
-    if (algorithm === 'rotsprite') {
-        rotsprite(spriteCanv, canvas, angle);
-    } else {
-        threeShears(spriteCanv, canvas, angle);
-    }
+    threeShears(spriteCanv, canvas, angle);
 }
 
 export const Rotate = observer(() => {
     const canvasRef = useRef();
 
-    const { active, angle, algorithm } = mappingState.rotate;
+    const { active, angle } = mappingState.rotate;
 
     useEffect(() => {
         if (!canvasRef.current) {
             requestAnimationFrame(() => {
                 canvasRef.current &&
-                    rotateCurrentSprite(canvasRef.current, angle, algorithm);
+                    rotateCurrentSprite(canvasRef.current, angle);
             });
             return;
         }
-        rotateCurrentSprite(canvasRef.current, angle, algorithm);
-    }, [environment.currentSprite, angle, active, algorithm]);
+        rotateCurrentSprite(canvasRef.current, angle);
+    }, [environment.currentSprite, angle, active]);
 
     const assertInput = (num) => {
         const value = Math.max(0, Math.min(360, num));
@@ -56,11 +52,6 @@ export const Rotate = observer(() => {
         >
             <div className="row">
             <Item>Rotate Sprite</Item>
-            <Select
-                options={mappingState.rotateAlgOptions}
-                store={mappingState.rotate}
-                accessor="algorithm"
-            />
         </div>
             <canvas ref={canvasRef} />
             <div className="angles">
