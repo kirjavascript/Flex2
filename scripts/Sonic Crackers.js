@@ -32,19 +32,15 @@ mappings([
             });
         },
         ({ sprite }) => {
-            // write(dc.b, sprite.length);
-            // return ({ mapping }) => {
-            //     write(dc.b, mapping.top);
-            //     write(nybble, 0);
-            //     write(2, mapping.width - 1);
-            //     write(2, mapping.height - 1);
-            //     write(1, mapping.priority);
-            //     write(2, mapping.palette);
-            //     write(1, mapping.vflip);
-            //     write(1, mapping.hflip);
-            //     write(11, mapping.art);
-            //     write(dc.b, mapping.left);
-            // };
+            return ({ mapping }, frameIndex) => {
+                write(nybble, 0);
+                write(2, mapping.width - 1);
+                write(2, mapping.height - 1);
+                write(dc.b, mapping.top);
+                write(dc.w, mapping.art + 1692);
+                write(dc.b, mapping.left);
+                // 0 or FF depending on last one
+            };
         },
     ],
 ]);

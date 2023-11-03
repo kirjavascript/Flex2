@@ -15,7 +15,10 @@ macros for mappings
     perf
     autoload mapping label if blank
 
-metadata for mappings
+metadata for mappings UI + scripts
+    default metadata for sprite and mapping
+    label metadata
+    splitpoint for s3k mappings
 
 redo tile rendering
 remove rotsprite
