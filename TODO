@@ -15,13 +15,20 @@ macros for mappings
     perf
     autoload mapping label if blank
 
+redo tile rendering
+
 metadata for mappings UI + scripts
+    in asm
     default metadata for sprite and mapping
     label metadata
     splitpoint for s3k mappings
 
-redo tile rendering
-remove rotsprite
+inputs
+    not in asm
+    const q = textInput('Offset', { default: ({ environment }) => environment.sprites.dplcs.etc});
+    feature('MapMacros', () => {});
+
+test windows styles and fix fullscreen
 
 ROADMAP
 

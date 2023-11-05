@@ -3,7 +3,7 @@ import { environment } from '#store/environment';
 import { observer } from 'mobx-react';
 import { mappingState } from './state';
 
-const numFmt = (num) => `${num<0?'-':''}0x${(Math.abs(+num)).toString(16).toUpperCase()}`;
+const numFmt = (num) => `${0>num?'-':''}0x${(Math.abs(+num)).toString(16).toUpperCase()}`;
 
 export const HUD = observer(class HUD extends Component {
 

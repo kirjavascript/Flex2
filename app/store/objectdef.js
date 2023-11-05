@@ -19,9 +19,10 @@ export class ObjectDef {
         path: '',
         label: '',
     };
+    config = {};
 
     // turned into generic observables in project menu
-    // dont add methods and shit because they wont work
+    // needs to be serializable
 
     constructor() {
         makeObservable(this, {
@@ -30,13 +31,14 @@ export class ObjectDef {
             palettes: observable,
             art: observable,
             mappings: observable,
-            dplcs: observable
+            dplcs: observable,
+            config: observable
         });
     }
 }
 
 export function editPaths(obj, lambda) {
-    for (name in obj) {
+    for (const name in obj) {
         if (name === 'path') {
             obj[name] = lambda(obj[name]);
         } else {

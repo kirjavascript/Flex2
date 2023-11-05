@@ -12,7 +12,15 @@ const {
     skipFrame,
     signed,
     asm,
+    config,
 } = Flex2;
+
+config(({ number }) => [
+    number({
+        name: 'artOffset',
+        label: 'Art Offset',
+    }),
+]);
 
 mappings([
     [
@@ -22,7 +30,7 @@ mappings([
                 mapping.width = read(2) + 1;
                 mapping.height = read(2) + 1;
                 mapping.top = read(dc.b, signed);
-                mapping.art = read(dc.w) - 1692;
+                mapping.art = read(dc.w) - config.artOffset;
                 mapping.left = read(dc.b, signed);
                 mapping.palette = 0;
                 mapping.priority = 0;
@@ -37,9 +45,12 @@ mappings([
                 write(2, mapping.width - 1);
                 write(2, mapping.height - 1);
                 write(dc.b, mapping.top);
-                write(dc.w, mapping.art + 1692);
+                write(dc.w, mapping.art + config.artOffset);
                 write(dc.b, mapping.left);
-                // 0 or FF depending on last one
+                const endByte = sprite.length - 1 === frameIndex
+                    ? 0xFF
+                    : 0;
+                write(dc.b, endByte);
             };
         },
     ],
@@ -48,13 +59,13 @@ mappings([
 dplcs([
     [
         () => {
-            return (({ mapping }) => {
+            return (({ mapping, metadata }) => {
                 const tiles = read(dc.w);
-                read(dc.w); // dma src
+                metadata.dmaSrc = read(dc.w); // dma src
                 const addr = read(12);
                 read(4);
-                read(dc.w); // dma dst
-                read(dc.w); // end of plc
+                metadata.dmaDst = read(dc.w); // dma dst
+                metadata.plcEnd = read(dc.w); // end of plc
 
                 const swapped = (tiles >> 8) + ((tiles & 0xFF) << 8);
                 mapping.size = swapped / 0x10;

@@ -1,6 +1,7 @@
 import { loadScript, scriptDir } from './file';
 import { writeASM } from '#formats/scripts';
 import { logger } from './debug';
+import { makeOffsetTable } from './offset-table';
 import { toJS } from 'mobx';
 import fs from 'fs';
 import { join } from 'path';
@@ -50,92 +51,26 @@ function catchFunc(func) {
     };
 }
 
-function makeOffsetTable({ read, write }) {
-    return (size = constants.dc.w, { items } = {}) => [
-        ({ getCursor }) => ({ ref }) => {
-            const cursor = getCursor();
-            const mask = (2 ** (size - 1)) - 1; // 0x7FFF for dc.w
-            if (!ref.global.ptr) {
-                ref.global.ptr = mask;
-            }
-            const headers = [];
-            // we keep searching for headers until either;
-            // - cursor reaches a header pointer value
-            // - items is exceeded
-            for (let i = cursor; i < 1e5 && i < ref.global.ptr; i = getCursor()) {
-                const header = (read(size) & mask) + cursor;
-                headers.push(header);
-                logger('= HEADER =', header);
-                if (header < ref.global.ptr && !(header === 0)) {
-                    ref.global.ptr = header;
-                }
-                if (items && headers.length >= items) break;
-            }
-            if (!ref.global.firstHeader) {
-                ref.global.firstHeader = true;
-                ref.global.cleanup.push(({ sprites }) => {
-                    sprites.splice(0, sprites.length);
-                });
-            }
-            ref.global.cleanup.push(({ sprites, spritesAddr }) => {
-                headers.forEach(header => {
-                    if (header === 0) {
-                        sprites.push([]); // handle zero header optimization
-                    } else {
-                        if (spritesAddr[header]) {
-                            sprites.push(spritesAddr[header]);
-                        } else {
-                            logger('error', 'no sprite at ' + header);
-                        }
-                    }
-                });
-            });
-            return constants.endSection;
-        },
-        ({ ref }, spriteIndex) => {
-            if (spriteIndex === 0) {
-                ref.global.cleanup.push(({ sections }) => {
-                    const [header, mappings] = sections;
-
-                    let cursor = size * mappings.length; // bits
-
-                    mappings.forEach((frames, i)=> {
-                        const addr = header[i];
-                        addr.push([[address, size, cursor / 8]]);
-
-                        frames.forEach(frame => {
-                            frame.forEach(([, size]) => {
-                                cursor += size;
-                            });
-                        });
-                    });
-
-                });
-            }
-        },
-    ];
-}
-
-
-export default catchFunc((file) => {
+export default catchFunc((obj) => {
     const [write, setWrite] = useFunc();
     const [read, setRead] = useFunc();
 
-    const [artArgs, artFunc] = useDef();
     const [mappingArgs, mappingFunc] = useDef();
     const [dplcArgs, dplcFunc] = useDef();
-    const [paletteArgs, paletteFunc] = useDef();
-    const [asmArgs, asmFunc] = useDef();
 
-    (new Function('Flex2', loadScript(file)))({
+    const [asmArgs, asmFunc] = useDef();
+    const [configArgs, configFunc] = useDef();
+
+    Object.assign(configFunc, obj.config);
+
+    (new Function('Flex2', loadScript(obj.format)))({
         ...constants,
         write,
         read,
-        art: artFunc,
         mappings: mappingFunc,
         dplcs: dplcFunc,
-        palettes: paletteFunc,
         asm: asmFunc,
+        config: configFunc,
         offsetTable: makeOffsetTable({ read, write }),
     });
 
@@ -310,24 +245,7 @@ export default catchFunc((file) => {
         });
     }
 
-    if (artArgs[0]) {
-        const [readArt, writeArt] = artArgs[0];
-        Object.assign(exports, {
-            art: true,
-            readArt,
-            writeArt,
-        });
-    }
-
-    if (paletteArgs[0]) {
-        const [readPalettes, writePalettes] = paletteArgs[0];
-        Object.assign(exports, {
-            palettes: true,
-            readPalettes,
-            writePalettes,
-        });
-    }
-
+    // ASM
 
     const asm = {
         basic: false,
@@ -416,6 +334,25 @@ even macro
             renderHex,
         });
     };
+
+    // config
+
+    if (configArgs[0]) {
+        function element(name) {
+            return (options = {}) => {
+                if (!options.name) {
+                    throw new Error(`${name} needs a name`);
+                }
+                options.type = name;
+                return options;
+            };
+        }
+
+        exports.config = configArgs[0]({
+            number: element('number'),
+            checkbox: element('checkbox'),
+        });
+    }
 
     return exports;
 });

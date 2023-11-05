@@ -12,6 +12,7 @@ const {
     skipFrame,
     signed,
     asm,
+    config,
 } = Flex2;
 
 mappings([
@@ -72,7 +73,16 @@ dplcs([
     ],
 ]);
 
+config(({ checkbox }) => [
+    checkbox({
+        name: 'mapMacros',
+        label: 'Use MapMacros',
+    }),
+]);
+
 asm(({ addScript, importScript, writeMappings, writeDPLCs }) => {
+    if (!config.mapMacros) return;
+
     addScript(`
 SonicMappingsVer := 1
 SonicDplcVer := 1
@@ -81,8 +91,6 @@ SonicDplcVer := 1
 
     /**
      * MapMacros Mapping output
-     *
-     * remove this to output raw data instead
      */
     writeMappings(({ label, sprites, renderHex }) => {
         const list = [];
@@ -123,8 +131,6 @@ SonicDplcVer := 1
 
     /**
      * MapMacros DPLC output
-     *
-     * remove this to output raw data instead
      */
     writeDPLCs(({ label, sprites, renderHex }) => {
         const list = [];

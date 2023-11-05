@@ -22,8 +22,7 @@ const isASM = (path) => ['.asm', '.s'].includes(extname(path));
 
 export const FileObject = observer(({ obj }) => {
     scripts.length; // react to script updates
-    const script = obj.format && runScript(obj.format);
-    const scriptSafe = script && !script.error;
+    const script = obj.format && runScript(obj);
 
     const { isAbsolute } = obj; // set in store/workspace
 
@@ -35,7 +34,7 @@ export const FileObject = observer(({ obj }) => {
 
     function ioWrap(filePath, setError, e, cb) {
         setError();
-        if (scriptSafe && filePath) {
+        if (script && !script.error && filePath) {
             const done = SaveLoad.indicator(e);
             requestIdleCallback(async () => {
                 const path = isAbsolute
@@ -71,7 +70,9 @@ export const FileObject = observer(({ obj }) => {
     const loadRef = useRef();
 
     function loadObject() {
-        loadRef.current.childNodes.forEach(n => { n.textContent = ''; });
+        loadRef.current.childNodes.forEach((n) => {
+            n.textContent = '';
+        });
         loadArt({ target: loadRef.current.childNodes[0] });
         loadMappings({ target: loadRef.current.childNodes[1] });
         if (obj.dplcs.enabled) {
@@ -81,7 +82,9 @@ export const FileObject = observer(({ obj }) => {
     }
 
     function saveObject() {
-        loadRef.current.childNodes.forEach(n => { n.textContent = ''; });
+        loadRef.current.childNodes.forEach((n) => {
+            n.textContent = '';
+        });
         saveArt({ target: loadRef.current.childNodes[0] });
         saveMappings({ target: loadRef.current.childNodes[1] });
         if (obj.dplcs.enabled) {
@@ -96,15 +99,8 @@ export const FileObject = observer(({ obj }) => {
         ioWrap(obj.art.path, setArtError, e, async (path) => {
             const buffer = (await fs.readFile(path)).slice(obj.art.offset || 0);
 
-            if (script.art) {
-                environment.tiles.replace(script.readArt(buffer));
-            } else {
-                const decompBuffer = await decompress(
-                    buffer,
-                    obj.art.compression,
-                );
-                environment.tiles.replace(bufferToTiles(decompBuffer));
-            }
+            const decompBuffer = await decompress(buffer, obj.art.compression);
+            environment.tiles.replace(bufferToTiles(decompBuffer));
         });
     }
 
@@ -113,20 +109,14 @@ export const FileObject = observer(({ obj }) => {
             if (obj.art.offset) {
                 throw new Error('Can only save art at offset 0');
             }
-            const tiles = script.art
-                ? script.writeArt(tiles)
-                : tilesToBuffer(environment.tiles, obj.art.compression);
+            const tiles = tilesToBuffer(environment.tiles, obj.art.compression);
             await fs.writeFile(path, tiles);
 
-            if (script.art) {
-                await fs.writeFile(path, script.writeArt(tiles));
-            } else {
-                const buffer = tilesToBuffer(environment.tiles);
-                await fs.writeFile(
-                    path,
-                    Buffer.from(await compress(buffer, obj.art.compression)),
-                );
-            }
+            const buffer = tilesToBuffer(environment.tiles);
+            await fs.writeFile(
+                path,
+                Buffer.from(await compress(buffer, obj.art.compression)),
+            );
         });
     }
 
@@ -224,7 +214,7 @@ export const FileObject = observer(({ obj }) => {
                     ? palPath
                     : workspace.absolutePath(palPath);
 
-                (script.palettes ? script.readPalettes : buffersToColors)({
+                buffersToColors({
                     buffer: await fs.readFile(path),
                     length,
                 }).forEach((line) => {
@@ -250,9 +240,11 @@ export const FileObject = observer(({ obj }) => {
                     ? palPath
                     : workspace.absolutePath(palPath);
 
-                const chunk = (
-                    script.palettes ? script.writePalettes : colorsToBuffers
-                )(environment.palettes, cursor, cursor + length);
+                const chunk = colorsToBuffers(
+                    environment.palettes,
+                    cursor,
+                    cursor + length,
+                );
                 await fs.writeFile(path, chunk);
                 cursor += length;
             }
@@ -281,22 +273,18 @@ export const FileObject = observer(({ obj }) => {
                 <Item color="green">Art</Item>
                 <SaveLoad load={loadArt} save={saveArt} />
             </div>
-            {!script.art && (
-                <>
-                    <div className="menu-item">
-                        <Item>Compression</Item>
-                        <Select
-                            options={compressionList}
-                            store={obj.art}
-                            accessor="compression"
-                        />
-                    </div>
-                    <div className="menu-item">
-                        <Item>Offset</Item>
-                        <Input store={obj.art} accessor="offset" isNumber />
-                    </div>
-                </>
-            )}
+            <div className="menu-item">
+                <Item>Compression</Item>
+                <Select
+                    options={compressionList}
+                    store={obj.art}
+                    accessor="compression"
+                />
+            </div>
+            <div className="menu-item">
+                <Item>Load Offset</Item>
+                <Input store={obj.art} accessor="offset" isNumber />
+            </div>
             <ErrorMsg error={artError} />
             <FileInput
                 label="Art"
@@ -322,6 +310,36 @@ export const FileObject = observer(({ obj }) => {
                     <Input store={obj.mappings} accessor="label" />
                 </div>
             )}
+
+            {script.config?.map((option, i) => {
+                return (
+                    <div className="menu-item" key={i}>
+                        <Item>{option.label || option.name}</Item>
+                        {(() => {
+                            if (option.type === 'number') {
+                                return (
+                                    <Input
+                                        isNumber
+                                        store={obj.config}
+                                        accessor={option.name}
+                                    />
+                                );
+                            }
+                            if (option.type === 'checkbox') {
+                                const value = !!obj.config[option.name];
+                                return (
+                                    <Checkbox
+                                        checked={value}
+                                        onChange={() => {
+                                            obj.config[option.name] = !value;
+                                        }}
+                                    />
+                                );
+                            }
+                        })()}
+                    </div>
+                );
+            })}
 
             {script.DPLCs && (
                 <>
