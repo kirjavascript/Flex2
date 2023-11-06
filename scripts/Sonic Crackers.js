@@ -59,17 +59,16 @@ mappings([
 dplcs([
     [
         () => {
-            return (({ mapping, metadata }) => {
+            return (({ mapping }) => {
                 const tiles = read(dc.w);
-                metadata.dmaSrc = read(dc.w); // dma src
-                const addr = read(12);
-                read(4);
-                metadata.dmaDst = read(dc.w); // dma dst
-                metadata.plcEnd = read(dc.w); // end of plc
-
                 const swapped = (tiles >> 8) + ((tiles & 0xFF) << 8);
                 mapping.size = swapped / 0x10;
-                mapping.art = addr;
+                mapping.metadata.dmaSrc = read(dc.w);
+                mapping.art = read(12);
+                mapping.metadata.unknown = read(4);
+                mapping.metadata.dmaDst = read(dc.w);
+                mapping.metadata.plcEnd = read(dc.w);
+
                 return endFrame;
             });
         },

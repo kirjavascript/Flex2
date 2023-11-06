@@ -11,22 +11,22 @@
 /* http://info.sonicretro.org/Disassemblies */
 
 
+sublayout -> tabbed pane
+    mappings - raw editor - metadata - commands?
+
 macros for mappings
     perf
     autoload mapping label if blank
 
-redo tile rendering
-
 metadata for mappings UI + scripts
     in asm
-    default metadata for sprite and mapping
     label metadata
     splitpoint for s3k mappings
+    default metadata for sprite and mapping
+    copy metadata from rightmost sprite
 
 inputs
-    not in asm
-    const q = textInput('Offset', { default: ({ environment }) => environment.sprites.dplcs.etc});
-    feature('MapMacros', () => {});
+    when copying to project, only use config{} data defined in scripts
 
 test windows styles and fix fullscreen
 

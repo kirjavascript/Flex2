@@ -14,6 +14,7 @@ function hydrate(objects) {
         if (obj.art) {
             obj.art.offset = obj.art.offset || 0;
         }
+        obj.config ??= {};
         obj.children && hydrate(obj.children);
     });
 }

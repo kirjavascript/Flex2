@@ -344,13 +344,13 @@ export const FileObject = observer(({ obj }) => {
             {script.DPLCs && (
                 <>
                     <div className="menu-item" onClick={toggleDPLCs}>
-                        <Item>DPLCs Enabled</Item>
+                        <Item>Use PLCs</Item>
                         <Checkbox checked={obj.dplcs.enabled} readOnly />
                     </div>
                     {obj.dplcs.enabled && (
                         <>
                             <div className="menu-item">
-                                <Item color="red">DPLCs</Item>
+                                <Item color="red">PLCs</Item>
                                 <SaveLoad load={loadDPLCs} save={saveDPLCs} />
                             </div>
                             <ErrorMsg error={dplcError} />

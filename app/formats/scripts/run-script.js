@@ -61,6 +61,7 @@ export default catchFunc((obj) => {
     const [asmArgs, asmFunc] = useDef();
     const [configArgs, configFunc] = useDef();
 
+    // expose config data for scripts
     Object.assign(configFunc, obj.config);
 
     (new Function('Flex2', loadScript(obj.format)))({
@@ -124,6 +125,7 @@ export default catchFunc((obj) => {
                 if (cursor >= buffer.length) break;
                 logger(`== SPRITE == ${spriteIndex.toString(16)} `);
                 const sprite = [];
+                sprite.metadata = {};
                 const ref = { global };
                 spritesAddr[cursor] = sprite;
                 const readMapping = readFrame({ getCursor }, spriteIndex);
@@ -131,7 +133,9 @@ export default catchFunc((obj) => {
                     logger('read mapping');
                     for (let frameIndex = 0; frameIndex < readLimit; frameIndex++) {
                         logger(`= FRAME = ${frameIndex.toString(16)} `);
-                        const mapping = {};
+                        const mapping = {
+                            metadata: {},
+                        };
                         const param = {
                             mapping,
                             sprites,

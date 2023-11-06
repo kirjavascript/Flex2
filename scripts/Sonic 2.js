@@ -15,6 +15,13 @@ const {
     config,
 } = Flex2;
 
+config(({ checkbox }) => [
+    checkbox({
+        name: 'mapMacros',
+        label: 'Use MapMacros',
+    }),
+]);
+
 mappings([
     offsetTable(dc.w),
     [
@@ -82,13 +89,6 @@ dplcs([
             };
         },
     ],
-]);
-
-config(({ checkbox }) => [
-    checkbox({
-        name: 'mapMacros',
-        label: 'Use MapMacros',
-    }),
 ]);
 
 asm(({ addScript, importScript, writeMappings, writeDPLCs }) => {
