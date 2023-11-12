@@ -43,13 +43,11 @@ export class Layout extends Component {
                     }
 
                     if (component === 'sub') {
-                        let subModel = node.getExtraData().model;
-                        if (subModel == null) {
+                        const subModel = node.getExtraData().model || (
                             node.getExtraData().model = Model.fromJson(
                                 node.getConfig().model,
-                            );
-                            subModel = node.getExtraData().model;
-                        }
+                            )
+                        );
 
                         return (
                             <FlexLayout

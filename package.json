@@ -1,9 +1,8 @@
 {
-    "version": "1.3.2",
+    "version": "1.3.4",
     "scripts": {
         "start": "electron ./static --dev"
     },
-    "asar": false,
     "devDependencies": {
         "chokidar": "^3.5.3",
         "esbuild": "^0.16.4",

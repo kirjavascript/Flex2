@@ -70,6 +70,7 @@ export default catchFunc((obj) => {
         read,
         mappings: mappingFunc,
         dplcs: dplcFunc,
+        plcs: dplcFunc,
         asm: asmFunc,
         config: configFunc,
         offsetTable: makeOffsetTable({ read, write }),

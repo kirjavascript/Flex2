@@ -311,7 +311,7 @@ export const FileObject = observer(({ obj }) => {
                 </div>
             )}
 
-            {script.config?.map((option, i) => {
+            {script?.config?.map((option, i) => {
                 return (
                     <div className="menu-item" key={i}>
                         <Item>{option.label || option.name}</Item>
@@ -341,7 +341,7 @@ export const FileObject = observer(({ obj }) => {
                 );
             })}
 
-            {script.DPLCs && (
+            {script?.DPLCs && (
                 <>
                     <div className="menu-item" onClick={toggleDPLCs}>
                         <Item>Use PLCs</Item>

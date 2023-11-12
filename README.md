@@ -84,8 +84,6 @@ Both methods of importing use CIEDE2000 nearest colour matching to the current p
 
 ## Custom Formats
 
-The base formats are provided in the `scripts/` directory. These can be modified to suit whatever format you decide to come up with.
+The base formats are provided in the `scripts/` directory, and serve as examples for custom mapping scripts.
 
-You can provide custom mapping formats, DPLCs formats, art formats (including compression), and palette formats.
-
-Full macro support is available for assembly files, along with the ability to specify custom output.
+Full (AS-style) macro support is available for assembly files, along with the ability to specify custom output.

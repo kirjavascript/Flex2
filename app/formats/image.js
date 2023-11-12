@@ -210,7 +210,9 @@ export async function importImg() {
     ctx.drawImage(img, 0, 0);
 
     // remove background if not transparent
-    ctx.putImageData(removeBackground(ctx.getImageData(0, 0, img.width, img.height)), 0, 0);
+    // request to add this: https://github.com/kirjavascript/Flex2/issues/39
+    // request to remove it: https://github.com/kirjavascript/Flex2/issues/62
+    // ctx.putImageData(removeBackground(ctx.getImageData(0, 0, img.width, img.height)), 0, 0);
 
     // convert to tiles
 
