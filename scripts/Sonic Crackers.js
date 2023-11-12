@@ -56,13 +56,15 @@ mappings([
     ],
 ]);
 
+function swapBytes(word) {
+    return (word >> 8) + ((word & 0xFF) << 8)
+}
+
 dplcs([
     [
         () => {
             return (({ mapping }) => {
-                const tiles = read(dc.w);
-                const swapped = (tiles >> 8) + ((tiles & 0xFF) << 8);
-                mapping.size = swapped / 0x10;
+                mapping.size = swapBytes(read(dc.w)) / 0x10;
                 mapping.metadata.dmaSrc = read(dc.w);
                 mapping.art = read(12);
                 mapping.metadata.unknown = read(4);

@@ -709,10 +709,10 @@ fizzy-ui-utils@^2.0.0:
   dependencies:
     desandro-matches-selector "^2.0.0"
 
-flexlayout-react@^0.4.5:
-  version "0.4.9"
-  resolved "https://registry.npmjs.org/flexlayout-react/-/flexlayout-react-0.4.9.tgz"
-  integrity sha512-FAyKtbBly7aE+oGz7RqgDQFErSrbKyAlkbLbrDie/o0uAKZf4C+o96bR2tvgrH/h7ctVGsl5QVP2Q9Ux49FQbg==
+flexlayout-react@0.7.14:
+  version "0.7.14"
+  resolved "https://registry.yarnpkg.com/flexlayout-react/-/flexlayout-react-0.7.14.tgz#9a675a9c3efb2a4467425ee01589455feab318e8"
+  integrity sha512-VhwoeIi687WDOuHsMSnGGuWB/MMZdnVwkc5aUFeNsz8kO47q+uAuReFwIyDxcQo4EBQ9nvq5W19W5kmo/Q8H3A==
 
 frontend-collective-react-dnd-scrollzone@^1.0.2:
   version "1.0.2"

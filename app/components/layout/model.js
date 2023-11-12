@@ -1,4 +1,4 @@
-import FlexLayout, { Actions } from 'flexlayout-react';
+import { Model, Actions } from 'flexlayout-react';
 
 window.resetLayout = () => {
     localStorage.removeItem('layout');
@@ -11,7 +11,7 @@ const DEFAULT_LAYOUT = {
         'splitterSize': 6,
         'tabEnableClose': false,
         'tabEnableRename': false,
-        'tabSetEnableMaximize': true
+        'tabSetEnableMaximize': true,
     },
     'layout': {
         'type': 'row',
@@ -57,8 +57,47 @@ const DEFAULT_LAYOUT = {
                         'name': 'Documentation',
                         'component': 'documentation',
                     },
+                    {
+                        "type": "tab",
+                        "name": "Tabbed Pane",
+                        "component": "sub",
+                        "config": {
+                            "model": {
+                                "global": {
+                                    "tabSetTabLocation": "bottom"
+                                },
+                                "borders": [],
+                                "layout": {
+                                    "type": "row",
+                                    "children": [
+                                        {
+                                            "type": "tabset",
+                                            "weight": 50,
+                                            "children": [
+                                                {
+                                                    "type": "tab",
+                                                    "name": "AAAA",
+                                                    "component": "bar",
+                                                    "config": {
+                                                        "id": "1"
+                                                    }
+                                                },
+                                                {
+                                                    "type": "tab",
+                                                    "name": "BBBB",
+                                                    "component": "baz",
+                                                    "config": {
+                                                        "id": "2"
+                                                    }
+                                                }
+                                            ],
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
                 ],
-                'active': true
             },
             {
                 'type': 'tabset',
@@ -94,8 +133,8 @@ function findNode(name, children) {
 }
 
 export const model = version && savedLayout
-    ? FlexLayout.Model.fromJson(JSON.parse(savedLayout))
-    : FlexLayout.Model.fromJson(DEFAULT_LAYOUT);
+    ? Model.fromJson(JSON.parse(savedLayout))
+    : Model.fromJson(DEFAULT_LAYOUT);
 
 
 export function saveModel(model) {

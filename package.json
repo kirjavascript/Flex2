@@ -21,7 +21,7 @@
         "d3-drag": "^1.2.5",
         "d3-selection": "^1.1.0",
         "electron": "^26.2.4",
-        "flexlayout-react": "^0.4.5",
+        "flexlayout-react": "0.7.14",
         "lodash": "^4.17.19",
         "marked": "^0.3.6",
         "mobx": "^6.7.0",

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { model, saveModel } from './model';
 
-import FlexLayout from 'flexlayout-react';
+import { Layout as FlexLayout, Model, Actions } from 'flexlayout-react';
 import classNames from 'classnames';
 
 import { File } from '#components/file';
@@ -11,7 +11,6 @@ import { Art } from '#components/art/index';
 import { Sprites } from '#components/sprites';
 import { Mappings } from '#components/mappings';
 import { Documentation } from '#components/documentation';
-
 
 export class Layout extends Component {
     factory = (node) => {
@@ -42,7 +41,30 @@ export class Layout extends Component {
                     } else if (component === 'documentation') {
                         return <Documentation node={node} />;
                     }
-                    return 'No such tab';
+
+                    if (component === 'sub') {
+                        let subModel = node.getExtraData().model;
+                        if (subModel == null) {
+                            node.getExtraData().model = Model.fromJson(
+                                node.getConfig().model,
+                            );
+                            subModel = node.getExtraData().model;
+                        }
+
+                        return (
+                            <FlexLayout
+                                model={subModel}
+                                factory={this.factory}
+                                onModelChange={() => {
+                                    node.getConfig().model = node
+                                        .getExtraData()
+                                        .model.toJson();
+                                    saveModel(model);
+                                }}
+                            />
+                        );
+                    }
+                    return 'No such component ' + component;
                 })()}
             </div>
         );
@@ -50,7 +72,7 @@ export class Layout extends Component {
 
     render() {
         return (
-            <FlexLayout.Layout
+            <FlexLayout
                 model={model}
                 factory={this.factory}
                 onModelChange={saveModel}

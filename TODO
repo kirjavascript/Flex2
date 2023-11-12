@@ -32,6 +32,8 @@ test windows styles and fix fullscreen
 
 ROADMAP
 
+make into a webapp again, provide a zip download of a local version you can use
+
 drawing mode bugs
     disable mapping editing
 improve undo/redo when drawing pixels / moving things
