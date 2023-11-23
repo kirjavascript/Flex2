@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { model, saveModel } from './model';
 
-import { Layout as FlexLayout, Model, Actions } from 'flexlayout-react';
+import { Layout as FlexLayout, Model } from 'flexlayout-react';
 import classNames from 'classnames';
 
 import { File } from '#components/file';
@@ -10,6 +10,7 @@ import { Palettes } from '#components/palettes';
 import { Art } from '#components/art/index';
 import { Sprites } from '#components/sprites';
 import { Mappings } from '#components/mappings';
+import { RawEditor } from '#components/mappings/raw-editor';
 import { Documentation } from '#components/documentation';
 
 export class Layout extends Component {
@@ -36,8 +37,10 @@ export class Layout extends Component {
                         return <Art node={node} />;
                     } else if (component === 'sprites') {
                         return <Sprites node={node} />;
-                    } else if (component === 'mappings') {
+                    } else if (component === 'mappings-visual') {
                         return <Mappings node={node} />;
+                    } else if (component === 'mappings-raw') {
+                        return <RawEditor node={node} />;
                     } else if (component === 'documentation') {
                         return <Documentation node={node} />;
                     }

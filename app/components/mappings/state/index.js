@@ -82,8 +82,6 @@ class MappingState {
             selectToggle: action,
             rotate: observable,
             toggleRotate: action,
-            rawEditor: observable,
-            toggleRawEditor: action,
             newMapping: observable,
             toggleNewMapping: action,
             autodismiss: observable,
@@ -100,7 +98,7 @@ class MappingState {
         });
 
         // ensure only one modal is open at once
-        const modals = ['newMapping', 'rawEditor', 'rotate'];
+        const modals = ['newMapping', 'rotate'];
         modals.forEach(modal => {
             observe(this[modal], value => {
                 if (value.name === 'active' && value.object.active) {
@@ -184,16 +182,6 @@ class MappingState {
 
     toggleRotate = () => {
         this.rotate.active = !this.rotate.active;
-    };
-
-    // raw editor
-
-    rawEditor = {
-        active: false,
-    };
-
-    toggleRawEditor = () => {
-        this.rawEditor.active = !this.rawEditor.active;
     };
 
     // new mappings

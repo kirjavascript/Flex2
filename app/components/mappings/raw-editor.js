@@ -273,27 +273,9 @@ export const RawEditor = observer(
                 currentSprite: { mappings, dplcs },
                 config: { currentTile, dplcsEnabled },
             } = environment;
-            const {
-                rawEditor: { active },
-            } = mappingState;
 
             return (
-                <Modal
-                    spring={{
-                        top: active ? 15 : -100,
-                        opacity: active ? 1 : 0,
-                    }}
-                    className="raw-mapping-data"
-                >
-                    <div className="close">
-                        <Item>Raw Mapping Editor</Item>
-                        <Button
-                            color="magenta"
-                            onClick={mappingState.toggleRawEditor}
-                        >
-                            Close
-                        </Button>
-                    </div>
+                <>
                     <SortableMappingList
                         axis="y"
                         lockAxis="y"
@@ -328,7 +310,7 @@ export const RawEditor = observer(
                             </div>
                         </div>
                     )}
-                </Modal>
+                </>
             );
         }
     },

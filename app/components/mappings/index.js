@@ -132,7 +132,6 @@ export const Mappings = observer(class Mappings extends Component {
                     style={{ width: baseWidth }}
                 />
 
-                <RawEditor />
                 <Rotate />
 
                 <Commands />
