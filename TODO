@@ -1,8 +1,6 @@
 // formats to support
 
-// crackers
 // kid chameleon
-    // go back to qiuu with questions
 // chaotix
 // s3k sonic saving
 // ristar
@@ -10,12 +8,12 @@
 /* https://raw.githubusercontent.com/Dandaman955/Streets-of-Rage-1-Disassembly-Redux/master/SoR.asm */
 /* http://info.sonicretro.org/Disassemblies */
 
+NEXT
 
 sublayout -> tabbed pane
     mappings - raw editor - metadata - commands?
 
 macros for mappings
-    perf
     autoload mapping label if blank
 
 metadata for mappings UI + scripts
@@ -30,9 +28,9 @@ inputs
 
 test windows styles and fix fullscreen
 
-ROADMAP
-
 make into a webapp again, provide a zip download of a local version you can use
+
+ROADMAP
 
 drawing mode bugs
     disable mapping editing

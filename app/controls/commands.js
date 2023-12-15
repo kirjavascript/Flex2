@@ -275,12 +275,6 @@ export const commands = [
 
     [
         {
-            map: 'r', name: 'Raw Editor', color: 'white', noMultiplier: true,
-            func: () => {
-                mappingState.toggleRawEditor();
-            },
-        },
-        {
             map: 'R', name: 'Rotate Sprite', color: 'white', noMultiplier: true,
             func: () => {
                 mappingState.toggleRotate();
