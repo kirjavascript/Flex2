@@ -21,7 +21,6 @@ export async function decompress(buffer, compression) {
 
     if (!operation) return new Uint8Array(buffer);
     else return await worker.mdcomp(`_${operation}_decode`, buffer);
-
 }
 
 export async function compress(buffer, compression) {

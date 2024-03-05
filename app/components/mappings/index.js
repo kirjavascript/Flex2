@@ -11,7 +11,6 @@ import { HUD } from './hud';
 import { PaletteHUD } from './hud-palette';
 import { Guidelines } from './guidelines';
 import { NewMapping } from './new-mapping';
-import { RawEditor } from './raw-editor';
 import { Rotate } from './rotate';
 import { DragSelect, attachDragSelectToNode } from './drag-select';
 import { attachDragMoveToNode } from './drag-move';

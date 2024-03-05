@@ -96,7 +96,7 @@ asm(({ addScript, importScript, writeMappings, writeDPLCs }) => {
 
     addScript(`
 SonicMappingsVer := 2
-SonicDplcVer = 2
+SonicDplcVer := 2
     `);
     importScript('MapMacros.asm');
 

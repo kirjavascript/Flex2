@@ -1,16 +1,15 @@
 const fs = require('fs');
 const esbuild = require('esbuild');
 const path = require('path');
+const devMode = process.argv.includes('--dev');
 
-module.exports = (mainWindow) => {
+module.exports = ({ mainWindow } = {}) => {
     const { writeFile, rmSync, readdirSync } = fs;
 
     mainWindow?.openDevTools();
 
     const outdir = './static/bundles';
     readdirSync(outdir).forEach((f) => rmSync(`${outdir}/${f}`));
-
-    const devMode = !!mainWindow;
 
     esbuild
         .build({

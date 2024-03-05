@@ -16,7 +16,9 @@ import { Documentation } from '#components/documentation';
 export class Layout extends Component {
     factory = (node) => {
         const model = node.getModel();
-        const maximized = !!model.getMaximizedTabset();
+        const maximizedTabSet = model.getMaximizedTabset();
+        const maximized = !!maximizedTabSet;
+
         return (
             <div
                 className={classNames([
@@ -27,6 +29,7 @@ export class Layout extends Component {
                 {(() => {
                     const component = node.getComponent();
                     if (!node._visible) return false;
+                    if (maximized && !maximizedTabSet?._children?.includes(node)) return false;
                     if (component === 'file') {
                         return <File node={node} />;
                     } else if (component === 'project') {

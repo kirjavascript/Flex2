@@ -32,7 +32,7 @@ function createWindow() {
     });
 
     if (devMode) {
-        require('./../development/build')(mainWindow);
+        require('./../development/build')({ mainWindow });
     }
 }
 

@@ -10,6 +10,11 @@
 
 NEXT
 
+docs
+    crackers
+    mapping script configuration
+    raw editor
+
 sublayout -> tabbed pane
     mappings - raw editor - metadata - commands?
 
@@ -27,8 +32,13 @@ inputs
     when copying to project, only use config{} data defined in scripts
 
 test windows styles and fix fullscreen
+    fullscreening nukes masory layout (and sprites when done from load?)
 
-make into a webapp again, provide a zip download of a local version you can use
+WEB
+
+.zip local version
+scripts tab
+no projects
 
 ROADMAP
 
