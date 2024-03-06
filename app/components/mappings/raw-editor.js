@@ -275,7 +275,7 @@ export const RawEditor = observer(
             } = environment;
 
             return (
-                <>
+                <div className="raw-editor">
                     <SortableMappingList
                         axis="y"
                         lockAxis="y"
@@ -310,7 +310,7 @@ export const RawEditor = observer(
                             </div>
                         </div>
                     )}
-                </>
+                </div>
             );
         }
     },
