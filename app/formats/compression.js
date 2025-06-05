@@ -6,6 +6,7 @@ export const compressionFormats = {
     'Kosinski': 'kosinski',
     'Kosinski-M': 'moduled_kosinski',
     'KosinskiPlus': 'kosplus',
+    'KosinskiPlus-M': 'moduled_kosplus',
     'Comper': 'comper',
     'Enigma': 'enigma',
     'ArtC42': 'artc42',
