@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+- Sonic Crackers Support
+- Make MapMacros optional in config
+
 ## [1.3.1]
 - Readd support for @label syntax
 - Fix a bug with the even macro

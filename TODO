@@ -14,6 +14,7 @@ docs
     crackers
     mapping script configuration
     raw editor
+    - string / number? or just autoparse?
 
 sublayout -> tabbed pane
     mappings - raw editor - metadata - commands?
@@ -27,9 +28,12 @@ metadata for mappings UI + scripts
     splitpoint for s3k mappings
     default metadata for sprite and mapping
     copy metadata from rightmost sprite
+    addNewDPLC metadata check
 
 inputs
     when copying to project, only use config{} data defined in scripts
+
+maybe auto detect mapmacros
 
 test windows styles and fix fullscreen
     fullscreening nukes masory layout (and sprites when done from load?)

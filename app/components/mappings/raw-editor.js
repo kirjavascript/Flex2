@@ -271,7 +271,7 @@ export const RawEditor = observer(
         render() {
             const {
                 currentSprite: { mappings, dplcs },
-                config: { currentTile, dplcsEnabled },
+                config: { dplcsEnabled },
             } = environment;
 
             return (

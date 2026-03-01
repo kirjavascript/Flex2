@@ -52,7 +52,7 @@ export function makeOffsetTable({ read, write }) {
 
                     mappings.forEach((frames, i)=> {
                         const addr = header[i];
-                        addr.push([[address, size, cursor / 8]]);
+                        addr.push([[constants.address, size, cursor / 8]]);
 
                         frames.forEach(frame => {
                             frame.forEach(([, size]) => {
