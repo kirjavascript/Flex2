@@ -22,6 +22,8 @@ sublayout -> tabbed pane
 macros for mappings
     autoload mapping label if blank
 
+TODO: fix project dir not being correct when loading the crackers project
+
 metadata for mappings UI + scripts
     in asm
     label metadata

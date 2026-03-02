@@ -131,7 +131,7 @@ const Project = observer(() => {
                         </div>
                     )}
                 </div>
-                {node && <FileObject obj={node} />}
+                {node && <FileObject obj={node} isAsbolute={false} />}
             </div>
         </div>
     );

@@ -7,7 +7,6 @@ import { selectTab } from '#components/layout/model';
 import path from 'path';
 
 const fileState = new ObjectDef();
-fileState.isAbsolute = true;
 storage(fileState, 'file-state');
 
 class Workspace {
@@ -33,6 +32,11 @@ class Workspace {
     };
     absolutePath = (filepath) => {
         return path.resolve(path.dirname(this.projectPath), filepath);
+    };
+    fuzzyAbsolutePath = (filepath) => {
+        return path.isAbsolute(filepath)
+            ? filepath
+            : this.absolutePath(filepath);
     };
 
     fileToProject = () => {
@@ -63,6 +67,7 @@ class Workspace {
             closeProject: action,
             relativePath: action,
             absolutePath: action,
+            fuzzyAbsolutePath: action,
             fileToProject: action,
             projectToFile: action
         });

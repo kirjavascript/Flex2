@@ -20,11 +20,9 @@ const compressionList = Object.keys(compressionFormats);
 
 const isASM = (path) => ['.asm', '.s'].includes(extname(path));
 
-export const FileObject = observer(({ obj }) => {
+export const FileObject = observer(({ obj, isAbsolute }) => {
     scripts.length; // react to script updates
     const script = obj.format && runScript(obj);
-
-    const { isAbsolute } = obj; // set in store/workspace
 
     const mappingsASM = isASM(obj.mappings.path);
     const dplcsASM = isASM(obj.dplcs.path);
@@ -37,11 +35,8 @@ export const FileObject = observer(({ obj }) => {
         if (script && !script.error && filePath) {
             const done = SaveLoad.indicator(e);
             requestIdleCallback(async () => {
-                const path = isAbsolute
-                    ? filePath
-                    : workspace.absolutePath(filePath);
                 try {
-                    await cb(path);
+                    await cb(workspace.fuzzyAbsolutePath(filePath));
                 } catch (e) {
                     setError(e);
                 } finally {
@@ -210,9 +205,7 @@ export const FileObject = observer(({ obj }) => {
                     cursor += length;
                     continue;
                 }
-                const path = isAbsolute
-                    ? palPath
-                    : workspace.absolutePath(palPath);
+                const path = workspace.fuzzyAbsolutePath(palPath);
 
                 buffersToColors({
                     buffer: await fs.readFile(path),
@@ -236,9 +229,7 @@ export const FileObject = observer(({ obj }) => {
                     cursor += length;
                     continue;
                 }
-                const path = isAbsolute
-                    ? palPath
-                    : workspace.absolutePath(palPath);
+                const path = workspace.fuzzyAbsolutePath(palPath);
 
                 const chunk = colorsToBuffers(
                     environment.palettes,

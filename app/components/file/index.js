@@ -7,7 +7,7 @@ import { Button } from '#ui';
 export const File = observer(() => {
     return (
         <>
-            <FileObject obj={workspace.file} />
+            <FileObject obj={workspace.file} isAbsolute />
             {workspace.project && (
                 <div className="project-copy">
                     <Button
