@@ -1,4 +1,4 @@
-// Flex2 Mapping Definition - Sonic 3&K Objects
+// Flex2 Mapping Definition - Sonic 3&K Objects Static
 
 const {
     mappings,
@@ -15,10 +15,9 @@ const {
 } = Flex2;
 
 mappings([
-    offsetTable(dc.w),
     [
         () => {
-            const quantity = read(dc.w);
+            const quantity = 1;
             return quantity > 0 && (({ mapping }, frameIndex) => {
                 mapping.top = read(dc.b, signed);
                 read(nybble);
@@ -34,7 +33,6 @@ mappings([
             });
         },
         ({ sprite }) => {
-            write(dc.w, sprite.length);
             return ({ mapping }) => {
                 // top
                 write(dc.b, mapping.top);
@@ -92,14 +90,7 @@ SonicDplcVer := 3
     writeMappings(({ label, sprites, renderHex }) => {
         const list = [];
 
-        list.push(`${label}: mappingsTable`);
-        sprites.forEach((_, i) => {
-	        list.push(`\tmappingsTableEntry.w\t${label}_${i}`);
-        });
-        list.push('');
-
-        sprites.forEach((sprite, i) => {
-            list.push(`${label}_${i}:\tspriteHeader`);
+        sprites.forEach((sprite) => {
 
             sprite.mappings.forEach(mapping => {
                 const pieceInfo = [
@@ -114,11 +105,9 @@ SonicDplcVer := 3
                     mapping.priority,
                 ].map(renderHex).join(', ');
 
-                list.push(` spritePiece ${pieceInfo}`);
+                list.push(`${label}: spritePiece ${pieceInfo}`);
             });
 
-            list.push(`${label}_${i}_End`);
-            list.push('');
         });
 
         list.push('\teven');
