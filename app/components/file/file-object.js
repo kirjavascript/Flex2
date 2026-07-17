@@ -317,7 +317,7 @@ export const FileObject = observer(({ obj, isAbsolute }) => {
                                 );
                             }
                             if (option.type === 'checkbox') {
-                                const value = obj.config[option.name] ?? option.default ?? false;
+                                const value = !!obj.config[option.name];
                                 return (
                                     <Checkbox
                                         checked={value}

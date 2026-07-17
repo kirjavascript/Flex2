@@ -11,6 +11,7 @@ import { Art } from '#components/art/index';
 import { Sprites } from '#components/sprites';
 import { Mappings } from '#components/mappings';
 import { RawEditor } from '#components/mappings/raw-editor';
+import { MetadataEditor } from '#components/mappings/metadata-editor';
 import { Documentation } from '#components/documentation';
 
 export class Layout extends Component {
@@ -44,6 +45,8 @@ export class Layout extends Component {
                         return <Mappings node={node} />;
                     } else if (component === 'mappings-raw') {
                         return <RawEditor node={node} />;
+                    } else if (component === 'mappings-metadata') {
+                        return <MetadataEditor node={node} />;
                     } else if (component === 'documentation') {
                         return <Documentation node={node} />;
                     }

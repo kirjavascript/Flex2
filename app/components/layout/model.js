@@ -35,6 +35,11 @@ const MAPPINGS_LAYOUT = {
                                 name: 'Raw',
                                 component: 'mappings-raw',
                             },
+                            {
+                                type: 'tab',
+                                name: 'Metadata',
+                                component: 'mappings-metadata',
+                            },
                         ],
                     },
                 ],
@@ -113,6 +118,7 @@ const rawModel = savedLayout ? JSON.parse(savedLayout) : DEFAULT_LAYOUT;
 
 // migrations
 
+// 1.4.0
 const mappingsNode = findNode(
     (child) => child.component === 'mappings',
     rawModel.layout.children,

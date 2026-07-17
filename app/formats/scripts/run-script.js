@@ -59,9 +59,31 @@ export default catchFunc((obj) => {
     const [dplcArgs, dplcFunc] = useDef();
 
     const [asmArgs, asmFunc] = useDef();
-    const [configArgs, configFunc] = useDef();
 
-    // expose config data for scripts
+    const configOptions = [];
+    const configFunc = (callback) => {
+        function element(name) {
+            return (options = {}) => {
+                if (!options.name) {
+                    throw new Error(`${name} needs a name`);
+                }
+                options.type = name;
+                return options;
+            };
+        }
+
+        configOptions.splice(0, configOptions.length, ...callback({
+            number: element('number'),
+            checkbox: element('checkbox'),
+        }));
+
+        configOptions.forEach(option => {
+            if (option.default != null && configFunc[option.name] == null) {
+                configFunc[option.name] = option.default;
+                obj.config[option.name] = option.default;
+            }
+        });
+    };
     Object.assign(configFunc, obj.config);
 
     (new Function('Flex2', loadScript(obj.format)))({
@@ -76,7 +98,7 @@ export default catchFunc((obj) => {
         offsetTable: makeOffsetTable({ read, write }),
     });
 
-    const readLimit = 1e3;
+    const readLimit = 2e3;
 
     const createReader = (sectionList = []) => catchFunc((buffer) => {
         logger('buf length', buffer.length);
@@ -240,6 +262,7 @@ export default catchFunc((obj) => {
         mappings: true,
         readMappings,
         writeMappings,
+        config: configOptions,
     };
 
     if (dplcArgs[0]) {
@@ -342,31 +365,6 @@ even macro
             renderHex,
         });
     };
-
-    // config
-
-    if (configArgs[0]) {
-        function element(name) {
-            return (options = {}) => {
-                if (!options.name) {
-                    throw new Error(`${name} needs a name`);
-                }
-                options.type = name;
-                return options;
-            };
-        }
-
-        exports.config = configArgs[0]({
-            number: element('number'),
-            checkbox: element('checkbox'),
-        });
-
-        exports.config.forEach(option => {
-            if (option.default != null && configFunc[option.name] == null) {
-                configFunc[option.name] = option.default;
-            }
-        });
-    }
 
     return exports;
 });

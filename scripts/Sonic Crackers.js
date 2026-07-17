@@ -19,6 +19,7 @@ config(({ number }) => [
     number({
         name: 'artOffset',
         label: 'Art Offset',
+        default: 1692,
     }),
 ]);
 
@@ -75,11 +76,15 @@ dplcs([
             });
         },
         ({ sprite }) => {
-            // write(dc.b, sprite.length);
-            // return ({ mapping }) => {
-            //     write(nybble, mapping.size - 1);
-            //     write(nybble * 3, mapping.art);
-            // };
+            return ({ mapping }) => {
+                write(dc.w, swapBytes(mapping.size * 0x10));
+                write(dc.w, mapping.metadata.dmaSrc || 0);
+                write(12, mapping.art);
+                write(4, mapping.metadata.unknown || 0);
+                write(dc.w, mapping.metadata.dmaDst || 0);
+                write(dc.w, mapping.metadata.plcEnd || 0);
+                return endFrame;
+            };
         },
     ],
 ]);

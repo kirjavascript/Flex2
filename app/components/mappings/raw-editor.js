@@ -248,6 +248,7 @@ export const RawEditor = observer(
                 vflip: false,
                 hflip: false,
                 palette: 0,
+                metadata: {},
             });
         };
 
