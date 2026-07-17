@@ -3,6 +3,7 @@
 ## [Unreleased]
 - Fix Sonic 1 MapMacros DPLC bug
 - Sonic Crackers Support
+- Support loading/editing sprite labels for ASM mappings
 - Make MapMacros optional in object config
 - Add command to unload everything
 - Split raw editor into a new window

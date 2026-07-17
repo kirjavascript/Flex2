@@ -100,7 +100,7 @@ export default catchFunc((obj) => {
 
     const readLimit = 2e3;
 
-    const createReader = (sectionList = []) => catchFunc((buffer) => {
+    const createReader = (sectionList = []) => catchFunc((buffer, symbols) => {
         logger('buf length', buffer.length);
         const bitBuffer = [];
         let cursor = 0;
@@ -148,7 +148,7 @@ export default catchFunc((obj) => {
                 if (cursor >= buffer.length) break;
                 logger(`== SPRITE == ${spriteIndex.toString(16)} `);
                 const sprite = [];
-                sprite.metadata = {};
+                sprite.metadata = { _addr: cursor };
                 const ref = { global };
                 spritesAddr[cursor] = sprite;
                 const readMapping = readFrame({ getCursor }, spriteIndex);
@@ -191,7 +191,20 @@ export default catchFunc((obj) => {
 
         global.cleanup.forEach(task => task({ sprites, spritesAddr }));
 
-        const spriteMetadata = sprites.map(s => s.metadata || {});
+        if (symbols) {
+            sprites.forEach(sprite => {
+                const addr = sprite.metadata && sprite.metadata._addr;
+                if (addr != null && symbols[addr]) {
+                    sprite.metadata.name = symbols[addr];
+                }
+            });
+        }
+
+        const spriteMetadata = sprites.map(s => {
+            const meta = Object.assign({}, s.metadata);
+            delete meta._addr;
+            return meta;
+        });
         return {sprites, spriteMetadata};
     });
 

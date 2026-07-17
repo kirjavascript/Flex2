@@ -44,11 +44,14 @@ export async function assemble(
     const aslWorker = new Worker('bundles/asl-worker.js');
     const asl = Comlink.wrap(aslWorker);
 
-    const pFile = await asl.assemble(atLabels(code), {
+    const result = await asl.assemble(atLabels(code), {
         messages: asMessages,
         filename,
     });
     aslWorker.terminate();
+
+    const pFile = result.binary || result;
+    const symbols = result.symbols || null;
 
     const p2binWorker = new Worker('bundles/p2bin-worker.js');
     const p2bin = Comlink.wrap(p2binWorker);
@@ -57,5 +60,5 @@ export async function assemble(
     });
     p2binWorker.terminate();
 
-    return bin;
+    return { buffer: bin, symbols };
 }

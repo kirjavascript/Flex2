@@ -8,14 +8,6 @@ export const MetadataEditor = observer(() => {
     const { mappings, dplcs, metadata, index } = currentSprite;
     const dplcsEnabled = environment.config.dplcsEnabled;
 
-    if ((!mappings || !mappings.length) && (!dplcs || !dplcs.length)) {
-        return (
-            <div className="raw-editor">
-                <Item>No mappings loaded</Item>
-            </div>
-        );
-    }
-
     return (
         <div className="raw-editor">
             <SpriteMetadata metadata={metadata} index={index} />

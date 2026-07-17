@@ -20,6 +20,8 @@ const compressionList = Object.keys(compressionFormats);
 
 const isASM = (path) => ['.asm', '.s'].includes(extname(path));
 
+
+
 export const FileObject = observer(({ obj, isAbsolute }) => {
     scripts.length; // react to script updates
     const script = obj.format && runScript(obj);
@@ -50,16 +52,16 @@ export const FileObject = observer(({ obj, isAbsolute }) => {
         if (isASM) {
             const contents = await fs.readFile(path, 'utf8');
 
-            if (script.asm.basic) return await parseASMBasic(contents);
+            if (script.asm.basic) return { buffer: await parseASMBasic(contents), symbols: null };
 
-            const buffer = await assemble(script.asm.prelude + contents, {
+            const result = await assemble(script.asm.prelude + contents, {
                 filename: basename(path),
             });
 
-            return buffer;
+            return result;
         }
 
-        return await fs.readFile(path);
+        return { buffer: await fs.readFile(path), symbols: null };
     }
 
     const loadRef = useRef();
@@ -120,9 +122,9 @@ export const FileObject = observer(({ obj, isAbsolute }) => {
     function loadMappings(e) {
         ioWrap(obj.mappings.path, setMappingError, e, async (path) => {
             if (!obj.dplcs.enabled) environment.config.dplcsEnabled = false;
-            const buffer = await getBuffer(path, mappingsASM);
+            const { buffer, symbols } = await getBuffer(path, mappingsASM);
 
-            const mappings = script.readMappings(buffer);
+            const mappings = script.readMappings(buffer, symbols);
             if (mappings.error) throw mappings.error;
             environment.mappings.replace(mappings.sprites);
             environment.spriteMetadata.replace(mappings.spriteMetadata || []);
@@ -168,7 +170,7 @@ export const FileObject = observer(({ obj, isAbsolute }) => {
     function loadDPLCs(e) {
         ioWrap(obj.dplcs.path, setDPLCError, e, async (path) => {
             environment.config.dplcsEnabled = true;
-            const buffer = await getBuffer(path, dplcsASM);
+            const { buffer } = await getBuffer(path, dplcsASM);
 
             const dplcs = script.readDPLCs(buffer);
             if (dplcs.error) throw dplcs.error;
