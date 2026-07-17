@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { observer } from 'mobx-react';
-import { Item, Input, Button } from '#ui';
+import { Item, Input } from '#ui';
 import { environment } from '#store/environment';
 
 export const MetadataEditor = observer(() => {
     const { currentSprite } = environment;
-    const { mappings, dplcs } = currentSprite;
+    const { mappings, dplcs, metadata, index } = currentSprite;
     const dplcsEnabled = environment.config.dplcsEnabled;
 
     if ((!mappings || !mappings.length) && (!dplcs || !dplcs.length)) {
@@ -18,63 +18,91 @@ export const MetadataEditor = observer(() => {
 
     return (
         <div className="raw-editor">
-            {mappings && mappings.map((piece, i) => (
-                <MetadataPiece
-                    key={`m${i}`}
-                    piece={piece}
-                    index={i}
-                    label="Mapping"
-                />
-            ))}
-            {dplcsEnabled && dplcs && dplcs.map((piece, i) => (
-                <MetadataPiece
-                    key={`d${i}`}
-                    piece={piece}
-                    index={i}
-                    label="DPLC"
-                />
-            ))}
-        </div>
-    );
-});
-
-const MetadataPiece = observer(({ piece, index, label }) => {
-    const meta = piece.metadata;
-    const keys = meta ? Object.keys(meta) : [];
-
-    return (
-        <div className="metadata-piece">
-            <div className="metadata-header">
-                <Item color="blue">{label} {index}</Item>
-                <AddKey meta={meta} />
-            </div>
-            {keys.length > 0 && (
-                <table className="metadata-table">
-                    <tbody>
-                        {keys.map(key => (
-                            <tr key={key}>
-                                <td className="metadata-label">{key}</td>
-                                <td className="metadata-value">
-                                    <Input
-                                        store={meta}
-                                        accessor={key}
-                                    />
-                                </td>
-                                <td className="metadata-action">
-                                    <Item
-                                        inverted
-                                        color="red"
-                                        onClick={() => { delete meta[key]; }}
-                                    >×</Item>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+            <SpriteMetadata metadata={metadata} index={index} />
+            {mappings && mappings.length > 0 && (
+                <PieceSection pieces={mappings} label="Mapping" />
+            )}
+            {dplcsEnabled && dplcs && dplcs.length > 0 && (
+                <PieceSection pieces={dplcs} label="DPLC" />
             )}
         </div>
     );
 });
+
+const SpriteMetadata = observer(({ metadata, index }) => {
+    const keys = metadata ? Object.keys(metadata) : [];
+
+    return (
+        <div className="metadata-piece">
+            <div className="metadata-header">
+                <Item color="blue">Sprite {index}</Item>
+                <AddKey meta={metadata} />
+            </div>
+            {keys.length > 0 && (
+                <MetadataTable meta={metadata} keys={keys} />
+            )}
+        </div>
+    );
+});
+
+const PieceSection = observer(({ pieces, label }) => {
+    const hasMetadata = pieces.some(p => p.metadata && Object.keys(p.metadata).length > 0);
+    const [expanded, setExpanded] = useState(hasMetadata);
+
+    return (
+        <div className="metadata-piece">
+            <div className="metadata-header">
+                <Item
+                    color="grey"
+                    onClick={() => setExpanded(!expanded)}
+                    style={{ cursor: 'pointer' }}
+                >{expanded ? '▼' : '▶'} {label} Metadata</Item>
+            </div>
+            {expanded && pieces.map((piece, i) => {
+                if (!piece.metadata) piece.metadata = {};
+                const meta = piece.metadata;
+                const keys = Object.keys(meta);
+
+                return (
+                    <div key={i} className="metadata-sub-piece">
+                        <div className="metadata-header">
+                            <Item color="white2">{label} {i}</Item>
+                            <AddKey meta={meta} />
+                        </div>
+                        {keys.length > 0 && (
+                            <MetadataTable meta={meta} keys={keys} />
+                        )}
+                    </div>
+                );
+            })}
+        </div>
+    );
+});
+
+const MetadataTable = observer(({ meta, keys }) => (
+    <table className="metadata-table">
+        <tbody>
+            {keys.map(key => (
+                <tr key={key}>
+                    <td className="metadata-label">{key}</td>
+                    <td className="metadata-value">
+                        <Input
+                            store={meta}
+                            accessor={key}
+                        />
+                    </td>
+                    <td className="metadata-action">
+                        <Item
+                            inverted
+                            color="red"
+                            onClick={() => { delete meta[key]; }}
+                        >×</Item>
+                    </td>
+                </tr>
+            ))}
+        </tbody>
+    </table>
+));
 
 const AddKey = ({ meta }) => {
     const [adding, setAdding] = useState(false);

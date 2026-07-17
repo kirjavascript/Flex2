@@ -29,6 +29,10 @@ class Environment {
         // {art, size}
     ];
 
+    spriteMetadata = [
+        // per-sprite KV metadata
+    ];
+
     constructor() {
         makeObservable(this, {
             config: observable,
@@ -36,6 +40,7 @@ class Environment {
             tiles: observable,
             mappings: observable,
             dplcs: observable,
+            spriteMetadata: observable,
             palettesRGB: computed,
             sprites: computed,
             currentSprite: computed,
@@ -73,12 +78,14 @@ class Environment {
                     buffer,
                     mappings: mappingList,
                     dplcs: this.dplcs[index],
+                    metadata: this.spriteMetadata[index] || {},
                 };
             } else {
                 return {
                     index,
                     buffer: this.tiles,
                     mappings: mappingList,
+                    metadata: this.spriteMetadata[index] || {},
                 };
             }
 
@@ -113,7 +120,7 @@ class Environment {
     get currentSprite() {
         return this.sprites[this.config.currentSprite]
             || this.sprites[0]
-            || { mappings: [], buffer: [], index: 0, dplcs: [], };
+            || { mappings: [], buffer: [], index: 0, dplcs: [], metadata: {} };
     }
 
     get activeTiles() {
@@ -136,6 +143,7 @@ class Environment {
             this.config.dplcsEnabled &&
             this.dplcs.replace(arrayMove(this.dplcs, oldIndex, newIndex));
             this.mappings.replace(arrayMove(this.mappings, oldIndex, newIndex));
+            this.spriteMetadata.replace(arrayMove(this.spriteMetadata, oldIndex, newIndex));
         }
     };
 

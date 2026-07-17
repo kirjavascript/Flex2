@@ -191,7 +191,8 @@ export default catchFunc((obj) => {
 
         global.cleanup.forEach(task => task({ sprites, spritesAddr }));
 
-        return {sprites};
+        const spriteMetadata = sprites.map(s => s.metadata || {});
+        return {sprites, spriteMetadata};
     });
 
     const readMappings = createReader(mappingArgs[0]);
@@ -204,16 +205,18 @@ export default catchFunc((obj) => {
         return num;
     };
 
-    const createWriter = (sectionList = []) => catchFunc((mappings) => {
+    const createWriter = (sectionList = []) => catchFunc((mappings, spriteMetadata) => {
         // mapping output format is [type, size, data]
 
         const global = { cleanup: [] };
+        const metadataList = toJS(spriteMetadata || []);
         const sections = sectionList.map(([, writeFrame]) => {
             const spriteList = toJS(mappings);
             const sprites = [];
 
             for (let spriteIndex = 0; spriteIndex < spriteList.length; spriteIndex++) {
                 const sprite = spriteList[spriteIndex];
+                sprite.metadata = metadataList[spriteIndex] || {};
                 const ref = { global };
                 const mappings = []
                 setWrite((size, data, type = binary) => {
