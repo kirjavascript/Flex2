@@ -1,0 +1,44 @@
+.metadata-piece {
+    background: $black;
+    border: 1px solid $grey;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+
+    .metadata-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+    }
+
+    .metadata-table {
+        width: 100%;
+        border-collapse: collapse;
+
+        tr {
+            border-bottom: 1px solid $grey;
+        }
+
+        td {
+            padding: 4px 8px;
+            vertical-align: middle;
+        }
+
+        .metadata-label {
+            font-size: 11px;
+            color: $white;
+            width: 100px;
+        }
+
+        .metadata-value {
+            input {
+                width: 100%;
+            }
+        }
+
+        .metadata-action {
+            width: 30px;
+            text-align: right;
+        }
+    }
+}
