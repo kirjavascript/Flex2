@@ -4,6 +4,7 @@
 - Sonic Crackers Support
 - Make MapMacros optional in object config
 - Add command to unload everything
+- Split raw editor into a new window
 - Fix Sonic 1 MapMacros DPLC bug
 
 ## [1.3.1]

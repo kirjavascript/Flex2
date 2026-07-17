@@ -360,6 +360,12 @@ even macro
             number: element('number'),
             checkbox: element('checkbox'),
         });
+
+        exports.config.forEach(option => {
+            if (option.default != null && configFunc[option.name] == null) {
+                configFunc[option.name] = option.default;
+            }
+        });
     }
 
     return exports;

@@ -19,6 +19,7 @@ config(({ checkbox }) => [
     checkbox({
         name: 'mapMacros',
         label: 'Use MapMacros',
+        default: true,
     }),
 ]);
 
