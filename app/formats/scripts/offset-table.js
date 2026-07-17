@@ -31,12 +31,9 @@ export function makeOffsetTable({ read, write }) {
             ref.global.cleanup.push(({ sprites, spritesAddr }) => {
                 headers.forEach(header => {
                     if (header === 0) {
-                        const s = [];
-                        s.metadata = { _addr: 0 };
-                        sprites.push(s);
+                        sprites.push([]);
                     } else {
                         if (spritesAddr[header]) {
-                            spritesAddr[header].metadata._addr = header;
                             sprites.push(spritesAddr[header]);
                         } else {
                             logger('error', 'no sprite at ' + header);

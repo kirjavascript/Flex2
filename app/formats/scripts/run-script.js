@@ -148,7 +148,7 @@ export default catchFunc((obj) => {
                 if (cursor >= buffer.length) break;
                 logger(`== SPRITE == ${spriteIndex.toString(16)} `);
                 const sprite = [];
-                sprite.metadata = { _addr: cursor };
+                sprite.metadata = {};
                 const ref = { global };
                 spritesAddr[cursor] = sprite;
                 const readMapping = readFrame({ getCursor }, spriteIndex);
@@ -192,19 +192,19 @@ export default catchFunc((obj) => {
         global.cleanup.forEach(task => task({ sprites, spritesAddr }));
 
         if (symbols) {
+            const addrToSprite = new Map();
+            for (const [addr, sprite] of Object.entries(spritesAddr)) {
+                addrToSprite.set(sprite, Number(addr));
+            }
             sprites.forEach(sprite => {
-                const addr = sprite.metadata && sprite.metadata._addr;
+                const addr = addrToSprite.get(sprite);
                 if (addr != null && symbols[addr]) {
                     sprite.metadata.name = symbols[addr];
                 }
             });
         }
 
-        const spriteMetadata = sprites.map(s => {
-            const meta = Object.assign({}, s.metadata);
-            delete meta._addr;
-            return meta;
-        });
+        const spriteMetadata = sprites.map(s => s.metadata || {});
         return {sprites, spriteMetadata};
     });
 
