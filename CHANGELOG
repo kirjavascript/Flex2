@@ -2,7 +2,8 @@
 
 ## [Unreleased]
 - Sonic Crackers Support
-- Make MapMacros optional in config
+- Make MapMacros optional in object config
+- Add command to unload everything
 
 ## [1.3.1]
 - Readd support for @label syntax

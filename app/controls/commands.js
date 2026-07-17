@@ -258,6 +258,7 @@ export const commands = [
                 mappingState.deleteUnusedTiles();
             },
         },
+
     ],
 
 
@@ -361,6 +362,16 @@ export const commands = [
         {
             map: 'u p', name: 'Unload Palettes', color: 'red', noMultiplier: true,
             func: () => { environment.resetPalettes(); },
+        },
+        {
+            map: 'u e', name: 'Unload Everything', color: 'red', noMultiplier: true,
+            func: () => {
+                environment.tiles.replace([]);
+                environment.mappings.replace([]);
+                environment.config.dplcsEnabled &&
+                environment.dplcs.replace([]);
+                environment.resetPalettes();
+            },
         },
     ],
 
