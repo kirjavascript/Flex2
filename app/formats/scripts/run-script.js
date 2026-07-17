@@ -255,6 +255,9 @@ export default catchFunc((obj) => {
     const asm = {
         basic: false,
         prelude: `
+	cpu 68000
+	padding off
+
 even macro
     if (*)&1
         dc.b 0 ;ds.b 1
