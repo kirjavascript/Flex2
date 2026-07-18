@@ -358,7 +358,7 @@ even macro
         listing,
     }) {
         if (!asm.writeMappings) {
-            return writeASM(label, listing);
+            return writeASM(label, listing, sprites);
         }
 
         return asm.writeMappings({
@@ -373,7 +373,7 @@ even macro
         listing,
     }) {
         if (!asm.writeDPLCs) {
-            return writeASM(label, listing);
+            return writeASM(label, listing, sprites);
         }
 
         return asm.writeDPLCs({

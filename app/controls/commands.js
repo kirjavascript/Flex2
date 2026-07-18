@@ -56,6 +56,7 @@ export const commands = [
                 environment.mappings.splice(currentSprite+1, 0, []);
                 dplcsEnabled &&
                 environment.dplcs.splice(currentSprite+1, 0, []);
+                environment.spriteMetadata.splice(currentSprite+1, 0, {});
                 environment.config.currentSprite++;
             },
         },
@@ -81,6 +82,7 @@ export const commands = [
                 environment.mappings.splice(currentSprite+1, 0, toJS(mappings));
                 dplcsEnabled &&
                 environment.dplcs.splice(currentSprite+1, 0, toJS(dplcs));
+                environment.spriteMetadata.splice(currentSprite+1, 0, toJS(environment.spriteMetadata[currentSprite] || {}));
             },
         },
         {
@@ -100,6 +102,7 @@ export const commands = [
                         });
                         environment.dplcs.splice(currentSprite+1, 0, newDPLCs);
                         environment.mappings.splice(currentSprite+1, 0, toJS(mappings));
+                        environment.spriteMetadata.splice(currentSprite+1, 0, toJS(environment.spriteMetadata[currentSprite] || {}));
                     }
                     else {
                         const newMappings = toJS(mappings);
@@ -111,6 +114,7 @@ export const commands = [
                             mapping.art = tiles.length - size;
                         });
                         environment.mappings.splice(currentSprite+1, 0, newMappings);
+                        environment.spriteMetadata.splice(currentSprite+1, 0, toJS(environment.spriteMetadata[currentSprite] || {}));
                     }
                 });
             },
@@ -233,6 +237,7 @@ export const commands = [
                 const { currentSprite } = environment.config;
                 environment.mappings.splice(currentSprite, 1);
                 environment.dplcs.splice(currentSprite, 1);
+                environment.spriteMetadata.splice(currentSprite, 1);
             },
         },
         {

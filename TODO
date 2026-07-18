@@ -14,6 +14,7 @@ mapping metadata feature
     fullscreen for submenus needs fixing
     UI needs improving
 mapping labels for metadata
+    fix for mapmacros and non-mapmacros
 
     Moduled KosM
 
@@ -28,9 +29,6 @@ docs
 
 sublayout -> tabbed pane
     mappings - raw editor - metadata - commands?
-
-macros for mappings
-    autoload mapping label if blank
 
 TODO: fix project dir not being correct when loading the crackers project
 

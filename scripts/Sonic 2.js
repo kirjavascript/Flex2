@@ -108,13 +108,15 @@ SonicDplcVer := 2
         const list = [];
 
         list.push(`${label}: mappingsTable`);
-        sprites.forEach((_, i) => {
-	        list.push(`\tmappingsTableEntry.w\t${label}_${i}`);
+        sprites.forEach((sprite, i) => {
+            const name = (sprite.metadata && sprite.metadata.name) || `${label}_${i}`;
+	        list.push(`\tmappingsTableEntry.w\t${name}`);
         });
         list.push('');
 
         sprites.forEach((sprite, i) => {
-            list.push(`${label}_${i}:\tspriteHeader`);
+            const name = (sprite.metadata && sprite.metadata.name) || `${label}_${i}`;
+            list.push(`${name}:\tspriteHeader`);
 
             sprite.mappings.forEach(mapping => {
                 const pieceInfo = [
@@ -132,7 +134,7 @@ SonicDplcVer := 2
                 list.push(` spritePiece ${pieceInfo}`);
             });
 
-            list.push(`${label}_${i}_End`);
+            list.push(`${name}_End`);
             list.push('');
         });
 
@@ -148,13 +150,15 @@ SonicDplcVer := 2
         const list = [];
 
         list.push(`${label}: mappingsTable`);
-        sprites.forEach((_, i) => {
-	        list.push(`\tmappingsTableEntry.w\t${label}_${i}`);
+        sprites.forEach((sprite, i) => {
+            const name = (sprite.metadata && sprite.metadata.name) || `${label}_${i}`;
+	        list.push(`\tmappingsTableEntry.w\t${name}`);
         });
         list.push('');
 
         sprites.forEach((sprite, i) => {
-            list.push(`${label}_${i}:\tdplcHeader`);
+            const name = (sprite.metadata && sprite.metadata.name) || `${label}_${i}`;
+            list.push(`${name}:\tdplcHeader`);
 
             sprite.dplcs.forEach(dplc => {
                 const pieceInfo = [
@@ -165,7 +169,7 @@ SonicDplcVer := 2
                 list.push(` dplcEntry ${pieceInfo}`);
             });
 
-            list.push(`${label}_${i}_End`);
+            list.push(`${name}_End`);
             list.push('');
         });
 

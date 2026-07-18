@@ -75,7 +75,7 @@ dplcs([
                 return endFrame;
             });
         },
-        ({ sprite }) => {
+        () => {
             return ({ mapping }) => {
                 write(dc.w, swapBytes(mapping.size * 0x10));
                 write(dc.w, mapping.metadata.dmaSrc || 0);
