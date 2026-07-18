@@ -18,6 +18,8 @@ mapping metadata feature
     # idk feels like there should be a feature to simply change which palette line to use for display in the editor. in SonMapEd it's the 1234 keys
     https://discord.com/channels/@me/1527356887740317829/1527745396380799219
 
+TODO: fix project dir not being correct when loading the crackers project
+
 docs
     crackers
     mapping script configuration
@@ -27,15 +29,11 @@ docs
 sublayout -> tabbed pane
     mappings - raw editor - metadata - commands?
 
-TODO: fix project dir not being correct when loading the crackers project
 
 metadata for mappings UI + scripts
     in asm
     label metadata
     splitpoint for s3k mappings
-    default metadata for sprite and mapping
-    copy metadata from rightmost sprite
-    addNewDPLC metadata check
 
 inputs
     when copying to project, only use config{} data defined in scripts
@@ -60,7 +58,6 @@ animation editor
 ==
 BUGS
 
-TODO: load / save / load broken in sonic CD
 pink surrounding tiles sometimes breaks
 
 FEATURES
