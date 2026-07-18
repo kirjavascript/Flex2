@@ -1,5 +1,5 @@
 import { loadScript, scriptDir } from './file';
-import { writeASM } from '#formats/scripts';
+import { writeASM, sanitizeLabel } from '#formats/scripts';
 import { logger } from './debug';
 import { makeOffsetTable } from './offset-table';
 import { toJS } from 'mobx';
@@ -363,7 +363,7 @@ even macro
 
         return asm.writeMappings({
             label, sprites, listing,
-            renderHex,
+            renderHex, sanitizeLabel,
         });
     };
 
@@ -378,7 +378,7 @@ even macro
 
         return asm.writeDPLCs({
             label, sprites, listing,
-            renderHex,
+            renderHex, sanitizeLabel,
         });
     };
 

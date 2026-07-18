@@ -7,6 +7,13 @@ const sizes = {
     32: 'l',
 };
 
+export function sanitizeLabel(name) {
+    if (!name) return name;
+    let s = name.replace(/[^A-Za-z0-9_]/g, '_');
+    if (/^[0-9]/.test(s)) s = '_' + s;
+    return s || undefined;
+}
+
 export function writeASM(baseLabel, { sections }, sprites) {
     const getLabel = addr => `${baseLabel}_${addr.toString(16).toUpperCase()}`;
     let cursor = 0;
@@ -16,7 +23,7 @@ export function writeASM(baseLabel, { sections }, sprites) {
         section.forEach((frames, i) => {
             const meta = sprites && sprites[i] && sprites[i].metadata;
             const addr = cursor / 8;
-            const lbl = (meta && meta.name) || getLabel(addr);
+            const lbl = sanitizeLabel(meta && meta.name) || getLabel(addr);
             addrLabels.set(addr, lbl);
             labels.push([ lbl, frames ]);
 
