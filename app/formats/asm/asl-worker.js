@@ -45,33 +45,44 @@ function handleResult(resolve, reject) {
     const lstFiles = FS.readdir('/').filter(d => d.endsWith('.lst'));
     if (lstFiles.length) {
         const lstText = new TextDecoder().decode(FS.readFile(lstFiles[0]));
-        symbols = parseSymbolTable(lstText);
+        const asmFile = FS.readdir('/').find(d => d.endsWith('.asm'));
+        const source = asmFile ? new TextDecoder().decode(FS.readFile(asmFile)) : '';
+        symbols = parseSymbolTable(lstText, source);
     }
 
     resolve({ binary, symbols });
 }
 
-function parseSymbolTable(lstText) {
-    const symbols = {};
+function parseSymbolTable(lstText, source) {
+    const labelOrder = new Map();
+    const labelRe = /^([A-Za-z_][A-Za-z0-9_]*)\s*:/gm;
+    let m;
+    while ((m = labelRe.exec(source)) !== null) {
+        labelOrder.set(m[1], m.index);
+    }
+
+    const addrLabels = {};
     const re = /\*?(\S+)\s+:\s+([0-9A-F]+)\s+C\s*\|/gi;
     let match;
     while ((match = re.exec(lstText)) !== null) {
         const name = match[1];
         const addr = parseInt(match[2], 16);
         if (isNaN(addr)) continue;
-        const existing = symbols[addr];
-        if (!existing || isBetterLabel(name, existing)) {
-            symbols[addr] = name;
+        if (/_End$|_Begin$/i.test(name)) continue;
+        if (!addrLabels[addr]) addrLabels[addr] = [];
+        addrLabels[addr].push(name);
+    }
+
+    const symbols = {};
+    for (const [addr, labels] of Object.entries(addrLabels)) {
+        if (labels.length === 1) {
+            symbols[addr] = labels[0];
+        } else {
+            labels.sort((a, b) => (labelOrder.get(a) ?? -1) - (labelOrder.get(b) ?? -1));
+            symbols[addr] = labels[labels.length - 1];
         }
     }
     return Object.keys(symbols).length ? symbols : null;
-}
-
-function isBetterLabel(candidate, existing) {
-    const cInternal = /_End$|_Begin$/i.test(candidate);
-    const eInternal = /_End$|_Begin$/i.test(existing);
-    if (cInternal !== eInternal) return !cInternal;
-    return candidate.length < existing.length;
 }
 
 Comlink.expose({

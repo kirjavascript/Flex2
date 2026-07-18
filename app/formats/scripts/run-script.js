@@ -82,6 +82,9 @@ export default catchFunc((obj) => {
                 configFunc[option.name] = option.default;
                 obj.config[option.name] = option.default;
             }
+            if (option.type === 'number' && configFunc[option.name] != null) {
+                configFunc[option.name] = Number(configFunc[option.name]);
+            }
         });
     };
     Object.assign(configFunc, obj.config);
