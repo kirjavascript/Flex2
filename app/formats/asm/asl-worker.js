@@ -10,7 +10,7 @@ function assemble(code, { messages, filename }) {
             locateFile: url => `../wasm/${url}`,
             arguments: ['-q', '-xx', '-U', '-L', '-t', '2', filename],
             print: (text) => {
-                if (text === endStr) return handleResult(resolve, reject);
+                if (text === endStr) return handleResult(resolve, reject, code);
                 console.log('asl: ' + text);
             },
             printErr: (text) => {
@@ -28,7 +28,7 @@ function assemble(code, { messages, filename }) {
     });
 }
 
-function handleResult(resolve, reject) {
+function handleResult(resolve, reject, code) {
     if (errorList.length) return reject({
         name: 'ASError',
         message: '\n\n' + errorList.join('\n')
@@ -45,9 +45,7 @@ function handleResult(resolve, reject) {
     const lstFiles = FS.readdir('/').filter(d => d.endsWith('.lst'));
     if (lstFiles.length) {
         const lstText = new TextDecoder().decode(FS.readFile(lstFiles[0]));
-        const asmFile = FS.readdir('/').find(d => d.endsWith('.asm'));
-        const source = asmFile ? new TextDecoder().decode(FS.readFile(asmFile)) : '';
-        symbols = parseSymbolTable(lstText, source);
+        symbols = parseSymbolTable(lstText, code);
     }
 
     resolve({ binary, symbols });

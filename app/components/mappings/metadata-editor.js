@@ -27,7 +27,7 @@ const SpriteMetadata = observer(({ metadata, index }) => {
     return (
         <div className="metadata-piece">
             <div className="metadata-header">
-                <Item color="blue">Sprite {index}</Item>
+                <Item color="blue">Sprite 0x{index.toString(16).toUpperCase()}</Item>
                 <AddKey meta={metadata} />
             </div>
             {keys.length > 0 && (
@@ -58,7 +58,7 @@ const PieceSection = observer(({ pieces, label }) => {
                 return (
                     <div key={i} className="metadata-sub-piece">
                         <div className="metadata-header">
-                            <Item color="white2">{label} {i}</Item>
+                            <Item color="white2">{label} 0x{i.toString(16).toUpperCase()}</Item>
                             <AddKey meta={meta} />
                         </div>
                         {keys.length > 0 && (

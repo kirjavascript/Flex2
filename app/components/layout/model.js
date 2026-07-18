@@ -16,6 +16,7 @@ const MAPPINGS_LAYOUT = {
                 splitterSize: 6,
                 tabEnableClose: false,
                 tabEnableRename: false,
+                tabSetEnableMaximize: false,
             },
             borders: [],
             layout: {
