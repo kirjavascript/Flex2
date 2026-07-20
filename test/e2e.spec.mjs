@@ -74,7 +74,8 @@ async function setFileObject(page, {
         );
         Object.assign(file.config, opts.config);
     }, { format, artPath, artCompression, artOffset, mappingsPath, dplcsPath, palettePaths, config });
-    await page.waitForTimeout(200);
+    // wait for MobX → React re-render so FileObject picks up new paths
+    await page.waitForTimeout(100);
 }
 
 async function clickButton(page, label, action) {
@@ -92,7 +93,18 @@ async function clickButton(page, label, action) {
 }
 
 const clickLoad = (page, label) => clickButton(page, label, 'load');
-const clickSave = (page, label) => clickButton(page, label, 'save');
+async function waitForIO(page) {
+    // flush: ensure requestIdleCallbacks from the triggering click have fired
+    await page.evaluate(() => new Promise(r => requestIdleCallback(r)));
+    // wait for all "..." indicators to clear (IO finished)
+    const busy = page.locator('.file-object').getByText('...', { exact: true });
+    await expect(busy).toHaveCount(0, { timeout: 15_000 });
+}
+
+async function clickSave(page, label) {
+    await clickButton(page, label, 'save');
+    await waitForIO(page);
+}
 
 async function waitForMappings(page) {
     await expect.poll(() => page.evaluate(() =>
@@ -135,22 +147,23 @@ async function renderSpritesheet(page) {
             exportSprite({ buffer, mappings }),
         );
 
+        let totalWidth = 8;
+        let maxHeight = 8;
+        for (const c of canvases) {
+            totalWidth += c.width + 8;
+            maxHeight = Math.max(maxHeight, c.height + 8);
+        }
+
         const sheet = document.createElement('canvas');
-        sheet.width = 8;
-        sheet.height = 8;
+        sheet.width = totalWidth;
+        sheet.height = maxHeight;
         const ctx = sheet.getContext('2d');
         let cursor = 8;
 
-        canvases.forEach(current => {
-            const last = ctx.getImageData(0, 0, sheet.width, sheet.height);
-            const { width, height } = current;
-            const diff = width + 8;
-            sheet.width += diff;
-            sheet.height = Math.max(sheet.height, height + 8);
-            ctx.putImageData(last, 0, 0);
+        for (const current of canvases) {
             ctx.drawImage(current, cursor, 8);
-            cursor += diff;
-        });
+            cursor += current.width + 8;
+        }
 
         const dataUrl = sheet.toDataURL('image/png');
         sheet.remove();
@@ -186,7 +199,7 @@ test.describe('Sonic 1', () => {
             mappingsPath: resolve(FIXTURES, 's1/maps/Rings.asm'),
             artPath: resolve(FIXTURES, 's1/art/Rings.nem'),
             artCompression: 'Nemesis',
-            palettePaths: [resolve(FIXTURES, 's1/palette/Sonic.bin')],
+            palettePaths: [{ path: resolve(FIXTURES, 's1/palette/Sonic-full.bin'), length: 4 }],
         });
         await clearEnvironment(page);
         await clickLoad(page, 'Object');
@@ -204,7 +217,7 @@ test.describe('Sonic 1', () => {
             mappingsPath: resolve(FIXTURES, 's1/maps/Monitor.asm'),
             artPath: resolve(FIXTURES, 's1/art/Monitors.nem'),
             artCompression: 'Nemesis',
-            palettePaths: [resolve(FIXTURES, 's1/palette/Sonic.bin')],
+            palettePaths: [{ path: resolve(FIXTURES, 's1/palette/Sonic-full.bin'), length: 4 }],
         });
         await clearEnvironment(page);
         await clickLoad(page, 'Object');
@@ -226,9 +239,11 @@ test.describe('Sonic 1', () => {
             format: 'Sonic 1.js',
             artPath: resolve(FIXTURES, 's1/art/GHZ1.nem'),
             artCompression: 'Nemesis',
-            palettePaths: [resolve(FIXTURES, 's1/palette/Sonic.bin')],
+            palettePaths: [{ path: resolve(FIXTURES, 's1/palette/Sonic-full.bin'), length: 4 }],
         });
         await clearEnvironment(page);
+        await clickLoad(page, 'Palettes');
+        await waitForIO(page);
         await clickLoad(page, 'Art');
         await waitForTiles(page);
 
@@ -245,7 +260,7 @@ test.describe('Sonic 1', () => {
                 mappingsPath: resolve(FIXTURES, 's1/maps/Monitor.asm'),
                 artPath: resolve(FIXTURES, 's1/art/Monitors.nem'),
                 artCompression: 'Nemesis',
-                palettePaths: [resolve(FIXTURES, 's1/palette/Sonic.bin')],
+                palettePaths: [{ path: resolve(FIXTURES, 's1/palette/Sonic-full.bin'), length: 4 }],
             });
             await clearEnvironment(page);
             await clickLoad(page, 'Object');
@@ -261,10 +276,9 @@ test.describe('Sonic 1', () => {
                 mappingsPath: savedMappings,
                 artPath: savedArt,
                 artCompression: 'Nemesis',
-                palettePaths: [resolve(FIXTURES, 's1/palette/Sonic.bin')],
+                palettePaths: [{ path: resolve(FIXTURES, 's1/palette/Sonic-full.bin'), length: 4 }],
             });
             await clickSave(page, 'Object');
-            await page.waitForTimeout(2000);
 
             await clearEnvironment(page);
             await clickLoad(page, 'Object');
@@ -286,7 +300,7 @@ test.describe('Sonic 1', () => {
             dplcsPath: resolve(FIXTURES, 's1/maps/Sonic_DPLC.asm'),
             artPath: resolve(FIXTURES, 's1/art/Sonic.bin'),
             artCompression: 'Uncompressed',
-            palettePaths: [resolve(FIXTURES, 's1/palette/Sonic.bin')],
+            palettePaths: [{ path: resolve(FIXTURES, 's1/palette/Sonic-full.bin'), length: 4 }],
         });
         await clearEnvironment(page);
         await clickLoad(page, 'Object');
@@ -310,7 +324,7 @@ test.describe('Sonic 2', () => {
             mappingsPath: resolve(FIXTURES, 's2/maps/obj26.asm'),
             artPath: resolve(FIXTURES, 's2/art/nemesis/Monitor.nem'),
             artCompression: 'Nemesis',
-            palettePaths: [resolve(FIXTURES, 's2/palette/SonicAndTails.bin')],
+            palettePaths: [{ path: resolve(FIXTURES, 's2/palette/SonicAndTails-full.bin'), length: 4 }],
         });
         await clearEnvironment(page);
         await clickLoad(page, 'Object');
@@ -332,7 +346,7 @@ test.describe('Sonic 2', () => {
             dplcsPath: resolve(FIXTURES, 's2/dplc/Sonic.asm'),
             artPath: resolve(FIXTURES, 's2/art/uncompressed/Sonic.bin'),
             artCompression: 'Uncompressed',
-            palettePaths: [resolve(FIXTURES, 's2/palette/SonicAndTails.bin')],
+            palettePaths: [{ path: resolve(FIXTURES, 's2/palette/SonicAndTails-full.bin'), length: 4 }],
         });
         await clearEnvironment(page);
         await clickLoad(page, 'Object');
@@ -350,9 +364,11 @@ test.describe('Sonic 2', () => {
             format: 'Sonic 2.js',
             artPath: resolve(FIXTURES, 's2/art/kosinski/EHZ_HTZ.kos'),
             artCompression: 'Kosinski',
-            palettePaths: [resolve(FIXTURES, 's2/palette/SonicAndTails.bin')],
+            palettePaths: [{ path: resolve(FIXTURES, 's2/palette/SonicAndTails-full.bin'), length: 4 }],
         });
         await clearEnvironment(page);
+        await clickLoad(page, 'Palettes');
+        await waitForIO(page);
         await clickLoad(page, 'Art');
         await waitForTiles(page);
 
@@ -365,9 +381,11 @@ test.describe('Sonic 2', () => {
             format: 'Sonic 2.js',
             artPath: resolve(FIXTURES, 's2/art/nemesis/1Player2VS.nem'),
             artCompression: 'Nemesis',
-            palettePaths: [resolve(FIXTURES, 's2/palette/SonicAndTails.bin')],
+            palettePaths: [{ path: resolve(FIXTURES, 's2/palette/SonicAndTails-full.bin'), length: 4 }],
         });
         await clearEnvironment(page);
+        await clickLoad(page, 'Palettes');
+        await waitForIO(page);
         await clickLoad(page, 'Art');
         await waitForTiles(page);
 
@@ -383,7 +401,7 @@ test.describe('Sonic 2', () => {
                 mappingsPath: resolve(FIXTURES, 's2/maps/obj26.asm'),
                 artPath: resolve(FIXTURES, 's2/art/nemesis/Monitor.nem'),
                 artCompression: 'Nemesis',
-                palettePaths: [resolve(FIXTURES, 's2/palette/SonicAndTails.bin')],
+                palettePaths: [{ path: resolve(FIXTURES, 's2/palette/SonicAndTails-full.bin'), length: 4 }],
             });
             await clearEnvironment(page);
             await clickLoad(page, 'Object');
@@ -397,10 +415,9 @@ test.describe('Sonic 2', () => {
                 mappingsPath: join(tmp, 'mappings.bin'),
                 artPath: join(tmp, 'art.nem'),
                 artCompression: 'Nemesis',
-                palettePaths: [resolve(FIXTURES, 's2/palette/SonicAndTails.bin')],
+                palettePaths: [{ path: resolve(FIXTURES, 's2/palette/SonicAndTails-full.bin'), length: 4 }],
             });
             await clickSave(page, 'Object');
-            await page.waitForTimeout(2000);
 
             await clearEnvironment(page);
             await clickLoad(page, 'Object');
@@ -423,7 +440,7 @@ test.describe('Sonic 2', () => {
                 mappingsPath: resolve(FIXTURES, 's2/maps/obj26.asm'),
                 artPath: resolve(FIXTURES, 's2/art/nemesis/Monitor.nem'),
                 artCompression: 'Nemesis',
-                palettePaths: [resolve(FIXTURES, 's2/palette/SonicAndTails.bin')],
+                palettePaths: [{ path: resolve(FIXTURES, 's2/palette/SonicAndTails-full.bin'), length: 4 }],
             });
             await clearEnvironment(page);
             await clickLoad(page, 'Object');
@@ -437,10 +454,9 @@ test.describe('Sonic 2', () => {
                 mappingsPath: join(tmp, 'mappings.asm'),
                 artPath: join(tmp, 'art.nem'),
                 artCompression: 'Nemesis',
-                palettePaths: [resolve(FIXTURES, 's2/palette/SonicAndTails.bin')],
+                palettePaths: [{ path: resolve(FIXTURES, 's2/palette/SonicAndTails-full.bin'), length: 4 }],
             });
             await clickSave(page, 'Object');
-            await page.waitForTimeout(2000);
 
             await clearEnvironment(page);
             await clickLoad(page, 'Object');
@@ -464,7 +480,7 @@ test.describe('Sonic 2', () => {
                 artCompression: 'Uncompressed',
                 mappingsPath: resolve(FIXTURES, 's2/maps/Sonic.asm'),
                 dplcsPath: resolve(FIXTURES, 's2/dplc/Sonic.asm'),
-                palettePaths: [resolve(FIXTURES, 's2/palette/SonicAndTails.bin')],
+                palettePaths: [{ path: resolve(FIXTURES, 's2/palette/SonicAndTails-full.bin'), length: 4 }],
             });
             await clearEnvironment(page);
             await clickLoad(page, 'Object');
@@ -480,10 +496,9 @@ test.describe('Sonic 2', () => {
                 dplcsPath: join(tmp, 'dplc.asm'),
                 artPath: join(tmp, 'art.bin'),
                 artCompression: 'Uncompressed',
-                palettePaths: [resolve(FIXTURES, 's2/palette/SonicAndTails.bin')],
+                palettePaths: [{ path: resolve(FIXTURES, 's2/palette/SonicAndTails-full.bin'), length: 4 }],
             });
             await clickSave(page, 'Object');
-            await page.waitForTimeout(2000);
 
             await clearEnvironment(page);
             await clickLoad(page, 'Object');
@@ -510,7 +525,7 @@ test.describe('Sonic Crackers', () => {
             dplcsPath: resolve(FIXTURES, 'crackers/maps/PLC_Sonic.asm'),
             artPath: resolve(FIXTURES, 'crackers/art/Sonic.bin'),
             artCompression: 'Uncompressed',
-            palettePaths: [resolve(FIXTURES, 'crackers/palette/Primary.bin')],
+            palettePaths: [{ path: resolve(FIXTURES, 'crackers/palette/Primary-full.bin'), length: 4 }],
         });
         await clearEnvironment(page);
         await clickLoad(page, 'Object');
@@ -532,7 +547,7 @@ test.describe('Sonic Crackers', () => {
             dplcsPath: resolve(FIXTURES, 'crackers/maps/PLC_SonicArm.asm'),
             artPath: resolve(FIXTURES, 'crackers/art/SonicArm.bin'),
             artCompression: 'Uncompressed',
-            palettePaths: [resolve(FIXTURES, 'crackers/palette/Primary.bin')],
+            palettePaths: [{ path: resolve(FIXTURES, 'crackers/palette/Primary-full.bin'), length: 4 }],
         });
         await clearEnvironment(page);
         await clickLoad(page, 'Object');
@@ -556,7 +571,7 @@ test.describe('Sonic Crackers', () => {
                 dplcsPath: resolve(FIXTURES, 'crackers/maps/PLC_Sonic.asm'),
                 artPath: resolve(FIXTURES, 'crackers/art/Sonic.bin'),
                 artCompression: 'Uncompressed',
-                palettePaths: [resolve(FIXTURES, 'crackers/palette/Primary.bin')],
+                palettePaths: [{ path: resolve(FIXTURES, 'crackers/palette/Primary-full.bin'), length: 4 }],
             });
             await clearEnvironment(page);
             await clickLoad(page, 'Object');
@@ -572,10 +587,9 @@ test.describe('Sonic Crackers', () => {
                 dplcsPath: join(tmp, 'dplc.bin'),
                 artPath: join(tmp, 'art.bin'),
                 artCompression: 'Uncompressed',
-                palettePaths: [resolve(FIXTURES, 'crackers/palette/Primary.bin')],
+                palettePaths: [{ path: resolve(FIXTURES, 'crackers/palette/Primary-full.bin'), length: 4 }],
             });
             await clickSave(page, 'Object');
-            await page.waitForTimeout(2000);
 
             await clearEnvironment(page);
             await clickLoad(page, 'Object');
@@ -605,9 +619,11 @@ test.describe('Compression', () => {
                 format: 'Sonic 1.js',
                 artPath: file,
                 artCompression: compression,
-                palettePaths: [resolve(FIXTURES, 's1/palette/Sonic.bin')],
+                palettePaths: [{ path: resolve(FIXTURES, 'crackers/palette/Primary-full.bin'), length: 4 }],
             });
             await clearEnvironment(page);
+            await clickLoad(page, 'Palettes');
+            await waitForIO(page);
             await clickLoad(page, 'Art');
             await waitForTiles(page);
 
