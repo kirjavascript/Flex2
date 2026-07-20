@@ -174,10 +174,11 @@ async function expectSnapshots(page, name) {
     return snap;
 }
 
+let app, page;
+test.beforeAll(async () => { ({ app, page } = await launchApp()); });
+test.afterAll(async () => { await closeApp(app); });
+
 test.describe('Sonic 1', () => {
-    let app, page;
-    test.beforeEach(async () => { ({ app, page } = await launchApp()); });
-    test.afterEach(async () => { await closeApp(app); });
 
     test('loads Rings mappings + Nemesis art', async () => {
         await setFileObject(page, {
@@ -302,9 +303,6 @@ test.describe('Sonic 1', () => {
 });
 
 test.describe('Sonic 2', () => {
-    let app, page;
-    test.beforeEach(async () => { ({ app, page } = await launchApp()); });
-    test.afterEach(async () => { await closeApp(app); });
 
     test('loads obj26 (Monitor) mappings', async () => {
         await setFileObject(page, {
@@ -504,9 +502,6 @@ test.describe('Sonic 2', () => {
 });
 
 test.describe('Sonic Crackers', () => {
-    let app, page;
-    test.beforeEach(async () => { ({ app, page } = await launchApp()); });
-    test.afterEach(async () => { await closeApp(app); });
 
     test('loads Sonic sprite + DPLCs', async () => {
         await setFileObject(page, {
@@ -599,9 +594,6 @@ test.describe('Sonic Crackers', () => {
 });
 
 test.describe('Compression', () => {
-    let app, page;
-    test.beforeEach(async () => { ({ app, page } = await launchApp()); });
-    test.afterEach(async () => { await closeApp(app); });
 
     for (const [name, file, compression, snapName] of [
         ['Nemesis (S1)', resolve(FIXTURES, 's1/art/Rings.nem'), 'Nemesis', 'compression-nemesis-s1'],
