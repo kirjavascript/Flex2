@@ -8,8 +8,6 @@ const FIXTURES = resolve(import.meta.dirname, 'fixtures');
 const ELECTRON = resolve(ROOT, 'node_modules', '.bin', 'electron');
 const APP_DIR = resolve(ROOT, 'static');
 
-// ─── Helpers ───────────────────────────────────────────────────────────
-
 async function launchApp() {
     const app = await _electron.launch({
         executablePath: ELECTRON,
@@ -43,6 +41,8 @@ async function clearEnvironment(page) {
         environment.mappings.replace([]);
         environment.dplcs.replace([]);
         environment.spriteMetadata.replace([]);
+        environment.resetPalettes();
+        environment.config.dplcsEnabled = false;
     });
 }
 
@@ -125,7 +125,6 @@ async function snapshotEnv(page) {
     });
 }
 
-/** Render a spritesheet PNG via the app's own exportSprite and return it as a Buffer. */
 async function renderSpritesheet(page) {
     const base64 = await page.evaluate(() => {
         const { environment, exportSprite } = window.__test__;
@@ -165,7 +164,6 @@ async function getErrors(page) {
     return errors.filter(Boolean);
 }
 
-/** Assert env JSON + spritesheet PNG snapshots. */
 async function expectSnapshots(page, name) {
     const snap = await snapshotEnv(page);
     expect(JSON.stringify(snap, null, 2)).toMatchSnapshot({ name: `${name}.json` });
@@ -175,8 +173,6 @@ async function expectSnapshots(page, name) {
     }
     return snap;
 }
-
-// ─── Sonic 1 ───────────────────────────────────────────────────────────
 
 test.describe('Sonic 1', () => {
     let app, page;
@@ -304,8 +300,6 @@ test.describe('Sonic 1', () => {
         expect(await getErrors(page)).toHaveLength(0);
     });
 });
-
-// ─── Sonic 2 ───────────────────────────────────────────────────────────
 
 test.describe('Sonic 2', () => {
     let app, page;
@@ -509,8 +503,6 @@ test.describe('Sonic 2', () => {
     });
 });
 
-// ─── Sonic Crackers ────────────────────────────────────────────────────
-
 test.describe('Sonic Crackers', () => {
     let app, page;
     test.beforeEach(async () => { ({ app, page } = await launchApp()); });
@@ -605,8 +597,6 @@ test.describe('Sonic Crackers', () => {
         }
     });
 });
-
-// ─── Compression ───────────────────────────────────────────────────────
 
 test.describe('Compression', () => {
     let app, page;
