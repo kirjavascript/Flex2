@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 - Sonic Crackers Support
+- Added Moduled KosinskiPlus compression
+- Added ComperX compression
 - Fix Sonic 1 MapMacros DPLC bug
 - Support loading/editing sprite labels for ASM mappings
 - Make MapMacros optional in object config
