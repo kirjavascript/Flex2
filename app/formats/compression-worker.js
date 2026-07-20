@@ -1,12 +1,16 @@
 import * as Comlink from 'comlink';
 
-self.Module = {
-    locateFile: url => `../wasm/${url}`,
-};
+const ready = new Promise(resolve => {
+    self.Module = {
+        locateFile: url => `../wasm/${url}`,
+        onRuntimeInitialized: resolve,
+    };
+});
 
 importScripts('../wasm/mdcomp_portable.js');
 
-function mdcomp(func, data) {
+async function mdcomp(func, data) {
+    await ready;
     const operation = Module[func];
     const sp = Module.stackSave();
     try {
