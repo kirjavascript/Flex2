@@ -15,6 +15,12 @@ mapping metadata feature
 
     Moduled KosM
 
+    tests
+        s1, s1, crackers, asm/bin, compression
+        export spritesheet
+
+    dropdown script option for s3k
+
     # idk feels like there should be a feature to simply change which palette line to use for display in the editor. in SonMapEd it's the 1234 keys
     https://discord.com/channels/@me/1527356887740317829/1527745396380799219
 

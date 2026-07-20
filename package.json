@@ -2,9 +2,11 @@
     "version": "1.4.0",
     "scripts": {
         "start": "electron ./static --dev",
-        "web": "node -e \"require('./development/build')()\" -- --dev"
+        "web": "node -e \"require('./development/build')()\" -- --dev",
+        "test": "npx playwright test"
     },
     "devDependencies": {
+        "@playwright/test": "^1.61.1",
         "chokidar": "^3.5.3",
         "esbuild": "^0.16.4",
         "node-sass": "git+https://github.com/TomiBelan/node-sass-wasm#built/master"

@@ -22,6 +22,7 @@ const sizes = {
 
 // fallback JS assembler, use with asm(({ basic }) => basic())
 export function parseASMBasic(text) {
+    throw new Error('@deprecated');
     const comment = regex(/^;.*$/m).map(() => [ignore]);
     const even = str('even').map(() => [ignore]);
     const label = regex(/^[A-Z0-9_@$.]+(\s+)?:/i).map(t => [lbl, t.replace(':', '')]);

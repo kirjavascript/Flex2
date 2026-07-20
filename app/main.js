@@ -27,3 +27,10 @@ document.addEventListener('drop', (e) => {
     e.preventDefault();
     return false;
 }, false);
+
+// Expose stores for e2e tests.
+import { environment } from '#store/environment';
+import { workspace } from '#store/workspace';
+import { toJS } from 'mobx';
+import { exportSprite } from '#formats/image';
+window.__test__ = { environment, workspace, toJS, exportSprite };
