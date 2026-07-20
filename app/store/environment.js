@@ -88,32 +88,6 @@ class Environment {
                     metadata: this.spriteMetadata[index] || {},
                 };
             }
-
-
-            // let buffer = [];
-
-            // const dplcsAvailable = this.config.dplcsEnabled && this.dplcs.length > index;
-
-            // if (dplcsAvailable) {
-            //     this.dplcs[index].forEach(({art, size}) => {
-            //         Array.from({length: size}, (_, i) => {
-            //             if (this.tiles.length <= art + i) {
-            //                 buffer.push([]);
-            //             } else {
-            //                 buffer.push(this.tiles[art + i]);
-            //             }
-            //         });
-            //     });
-            // }
-            // else {
-            //     buffer = this.tiles;
-            // }
-
-            // return {
-            //     index, buffer,
-            //     mappings: mappingList,
-            //     dplcs: dplcsAvailable && this.dplcs[index],
-            // };
         });
     }
 

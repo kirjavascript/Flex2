@@ -126,6 +126,9 @@ export const FileObject = observer(({ obj, isAbsolute }) => {
 
             const mappings = script.readMappings(buffer, symbols);
             if (mappings.error) throw mappings.error;
+            if (script.postRead) {
+                script.postRead({ mappings: mappings.sprites });
+            }
             environment.mappings.replace(mappings.sprites);
             environment.spriteMetadata.replace(mappings.spriteMetadata || []);
             if (
@@ -148,7 +151,7 @@ export const FileObject = observer(({ obj, isAbsolute }) => {
 
     function saveMappings(e) {
         ioWrap(obj.mappings.path, setMappingError, e, async (path) => {
-            const mappings = script.writeMappings(environment.mappings, environment.spriteMetadata);
+            const mappings = script.writeMappings(environment.mappings, environment.spriteMetadata, environment);
             if (mappings.error) throw mappings.error;
             if (!mappingsASM) {
                 await fs.writeFile(path, writeBIN(mappings));
@@ -174,13 +177,16 @@ export const FileObject = observer(({ obj, isAbsolute }) => {
 
             const dplcs = script.readDPLCs(buffer);
             if (dplcs.error) throw dplcs.error;
+            if (script.postRead) {
+                script.postRead({ dplcs: dplcs.sprites });
+            }
             environment.dplcs.replace(dplcs.sprites);
         });
     }
 
     function saveDPLCs(e) {
         ioWrap(obj.dplcs.path, setDPLCError, e, async (path) => {
-            const dplcs = script.writeDPLCs(environment.dplcs, environment.spriteMetadata);
+            const dplcs = script.writeDPLCs(environment.dplcs, environment.spriteMetadata, environment);
             if (dplcs.error) throw dplcs.error;
             if (!dplcsASM) {
                 await fs.writeFile(path, writeBIN(dplcs));

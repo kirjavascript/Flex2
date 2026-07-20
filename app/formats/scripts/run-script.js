@@ -59,6 +59,7 @@ export default catchFunc((obj) => {
     const [dplcArgs, dplcFunc] = useDef();
 
     const [asmArgs, asmFunc] = useDef();
+    let postReadFunc = null;
 
     const configOptions = [];
     const configFunc = (callback) => {
@@ -99,6 +100,7 @@ export default catchFunc((obj) => {
         asm: asmFunc,
         config: configFunc,
         offsetTable: makeOffsetTable({ read, write }),
+        postRead: (fn) => { postReadFunc = fn; },
     });
 
     const readLimit = 2e3;
@@ -221,7 +223,7 @@ export default catchFunc((obj) => {
         return num;
     };
 
-    const createWriter = (sectionList = []) => catchFunc((mappings, spriteMetadata) => {
+    const createWriter = (sectionList = []) => catchFunc((mappings, spriteMetadata, environment) => {
         // mapping output format is [type, size, data]
 
         const global = { cleanup: [] };
@@ -238,7 +240,7 @@ export default catchFunc((obj) => {
                 setWrite((size, data, type = binary) => {
                     mappings.push([[type, size, unsign(size, +data)]]);
                 });
-                const writeMapping = writeFrame({ sprite, ref }, spriteIndex);
+                const writeMapping = writeFrame({ sprite, ref, environment }, spriteIndex);
 
                 if (writeMapping) {
                     for (let frameIndex = 0; frameIndex < sprite.length; frameIndex++) {
@@ -281,6 +283,7 @@ export default catchFunc((obj) => {
         mappings: true,
         readMappings,
         writeMappings,
+        postRead: postReadFunc,
         config: configOptions,
     };
 
