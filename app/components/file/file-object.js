@@ -103,7 +103,7 @@ export const FileObject = observer(({ obj, isAbsolute }) => {
 
     function saveArt(e) {
         ioWrap(obj.art.path, setArtError, e, async (path) => {
-            if (obj.art.offset) {
+            if (Number(obj.art.offset)) {
                 throw new Error('Can only save art at offset 0');
             }
             const tiles = tilesToBuffer(environment.tiles, obj.art.compression);
