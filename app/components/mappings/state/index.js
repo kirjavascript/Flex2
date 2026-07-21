@@ -1,4 +1,4 @@
-import { observable, computed, action, makeObservable, observe } from 'mobx';
+import { observable, computed, action, makeObservable, observe, reaction } from 'mobx';
 import { environment } from '#store/environment';
 import clamp from 'lodash/clamp';
 import { getCenter } from './bounds';
@@ -96,6 +96,24 @@ class MappingState {
             toggleDPLCs: action,
             arrangeTilesBySpriteOrder: action
         });
+
+        // when switching sprites, carry over "all selected" state
+        reaction(
+            () => ({
+                spriteIndex: environment.config.currentSprite,
+                mappingCount: environment.currentSprite.mappings.length,
+            }),
+            ({ spriteIndex, mappingCount }, prev) => {
+                if (spriteIndex === prev.spriteIndex) return;
+                const allWereSelected = prev.mappingCount > 0
+                    && this.selectedIndices.length >= prev.mappingCount;
+                if (allWereSelected && mappingCount > 0) {
+                    this.selectedIndices.replace(
+                        Array.from({ length: mappingCount }, (_, i) => i),
+                    );
+                }
+            },
+        );
 
         // ensure only one modal is open at once
         const modals = ['newMapping', 'rotate'];
