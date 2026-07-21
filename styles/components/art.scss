@@ -21,6 +21,29 @@
     }
 }
 
+.art-palette-line {
+    padding: 4px 8px;
+    font-size: 11px;
+    font-weight: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    input {
+        width: 28px;
+        text-align: center;
+        background: transparent;
+        border: 1px solid rgba(white, .2);
+        color: inherit;
+        font-size: 11px;
+        padding: 2px;
+        border-radius: 2px;
+        &::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+        }
+    }
+}
+
 .active-selection {
     z-index: 1;
     pointer-events: none;

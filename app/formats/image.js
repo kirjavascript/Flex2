@@ -37,8 +37,10 @@ export function exportSprite({ buffer, mappings }) {
     const mappingCanvas = document.createElement('canvas');
     const mappingCtx = mappingCanvas.getContext('2d');
 
+    const { artPaletteLine } = environment.config;
+
     mappings.slice(0).reverse().forEach((mapping) => {
-        const palette = palettesRGB[mapping.palette];
+        const palette = palettesRGB[(mapping.palette + artPaletteLine) % 4];
 
         mappingCanvas.width = mapping.width * 8;
         mappingCanvas.height = mapping.height * 8;
@@ -219,7 +221,8 @@ export async function importImg() {
     mappings.forEach(async ({ top, left, palette, vflip, hflip, width, height, art }) => {
         const x = left - minX;
         const y = top - minY;
-        const paletteLine = palettesRGB[palette];
+        const shiftedPalette = (palette + environment.config.artPaletteLine) % 4;
+        const paletteLine = palettesRGB[shiftedPalette];
 
         // handle flipping
         const flipCtx = await flipBuffer(
@@ -232,7 +235,7 @@ export async function importImg() {
             const offX = (0|(i / height)) * 8;
             const offY = (i % height) * 8;
 
-            const tileBuffer = colorMatch(flipCtx.getImageData(offX, offY, 8, 8), palette);
+            const tileBuffer = colorMatch(flipCtx.getImageData(offX, offY, 8, 8), shiftedPalette);
 
             const bufferOffset = art + i;
             if (bufferOffset < buffer.length) {

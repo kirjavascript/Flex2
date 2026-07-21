@@ -36,7 +36,8 @@ export function importSprite(ctx, newMappings, paletteLine) {
         config: { currentSprite, dplcsEnabled },
     } = environment;
 
-    const palette = palettesRGB[paletteLine];
+    const shiftedLine = (paletteLine + environment.config.artPaletteLine) % 4;
+    const palette = palettesRGB[shiftedLine];
 
     let newMappingsList = [];
     let newDPLCsList = [];

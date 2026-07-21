@@ -38,6 +38,25 @@ export const Art = observer(class Art extends DimensionsComponent {
             onMouseUp={this.onMouseUp}
             onMouseLeave={this.onMouseUp}
         >
+            <div className="art-palette-line">
+                <span>line offset</span>
+                <input
+                    type="text"
+                    value={environment.config.artPaletteLine}
+                    readOnly
+                    onKeyDown={(e) => {
+                        const v = parseInt(e.key);
+                        if (v >= 0 && v <= 3) environment.config.artPaletteLine = v;
+                        e.preventDefault();
+                    }}
+                    onWheel={(e) => {
+                        const cur = environment.config.artPaletteLine;
+                        const next = cur + (e.deltaY > 0 ? -1 : 1);
+                        if (next >= 0 && next <= 3) environment.config.artPaletteLine = next;
+                        e.preventDefault();
+                    }}
+                />
+            </div>
             <div ref={this.onContainerRef} className="tile-container">
                 <div className="tile-list" style={{height: totalHeight}}>
                     <ActiveSelection
@@ -78,7 +97,6 @@ export const Art = observer(class Art extends DimensionsComponent {
                     })}
                 </div>
             </div>
-
         </div>;
     }
 

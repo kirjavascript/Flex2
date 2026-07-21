@@ -6,6 +6,7 @@ import { colorMatch } from './color-match';
 import { getSpriteBBoxes } from './get-sprite';
 import { getMappings } from './generate-mappings';
 import { importSprite } from './import-sprite';
+import { environment } from '#store/environment';
 import { readFile } from 'fs';
 
 class ImportState {
@@ -199,7 +200,8 @@ class ImportState {
         canvas.height = this.importHeight = height+16;
 
         // draw sprite
-        const coloredBuffer = colorMatch(buffer, this.paletteLine);
+        const shiftedLine = (this.paletteLine + environment.config.artPaletteLine) % 4;
+        const coloredBuffer = colorMatch(buffer, shiftedLine);
         ctx.putImageData(coloredBuffer, 8, 8);
 
         this.mappings.replace(getMappings(canvas, ctx, type));
@@ -214,7 +216,8 @@ class ImportState {
     changePalette = () => {
         const { canvas, ctx } = this;
         const { width, height, buffer } = this.currentSprite;
-        const coloredBuffer = colorMatch(buffer, this.paletteLine);
+        const shiftedLine = (this.paletteLine + environment.config.artPaletteLine) % 4;
+        const coloredBuffer = colorMatch(buffer, shiftedLine);
         ctx.putImageData(coloredBuffer, 8, 8);
     };
 

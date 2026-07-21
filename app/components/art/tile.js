@@ -5,7 +5,8 @@ import { observer } from 'mobx-react';
 export const Tile = observer(
     ({ data = [], paletteLine = 0, scale = 4, ...otherProps }) => {
         const { palettes, config } = environment;
-        const { transparency } = config;
+        const { transparency, artPaletteLine } = config;
+        paletteLine = (paletteLine + artPaletteLine) % 4;
 
         return (
             <div

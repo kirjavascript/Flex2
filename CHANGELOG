@@ -6,7 +6,8 @@
 - Added ComperX compression
 - Fix Sonic 1 MapMacros DPLC bug
 - Support loading/editing sprite labels for ASM mappings
-- 'Select All' persists when navigating between sprites
+- Select All persists when navigating between sprites
+- Added choice of palette line to start rendering from
 - Make MapMacros optional in object config
 - Added command to unload everything
 - Split raw editor into a new window

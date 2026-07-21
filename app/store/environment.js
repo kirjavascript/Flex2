@@ -12,6 +12,7 @@ class Environment {
         currentTile: 0,
         transparency: true,
         dplcsEnabled: false,
+        artPaletteLine: 0,
     };
 
     // palettes must use colours of the form #NNN
