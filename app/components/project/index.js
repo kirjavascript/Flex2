@@ -24,6 +24,7 @@ function toTree(objects) {
 function fromTree(objects) {
     return objects.map((obj) => {
         const node = obj.ref || obj;
+        node.expanded = obj.expanded;
         if (obj.children) node.children = fromTree(obj.children);
         else delete node.children;
         return node;
