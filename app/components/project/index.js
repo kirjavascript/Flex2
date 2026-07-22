@@ -1,6 +1,7 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import { workspace } from '#store/workspace';
+import { selection } from '#store/selection';
 import { FileObject } from '#components/file/file-object';
 import ErrorMsg from '#components/file/error';
 import { File as FileInput, Button, Item, Input } from '#ui';
@@ -22,10 +23,9 @@ function toTree(objects) {
 
 function fromTree(objects) {
     return objects.map((obj) => {
-        const node = { ...obj };
-        delete node.ref;
-        delete node.parent;
+        const node = obj.ref || obj;
         if (obj.children) node.children = fromTree(obj.children);
+        else delete node.children;
         return node;
     });
 }
@@ -55,14 +55,14 @@ const Project = observer(() => {
 
     const tree = toTree(project.objects);
 
-    const node = project.nodeRef;
+    const node = selection.resolve(project.objects);
 
     return (
         <div className="project">
             <div className="tree">
                 <div className="file-controls">
                     <Item>New</Item>
-                    <Button color="blue" onClick={project.newObject}>
+                    <Button color="blue" onClick={() => { project.newObject(); selection.select(project.objects[0]); }}>
                         object
                     </Button>
                     <Button color="yellow" onClick={project.newFolder}>
@@ -87,6 +87,9 @@ const Project = observer(() => {
                                         rowInfo.node.ref.name =
                                             e.target.parentNode.dataset.value =
                                             e.target.value;
+                                        if (rowInfo.node.ref === selection.ref) {
+                                            selection.select(rowInfo.node.ref);
+                                        }
                                     }}
                                     size={rowInfo.node.name.length}
                                     style={{ maxWidth: 160 }}
@@ -99,7 +102,7 @@ const Project = observer(() => {
                         },
                         onClick: () => {
                             if (!rowInfo.node.isDirectory) {
-                                project.node = rowInfo.node.uuid;
+                                selection.select(rowInfo.node.ref);
                             }
                         },
                         icons: rowInfo.node.isDirectory

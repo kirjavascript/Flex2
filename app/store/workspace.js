@@ -2,8 +2,8 @@ import { observable, toJS, action, makeObservable } from 'mobx';
 import { storage } from './storage';
 import { Project } from './project';
 import { ObjectDef, editPaths } from  './objectdef';
-import { uuid } from '#util/uuid';
 import { selectTab } from '#components/layout/model';
+import { selection } from '#store/selection';
 import path from 'path';
 
 const fileState = new ObjectDef();
@@ -24,6 +24,7 @@ class Workspace {
             this.project.cleanup?.();
             this.project = undefined;
             this.projectPath = '';
+            selection.clear();
         }
     };
 
@@ -44,9 +45,9 @@ class Workspace {
             const clone = toJS(this.file);
             editPaths(clone, this.relativePath);
             clone.name = 'file object';
-            clone.uuid = uuid();
-            this.project.node = clone.uuid;
+            delete clone.uuid;
             this.project.objects.unshift(clone);
+            selection.select(this.project.objects[0]);
             selectTab('Project');
         }
     };

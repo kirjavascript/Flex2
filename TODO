@@ -18,11 +18,6 @@ mapping metadata feature
 
     remove uuids from the project files, and use some localstorage to manage which item in the project is selected
 
-    feels like there should be a feature to simply change which palette line to use for display in the editor. maybe a dropdown in the art tabe or maybe you can think of something better
-    so you can do a render starting with palette line 1/2/3/4
-
-    https://discord.com/channels/@me/1527356887740317829/1527745396380799219
-
 
 TODO: fix project dir not being correct when loading the crackers project
 
