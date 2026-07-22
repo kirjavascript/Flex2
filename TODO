@@ -16,8 +16,11 @@ mapping metadata feature
     dropdown script option for s3k
     s3k mapmacros
 
-    remove uuids from the project files, and use some localstorage to manage which item in the project is selected
+    horizontal shift scrolling with mouse
 
+    limit command repeat amount
+    also:
+https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/repeat
 
 TODO: fix project dir not being correct when loading the crackers project
 

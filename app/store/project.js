@@ -37,20 +37,38 @@ export class Project {
                     this.objects.replace(json.objects || []);
                 }
 
+                let timer;
+                let writing = false;
+                let latestJson;
+
+                const save = async () => {
+                    writing = true;
+                    const json = latestJson;
+                    this.error = undefined;
+                    try {
+                        await fs.writeFile(path, json, 'utf8');
+                    } catch (e) {
+                        this.error = e;
+                    }
+                    writing = false;
+                    if (latestJson !== json) {
+                        save();
+                    }
+                };
+
                 this.cleanup = autorun(() => {
-                    const json = JSON.stringify({
+                    latestJson = JSON.stringify({
                         Flex: 2,
                         name: this.name,
                         objects: this.objects,
                     }, null, 4);
-                    (async () => {
-                        this.error = undefined;
-                        try {
-                            await fs.writeFile(path, json, 'utf8');
-                        } catch (e) {
-                            this.error = e;
-                        }
-                    })();
+
+                    if (!this.objects.length) return;
+
+                    clearTimeout(timer);
+                    timer = setTimeout(() => {
+                        if (!writing) save();
+                    }, 200);
                 });
             } catch (e) {
                 this.error = e;
