@@ -9,6 +9,7 @@ export const compressionFormats = {
     'KosinskiPlus-M': 'moduled_kosplus',
     'Comper': 'comper',
     'ComperX': 'comperx',
+    'ComperX-M': 'moduled_comperx',
     'Enigma': 'enigma',
     'ArtC42': 'artc42',
     'LZKN1': 'lzkn1',

@@ -18,9 +18,7 @@ mapping metadata feature
 
     horizontal shift scrolling with mouse
 
-    limit command repeat amount
-    also:
-https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/repeat
+onion skinning
 
 TODO: fix project dir not being correct when loading the crackers project
 

@@ -17,7 +17,8 @@ flatten(commands)
 // handle multiplier
 let multiplier = '';
 Mousetrap.bind([...'0123456789'], (e) => {
-    multiplier += String(e.key);
+    if (e.repeat) return;
+    if (multiplier.length < 3) multiplier += String(e.key);
 });
 Mousetrap.bind('esc', () => {
     multiplier = '';
@@ -25,7 +26,8 @@ Mousetrap.bind('esc', () => {
 function doCommand(obj, e) {
     environment.doAction(() => {
         if (!obj.noMultiplier && multiplier) {
-            for (let i = 0; i < +multiplier; i++) obj.func(e);
+            const count = Math.min(+multiplier, 999);
+            for (let i = 0; i < count; i++) obj.func(e);
             multiplier = '';
         }
         else {

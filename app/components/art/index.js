@@ -45,6 +45,7 @@ export const Art = observer(class Art extends DimensionsComponent {
                     value={environment.config.artPaletteLine}
                     readOnly
                     onKeyDown={(e) => {
+                        if (e.repeat) return;
                         const v = parseInt(e.key);
                         if (v >= 0 && v <= 3) environment.config.artPaletteLine = v;
                         e.preventDefault();
