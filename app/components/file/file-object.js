@@ -52,8 +52,6 @@ export const FileObject = observer(({ obj, isAbsolute }) => {
         if (isASM) {
             const contents = await fs.readFile(path, 'utf8');
 
-            if (script.asm.basic) return { buffer: await parseASMBasic(contents), symbols: null };
-
             const result = await assemble(script.asm.prelude + contents, {
                 filename: basename(path),
             });

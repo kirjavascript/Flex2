@@ -298,7 +298,6 @@ export default catchFunc((obj) => {
     // ASM
 
     const asm = {
-        basic: false,
         prelude: `
 	cpu 68000
 	padding off
@@ -315,10 +314,6 @@ even macro
         const [writeMappingsArgs, writeMappingsFunc] = useDef();
         const [writeDPLCsArgs, writeDPLCsFunc] = useDef();
 
-        function basic() {
-            asm.basic = true;
-        }
-
         function addScript(code) {
             asm.prelude += code;
         }
@@ -331,7 +326,6 @@ even macro
         }
 
         asmArgs[0]({
-            basic,
             addScript,
             importScript,
             writeMappings: writeMappingsFunc,
