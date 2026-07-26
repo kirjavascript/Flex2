@@ -14,7 +14,7 @@ export function sanitizeLabel(name) {
     return s || undefined;
 }
 
-export function writeASM(baseLabel, { sections }, sprites, nameKey = 'name') {
+export function writeASM(baseLabel, { sections }, sprites, nameKey = 'label') {
     const getLabel = addr => `${baseLabel}_${addr.toString(16).toUpperCase()}`;
     let cursor = 0;
     const labels = [];

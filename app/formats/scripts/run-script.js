@@ -204,7 +204,7 @@ export default catchFunc((obj) => {
             sprites.forEach(sprite => {
                 const addr = addrToSprite.get(sprite);
                 if (addr != null && symbols[addr]) {
-                    sprite.metadata.name = symbols[addr];
+                    sprite.metadata.label = symbols[addr];
                 }
             });
         }
@@ -289,10 +289,10 @@ export default catchFunc((obj) => {
             if (dplcs.error) return dplcs;
 
             for (let i = 0; i < dplcs.spriteMetadata.length; i++) {
-                const plcName = dplcs.spriteMetadata[i]?.name;
-                if (plcName) {
+                const plcLabel = dplcs.spriteMetadata[i]?.label;
+                if (plcLabel) {
                     if (!mappings.spriteMetadata[i]) mappings.spriteMetadata[i] = {};
-                    mappings.spriteMetadata[i].plcName = plcName;
+                    mappings.spriteMetadata[i].plcLabel = plcLabel;
                 }
             }
         }
@@ -409,7 +409,7 @@ even macro
         listing,
     }) {
         if (!asm.writeDPLCs) {
-            return writeASM(label, listing, sprites, 'plcName');
+            return writeASM(label, listing, sprites, 'plcLabel');
         }
 
         return asm.writeDPLCs({

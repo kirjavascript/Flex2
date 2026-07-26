@@ -82,7 +82,10 @@ export const commands = [
                 environment.mappings.splice(currentSprite+1, 0, toJS(mappings));
                 dplcsEnabled &&
                 environment.dplcs.splice(currentSprite+1, 0, toJS(dplcs));
-                environment.spriteMetadata.splice(currentSprite+1, 0, toJS(environment.spriteMetadata[currentSprite] || {}));
+                const meta = toJS(environment.spriteMetadata[currentSprite] || {});
+                if (meta.label) meta.label += '_Clone';
+                if (meta.plcLabel) meta.plcLabel += '_Clone';
+                environment.spriteMetadata.splice(currentSprite+1, 0, meta);
             },
         },
         {
@@ -102,7 +105,10 @@ export const commands = [
                         });
                         environment.dplcs.splice(currentSprite+1, 0, newDPLCs);
                         environment.mappings.splice(currentSprite+1, 0, toJS(mappings));
-                        environment.spriteMetadata.splice(currentSprite+1, 0, toJS(environment.spriteMetadata[currentSprite] || {}));
+                        const meta = toJS(environment.spriteMetadata[currentSprite] || {});
+                        if (meta.label) meta.label += '_Clone';
+                        if (meta.plcLabel) meta.plcLabel += '_Clone';
+                        environment.spriteMetadata.splice(currentSprite+1, 0, meta);
                     }
                     else {
                         const newMappings = toJS(mappings);
@@ -114,7 +120,10 @@ export const commands = [
                             mapping.art = tiles.length - size;
                         });
                         environment.mappings.splice(currentSprite+1, 0, newMappings);
-                        environment.spriteMetadata.splice(currentSprite+1, 0, toJS(environment.spriteMetadata[currentSprite] || {}));
+                        const meta = toJS(environment.spriteMetadata[currentSprite] || {});
+                        if (meta.label) meta.label += '_Clone';
+                        if (meta.plcLabel) meta.plcLabel += '_Clone';
+                        environment.spriteMetadata.splice(currentSprite+1, 0, meta);
                     }
                 });
             },
