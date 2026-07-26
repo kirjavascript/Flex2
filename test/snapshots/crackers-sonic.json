@@ -7,11 +7,11 @@
         "height": 2,
         "top": -22,
         "art": 0,
-        "left": -16,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -16
       },
       {
         "metadata": {},
@@ -19,11 +19,11 @@
         "height": 2,
         "top": -6,
         "art": 8,
-        "left": -14,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -14
       },
       {
         "metadata": {},
@@ -31,11 +31,11 @@
         "height": 1,
         "top": 10,
         "art": 14,
-        "left": -8,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -8
       }
     ],
     [
@@ -45,11 +45,11 @@
         "height": 4,
         "top": -23,
         "art": 0,
-        "left": -16,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -16
       },
       {
         "metadata": {},
@@ -57,11 +57,11 @@
         "height": 1,
         "top": 9,
         "art": 12,
-        "left": -8,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -8
       }
     ],
     [
@@ -71,11 +71,11 @@
         "height": 1,
         "top": -15,
         "art": 0,
-        "left": 0,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 0
       },
       {
         "metadata": {},
@@ -83,11 +83,11 @@
         "height": 3,
         "top": -7,
         "art": 2,
-        "left": -11,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -11
       }
     ],
     [
@@ -97,11 +97,11 @@
         "height": 4,
         "top": -15,
         "art": 0,
-        "left": -20,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -20
       },
       {
         "metadata": {},
@@ -109,11 +109,11 @@
         "height": 3,
         "top": -10,
         "art": 12,
-        "left": 4,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 4
       }
     ],
     [
@@ -123,11 +123,11 @@
         "height": 4,
         "top": -23,
         "art": 0,
-        "left": -16,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -16
       },
       {
         "metadata": {},
@@ -135,11 +135,11 @@
         "height": 1,
         "top": 9,
         "art": 12,
-        "left": -8,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -8
       }
     ],
     [
@@ -149,11 +149,11 @@
         "height": 4,
         "top": -23,
         "art": 0,
-        "left": -16,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -16
       },
       {
         "metadata": {},
@@ -161,11 +161,11 @@
         "height": 1,
         "top": 9,
         "art": 12,
-        "left": -8,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -8
       }
     ],
     [
@@ -175,11 +175,11 @@
         "height": 4,
         "top": -20,
         "art": 0,
-        "left": -18,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -18
       },
       {
         "metadata": {},
@@ -187,11 +187,11 @@
         "height": 1,
         "top": 12,
         "art": 16,
-        "left": -8,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -8
       }
     ],
     [
@@ -201,11 +201,11 @@
         "height": 4,
         "top": -22,
         "art": 0,
-        "left": -20,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -20
       },
       {
         "metadata": {},
@@ -213,11 +213,11 @@
         "height": 1,
         "top": 10,
         "art": 16,
-        "left": -16,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -16
       }
     ],
     [
@@ -227,11 +227,11 @@
         "height": 3,
         "top": -21,
         "art": 0,
-        "left": -20,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -20
       },
       {
         "metadata": {},
@@ -239,11 +239,11 @@
         "height": 2,
         "top": 3,
         "art": 12,
-        "left": -19,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -19
       }
     ],
     [
@@ -253,11 +253,11 @@
         "height": 4,
         "top": -20,
         "art": 0,
-        "left": -4,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -4
       },
       {
         "metadata": {},
@@ -265,11 +265,11 @@
         "height": 2,
         "top": -10,
         "art": 12,
-        "left": -20,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -20
       },
       {
         "metadata": {},
@@ -277,11 +277,11 @@
         "height": 1,
         "top": 12,
         "art": 16,
-        "left": 4,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 4
       }
     ],
     [
@@ -291,11 +291,11 @@
         "height": 3,
         "top": -20,
         "art": 0,
-        "left": -12,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -12
       },
       {
         "metadata": {},
@@ -303,11 +303,11 @@
         "height": 1,
         "top": -8,
         "art": 12,
-        "left": -20,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -20
       },
       {
         "metadata": {},
@@ -315,11 +315,11 @@
         "height": 2,
         "top": 4,
         "art": 13,
-        "left": -3,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -3
       }
     ],
     [
@@ -329,11 +329,11 @@
         "height": 2,
         "top": -20,
         "art": 0,
-        "left": -16,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -16
       },
       {
         "metadata": {},
@@ -341,11 +341,11 @@
         "height": 2,
         "top": -4,
         "art": 8,
-        "left": -12,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -12
       },
       {
         "metadata": {},
@@ -353,11 +353,11 @@
         "height": 1,
         "top": 12,
         "art": 14,
-        "left": 3,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 3
       }
     ],
     [
@@ -367,11 +367,11 @@
         "height": 4,
         "top": -23,
         "art": 0,
-        "left": -20,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -20
       },
       {
         "metadata": {},
@@ -379,11 +379,11 @@
         "height": 2,
         "top": -7,
         "art": 16,
-        "left": 12,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 12
       },
       {
         "metadata": {},
@@ -391,11 +391,11 @@
         "height": 1,
         "top": 9,
         "art": 18,
-        "left": -17,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -17
       }
     ],
     [
@@ -405,11 +405,11 @@
         "height": 1,
         "top": -23,
         "art": 0,
-        "left": -13,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -13
       },
       {
         "metadata": {},
@@ -417,11 +417,11 @@
         "height": 2,
         "top": -15,
         "art": 3,
-        "left": -13,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -13
       },
       {
         "metadata": {},
@@ -429,11 +429,11 @@
         "height": 2,
         "top": 1,
         "art": 11,
-        "left": -12,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -12
       }
     ],
     [
@@ -443,11 +443,11 @@
         "height": 4,
         "top": -21,
         "art": 0,
-        "left": -12,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -12
       },
       {
         "metadata": {},
@@ -455,11 +455,11 @@
         "height": 1,
         "top": 11,
         "art": 12,
-        "left": -9,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -9
       }
     ],
     [
@@ -469,11 +469,11 @@
         "height": 3,
         "top": -22,
         "art": 0,
-        "left": -12,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -12
       },
       {
         "metadata": {},
@@ -481,11 +481,11 @@
         "height": 2,
         "top": 2,
         "art": 9,
-        "left": -14,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -14
       }
     ],
     [
@@ -495,11 +495,11 @@
         "height": 3,
         "top": -21,
         "art": 0,
-        "left": -12,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -12
       },
       {
         "metadata": {},
@@ -507,11 +507,11 @@
         "height": 1,
         "top": 3,
         "art": 9,
-        "left": -20,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -20
       },
       {
         "metadata": {},
@@ -519,11 +519,11 @@
         "height": 1,
         "top": 11,
         "art": 13,
-        "left": -1,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -1
       }
     ],
     [
@@ -533,11 +533,11 @@
         "height": 2,
         "top": -21,
         "art": 0,
-        "left": -13,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -13
       },
       {
         "metadata": {},
@@ -545,11 +545,11 @@
         "height": 3,
         "top": -5,
         "art": 8,
-        "left": -12,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -12
       }
     ],
     [
@@ -559,11 +559,11 @@
         "height": 3,
         "top": -19,
         "art": 0,
-        "left": -20,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -20
       },
       {
         "metadata": {},
@@ -571,11 +571,11 @@
         "height": 2,
         "top": -11,
         "art": 12,
-        "left": 12,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 12
       },
       {
         "metadata": {},
@@ -583,11 +583,11 @@
         "height": 3,
         "top": 5,
         "art": 14,
-        "left": -8,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -8
       }
     ],
     [
@@ -597,11 +597,11 @@
         "height": 4,
         "top": -19,
         "art": 0,
-        "left": -20,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -20
       },
       {
         "metadata": {},
@@ -609,11 +609,11 @@
         "height": 2,
         "top": -4,
         "art": 16,
-        "left": 12,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 12
       },
       {
         "metadata": {},
@@ -621,11 +621,11 @@
         "height": 1,
         "top": 13,
         "art": 20,
-        "left": -5,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -5
       }
     ],
     [
@@ -635,11 +635,11 @@
         "height": 2,
         "top": -19,
         "art": 0,
-        "left": -16,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -16
       },
       {
         "metadata": {},
@@ -647,11 +647,11 @@
         "height": 2,
         "top": -3,
         "art": 6,
-        "left": -12,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -12
       },
       {
         "metadata": {},
@@ -659,11 +659,11 @@
         "height": 1,
         "top": 13,
         "art": 14,
-        "left": 3,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 3
       }
     ],
     [
@@ -673,11 +673,11 @@
         "height": 4,
         "top": -19,
         "art": 0,
-        "left": -16,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -16
       },
       {
         "metadata": {},
@@ -685,11 +685,11 @@
         "height": 2,
         "top": -10,
         "art": 16,
-        "left": 16,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 16
       },
       {
         "metadata": {},
@@ -697,11 +697,11 @@
         "height": 2,
         "top": 13,
         "art": 18,
-        "left": -2,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -2
       }
     ],
     [
@@ -711,11 +711,11 @@
         "height": 4,
         "top": -19,
         "art": 0,
-        "left": -16,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -16
       },
       {
         "metadata": {},
@@ -723,11 +723,11 @@
         "height": 2,
         "top": -3,
         "art": 12,
-        "left": 8,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 8
       },
       {
         "metadata": {},
@@ -735,11 +735,11 @@
         "height": 1,
         "top": 13,
         "art": 16,
-        "left": -3,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -3
       }
     ],
     [
@@ -749,11 +749,11 @@
         "height": 4,
         "top": -19,
         "art": 0,
-        "left": -20,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -20
       },
       {
         "metadata": {},
@@ -761,11 +761,11 @@
         "height": 1,
         "top": 1,
         "art": 16,
-        "left": 12,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 12
       },
       {
         "metadata": {},
@@ -773,11 +773,11 @@
         "height": 1,
         "top": 13,
         "art": 17,
-        "left": -2,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -2
       }
     ],
     [
@@ -787,11 +787,11 @@
         "height": 4,
         "top": -12,
         "art": 0,
-        "left": -23,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -23
       },
       {
         "metadata": {},
@@ -799,11 +799,11 @@
         "height": 1,
         "top": -20,
         "art": 16,
-        "left": -7,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -7
       },
       {
         "metadata": {},
@@ -811,11 +811,11 @@
         "height": 4,
         "top": -15,
         "art": 18,
-        "left": 9,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 9
       }
     ],
     [
@@ -825,11 +825,11 @@
         "height": 4,
         "top": -14,
         "art": 0,
-        "left": -21,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -21
       },
       {
         "metadata": {},
@@ -837,11 +837,11 @@
         "height": 4,
         "top": -19,
         "art": 12,
-        "left": 3,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 3
       }
     ],
     [
@@ -851,11 +851,11 @@
         "height": 3,
         "top": -12,
         "art": 0,
-        "left": -21,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -21
       },
       {
         "metadata": {},
@@ -863,11 +863,11 @@
         "height": 2,
         "top": -4,
         "art": 12,
-        "left": 11,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 11
       }
     ],
     [
@@ -877,11 +877,11 @@
         "height": 3,
         "top": -12,
         "art": 0,
-        "left": -22,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -22
       },
       {
         "metadata": {},
@@ -889,11 +889,11 @@
         "height": 4,
         "top": -18,
         "art": 9,
-        "left": 2,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 2
       }
     ],
     [
@@ -903,11 +903,11 @@
         "height": 3,
         "top": -12,
         "art": 0,
-        "left": -21,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -21
       },
       {
         "metadata": {},
@@ -915,11 +915,11 @@
         "height": 2,
         "top": -11,
         "art": 12,
-        "left": 11,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 11
       },
       {
         "metadata": {},
@@ -927,11 +927,11 @@
         "height": 1,
         "top": 12,
         "art": 14,
-        "left": 5,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 5
       }
     ],
     [
@@ -941,11 +941,11 @@
         "height": 4,
         "top": -14,
         "art": 0,
-        "left": -21,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -21
       },
       {
         "metadata": {},
@@ -953,11 +953,11 @@
         "height": 3,
         "top": -12,
         "art": 8,
-        "left": -5,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -5
       }
     ],
     [
@@ -967,11 +967,11 @@
         "height": 4,
         "top": -12,
         "art": 0,
-        "left": -20,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -20
       },
       {
         "metadata": {},
@@ -979,11 +979,11 @@
         "height": 1,
         "top": -20,
         "art": 12,
-        "left": -12,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -12
       },
       {
         "metadata": {},
@@ -991,11 +991,11 @@
         "height": 2,
         "top": -7,
         "art": 14,
-        "left": 4,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 4
       }
     ],
     [
@@ -1005,11 +1005,11 @@
         "height": 4,
         "top": -12,
         "art": 0,
-        "left": -20,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -20
       },
       {
         "metadata": {},
@@ -1017,11 +1017,11 @@
         "height": 2,
         "top": -28,
         "art": 16,
-        "left": -5,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -5
       },
       {
         "metadata": {},
@@ -1029,11 +1029,11 @@
         "height": 2,
         "top": -11,
         "art": 20,
-        "left": 12,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 12
       }
     ],
     [
@@ -1043,11 +1043,11 @@
         "height": 3,
         "top": -8,
         "art": 0,
-        "left": -20,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -20
       },
       {
         "metadata": {},
@@ -1055,11 +1055,11 @@
         "height": 2,
         "top": -24,
         "art": 9,
-        "left": 1,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 1
       },
       {
         "metadata": {},
@@ -1067,11 +1067,11 @@
         "height": 2,
         "top": -8,
         "art": 13,
-        "left": 4,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 4
       }
     ],
     [
@@ -1081,11 +1081,11 @@
         "height": 3,
         "top": -8,
         "art": 0,
-        "left": -20,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -20
       },
       {
         "metadata": {},
@@ -1093,11 +1093,11 @@
         "height": 2,
         "top": -24,
         "art": 9,
-        "left": -11,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -11
       },
       {
         "metadata": {},
@@ -1105,11 +1105,11 @@
         "height": 2,
         "top": -7,
         "art": 13,
-        "left": 4,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 4
       }
     ],
     [
@@ -1119,11 +1119,11 @@
         "height": 3,
         "top": -8,
         "art": 0,
-        "left": -20,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -20
       },
       {
         "metadata": {},
@@ -1131,11 +1131,11 @@
         "height": 2,
         "top": -24,
         "art": 12,
-        "left": -4,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -4
       },
       {
         "metadata": {},
@@ -1143,11 +1143,11 @@
         "height": 1,
         "top": -4,
         "art": 18,
-        "left": 12,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 12
       }
     ],
     [
@@ -1157,11 +1157,11 @@
         "height": 4,
         "top": -14,
         "art": 0,
-        "left": -20,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -20
       },
       {
         "metadata": {},
@@ -1169,11 +1169,11 @@
         "height": 1,
         "top": -22,
         "art": 16,
-        "left": 1,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 1
       },
       {
         "metadata": {},
@@ -1181,11 +1181,11 @@
         "height": 2,
         "top": -14,
         "art": 17,
-        "left": 12,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 12
       }
     ],
     [
@@ -1195,11 +1195,11 @@
         "height": 2,
         "top": -19,
         "art": 0,
-        "left": -10,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -10
       },
       {
         "metadata": {},
@@ -1207,11 +1207,11 @@
         "height": 3,
         "top": -3,
         "art": 6,
-        "left": -17,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -17
       }
     ],
     [
@@ -1221,11 +1221,11 @@
         "height": 2,
         "top": -19,
         "art": 0,
-        "left": -10,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -10
       },
       {
         "metadata": {},
@@ -1233,11 +1233,11 @@
         "height": 3,
         "top": -3,
         "art": 6,
-        "left": -18,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -18
       }
     ],
     [
@@ -1247,11 +1247,11 @@
         "height": 2,
         "top": -19,
         "art": 0,
-        "left": -10,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -10
       },
       {
         "metadata": {},
@@ -1259,11 +1259,11 @@
         "height": 3,
         "top": -3,
         "art": 6,
-        "left": -18,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -18
       }
     ],
     [
@@ -1273,11 +1273,11 @@
         "height": 2,
         "top": -19,
         "art": 0,
-        "left": -10,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -10
       },
       {
         "metadata": {},
@@ -1285,11 +1285,11 @@
         "height": 3,
         "top": -3,
         "art": 6,
-        "left": -18,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -18
       }
     ],
     [
@@ -1299,11 +1299,11 @@
         "height": 2,
         "top": -21,
         "art": 0,
-        "left": -18,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -18
       },
       {
         "metadata": {},
@@ -1311,11 +1311,11 @@
         "height": 3,
         "top": -5,
         "art": 8,
-        "left": -11,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -11
       }
     ],
     [
@@ -1325,11 +1325,11 @@
         "height": 2,
         "top": -21,
         "art": 0,
-        "left": -18,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -18
       },
       {
         "metadata": {},
@@ -1337,11 +1337,11 @@
         "height": 3,
         "top": -5,
         "art": 8,
-        "left": -11,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -11
       }
     ],
     [
@@ -1351,11 +1351,11 @@
         "height": 2,
         "top": -21,
         "art": 0,
-        "left": -18,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -18
       },
       {
         "metadata": {},
@@ -1363,11 +1363,11 @@
         "height": 3,
         "top": -5,
         "art": 8,
-        "left": -11,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -11
       }
     ],
     [
@@ -1377,11 +1377,11 @@
         "height": 2,
         "top": -21,
         "art": 0,
-        "left": -18,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -18
       },
       {
         "metadata": {},
@@ -1389,11 +1389,11 @@
         "height": 3,
         "top": -5,
         "art": 8,
-        "left": -11,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -11
       }
     ],
     [
@@ -1403,11 +1403,11 @@
         "height": 3,
         "top": -14,
         "art": 0,
-        "left": -19,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -19
       },
       {
         "metadata": {},
@@ -1415,11 +1415,11 @@
         "height": 4,
         "top": -14,
         "art": 6,
-        "left": -3,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -3
       }
     ],
     [
@@ -1429,11 +1429,11 @@
         "height": 3,
         "top": -14,
         "art": 0,
-        "left": -19,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -19
       },
       {
         "metadata": {},
@@ -1441,11 +1441,11 @@
         "height": 4,
         "top": -14,
         "art": 6,
-        "left": -3,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -3
       }
     ],
     [
@@ -1455,11 +1455,11 @@
         "height": 3,
         "top": -14,
         "art": 0,
-        "left": -19,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -19
       },
       {
         "metadata": {},
@@ -1467,11 +1467,11 @@
         "height": 4,
         "top": -14,
         "art": 6,
-        "left": -3,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -3
       }
     ],
     [
@@ -1481,11 +1481,11 @@
         "height": 3,
         "top": -14,
         "art": 0,
-        "left": -19,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -19
       },
       {
         "metadata": {},
@@ -1493,11 +1493,11 @@
         "height": 4,
         "top": -14,
         "art": 6,
-        "left": -3,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -3
       }
     ],
     [
@@ -1507,11 +1507,11 @@
         "height": 4,
         "top": -21,
         "art": 0,
-        "left": -5,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -5
       },
       {
         "metadata": {},
@@ -1519,11 +1519,11 @@
         "height": 4,
         "top": -14,
         "art": 12,
-        "left": -21,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -21
       }
     ],
     [
@@ -1533,11 +1533,11 @@
         "height": 4,
         "top": -22,
         "art": 0,
-        "left": -5,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -5
       },
       {
         "metadata": {},
@@ -1545,11 +1545,11 @@
         "height": 4,
         "top": -14,
         "art": 12,
-        "left": -21,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -21
       }
     ],
     [
@@ -1559,11 +1559,11 @@
         "height": 4,
         "top": -21,
         "art": 0,
-        "left": -5,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -5
       },
       {
         "metadata": {},
@@ -1571,11 +1571,11 @@
         "height": 4,
         "top": -14,
         "art": 12,
-        "left": -21,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -21
       }
     ],
     [
@@ -1585,11 +1585,11 @@
         "height": 4,
         "top": -22,
         "art": 0,
-        "left": -5,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -5
       },
       {
         "metadata": {},
@@ -1597,11 +1597,11 @@
         "height": 4,
         "top": -14,
         "art": 12,
-        "left": -21,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -21
       }
     ],
     [
@@ -1611,11 +1611,11 @@
         "height": 3,
         "top": -19,
         "art": 0,
-        "left": -8,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -8
       },
       {
         "metadata": {},
@@ -1623,11 +1623,11 @@
         "height": 2,
         "top": 5,
         "art": 9,
-        "left": -16,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -16
       }
     ],
     [
@@ -1637,11 +1637,11 @@
         "height": 3,
         "top": -23,
         "art": 0,
-        "left": -8,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -8
       },
       {
         "metadata": {},
@@ -1649,11 +1649,11 @@
         "height": 2,
         "top": 1,
         "art": 9,
-        "left": -18,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -18
       },
       {
         "metadata": {},
@@ -1661,11 +1661,11 @@
         "height": 1,
         "top": 1,
         "art": 15,
-        "left": 6,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 6
       }
     ],
     [
@@ -1675,11 +1675,11 @@
         "height": 4,
         "top": -19,
         "art": 0,
-        "left": -16,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -16
       },
       {
         "metadata": {},
@@ -1687,11 +1687,11 @@
         "height": 2,
         "top": -7,
         "art": 16,
-        "left": 16,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 16
       },
       {
         "metadata": {},
@@ -1699,11 +1699,11 @@
         "height": 1,
         "top": 13,
         "art": 18,
-        "left": -16,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -16
       }
     ],
     [
@@ -1713,11 +1713,11 @@
         "height": 4,
         "top": -15,
         "art": 0,
-        "left": -20,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -20
       }
     ],
     [
@@ -1727,11 +1727,11 @@
         "height": 3,
         "top": -23,
         "art": 0,
-        "left": -20,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -20
       },
       {
         "metadata": {},
@@ -1739,11 +1739,11 @@
         "height": 2,
         "top": 1,
         "art": 12,
-        "left": -12,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -12
       }
     ],
     [
@@ -1753,11 +1753,11 @@
         "height": 4,
         "top": -16,
         "art": 0,
-        "left": -16,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -16
       }
     ],
     [
@@ -1767,11 +1767,11 @@
         "height": 4,
         "top": -16,
         "art": 0,
-        "left": -16,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -16
       }
     ],
     [
@@ -1781,11 +1781,11 @@
         "height": 4,
         "top": -16,
         "art": 0,
-        "left": -16,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -16
       }
     ],
     [
@@ -1795,11 +1795,11 @@
         "height": 4,
         "top": -16,
         "art": 0,
-        "left": -16,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -16
       }
     ],
     [
@@ -1809,11 +1809,11 @@
         "height": 4,
         "top": -16,
         "art": 0,
-        "left": -16,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -16
       }
     ],
     [
@@ -1823,11 +1823,11 @@
         "height": 1,
         "top": -23,
         "art": 0,
-        "left": -8,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -8
       },
       {
         "metadata": {},
@@ -1835,11 +1835,11 @@
         "height": 2,
         "top": -15,
         "art": 2,
-        "left": -13,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -13
       },
       {
         "metadata": {},
@@ -1847,11 +1847,11 @@
         "height": 2,
         "top": 1,
         "art": 10,
-        "left": -8,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -8
       }
     ],
     [
@@ -1861,11 +1861,11 @@
         "height": 3,
         "top": -20,
         "art": 0,
-        "left": -14,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -14
       },
       {
         "metadata": {},
@@ -1873,11 +1873,11 @@
         "height": 2,
         "top": 4,
         "art": 9,
-        "left": -9,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -9
       }
     ],
     [
@@ -1887,11 +1887,11 @@
         "height": 3,
         "top": -23,
         "art": 0,
-        "left": -16,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -16
       },
       {
         "metadata": {},
@@ -1899,11 +1899,11 @@
         "height": 2,
         "top": 1,
         "art": 12,
-        "left": -6,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -6
       }
     ],
     [
@@ -1913,11 +1913,11 @@
         "height": 2,
         "top": -23,
         "art": 0,
-        "left": -9,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -9
       },
       {
         "metadata": {},
@@ -1925,11 +1925,11 @@
         "height": 3,
         "top": -7,
         "art": 6,
-        "left": -13,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -13
       }
     ],
     [
@@ -1939,11 +1939,11 @@
         "height": 1,
         "top": -23,
         "art": 0,
-        "left": -8,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -8
       },
       {
         "metadata": {},
@@ -1951,11 +1951,11 @@
         "height": 3,
         "top": -15,
         "art": 2,
-        "left": -16,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -16
       },
       {
         "metadata": {},
@@ -1963,11 +1963,11 @@
         "height": 1,
         "top": 9,
         "art": 14,
-        "left": -10,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -10
       }
     ],
     [
@@ -1977,11 +1977,11 @@
         "height": 2,
         "top": -23,
         "art": 0,
-        "left": -8,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -8
       },
       {
         "metadata": {},
@@ -1989,11 +1989,11 @@
         "height": 2,
         "top": -7,
         "art": 6,
-        "left": -8,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -8
       },
       {
         "metadata": {},
@@ -2001,11 +2001,11 @@
         "height": 1,
         "top": 9,
         "art": 14,
-        "left": -3,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -3
       }
     ],
     [
@@ -2015,11 +2015,11 @@
         "height": 4,
         "top": 0,
         "art": 0,
-        "left": 1,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 1
       },
       {
         "metadata": {},
@@ -2027,11 +2027,11 @@
         "height": 2,
         "top": 32,
         "art": 12,
-        "left": 7,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 7
       }
     ],
     [
@@ -2041,11 +2041,11 @@
         "height": 4,
         "top": 0,
         "art": 0,
-        "left": 0,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 0
       },
       {
         "metadata": {},
@@ -2053,11 +2053,11 @@
         "height": 2,
         "top": 32,
         "art": 12,
-        "left": 7,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 7
       }
     ],
     [
@@ -2067,11 +2067,11 @@
         "height": 3,
         "top": 0,
         "art": 0,
-        "left": 0,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 0
       },
       {
         "metadata": {},
@@ -2079,11 +2079,11 @@
         "height": 2,
         "top": 24,
         "art": 9,
-        "left": 10,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 10
       }
     ],
     [
@@ -2093,11 +2093,11 @@
         "height": 2,
         "top": 0,
         "art": 0,
-        "left": 0,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 0
       },
       {
         "metadata": {},
@@ -2105,11 +2105,11 @@
         "height": 2,
         "top": 16,
         "art": 6,
-        "left": 0,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 0
       }
     ],
     [
@@ -2119,11 +2119,11 @@
         "height": 4,
         "top": 0,
         "art": 0,
-        "left": 0,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 0
       },
       {
         "metadata": {},
@@ -2131,11 +2131,11 @@
         "height": 1,
         "top": 32,
         "art": 16,
-        "left": 16,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 16
       }
     ],
     [
@@ -2145,11 +2145,11 @@
         "height": 4,
         "top": -23,
         "art": 0,
-        "left": -20,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -20
       },
       {
         "metadata": {},
@@ -2157,11 +2157,11 @@
         "height": 1,
         "top": 9,
         "art": 16,
-        "left": -20,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -20
       },
       {
         "metadata": {},
@@ -2169,11 +2169,11 @@
         "height": 1,
         "top": 6,
         "art": 20,
-        "left": 12,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 12
       }
     ],
     [
@@ -2183,11 +2183,11 @@
         "height": 3,
         "top": -23,
         "art": 0,
-        "left": -13,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -13
       },
       {
         "metadata": {},
@@ -2195,11 +2195,11 @@
         "height": 2,
         "top": 1,
         "art": 9,
-        "left": -17,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -17
       }
     ],
     [
@@ -2209,11 +2209,11 @@
         "height": 4,
         "top": -23,
         "art": 0,
-        "left": -12,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -12
       },
       {
         "metadata": {},
@@ -2221,11 +2221,11 @@
         "height": 1,
         "top": 9,
         "art": 16,
-        "left": -7,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -7
       }
     ],
     [
@@ -2235,11 +2235,11 @@
         "height": 4,
         "top": -23,
         "art": 0,
-        "left": -12,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -12
       },
       {
         "metadata": {},
@@ -2247,11 +2247,11 @@
         "height": 1,
         "top": 9,
         "art": 12,
-        "left": -9,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -9
       }
     ],
     [
@@ -2261,11 +2261,11 @@
         "height": 4,
         "top": 0,
         "art": 0,
-        "left": 16,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 16
       },
       {
         "metadata": {},
@@ -2273,11 +2273,11 @@
         "height": 2,
         "top": 2,
         "art": 16,
-        "left": 8,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 8
       },
       {
         "metadata": {},
@@ -2285,11 +2285,11 @@
         "height": 2,
         "top": 18,
         "art": 18,
-        "left": 0,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 0
       }
     ],
     [
@@ -2299,11 +2299,11 @@
         "height": 4,
         "top": 0,
         "art": 0,
-        "left": 0,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 0
       }
     ],
     [
@@ -2313,11 +2313,11 @@
         "height": 3,
         "top": 0,
         "art": 0,
-        "left": 0,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 0
       },
       {
         "metadata": {},
@@ -2325,11 +2325,11 @@
         "height": 2,
         "top": 24,
         "art": 12,
-        "left": 0,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 0
       }
     ],
     [
@@ -2339,11 +2339,11 @@
         "height": 3,
         "top": 0,
         "art": 0,
-        "left": 8,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 8
       },
       {
         "metadata": {},
@@ -2351,11 +2351,11 @@
         "height": 2,
         "top": 8,
         "art": 12,
-        "left": 0,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 0
       }
     ],
     [
@@ -2365,11 +2365,11 @@
         "height": 4,
         "top": 0,
         "art": 0,
-        "left": 16,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 16
       },
       {
         "metadata": {},
@@ -2377,11 +2377,11 @@
         "height": 3,
         "top": 0,
         "art": 12,
-        "left": 0,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": 0
       }
     ],
     [
@@ -2391,11 +2391,11 @@
         "height": 4,
         "top": -11,
         "art": 0,
-        "left": -16,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -16
       }
     ],
     [
@@ -2405,11 +2405,11 @@
         "height": 4,
         "top": -11,
         "art": 0,
-        "left": -16,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -16
       }
     ],
     [
@@ -2419,11 +2419,11 @@
         "height": 4,
         "top": -11,
         "art": 0,
-        "left": -16,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -16
       }
     ],
     [
@@ -2433,11 +2433,11 @@
         "height": 4,
         "top": -11,
         "art": 0,
-        "left": -16,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -16
       }
     ],
     [
@@ -2447,11 +2447,11 @@
         "height": 4,
         "top": -11,
         "art": 0,
-        "left": -16,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -16
       }
     ],
     [
@@ -2461,11 +2461,11 @@
         "height": 4,
         "top": -11,
         "art": 0,
-        "left": -16,
-        "palette": 0,
         "priority": false,
+        "palette": 0,
         "vflip": false,
-        "hflip": false
+        "hflip": false,
+        "left": -16
       }
     ]
   ],
@@ -2476,7 +2476,8 @@
           "dmaSrc": 38660,
           "unknown": 0,
           "dmaDst": 54144,
-          "plcEnd": 65535
+          "plcEnd": 65535,
+          "artBase": 0
         },
         "size": 17,
         "art": 0
