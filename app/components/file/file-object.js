@@ -20,8 +20,6 @@ const compressionList = Object.keys(compressionFormats);
 
 const isASM = (path) => ['.asm', '.s'].includes(extname(path));
 
-
-
 export const FileObject = observer(({ obj, isAbsolute }) => {
     scripts.length; // react to script updates
     const script = obj.format && runScript(obj);
@@ -69,11 +67,8 @@ export const FileObject = observer(({ obj, isAbsolute }) => {
             n.textContent = '';
         });
         loadArt({ target: loadRef.current.childNodes[0] });
-        loadMappings({ target: loadRef.current.childNodes[1] });
-        if (obj.dplcs.enabled) {
-            loadDPLCs({ target: loadRef.current.childNodes[2] });
-        }
-        loadPalettes({ target: loadRef.current.childNodes[3] });
+        loadMappingsAndDPLCs({ target: loadRef.current.childNodes[1] });
+        loadPalettes({ target: loadRef.current.childNodes[2] });
     }
 
     function saveObject() {
@@ -81,11 +76,8 @@ export const FileObject = observer(({ obj, isAbsolute }) => {
             n.textContent = '';
         });
         saveArt({ target: loadRef.current.childNodes[0] });
-        saveMappings({ target: loadRef.current.childNodes[1] });
-        if (obj.dplcs.enabled) {
-            saveDPLCs({ target: loadRef.current.childNodes[2] });
-        }
-        savePalettes({ target: loadRef.current.childNodes[3] });
+        saveMappingsAndDPLCs({ target: loadRef.current.childNodes[1] });
+        savePalettes({ target: loadRef.current.childNodes[2] });
     }
 
     const [artError, setArtError] = useState();
@@ -117,86 +109,63 @@ export const FileObject = observer(({ obj, isAbsolute }) => {
 
     const [mappingError, setMappingError] = useState();
 
-    function loadMappings(e) {
+    function loadMappingsAndDPLCs(e) {
         ioWrap(obj.mappings.path, setMappingError, e, async (path) => {
             if (!obj.dplcs.enabled) environment.config.dplcsEnabled = false;
             const { buffer, symbols } = await getBuffer(path, mappingsASM);
 
-            const mappings = script.readMappings(buffer, symbols);
-            if (mappings.error) throw mappings.error;
-            if (script.postRead) {
-                script.postRead({ mappings: mappings.sprites });
+            let dplcBuffer;
+            if (obj.dplcs.enabled) {
+                environment.config.dplcsEnabled = true;
+                const dplcPath = workspace.fuzzyAbsolutePath(obj.dplcs.path);
+                ({ buffer: dplcBuffer } = await getBuffer(dplcPath, dplcsASM));
             }
-            environment.mappings.replace(mappings.sprites);
-            environment.spriteMetadata.replace(mappings.spriteMetadata || []);
-            if (
-                obj.dplcs.enabled &&
-                environment.dplcs.length < mappings.sprites.length
-            ) {
-                environment.dplcs.push(
-                    ...Array.from(
-                        {
-                            length:
-                                mappings.sprites.length -
-                                environment.dplcs.length,
-                        },
-                        () => [],
-                    ),
-                );
+
+            const result = script.readMappings(buffer, symbols, dplcBuffer);
+            if (result.error) throw result.error;
+
+            environment.mappings.replace(result.mappings.sprites);
+            environment.spriteMetadata.replace(result.mappings.spriteMetadata || []);
+
+            if (result.dplcs) {
+                environment.dplcs.replace(result.dplcs.sprites);
             }
         });
     }
 
-    function saveMappings(e) {
+    function saveMappingsAndDPLCs(e) {
         ioWrap(obj.mappings.path, setMappingError, e, async (path) => {
-            const mappings = script.writeMappings(environment.mappings, environment.spriteMetadata, environment);
-            if (mappings.error) throw mappings.error;
+            const dplcsData = obj.dplcs.enabled ? environment.dplcs : null;
+            const result = script.writeMappings(environment.mappings, dplcsData, environment.spriteMetadata, environment);
+            if (result.error) throw result.error;
+
             if (!mappingsASM) {
-                await fs.writeFile(path, writeBIN(mappings));
+                await fs.writeFile(path, writeBIN(result.mappings));
             } else {
                 const label = obj.mappings.label || 'Map_' + uuid().slice(0, 4);
                 const asmOutput = script.generateMappingsASM({
                     label,
-                    listing: mappings,
+                    listing: result.mappings,
                     sprites: environment.sprites,
                 });
 
                 await fs.writeFile(path, asmOutput);
             }
-        });
-    }
 
-    const [dplcError, setDPLCError] = useState();
+            if (result.dplcs) {
+                const dplcPath = workspace.fuzzyAbsolutePath(obj.dplcs.path);
+                if (!dplcsASM) {
+                    await fs.writeFile(dplcPath, writeBIN(result.dplcs));
+                } else {
+                    const label = obj.dplcs.label || 'DPLC_' + uuid().slice(0, 4);
+                    const asmOutput = script.generateDPLCsASM({
+                        label,
+                        listing: result.dplcs,
+                        sprites: environment.sprites,
+                    });
 
-    function loadDPLCs(e) {
-        ioWrap(obj.dplcs.path, setDPLCError, e, async (path) => {
-            environment.config.dplcsEnabled = true;
-            const { buffer } = await getBuffer(path, dplcsASM);
-
-            const dplcs = script.readDPLCs(buffer);
-            if (dplcs.error) throw dplcs.error;
-            if (script.postRead) {
-                script.postRead({ dplcs: dplcs.sprites });
-            }
-            environment.dplcs.replace(dplcs.sprites);
-        });
-    }
-
-    function saveDPLCs(e) {
-        ioWrap(obj.dplcs.path, setDPLCError, e, async (path) => {
-            const dplcs = script.writeDPLCs(environment.dplcs, environment.spriteMetadata, environment);
-            if (dplcs.error) throw dplcs.error;
-            if (!dplcsASM) {
-                await fs.writeFile(path, writeBIN(dplcs));
-            } else {
-                const label = obj.dplcs.label || 'DPLC_' + uuid().slice(0, 4);
-                const asmOutput = script.generateDPLCsASM({
-                    label,
-                    listing: dplcs,
-                    sprites: environment.sprites,
-                });
-
-                await fs.writeFile(path, asmOutput);
+                    await fs.writeFile(dplcPath, asmOutput);
+                }
             }
         });
     }
@@ -260,7 +229,7 @@ export const FileObject = observer(({ obj, isAbsolute }) => {
                 <Item color="blue">Object</Item>
                 <div className="load-ref">
                     <div ref={loadRef}>
-                        {Array.from({ length: 4 }, (_, i) => (
+                        {Array.from({ length: 3 }, (_, i) => (
                             <span key={i} />
                         ))}
                     </div>
@@ -293,7 +262,7 @@ export const FileObject = observer(({ obj, isAbsolute }) => {
 
             <div className="menu-item">
                 <Item color="yellow">Mappings</Item>
-                <SaveLoad load={loadMappings} save={saveMappings} />
+                <SaveLoad load={loadMappingsAndDPLCs} save={saveMappingsAndDPLCs} />
             </div>
             <ErrorMsg error={mappingError} />
             <FileInput
@@ -347,11 +316,6 @@ export const FileObject = observer(({ obj, isAbsolute }) => {
                     </div>
                     {obj.dplcs.enabled && (
                         <>
-                            <div className="menu-item">
-                                <Item color="red">PLCs</Item>
-                                <SaveLoad load={loadDPLCs} save={saveDPLCs} />
-                            </div>
-                            <ErrorMsg error={dplcError} />
                             <FileInput
                                 label="Mappings"
                                 store={obj.dplcs}

@@ -213,8 +213,8 @@ export default catchFunc((obj) => {
         return {sprites, spriteMetadata};
     });
 
-    const readMappings = createReader(mappingArgs[0]);
-    const readDPLCs = createReader(dplcArgs[0]);
+    const readMappingsRaw = createReader(mappingArgs[0]);
+    const readDPLCsRaw = createReader(dplcArgs[0]);
 
     const unsign = (size, num) => {
         if (num < 0) {
@@ -276,23 +276,51 @@ export default catchFunc((obj) => {
         return {sections};
     });
 
-    const writeMappings = createWriter(mappingArgs[0]);
-    const writeDPLCs = createWriter(dplcArgs[0]);
+    const writeMappingsRaw = createWriter(mappingArgs[0]);
+    const writeDPLCsRaw = createWriter(dplcArgs[0]);
+
+    function readMappings(buffer, symbols, dplcBuffer) {
+        const mappings = readMappingsRaw(buffer, symbols);
+        if (mappings.error) return mappings;
+
+        let dplcs;
+        if (dplcBuffer) {
+            dplcs = readDPLCsRaw(dplcBuffer);
+            if (dplcs.error) return dplcs;
+        }
+
+        if (postReadFunc) {
+            postReadFunc({
+                mappings: mappings.sprites,
+                dplcs: dplcs?.sprites,
+            });
+        }
+
+        return { mappings, dplcs };
+    }
+
+    function writeMappings(mappingsData, dplcsData, spriteMetadata, environment) {
+        const mappings = writeMappingsRaw(mappingsData, spriteMetadata, environment);
+        if (mappings.error) return mappings;
+
+        let dplcs;
+        if (dplcsData) {
+            dplcs = writeDPLCsRaw(dplcsData, spriteMetadata, environment);
+            if (dplcs.error) return dplcs;
+        }
+
+        return { mappings, dplcs };
+    }
 
     const exports = {
         mappings: true,
         readMappings,
         writeMappings,
-        postRead: postReadFunc,
         config: configOptions,
     };
 
     if (dplcArgs[0]) {
-        Object.assign(exports, {
-            DPLCs: true,
-            readDPLCs,
-            writeDPLCs,
-        });
+        exports.DPLCs = true;
     }
 
     // ASM

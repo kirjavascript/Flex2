@@ -9,6 +9,8 @@
 /* http://info.sonicretro.org/Disassemblies */
 
 NEXT
+    check ASM output of mappings + DPLCS
+    combine raw + metadata
 
 mapping metadata feature
     UI needs improving
