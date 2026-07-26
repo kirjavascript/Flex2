@@ -14,7 +14,7 @@ export function sanitizeLabel(name) {
     return s || undefined;
 }
 
-export function writeASM(baseLabel, { sections }, sprites) {
+export function writeASM(baseLabel, { sections }, sprites, nameKey = 'name') {
     const getLabel = addr => `${baseLabel}_${addr.toString(16).toUpperCase()}`;
     let cursor = 0;
     const labels = [];
@@ -23,7 +23,7 @@ export function writeASM(baseLabel, { sections }, sprites) {
         section.forEach((frames, i) => {
             const meta = sprites && sprites[i] && sprites[i].metadata;
             const addr = cursor / 8;
-            const lbl = sanitizeLabel(meta && meta.name) || getLabel(addr);
+            const lbl = sanitizeLabel(meta && meta[nameKey]) || getLabel(addr);
             addrLabels.set(addr, lbl);
             labels.push([ lbl, frames ]);
 

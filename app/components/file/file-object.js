@@ -114,14 +114,14 @@ export const FileObject = observer(({ obj, isAbsolute }) => {
             if (!obj.dplcs.enabled) environment.config.dplcsEnabled = false;
             const { buffer, symbols } = await getBuffer(path, mappingsASM);
 
-            let dplcBuffer;
+            let dplcBuffer, dplcSymbols;
             if (obj.dplcs.enabled) {
                 environment.config.dplcsEnabled = true;
                 const dplcPath = workspace.fuzzyAbsolutePath(obj.dplcs.path);
-                ({ buffer: dplcBuffer } = await getBuffer(dplcPath, dplcsASM));
+                ({ buffer: dplcBuffer, symbols: dplcSymbols } = await getBuffer(dplcPath, dplcsASM));
             }
 
-            const result = script.readMappings(buffer, symbols, dplcBuffer);
+            const result = script.readMappings(buffer, symbols, dplcBuffer, dplcSymbols);
             if (result.error) throw result.error;
 
             environment.mappings.replace(result.mappings.sprites);

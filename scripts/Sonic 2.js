@@ -151,13 +151,13 @@ SonicDplcVer := 2
 
         list.push(`${label}: mappingsTable`);
         sprites.forEach((sprite, i) => {
-            const name = sanitizeLabel(sprite.metadata && sprite.metadata.name) || `${label}_${i}`;
+            const name = sanitizeLabel(sprite.metadata && sprite.metadata.plcName) || `${label}_${i}`;
 	        list.push(`\tmappingsTableEntry.w\t${name}`);
         });
         list.push('');
 
         sprites.forEach((sprite, i) => {
-            const name = sanitizeLabel(sprite.metadata && sprite.metadata.name) || `${label}_${i}`;
+            const name = sanitizeLabel(sprite.metadata && sprite.metadata.plcName) || `${label}_${i}`;
             list.push(`${name}:\tdplcHeader`);
 
             sprite.dplcs.forEach(dplc => {

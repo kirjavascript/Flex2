@@ -279,14 +279,22 @@ export default catchFunc((obj) => {
     const writeMappingsRaw = createWriter(mappingArgs[0]);
     const writeDPLCsRaw = createWriter(dplcArgs[0]);
 
-    function readMappings(buffer, symbols, dplcBuffer) {
+    function readMappings(buffer, symbols, dplcBuffer, dplcSymbols) {
         const mappings = readMappingsRaw(buffer, symbols);
         if (mappings.error) return mappings;
 
         let dplcs;
         if (dplcBuffer) {
-            dplcs = readDPLCsRaw(dplcBuffer);
+            dplcs = readDPLCsRaw(dplcBuffer, dplcSymbols);
             if (dplcs.error) return dplcs;
+
+            for (let i = 0; i < dplcs.spriteMetadata.length; i++) {
+                const plcName = dplcs.spriteMetadata[i]?.name;
+                if (plcName) {
+                    if (!mappings.spriteMetadata[i]) mappings.spriteMetadata[i] = {};
+                    mappings.spriteMetadata[i].plcName = plcName;
+                }
+            }
         }
 
         if (postReadFunc) {
@@ -401,7 +409,7 @@ even macro
         listing,
     }) {
         if (!asm.writeDPLCs) {
-            return writeASM(label, listing, sprites);
+            return writeASM(label, listing, sprites, 'plcName');
         }
 
         return asm.writeDPLCs({

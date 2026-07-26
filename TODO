@@ -9,11 +9,14 @@
 /* http://info.sonicretro.org/Disassemblies */
 
 NEXT
-    check ASM output of mappings + DPLCS
     combine raw + metadata
+    finish crackers
+    mapping metadata feature
+        UI needs improving
+        fix dplc label
 
-mapping metadata feature
-    UI needs improving
+---
+    persist comments?
 
     dropdown script option for s3k
     s3k mapmacros
