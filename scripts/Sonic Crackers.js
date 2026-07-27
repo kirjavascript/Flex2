@@ -20,12 +20,11 @@ mappings([
                 mapping.width = read(2) + 1;
                 mapping.height = read(2) + 1;
                 mapping.top = read(dc.b, signed);
-                const tile = read(dc.w);
-                mapping.art = tile & 0x7FF;
-                mapping.priority = (tile >> 15) & 1;
-                mapping.palette = (tile >> 13) & 3;
-                mapping.vflip = (tile >> 12) & 1;
-                mapping.hflip = (tile >> 11) & 1;
+                mapping.priority = read(1);
+                mapping.palette = read(2);
+                mapping.vflip = read(1);
+                mapping.hflip = read(1);
+                mapping.art = read(11);
                 mapping.left = read(dc.b, signed);
                 if (read(dc.b) === 0xFF) return endFrame;
             });
@@ -34,16 +33,15 @@ mappings([
             const dplcPieces = environment?.dplcs?.[spriteIndex] || [];
             const regions = buildVramRegions(dplcPieces);
             return ({ mapping, sprite }, frameIndex) => {
-                const tile = unrebaseArt(mapping.art, regions)
-                    | (mapping.priority << 15)
-                    | (mapping.palette << 13)
-                    | (mapping.vflip << 12)
-                    | (mapping.hflip << 11);
                 write(nybble, 0);
                 write(2, mapping.width - 1);
                 write(2, mapping.height - 1);
                 write(dc.b, mapping.top);
-                write(dc.w, tile);
+                write(1, mapping.priority);
+                write(2, mapping.palette);
+                write(1, mapping.vflip);
+                write(1, mapping.hflip);
+                write(11, unrebaseArt(mapping.art, regions));
                 write(dc.b, mapping.left);
                 write(dc.b, sprite.length - 1 === frameIndex ? 0xFF : 0);
             };
