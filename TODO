@@ -14,6 +14,8 @@ NEXT
         UI needs improving
 
     cleanup
+
+    thanks selbi
             if (!dplcs[0][0].metadata) dplcs[0][0].metadata = {};
             dplcs[0][0].metadata.artBase = minArt;
 

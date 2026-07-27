@@ -15,6 +15,7 @@ export const Item = observer(class Item extends Component {
                 } : {
                     color: SVARS[color],
                     padding: 0,
+                    ...(!color && { fontFamily: 'Hack Regular' }),
                 }
             }
             {...otherProps}
