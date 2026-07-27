@@ -13,6 +13,7 @@
 - Added command to unload everything
 - Split raw editor into a new window
 - Added sprite metadata system
+- Headers pointing to null bytes correctly produce an empty sprite (e.g. S1 Invincibility Stars)
 - Removed uuids from project files
 
 ## [1.3.1]
