@@ -13,8 +13,6 @@ NEXT
     mapping metadata feature
         UI needs improving
 
-    "Recent projects"
-
     cleanup
             if (!dplcs[0][0].metadata) dplcs[0][0].metadata = {};
             dplcs[0][0].metadata.artBase = minArt;

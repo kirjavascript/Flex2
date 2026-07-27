@@ -29,7 +29,7 @@ input {
     background-color: $black;
     border: 1px solid $white2;
     color: $white;
-    font-family: Hack Bold;
+    font-family: 'Hack Bold';
     padding: 2px 5px;
     width: 159px;
     &:placeholder {
@@ -61,7 +61,7 @@ input {
 }
 
 .item {
-    font-family: Hack Bold;
+    font-family: 'Hack Bold';
     padding: 2px 5px;
     margin: 2px 0;
     display: flex;
@@ -72,7 +72,7 @@ input {
     &.large {
         width: 159px;
     }
-    font-family: Hack Bold;
+    font-family: 'Hack Bold';
     padding: 2px 5px;
     margin: 2px 0;
     border: 0;
@@ -123,7 +123,7 @@ input {
     .clear {
         cursor: pointer;
         color: $white;
-        font-family: Hack Bold;
+        font-family: 'Hack Bold';
     }
     .dragging {
         background-color: $grey;
