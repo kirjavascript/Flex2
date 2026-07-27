@@ -30,14 +30,14 @@ export function makeOffsetTable({ read, write }) {
             }
             ref.global.cleanup.push(({ sprites, spritesAddr, buffer }) => {
                 headers.forEach(header => {
-                    if (header === 0 || buffer[header] === 0) {
+                    if (header === 0) {
+                        sprites.push([]);
+                    } else if (spritesAddr[header]) {
+                        sprites.push(spritesAddr[header]);
+                    } else if (buffer[header] === 0) {
                         sprites.push([]);
                     } else {
-                        if (spritesAddr[header]) {
-                            sprites.push(spritesAddr[header]);
-                        } else {
-                            logger('error', 'no sprite at ' + header);
-                        }
+                        logger('error', 'no sprite at ' + header);
                     }
                 });
             });

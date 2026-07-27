@@ -14,10 +14,14 @@ class Workspace {
 
     projectPath = '';
     project;
+    recentProjects = [];
 
     openProject = () => {
         this.closeProject();
         this.project = new Project(this.projectPath);
+        const recent = Array.from(this.recentProjects || []).filter(p => p !== this.projectPath);
+        recent.unshift(this.projectPath);
+        this.recentProjects.replace(recent.slice(0, 10));
     };
     closeProject = () => {
         if (this.project) {
@@ -64,6 +68,7 @@ class Workspace {
             file: observable,
             projectPath: observable,
             project: observable,
+            recentProjects: observable,
             openProject: action,
             closeProject: action,
             relativePath: action,
@@ -76,7 +81,8 @@ class Workspace {
 }
 
 const workspace = new Workspace();
-storage(workspace, 'workspace', ['projectPath']);
+storage(workspace, 'workspace', ['projectPath', 'recentProjects']);
+if (!workspace.recentProjects) workspace.recentProjects = [];
 if (workspace.projectPath) {
     workspace.openProject();
 }

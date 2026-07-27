@@ -50,6 +50,24 @@ const Project = observer(() => {
                     ext="flex.json"
                     absolute
                 />
+                {workspace.recentProjects.length > 0 && (
+                    <div className="recent-projects">
+                        <Item>Recent Projects</Item>
+                        {workspace.recentProjects.map((p) => (
+                            <div
+                                key={p}
+                                className="recent-entry"
+                                onClick={() => {
+                                    workspace.projectPath = p;
+                                    requestAnimationFrame(workspace.openProject);
+                                }}
+                            >
+                                {basename(p)}
+                                <span className="recent-path">{p}</span>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
         );
     }
