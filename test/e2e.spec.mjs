@@ -179,7 +179,11 @@ async function getErrors(page) {
 
 async function expectSnapshots(page, name) {
     const snap = await snapshotEnv(page);
-    expect(JSON.stringify(snap, null, 2)).toMatchSnapshot({ name: `${name}.json` });
+    const sortKeys = (_, v) =>
+        v && typeof v === 'object' && !Array.isArray(v)
+            ? Object.keys(v).sort().reduce((o, k) => { o[k] = v[k]; return o; }, {})
+            : v;
+    expect(JSON.stringify(snap, sortKeys, 2)).toMatchSnapshot({ name: `${name}.json` });
     const png = await renderSpritesheet(page);
     if (png) {
         expect(png).toMatchSnapshot({ name: `${name}.png` });

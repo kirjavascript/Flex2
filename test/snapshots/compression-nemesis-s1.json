@@ -1,7 +1,6 @@
 {
-  "mappings": [],
   "dplcs": [],
-  "tileCount": 14,
+  "mappings": [],
   "palettes": [
     [
       "#8aa",
@@ -75,5 +74,6 @@
       "#c60",
       "#ec0"
     ]
-  ]
+  ],
+  "tileCount": 14
 }
