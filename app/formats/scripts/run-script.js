@@ -194,7 +194,7 @@ export default catchFunc((obj) => {
         });
         logger('spritesAddr', spritesAddr);
 
-        global.cleanup.forEach(task => task({ sprites, spritesAddr }));
+        global.cleanup.forEach(task => task({ sprites, spritesAddr, buffer }));
 
         if (symbols) {
             const addrToSprite = new Map();

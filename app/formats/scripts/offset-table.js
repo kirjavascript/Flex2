@@ -28,9 +28,9 @@ export function makeOffsetTable({ read, write }) {
                     sprites.splice(0, sprites.length);
                 });
             }
-            ref.global.cleanup.push(({ sprites, spritesAddr }) => {
+            ref.global.cleanup.push(({ sprites, spritesAddr, buffer }) => {
                 headers.forEach(header => {
-                    if (header === 0) {
+                    if (header === 0 || buffer[header] === 0) {
                         sprites.push([]);
                     } else {
                         if (spritesAddr[header]) {
