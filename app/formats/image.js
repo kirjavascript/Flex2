@@ -4,6 +4,7 @@ import { readFile, writeFile } from 'fs';
 import { errorMsg } from '~/util/dialog';
 import { colorMatch } from '~/components/import/color-match';
 import { removeBackground } from '~/components/import/remove-background';
+import { mappingState } from '~/components/mappings/state';
 
 export function exportSprite({ buffer, mappings }) {
 
@@ -211,10 +212,9 @@ export async function importImg() {
     const ctx = canvas.getContext('2d');
     ctx.drawImage(img, 0, 0);
 
-    // remove background if not transparent
-    // request to add this: https://github.com/kirjavascript/Flex2/issues/39
-    // request to remove it: https://github.com/kirjavascript/Flex2/issues/62
-    // ctx.putImageData(removeBackground(ctx.getImageData(0, 0, img.width, img.height)), 0, 0);
+    if (mappingState.topLeftAlphaPixel) {
+        ctx.putImageData(removeBackground(ctx.getImageData(0, 0, img.width, img.height)), 0, 0);
+    }
 
     // convert to tiles
 

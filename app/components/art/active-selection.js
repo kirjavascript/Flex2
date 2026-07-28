@@ -9,7 +9,7 @@ export const ActiveSelection = observer(class ActiveSelection extends Component 
     id = id();
 
     render() {
-        const { totalHeight } = this.props;
+        const { totalHeight, ...props } = this.props;
         return <svg
             width="100%"
             height={totalHeight + 10}
@@ -18,7 +18,7 @@ export const ActiveSelection = observer(class ActiveSelection extends Component 
             <defs>
                 <SelectionLayer
                     id={this.id}
-                    {...this.props}
+                    {...props}
                 />
             </defs>
             <mask id={`${this.id}-mask`}>
@@ -27,7 +27,7 @@ export const ActiveSelection = observer(class ActiveSelection extends Component 
             </mask>
             <SelectionLayer
                 mask={`url(#${this.id}-mask)`}
-                {...this.props}
+                {...props}
                 offset={1}
                 color={magenta}
             />

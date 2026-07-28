@@ -86,6 +86,8 @@ class MappingState {
             toggleNewMapping: action,
             autodismiss: observable,
             toggleAutodismiss: action,
+            topLeftAlphaPixel: observable,
+            toggleTopLeftAlphaPixel: action,
             placeNewMapping: action,
             activeMappings: computed,
             hasActive: computed,
@@ -219,6 +221,12 @@ class MappingState {
         this.autodismiss = !this.autodismiss
     };
 
+    topLeftAlphaPixel = true;
+
+    toggleTopLeftAlphaPixel = () => {
+        this.topLeftAlphaPixel = !this.topLeftAlphaPixel;
+    };
+
     placeNewMapping = placeNewMapping;
 
     // active mappings
@@ -257,5 +265,5 @@ class MappingState {
 }
 
 const mappingState = new MappingState();
-storage(mappingState, 'mapping-state', ['autodismiss']);
+storage(mappingState, 'mapping-state', ['autodismiss', 'topLeftAlphaPixel']);
 export { mappingState };
