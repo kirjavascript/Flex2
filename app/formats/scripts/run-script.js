@@ -301,6 +301,7 @@ export default catchFunc((obj) => {
             postReadFunc({
                 mappings: mappings.sprites,
                 dplcs: dplcs?.sprites,
+                spriteMetadata: mappings.spriteMetadata,
             });
         }
 

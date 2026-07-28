@@ -68,7 +68,7 @@ dplcs([
             });
         },
         ({ environment }) => {
-            const artBase = environment?.dplcs?.[0]?.[0]?.metadata?.artBase || 0;
+            const artBase = environment?.spriteMetadata?.[0]?.artBase || 0;
             return ({ mapping }) => {
                 write(dc.w, swapBytes(mapping.size * 0x10));
                 write(dc.w, mapping.metadata.dmaSrc || 0);
@@ -111,7 +111,7 @@ function unrebaseArt(art, regions) {
     return art;
 }
 
-postRead(({ mappings, dplcs }) => {
+postRead(({ mappings, dplcs, spriteMetadata }) => {
     if (mappings && dplcs) {
         mappings.forEach((sprite, i) => {
             const regions = buildVramRegions(dplcs[i] || []);
@@ -123,8 +123,10 @@ postRead(({ mappings, dplcs }) => {
             if (minArt > 0) {
                 allPieces.forEach(p => { p.art -= minArt; });
             }
-            if (!dplcs[0][0].metadata) dplcs[0][0].metadata = {};
-            dplcs[0][0].metadata.artBase = minArt;
+            if (spriteMetadata) {
+                if (!spriteMetadata[0]) spriteMetadata[0] = {};
+                spriteMetadata[0].artBase = minArt;
+            }
         }
     }
 });

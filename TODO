@@ -13,11 +13,10 @@ NEXT
     mapping metadata feature
         UI needs improving
 
-    cleanup
+    fix the selection UI bug
+        check size of container when on/off the bug
 
     thanks selbi
-            if (!dplcs[0][0].metadata) dplcs[0][0].metadata = {};
-            dplcs[0][0].metadata.artBase = minArt;
 
 ---
     persist comments?
