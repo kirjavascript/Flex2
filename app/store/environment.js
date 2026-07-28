@@ -99,7 +99,7 @@ class Environment {
     }
 
     get activeTiles() {
-        const { config: { dplcsEnabled }, currentSprite: { mappings, dplcs } } = environment;
+        const { config: { dplcsEnabled }, currentSprite: { mappings, dplcs } } = this;
         let activeTiles = [];
 
         const objs = (dplcsEnabled && dplcs ? dplcs : mappings);

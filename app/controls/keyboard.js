@@ -18,6 +18,7 @@ flatten(commands)
 let multiplier = '';
 Mousetrap.bind([...'0123456789'], (e) => {
     if (e.repeat) return;
+    if (e.key === '0' && !multiplier) return;
     if (multiplier.length < 3) multiplier += String(e.key);
 });
 Mousetrap.bind('esc', () => {

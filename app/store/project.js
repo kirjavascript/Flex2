@@ -63,8 +63,6 @@ export class Project {
                         objects: this.objects,
                     }, null, 4);
 
-                    if (!this.objects.length) return;
-
                     clearTimeout(timer);
                     timer = setTimeout(() => {
                         if (!writing) save();

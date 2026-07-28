@@ -35,11 +35,8 @@ export function draw(node) {
                 const tileOffset = (mapX * height) + mapY;
                 const bufferOffset = art + tileOffset;
 
-                if (bufferOffset < buffer.length) {
-                    buffer[bufferOffset][tileX + (tileY*8)] = {
-                        [LEFT]: drawIndexLeft,
-                        [RIGHT]: drawIndexRight,
-                    }[buttons];
+                if (bufferOffset < buffer.length && (buttons === LEFT || buttons === RIGHT)) {
+                    buffer[bufferOffset][tileX + (tileY*8)] = buttons === LEFT ? drawIndexLeft : drawIndexRight;
                 }
             }
         });

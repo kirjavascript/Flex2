@@ -218,7 +218,7 @@ export async function importImg() {
 
     // convert to tiles
 
-    mappings.forEach(async ({ top, left, palette, vflip, hflip, width, height, art }) => {
+    for (const { top, left, palette, vflip, hflip, width, height, art } of mappings) {
         const x = left - minX;
         const y = top - minY;
         const shiftedPalette = (palette + environment.config.artPaletteLine) % 4;
@@ -242,8 +242,7 @@ export async function importImg() {
                 buffer[bufferOffset].replace(getPixels(tileBuffer, paletteLine));
             }
         }
-
-    });
+    }
 
     canvas.remove();
 }
@@ -288,6 +287,7 @@ function getPixels(tileBuffer, paletteLine) {
             pixels.push(0);
         }
         else {
+            let matched = false;
             for (let p = 1; p < paletteLine.length; p++) {
                 let [R, G, B] = paletteLine[p];
                 if (
@@ -296,9 +296,11 @@ function getPixels(tileBuffer, paletteLine) {
                     B == tileBuffer.data[j+2]
                 ) {
                     pixels.push(p);
+                    matched = true;
                     break;
                 }
             }
+            if (!matched) pixels.push(0);
         }
     }
     return pixels;
