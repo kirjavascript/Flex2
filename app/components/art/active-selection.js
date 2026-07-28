@@ -9,9 +9,10 @@ export const ActiveSelection = observer(class ActiveSelection extends Component 
     id = id();
 
     render() {
+        const { totalHeight } = this.props;
         return <svg
             width="100%"
-            height="100%"
+            height={totalHeight + 10}
             className="active-selection"
         >
             <defs>

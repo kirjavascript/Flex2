@@ -52,7 +52,7 @@ const Project = observer(() => {
                 />
                 {workspace.recentProjects.length > 0 && (
                     <div className="recent-projects">
-                        <Item>Recent Projects</Item>
+                        <Item style={{ paddingBottom: '8px' }}><b>Recent Projects</b></Item>
                         {workspace.recentProjects.map((p) => (
                             <div
                                 key={p}

@@ -5,7 +5,7 @@
 - Added Moduled KosinskiPlus compression
 - Added ComperX compression
 - Added Moduled ComperX compression
-- Added 'Recent Projects' menu
+- Added Recent Projects menu
 - Fix Sonic 1 MapMacros DPLC bug
 - Support loading/editing sprite labels for ASM mappings
 - Headers pointing to null bytes correctly produce an empty sprite (e.g. S1 Invincibility Stars)
@@ -16,6 +16,7 @@
 - Split raw editor into a new window
 - Added sprite metadata system
 - Removed uuids from project files
+- Fixed a bug where active tile selection wouldn't show
 
 ## [1.3.1]
 - Readd support for @label syntax

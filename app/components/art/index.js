@@ -60,12 +60,13 @@ export const Art = observer(class Art extends DimensionsComponent {
             </div>
             <div ref={this.onContainerRef} className="tile-container">
                 <div className="tile-list" style={{height: totalHeight}}>
-                    <ActiveSelection
+                    {tiles.length > 0 && <ActiveSelection
                         remainder={remainder}
                         itemsPerRow={itemsPerRow}
                         baseIndex={baseIndex}
                         itemQty={itemQty}
-                    />
+                        totalHeight={totalHeight}
+                    />}
                     {tiles.map((tile, index) => {
 
                         const x = remainder + (index % itemsPerRow) * baseSize;
