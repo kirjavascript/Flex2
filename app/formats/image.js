@@ -1,9 +1,9 @@
-import { environment } from '#store/environment';
+import { environment } from '~/store/environment';
 const { dialog } = require('@electron/remote');
 import { readFile, writeFile } from 'fs';
-import { errorMsg } from '#util/dialog';
-import { colorMatch } from '#components/import/color-match';
-import { removeBackground } from '#components/import/remove-background';
+import { errorMsg } from '~/util/dialog';
+import { colorMatch } from '~/components/import/color-match';
+import { removeBackground } from '~/components/import/remove-background';
 
 export function exportSprite({ buffer, mappings }) {
 

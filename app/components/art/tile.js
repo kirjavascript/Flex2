@@ -1,5 +1,5 @@
 import React from 'react';
-import { environment } from '#store/environment';
+import { environment } from '~/store/environment';
 import { observer } from 'mobx-react';
 
 export const Tile = observer(

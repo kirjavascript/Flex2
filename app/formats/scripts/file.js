@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { join, dirname, parse } from 'path';
-import { errorMsg } from '#util/dialog';
+import { errorMsg } from '~/util/dialog';
 import { uniq, debounce } from 'lodash';
 import { observable } from 'mobx';
 

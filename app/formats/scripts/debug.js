@@ -3,9 +3,9 @@ import { observable, action, toJS, computed, autorun, makeObservable } from 'mob
 import { observer } from 'mobx-react';
 import { render } from 'react-dom';
 import util from 'util';
-import { Button } from '#ui';
-import { environment } from '#store/environment';
-import { storage } from '#store/storage';
+import { Button } from '~/ui';
+import { environment } from '~/store/environment';
+import { storage } from '~/store/storage';
 
 const inspect = (obj) => util.inspect(toJS(obj));
 

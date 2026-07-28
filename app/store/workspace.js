@@ -2,8 +2,8 @@ import { observable, toJS, action, makeObservable } from 'mobx';
 import { storage } from './storage';
 import { Project } from './project';
 import { ObjectDef, editPaths } from  './objectdef';
-import { selectTab } from '#components/layout/model';
-import { selection } from '#store/selection';
+import { selectTab } from '~/components/layout/model';
+import { selection } from '~/store/selection';
 import path from 'path';
 
 const fileState = new ObjectDef();

@@ -3,7 +3,7 @@
 import { LEFT, RIGHT } from './buttons';
 import { select, event, mouse } from 'd3-selection';
 import { mappingState } from './state';
-import { environment } from '#store/environment';
+import { environment } from '~/store/environment';
 
 export function draw(node) {
     const { sourceEvent: { buttons } } = event;

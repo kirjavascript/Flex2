@@ -2,8 +2,8 @@ import React from 'react';
 import { render } from 'react-dom';
 import { observer } from 'mobx-react';
 import { importState } from './state';
-import { Item, Select, Input } from '#ui';
-import { fuzzyAssert, zoomAssert } from '#util/assertions';
+import { Item, Select, Input } from '~/ui';
+import { fuzzyAssert, zoomAssert } from '~/util/assertions';
 
 export const DetectSprites = observer(class DetectSprites extends React.Component {
 

@@ -2,9 +2,9 @@
 import React, { Component } from 'react';
 import Masonry from 'react-masonry-component';
 import { observer } from 'mobx-react';
-import { commands, getCommandLabel } from '#controls/commands';
+import { commands, getCommandLabel } from '~/controls/commands';
 import { mappingState } from './state';
-import { Item } from '#ui';
+import { Item } from '~/ui';
 
 export const Commands = observer(class Commands extends Component {
 

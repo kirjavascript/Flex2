@@ -1,7 +1,7 @@
 import packageJson from '../../../package.json';
 import React, { Component } from 'react';
 import { A } from './a.js';
-import { semver } from '#util/semver';
+import { semver } from '~/util/semver';
 
 const { previewVersion } = packageJson;
 

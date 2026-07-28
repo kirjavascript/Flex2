@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Item } from '#ui';
+import { Item } from '~/ui';
 
 const MAX_LINES = 8;
 

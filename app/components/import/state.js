@@ -1,12 +1,12 @@
 import { observable, computed, action, makeObservable } from 'mobx';
 const { dialog } = require('@electron/remote');
-import { errorMsg } from '#util/dialog';
+import { errorMsg } from '~/util/dialog';
 import { removeBackground } from './remove-background';
 import { colorMatch } from './color-match';
 import { getSpriteBBoxes } from './get-sprite';
 import { getMappings } from './generate-mappings';
 import { importSprite } from './import-sprite';
-import { environment } from '#store/environment';
+import { environment } from '~/store/environment';
 import { readFile } from 'fs';
 
 class ImportState {

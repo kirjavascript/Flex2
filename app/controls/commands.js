@@ -1,8 +1,8 @@
-import { environment } from '#store/environment';
-import { mappingState } from '#components/mappings/state';
-import { importState } from '#components/import/state';
-import { undo, redo } from '#store/history';
-import { exportPNG, importImg, exportSpritesheet } from '#formats/image';
+import { environment } from '~/store/environment';
+import { mappingState } from '~/components/mappings/state';
+import { importState } from '~/components/import/state';
+import { undo, redo } from '~/store/history';
+import { exportPNG, importImg, exportSpritesheet } from '~/formats/image';
 import { getDistance } from './distance';
 import { toJS } from 'mobx';
 

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { environment } from '#store/environment';
+import { environment } from '~/store/environment';
 import classNames from 'classnames';
 import { mappingState } from './state';
-import { Slider } from '#ui';
+import { Slider } from '~/ui';
 import { Mapping } from './mapping';
 import { Selection } from './selection';
 import { Axes } from './axis';

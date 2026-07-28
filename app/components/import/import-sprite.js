@@ -1,4 +1,4 @@
-import { environment } from '#store/environment';
+import { environment } from '~/store/environment';
 import { getCenter } from '../mappings/state/bounds';
 import { concatDPLCs } from '../mappings/state/concat-dplcs';
 

@@ -1,5 +1,5 @@
 import Mousetrap from 'mousetrap';
-import { environment } from '#store/environment';
+import { environment } from '~/store/environment';
 import { commands } from './commands';
 import flatten from 'lodash/flatten';
 

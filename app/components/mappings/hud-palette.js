@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { environment } from '#store/environment';
+import { environment } from '~/store/environment';
 import { observer } from 'mobx-react';
 import { mappingState } from './state';
-import { Select, Input } from '#ui';
+import { Select, Input } from '~/ui';
 
 export const PaletteHUD = observer(
     class PaletteHUD extends Component {

@@ -3,7 +3,7 @@ import range from 'lodash/range';
 import unique from 'lodash/uniq';
 import { storage } from './storage';
 import { initHistory } from './history';
-import { defaultPalettes } from '#formats/palette';
+import { defaultPalettes } from '~/formats/palette';
 import arrayMove from 'array-move';
 
 class Environment {

@@ -1,12 +1,12 @@
 import React, { Component, useRef, useEffect, useState } from 'react';
-import { environment } from '#store/environment';
+import { environment } from '~/store/environment';
 import { observer } from 'mobx-react';
 import {
     SortableContainer,
     SortableElement,
     SortableHandle,
 } from 'react-sortable-hoc';
-import { hexToMDHex } from '#formats/palette';
+import { hexToMDHex } from '~/formats/palette';
 import Picker from './picker';
 import Trigger from 'rc-trigger';
 

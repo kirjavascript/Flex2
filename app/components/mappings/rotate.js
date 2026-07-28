@@ -1,9 +1,9 @@
 import React, { useEffect, useRef } from 'react';
-import { environment } from '#store/environment';
+import { environment } from '~/store/environment';
 import { observer } from 'mobx-react';
-import { exportSprite } from '#formats/image';
-import { threeShears } from '#util/rotsprite';
-import { Input, Slider, Item, Button, Modal } from '#ui';
+import { exportSprite } from '~/formats/image';
+import { threeShears } from '~/util/rotsprite';
+import { Input, Slider, Item, Button, Modal } from '~/ui';
 import { mappingState } from './state';
 
 import { importState } from '../import/state';

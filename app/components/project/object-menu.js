@@ -1,5 +1,5 @@
 import { toJS } from 'mobx';
-import { workspace } from '#store/workspace';
+import { workspace } from '~/store/workspace';
 const { getCurrentWindow, Menu, MenuItem } = require('@electron/remote');
 
 export default function(node) {

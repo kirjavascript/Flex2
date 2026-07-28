@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { environment } from '#store/environment';
+import { environment } from '~/store/environment';
 import { observer } from 'mobx-react';
 import { mappingState } from './state';
 

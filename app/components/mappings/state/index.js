@@ -1,5 +1,5 @@
 import { observable, computed, action, makeObservable, observe, reaction } from 'mobx';
-import { environment } from '#store/environment';
+import { environment } from '~/store/environment';
 import clamp from 'lodash/clamp';
 import { getCenter } from './bounds';
 import { placeNewMapping } from './place-new-mapping';
@@ -7,7 +7,7 @@ import { optimizeCurrentDPLCs } from './optimize-dplcs';
 import { deleteUnusedTiles } from './delete-unused-tiles';
 import { toggleDPLCs } from './toggle-dplcs';
 import { arrangeTilesBySpriteOrder } from './arrange-tiles-by-sprite-order';
-import { storage } from '#store/storage';
+import { storage } from '~/store/storage';
 
 class MappingState {
     // viewing

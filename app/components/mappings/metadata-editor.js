@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { observer } from 'mobx-react';
-import { Item, Input } from '#ui';
-import { environment } from '#store/environment';
+import { Item, Input } from '~/ui';
+import { environment } from '~/store/environment';
 
 export const MetadataEditor = observer(() => {
     const { currentSprite } = environment;

@@ -6,16 +6,16 @@ import {
 } from 'react-sortable-hoc';
 import arrayMove from 'array-move';
 import { mappingState } from './state';
-import { environment } from '#store/environment';
+import { environment } from '~/store/environment';
 import { observer } from 'mobx-react';
-import { Select, Input, Item, Button, Modal } from '#ui';
+import { Select, Input, Item, Button, Modal } from '~/ui';
 import { Tile } from '../art/tile';
 import {
     isNumber,
     isPositiveNumber,
     isDPLCSize,
     isWidthHeight,
-} from '#util/assertions';
+} from '~/util/assertions';
 
 const Handle = SortableHandle(() => (
     <div className="handle">

@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { environment } from '#store/environment';
+import { environment } from '~/store/environment';
 import { mappingState } from '../mappings/state';
 import { Tile } from './tile';
 import { observer } from 'mobx-react';
 import { scrollbarWidth } from 'sass-variables';
-import { DimensionsComponent } from '#util/dimensions-component';
+import { DimensionsComponent } from '~/util/dimensions-component';
 import { ActiveSelection } from './active-selection';
 
 export const Art = observer(class Art extends DimensionsComponent {

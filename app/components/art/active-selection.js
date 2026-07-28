@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { environment } from '#store/environment';
+import { environment } from '~/store/environment';
 import { observer } from 'mobx-react';
 import { magenta } from 'sass-variables';
-import { id } from '#util/uuid';
+import { id } from '~/util/uuid';
 
 export const ActiveSelection = observer(class ActiveSelection extends Component {
 

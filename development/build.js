@@ -87,27 +87,28 @@ module.exports = ({ mainWindow } = {}) => {
 };
 
 const aliases = {
-    '#store': __dirname + '/../app/store',
-    '#components': __dirname + '/../app/components',
-    '#controls': __dirname + '/../app/controls',
-    '#ui': __dirname + '/../app/components/ui',
-    '#util': __dirname + '/../app/util',
-    '#lib': __dirname + '/../app/lib',
-    '#formats': __dirname + '/../app/formats',
-    '#styles': __dirname + '/../styles/',
+    '~/store': __dirname + '/../app/store',
+    '~/components': __dirname + '/../app/components',
+    '~/controls': __dirname + '/../app/controls',
+    '~/ui': __dirname + '/../app/components/ui',
+    '~/util': __dirname + '/../app/util',
+    '~/lib': __dirname + '/../app/lib',
+    '~/formats': __dirname + '/../app/formats',
+    '~/styles': __dirname + '/../styles/',
 };
 
 const aliasPlugin = () => ({
     name: 'alias',
     setup(build) {
-        build.onResolve({ filter: /^#/ }, (args) => {
-            const [head, ...tail] = args.path.split('/');
+        build.onResolve({ filter: /^~\// }, (args) => {
+            const [, head, ...tail] = args.path.split('/');
+            const key = `~/${head}`;
             return {
                 path: require.resolve(
                     path.resolve(
                         __dirname,
                         '../../',
-                        [aliases[head], ...tail].join('/'),
+                        [aliases[key], ...tail].join('/'),
                     ),
                 ),
             };

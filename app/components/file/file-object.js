@@ -1,19 +1,19 @@
 import React, { useState, useRef } from 'react';
 import { observer } from 'mobx-react';
-import { Item, Input, File as FileInput, Select, Checkbox, Button } from '#ui';
-import { scripts, runScript, writeBIN, parseASMBasic } from '#formats/scripts';
-import { assemble } from '#formats/asm';
+import { Item, Input, File as FileInput, Select, Checkbox, Button } from '~/ui';
+import { scripts, runScript, writeBIN, parseASMBasic } from '~/formats/scripts';
+import { assemble } from '~/formats/asm';
 
-import { decompress, compress, compressionFormats } from '#formats/compression';
-import { bufferToTiles, tilesToBuffer } from '#formats/art';
-import { buffersToColors, colorsToBuffers } from '#formats/palette';
-import { environment } from '#store/environment';
-import { workspace } from '#store/workspace';
+import { decompress, compress, compressionFormats } from '~/formats/compression';
+import { bufferToTiles, tilesToBuffer } from '~/formats/art';
+import { buffersToColors, colorsToBuffers } from '~/formats/palette';
+import { environment } from '~/store/environment';
+import { workspace } from '~/store/workspace';
 import ErrorMsg from './error';
 import SaveLoad from './save-load';
 import { promises } from 'fs';
 import { extname, basename } from 'path';
-import { uuid } from '#util/uuid';
+import { uuid } from '~/util/uuid';
 
 const fs = promises;
 const compressionList = Object.keys(compressionFormats);

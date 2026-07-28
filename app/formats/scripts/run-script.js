@@ -1,5 +1,5 @@
 import { loadScript, scriptDir } from './file';
-import { writeASM, sanitizeLabel } from '#formats/scripts';
+import { writeASM, sanitizeLabel } from '~/formats/scripts';
 import { logger } from './debug';
 import { makeOffsetTable } from './offset-table';
 import { toJS } from 'mobx';

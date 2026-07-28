@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { workspace } from '#store/workspace';
-import { Input } from '#ui';
+import { workspace } from '~/store/workspace';
+import { Input } from '~/ui';
 
 const { dialog } = require('@electron/remote');
 

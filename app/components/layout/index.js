@@ -4,15 +4,15 @@ import { model, saveModel } from './model';
 import { Layout as FlexLayout, Model } from 'flexlayout-react';
 import classNames from 'classnames';
 
-import { File } from '#components/file';
-import { Project } from '#components/project';
-import { Palettes } from '#components/palettes';
-import { Art } from '#components/art/index';
-import { Sprites } from '#components/sprites';
-import { Mappings } from '#components/mappings';
-import { RawEditor } from '#components/mappings/raw-editor';
-import { MetadataEditor } from '#components/mappings/metadata-editor';
-import { Documentation } from '#components/documentation';
+import { File } from '~/components/file';
+import { Project } from '~/components/project';
+import { Palettes } from '~/components/palettes';
+import { Art } from '~/components/art/index';
+import { Sprites } from '~/components/sprites';
+import { Mappings } from '~/components/mappings';
+import { RawEditor } from '~/components/mappings/raw-editor';
+import { MetadataEditor } from '~/components/mappings/metadata-editor';
+import { Documentation } from '~/components/documentation';
 
 export class Layout extends Component {
     factory = (node) => {

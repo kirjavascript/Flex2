@@ -1,10 +1,10 @@
 import React from 'react';
 import { observer } from 'mobx-react';
-import { workspace } from '#store/workspace';
-import { selection } from '#store/selection';
-import { FileObject } from '#components/file/file-object';
-import ErrorMsg from '#components/file/error';
-import { File as FileInput, Button, Item, Input } from '#ui';
+import { workspace } from '~/store/workspace';
+import { selection } from '~/store/selection';
+import { FileObject } from '~/components/file/file-object';
+import ErrorMsg from '~/components/file/error';
+import { File as FileInput, Button, Item, Input } from '~/ui';
 import SortableTree from 'react-sortable-tree';
 import { basename } from 'path';
 import objectMenu from './object-menu';

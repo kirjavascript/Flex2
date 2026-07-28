@@ -3,10 +3,10 @@ import chunk from 'lodash/chunk';
 import { select, mouse } from 'd3-selection';
 import { drag } from 'd3-drag';
 import { mappingState } from './state';
-import { environment } from '#store/environment';
+import { environment } from '~/store/environment';
 import { observer } from 'mobx-react';
 import { Mapping } from './mapping';
-import { Checkbox, Button, Modal } from '#ui';
+import { Checkbox, Button, Modal } from '~/ui';
 
 const baseConfig = {
     hflip: false,

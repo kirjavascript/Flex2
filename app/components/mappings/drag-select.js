@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { blue } from 'sass-variables';
 import { observer } from 'mobx-react';
-import { environment } from '#store/environment';
+import { environment } from '~/store/environment';
 import { mappingState } from './state';
 import { select, event, mouse } from 'd3-selection';
 import { drag } from 'd3-drag';

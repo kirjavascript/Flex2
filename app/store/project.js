@@ -1,5 +1,5 @@
 import { observable, autorun, action, makeObservable } from 'mobx';
-import { ObjectDef } from '#store/objectdef';
+import { ObjectDef } from '~/store/objectdef';
 import { promises, exists as fsExists } from 'fs';
 import { promisify } from 'util';
 
