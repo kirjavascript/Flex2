@@ -22,6 +22,10 @@ export const Mapping = observer(class Mapping extends Component {
                 left: left * scale,
                 width: width * scale * 8,
                 height: height * scale * 8,
+                display: 'grid',
+                gridTemplateColumns: `repeat(${width}, ${scale * 8}px)`,
+                gridTemplateRows: `repeat(${height}, ${scale * 8}px)`,
+                gridAutoFlow: 'column',
                 transform: `scale(${hflip?-1:1},${vflip?-1:1})`,
             }}
             {...otherProps}

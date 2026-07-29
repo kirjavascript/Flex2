@@ -49,12 +49,6 @@ cd ..
 rm -r Flex2-darwin-x64
 
 TARBALL="${1:-flex2-linux-x64.tar.gz}"
-
-if [ ! -f "$TARBALL" ]; then
-    echo "Usage: $0 [path/to/flex2-linux-x64.tar.gz]"
-    exit 1
-fi
-
 APPIMAGETOOL="$(command -v appimagetool 2>/dev/null || true)"
 if [ -z "$APPIMAGETOOL" ]; then
     echo "appimagetool not found, downloading..."
