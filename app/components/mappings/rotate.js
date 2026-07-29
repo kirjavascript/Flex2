@@ -51,7 +51,7 @@ export const Rotate = observer(() => {
             }}
         >
             <div className="row">
-            <Item>Rotate Sprite</Item>
+            <Item bold>Rotate Sprite</Item>
         </div>
             <canvas ref={canvasRef} />
             <div className="angles">

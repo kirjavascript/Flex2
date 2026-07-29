@@ -295,6 +295,12 @@ export const commands = [
                 mappingState.toggleRotate();
             },
         },
+        {
+            map: 'S', name: 'Settings', color: 'white', noMultiplier: true,
+            func: () => {
+                mappingState.toggleSettings();
+            },
+        },
     ],
 
     [

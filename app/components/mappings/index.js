@@ -3,7 +3,7 @@ import { observer } from 'mobx-react';
 import { environment } from '~/store/environment';
 import classNames from 'classnames';
 import { mappingState } from './state';
-import { Slider, Checkbox } from '~/ui';
+import { Slider } from '~/ui';
 import { Mapping } from './mapping';
 import { Selection } from './selection';
 import { Axes } from './axis';
@@ -15,6 +15,7 @@ import { Rotate } from './rotate';
 import { DragSelect, attachDragSelectToNode } from './drag-select';
 import { attachDragMoveToNode } from './drag-move';
 import { Commands } from './commands';
+import { Settings } from './settings';
 
 export const Mappings = observer(class Mappings extends Component {
     mappingRef = (node) => {
@@ -132,36 +133,7 @@ export const Mappings = observer(class Mappings extends Component {
                 />
 
                 <Rotate />
-
-                <div className="config-item">
-                    <span>Import Image: use top left pixel as alpha&emsp;</span>
-                    <Checkbox
-                        checked={mappingState.topLeftAlphaPixel}
-                        onChange={() =>  mappingState.toggleTopLeftAlphaPixel()}
-                    />
-                </div>
-
-                <div className="art-palette-line">
-                    <span>render starting with palette line</span>
-                    <input
-                        type="text"
-                        value={environment.config.artPaletteLine}
-                        readOnly
-                        onKeyDown={(e) => {
-                            if (e.repeat) return;
-                            const v = parseInt(e.key);
-                            if (v >= 0 && v <= 3) environment.config.artPaletteLine = v;
-                            e.preventDefault();
-                        }}
-                        onWheel={(e) => {
-                            const cur = environment.config.artPaletteLine;
-                            const next = cur + (e.deltaY > 0 ? -1 : 1);
-                            if (next >= 0 && next <= 3) environment.config.artPaletteLine = next;
-                            e.preventDefault();
-                            e.stopPropagation();
-                        }}
-                    />
-                </div>
+                <Settings />
 
                 <Commands />
             </div>

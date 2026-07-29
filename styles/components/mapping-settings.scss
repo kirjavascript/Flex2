@@ -1,0 +1,31 @@
+.mapping-settings {
+    position: fixed;
+    z-index: 2;
+    width: 400px;
+    .settings {
+        padding: 20px 0;
+    }
+
+    .setting-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 2px 5px;
+        margin: 4px 0;
+        font-size: 11px;
+        font-weight: 200;
+
+        input {
+            width: 28px;
+            text-align: center;
+            background: transparent;
+            border: 1px solid rgba(white, .2);
+            color: inherit;
+            font-size: 11px;
+            padding: 2px;
+            &::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+            }
+        }
+    }
+}

@@ -134,7 +134,7 @@ const Project = observer(() => {
             <div className="config">
                 <div className="config-data">
                     <div className="menu-item">
-                        <Item>Project</Item>
+                        <Item bold>Project</Item>
                         <span className="path">
                             {project.name || basename(workspace.projectPath)}
                         </span>
