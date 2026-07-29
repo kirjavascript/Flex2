@@ -9,12 +9,15 @@ export const Tile = observer(
         const { transparency, artPaletteLine } = config;
         paletteLine = (paletteLine + artPaletteLine) % 4;
 
+        const gs = mappingState.globalScale;
+        // spread covers sub-pixel rounding gaps between box-shadow 'pixels'
+        const spread = gs % 1 !== 0 ? ` 0 ${(0.7 / gs).toFixed(2)}px` : '';
+
         return (
             <div
                 style={{
                     width: 8 * scale,
                     height: 8 * scale,
-                    overflow: 'hidden',
                 }}
                 {...otherProps}
             >
@@ -31,7 +34,6 @@ export const Tile = observer(
                                     pixel == 0 && transparency
                                         ? 'transparent'
                                         : palettes[paletteLine][pixel];
-                                const spread = mappingState.globalScale !== 1 ? ' 0 0.5px' : '';
                                 return `${((i % 8) + 1) * scale}px ${
                                     ((0 | (i / 8)) + 1) * scale
                                 }px${spread} ${color}`;

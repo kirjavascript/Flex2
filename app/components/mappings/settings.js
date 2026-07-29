@@ -12,24 +12,24 @@ const ScaleSlider = observer(() => {
 
     return (
         <div className="setting-row">
-            <span>UI scale ({Number(display).toFixed(1)}x)</span>
+            <span>UI scale ({Number(display).toFixed(2)}x)</span>
             <div className="slider">
                 <input
                     type="range"
-                    min="5"
-                    max="20"
-                    step="1"
-                    value={display * 10}
+                    min="50"
+                    max="200"
+                    step="5"
+                    value={Math.round(display * 100)}
                     onMouseDown={() => setDragging(true)}
                     onMouseUp={(e) => {
-                        const val = parseInt(e.target.value) / 10;
+                        const val = parseInt(e.target.value) / 100;
                         mappingState.globalScale = val;
                         webFrame.setZoomFactor(val);
                         setDraft(null);
                         setDragging(false);
                     }}
                     onChange={(e) => {
-                        const val = parseInt(e.target.value) / 10;
+                        const val = parseInt(e.target.value) / 100;
                         if (dragging) {
                             setDraft(val);
                         } else {
