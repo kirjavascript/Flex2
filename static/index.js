@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, globalShortcut } = require('electron');
 const devMode = process.argv.includes('--dev');
 
 function createWindow() {
@@ -22,6 +22,11 @@ function createWindow() {
     require('./remote/main').enable(mainWindow.webContents);
 
     mainWindow.setMenu(null);
+
+    globalShortcut.register('CommandOrControl+Shift+I', () => {
+        mainWindow.webContents.toggleDevTools();
+    });
+
     mainWindow.loadFile('./index.html');
 
     mainWindow.on('ready-to-show', () => {

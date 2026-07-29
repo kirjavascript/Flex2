@@ -8,6 +8,7 @@ import { deleteUnusedTiles } from './delete-unused-tiles';
 import { toggleDPLCs } from './toggle-dplcs';
 import { arrangeTilesBySpriteOrder } from './arrange-tiles-by-sprite-order';
 import { storage } from '~/store/storage';
+import { webFrame } from 'electron';
 
 class MappingState {
     // viewing
@@ -289,7 +290,9 @@ class MappingState {
 const mappingState = new MappingState();
 storage(mappingState, 'mapping-state', ['autodismiss', 'topLeftAlphaPixel', 'globalScale']);
 
-import { webFrame } from 'electron';
+if (!mappingState.globalScale) {
+    mappingState.globalScale = 1;
+}
 if (mappingState.globalScale !== 1) {
     webFrame.setZoomFactor(mappingState.globalScale);
 }
