@@ -7,9 +7,9 @@
 - Added Moduled ComperX compression
 - Added Recent Projects menu
 - Fix Sonic 1 MapMacros DPLC bug
+- Make MapMacros optional in object config
 - Support loading/editing sprite labels for ASM mappings
 - Select All persists when navigating between sprites
-- Make MapMacros optional in object config
 - Added Settings modal
     - Added choice of palette line to start rendering from
     - Added toggle for using the top left pixel as alpha when importing
