@@ -84,6 +84,7 @@ class MappingState {
             toggleRotate: action,
             settings: observable,
             toggleSettings: action,
+            closeModals: action,
             newMapping: observable,
             toggleNewMapping: action,
             autodismiss: observable,
@@ -203,6 +204,12 @@ class MappingState {
 
     toggleSettings = () => {
         this.settings.active = !this.settings.active;
+    };
+
+    closeModals = () => {
+        this.newMapping.active = false;
+        this.rotate.active = false;
+        this.settings.active = false;
     };
 
     // rotate

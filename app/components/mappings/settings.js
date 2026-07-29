@@ -17,7 +17,7 @@ export const Settings = observer(() => {
         >
             <Item bold>Settings</Item>
 
-            <div classname="settings">
+            <div className="settings">
                 <div className="setting-row">
                     <span>Render starting with palette line</span>
                     <input
@@ -47,7 +47,7 @@ export const Settings = observer(() => {
                 </div>
 
                 <div className="setting-row">
-                    <span>Autodismiss new mappings window</span>
+                    <span>Autodismiss new mappings window when placing a mapping</span>
                     <Checkbox
                         checked={mappingState.autodismiss}
                         onChange={mappingState.toggleAutodismiss}

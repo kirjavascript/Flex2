@@ -1,6 +1,7 @@
 import Mousetrap from 'mousetrap';
 import { environment } from '~/store/environment';
 import { commands } from './commands';
+import { mappingState } from '~/components/mappings/state';
 import flatten from 'lodash/flatten';
 
 // load commands
@@ -23,6 +24,7 @@ Mousetrap.bind([...'0123456789'], (e) => {
 });
 Mousetrap.bind('esc', () => {
     multiplier = '';
+    mappingState.closeModals();
 });
 function doCommand(obj, e) {
     environment.doAction(() => {
