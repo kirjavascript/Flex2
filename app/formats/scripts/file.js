@@ -4,7 +4,11 @@ import { errorMsg } from '~/util/dialog';
 import { uniq, debounce } from 'lodash';
 import { observable } from 'mobx';
 
-const scriptPaths = uniq([dirname(process.execPath), process.cwd()]).map(
+const scriptPaths = uniq([
+    process.env.APPIMAGE && dirname(process.env.APPIMAGE),
+    dirname(process.execPath),
+    process.cwd(),
+].filter(Boolean)).map(
     (path) => join(path, 'scripts'),
 );
 

@@ -5,3 +5,6 @@ static/bundles
 flex2-*.zip
 flex2-*.tar.gz
 test-results
+development/appimagetool
+development/7zS2.sfx
+development/rcedit-x64.exe
