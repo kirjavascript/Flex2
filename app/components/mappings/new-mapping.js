@@ -20,7 +20,7 @@ const baseConfig = {
 const BottomMenu = observer(() => (
     <div className="row">
         <Button color="magenta" onClick={mappingState.toggleNewMapping}>
-            Close
+            close
         </Button>
         <div className="autodismiss">
             <span onClick={mappingState.toggleAutodismiss}>autodismiss</span>

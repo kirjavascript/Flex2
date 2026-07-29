@@ -34,23 +34,15 @@
     .item {
         width: 210px;
     }
-    .command-option {
-        font-family: 'Hack Bold';
-        padding: 2px 2px;
-        padding-left: 5px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-size: 11px;
-        cursor: pointer;
-        background-color: $white;
-        color: $black;
-        width: 210px;
+}
 
-        .checkbox {
-            background-color: $darkgrey;
-        }
-    }
+.config-item {
+    font-size: 11px;
+    padding: 2px 2px;
+    padding-left: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .new-mapping {
