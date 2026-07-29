@@ -15,7 +15,7 @@
     - Added toggle for using the top left pixel as alpha when importing
     - Added ability to change global UI scale
 - Added command to unload everything
-- Split raw editor into a new window
+- Split raw editor into a new tab
 - Added sprite metadata system
 - Removed uuids from project files
 - Fixed a bug where active tile selection wouldn't show

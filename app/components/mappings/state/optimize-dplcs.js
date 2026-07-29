@@ -15,9 +15,13 @@ export function optimizeCurrentDPLCs() {
 export function optimizeDPLCs(mappings, dplcs) {
 
     let tiles = [];
+    let tileMetadata = [];
 
-    dplcs.forEach(({art, size}) => {
-        tiles.push(...range(art, art+size));
+    dplcs.forEach(({art, size, metadata}) => {
+        for (let i = 0; i < size; i++) {
+            tiles.push(art + i);
+            tileMetadata.push(metadata);
+        }
     });
 
 
@@ -43,5 +47,15 @@ export function optimizeDPLCs(mappings, dplcs) {
     });
 
 
-    dplcs.replace(concatDPLCs(newDPLCs.map((d) => ({art: d, size: 1}))));
+    const newDPLCEntries = concatDPLCs(newDPLCs.map((d, i) => ({art: d, size: 1})));
+
+    // restore metadata from original DPLCs by looking up the first tile in each new entry
+    newDPLCEntries.forEach((entry) => {
+        const originalIndex = tiles.indexOf(entry.art);
+        if (originalIndex !== -1 && tileMetadata[originalIndex]) {
+            entry.metadata = {...tileMetadata[originalIndex]};
+        }
+    });
+
+    dplcs.replace(newDPLCEntries);
 }

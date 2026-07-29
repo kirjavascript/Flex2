@@ -23,8 +23,7 @@
 
 .mapping-data {
     display: flex;
-    align-items: center;
-    justify-content: space-around;
+    align-items: flex-start;
     background: $black;
     border: 1px solid $grey;
     padding: 5px 10px;
@@ -32,34 +31,146 @@
     margin-bottom: 15px;
 
     input, .Dropdown-menu {
-        width: 32px;
+        width: 44px;
         text-align: center;
     }
     .datum {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         margin: 5px;
+        text-align: center;
         .label {
             font-size: 10px;
             text-align: center;
             margin-bottom: 5px;
         }
     }
+
+    .piece-content {
+        flex: 1;
+        min-width: 0;
+    }
+
     .properties {
         display: flex;
         align-items: center;
         justify-content: flex-start;
         flex-wrap: wrap;
-        flex: 20;
     }
     .handle {
         path {
             fill: $grey;
         }
-        flex: 2;
+        margin-right: 6px;
+        margin-top: 4px;
     }
     .dplc-tiles {
         margin: 0 15px;
         display: flex;
         flex-wrap: wrap;
         flex: 10;
+    }
+}
+
+// sprite-level metadata at the top of the page
+
+.sprite-metadata-header {
+    background: $black;
+    border: 1px solid $grey;
+    padding: 8px 12px;
+    margin-bottom: 15px;
+
+    .sprite-metadata-title {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+}
+
+// inline metadata that sits inside each mapping/dplc card
+
+.inline-metadata {
+    border-top: 1px solid $grey;
+    margin-top: 4px;
+    padding-top: 4px;
+}
+
+.inline-metadata-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10px;
+    color: $white2;
+}
+
+.inline-metadata-toggle {
+    cursor: pointer;
+    user-select: none;
+    &:hover { color: $white; }
+}
+
+.inline-metadata-empty {
+    opacity: 0.5;
+}
+
+.inline-metadata-add {
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    color: $green;
+    line-height: 1;
+    padding: 4px 6px;
+    margin: -4px -6px;
+    &:hover { color: lighten($green, 10%); }
+}
+
+input.inline-metadata-key-input {
+    width: 160px;
+    font-size: 12px;
+    background: $darkgrey;
+    border: 1px solid $grey;
+    color: $white;
+    padding: 1px 4px;
+    margin: 0;
+    height: 14px;
+    text-align: left;
+}
+
+.inline-metadata-fields {
+    margin-top: 4px;
+}
+
+.inline-metadata-field {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 2px 0;
+
+    & + & {
+        border-top: 1px solid darken($grey, 8%);
+    }
+
+    .inline-metadata-label {
+        font-size: 10px;
+        color: $white2;
+        min-width: 60px;
+    }
+
+    input {
+        flex: 1;
+        width: auto !important;
+        text-align: left !important;
+        font-size: 11px;
+    }
+
+    .inline-metadata-remove {
+        cursor: pointer;
+        color: $red;
+        font-size: 14px;
+        line-height: 1;
+        padding: 4px 6px;
+        margin: -4px -6px;
+        &:hover { color: lighten($red, 10%); }
     }
 }

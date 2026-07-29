@@ -33,13 +33,8 @@ const MAPPINGS_LAYOUT = {
                             },
                             {
                                 type: 'tab',
-                                name: 'Raw',
+                                name: 'Data',
                                 component: 'mappings-raw',
-                            },
-                            {
-                                type: 'tab',
-                                name: 'Metadata',
-                                component: 'mappings-metadata',
                             },
                         ],
                     },
