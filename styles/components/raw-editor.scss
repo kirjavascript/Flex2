@@ -63,7 +63,10 @@
             fill: $grey;
         }
         margin-right: 6px;
-        margin-top: 4px;
+        margin-top: 20px;
+    }
+    .item {
+        margin-top: 20px;
     }
     .dplc-tiles {
         margin: 0 15px;
@@ -94,6 +97,7 @@
     border-top: 1px solid $grey;
     margin-top: 4px;
     padding-top: 4px;
+    width: 490px;
 }
 
 .inline-metadata-bar {
