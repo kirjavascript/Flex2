@@ -8,15 +8,15 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 8px;
+        margin: 8px 0;
     }
 
     .metadata-table {
         width: 100%;
         border-collapse: collapse;
 
-        tr {
-            border-bottom: 1px solid $grey;
+        tr + tr {
+            border-top: 1px solid $grey;
         }
 
         td {
