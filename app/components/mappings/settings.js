@@ -8,7 +8,7 @@ import { mappingState } from './state';
 const ScaleSlider = observer(() => {
     const [draft, setDraft] = useState(null);
     const [dragging, setDragging] = useState(false);
-    const display = draft ?? mappingState.globalScale;
+    const display = draft ?? mappingState.globalScale ?? 1;
 
     return (
         <div className="setting-row">
@@ -62,7 +62,7 @@ export const Settings = observer(() => {
                     <input
                         type="text"
                         className="render-line"
-                        value={environment.config.artPaletteLine}
+                        value={environment.config.artPaletteLine ?? 0}
                         readOnly
                         onKeyDown={(e) => {
                             if (e.repeat) return;
