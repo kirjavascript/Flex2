@@ -1,8 +1,47 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { webFrame } from 'electron';
 import { observer } from 'mobx-react';
 import { environment } from '~/store/environment';
 import { Modal, Item, Button, Checkbox } from '~/ui';
 import { mappingState } from './state';
+
+const ScaleSlider = observer(() => {
+    const [draft, setDraft] = useState(null);
+    const [dragging, setDragging] = useState(false);
+    const display = draft ?? mappingState.globalScale;
+
+    return (
+        <div className="setting-row">
+            <span>UI scale ({Number(display).toFixed(1)}x)</span>
+            <div className="slider">
+                <input
+                    type="range"
+                    min="5"
+                    max="20"
+                    step="1"
+                    value={display * 10}
+                    onMouseDown={() => setDragging(true)}
+                    onMouseUp={(e) => {
+                        const val = parseInt(e.target.value) / 10;
+                        mappingState.globalScale = val;
+                        webFrame.setZoomFactor(val);
+                        setDraft(null);
+                        setDragging(false);
+                    }}
+                    onChange={(e) => {
+                        const val = parseInt(e.target.value) / 10;
+                        if (dragging) {
+                            setDraft(val);
+                        } else {
+                            mappingState.globalScale = val;
+                            webFrame.setZoomFactor(val);
+                        }
+                    }}
+                />
+            </div>
+        </div>
+    );
+});
 
 export const Settings = observer(() => {
     const { active } = mappingState.settings;
@@ -22,6 +61,7 @@ export const Settings = observer(() => {
                     <span>Render starting with palette line</span>
                     <input
                         type="text"
+                        className="render-line"
                         value={environment.config.artPaletteLine}
                         readOnly
                         onKeyDown={(e) => {
@@ -53,6 +93,7 @@ export const Settings = observer(() => {
                         onChange={mappingState.toggleAutodismiss}
                     />
                 </div>
+                <ScaleSlider />
             </div>
 
             <div className="actions">

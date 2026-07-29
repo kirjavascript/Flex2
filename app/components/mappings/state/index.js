@@ -85,6 +85,7 @@ class MappingState {
             settings: observable,
             toggleSettings: action,
             closeModals: action,
+            globalScale: observable,
             newMapping: observable,
             toggleNewMapping: action,
             autodismiss: observable,
@@ -206,6 +207,8 @@ class MappingState {
         this.settings.active = !this.settings.active;
     };
 
+    globalScale = 1;
+
     closeModals = () => {
         this.newMapping.active = false;
         this.rotate.active = false;
@@ -284,5 +287,11 @@ class MappingState {
 }
 
 const mappingState = new MappingState();
-storage(mappingState, 'mapping-state', ['autodismiss', 'topLeftAlphaPixel']);
+storage(mappingState, 'mapping-state', ['autodismiss', 'topLeftAlphaPixel', 'globalScale']);
+
+import { webFrame } from 'electron';
+if (mappingState.globalScale !== 1) {
+    webFrame.setZoomFactor(mappingState.globalScale);
+}
+
 export { mappingState };
