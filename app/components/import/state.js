@@ -64,7 +64,7 @@ class ImportState {
         if (!node) return;
 
         this.canvas = node;
-        this.ctx = node.getContext('2d');
+        this.ctx = node.getContext('2d', { willReadFrequently: true });
 
         if (this.path) {
             readFile(this.path, (_err, data) => {
@@ -192,7 +192,7 @@ class ImportState {
         }
 
         this.canvas = node;
-        this.ctx = node.getContext('2d');
+        this.ctx = node.getContext('2d', { willReadFrequently: true });
         const { canvas, ctx, type } = this;
         const { width, height, buffer } = this.currentSprite;
 

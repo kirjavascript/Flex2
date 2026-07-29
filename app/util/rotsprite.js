@@ -1,7 +1,7 @@
 // 3 shears
 
 export function threeShears(spriteCanv, canvas, angle) {
-    const spriteCtx = spriteCanv.getContext('2d');
+    const spriteCtx = spriteCanv.getContext('2d', { willReadFrequently: true });
 
     const flipped = angle > 90 && angle < 270;
 
@@ -38,7 +38,7 @@ export function threeShears(spriteCanv, canvas, angle) {
         spriteCtx.putImageData(copy, xMargin, yMargin);
     }
 
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
     canvas.width = diagonal;
     canvas.height = diagonal;
 
@@ -112,12 +112,12 @@ function getRotateDiagonal(width, height) {
 // some generated with chatGPT
 
 export function rotsprite(spriteCanv, canvas, angle) {
-    const spriteCtx = spriteCanv.getContext('2d');
+    const spriteCtx = spriteCanv.getContext('2d', { willReadFrequently: true });
     const { width, height } = spriteCanv;
     const imageData = spriteCtx.getImageData(0, 0, width, height);
     const rotatedData = rotateImageData(imageData, angle, width, height);
 
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
     canvas.width = rotatedData.width;
     canvas.height = rotatedData.height;
     ctx.putImageData(rotatedData, 0, 0);

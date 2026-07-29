@@ -48,6 +48,7 @@ module.exports = ({ mainWindow } = {}) => {
             define: {
                 __DEV__: String(devMode),
                 __REACT_DEVTOOLS_GLOBAL_HOOK__: '{ "isDisabled": true }',
+                'process.env.NODE_ENV': devMode ? '"development"' : '"production"',
             },
             external: ['electron'],
             loader: {

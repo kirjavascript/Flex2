@@ -16,7 +16,7 @@ export function exportSprite({ buffer, mappings }) {
         canvas.height = 32;
         return canvas;
     }
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
     let tileBuffer = ctx.getImageData(0, 0, 8, 8);
 
     const [xPoints, yPoints] = [[], []];
@@ -36,7 +36,7 @@ export function exportSprite({ buffer, mappings }) {
     canvas.height = height;
 
     const mappingCanvas = document.createElement('canvas');
-    const mappingCtx = mappingCanvas.getContext('2d');
+    const mappingCtx = mappingCanvas.getContext('2d', { willReadFrequently: true });
 
     const { artPaletteLine } = environment.config;
 
@@ -106,7 +106,7 @@ export function exportSpritesheet() {
                 const canvas = document.createElement('canvas');
                 canvas.width = 8;
                 canvas.height = 8;
-                const ctx = canvas.getContext('2d');
+                const ctx = canvas.getContext('2d', { willReadFrequently: true });
                 // canvas.className = 'canvas-debug';
                 // document.body.appendChild(canvas);
 
@@ -209,7 +209,7 @@ export async function importImg() {
     const canvas = document.createElement('canvas');
     canvas.width = img.width;
     canvas.height = img.height;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
     ctx.drawImage(img, 0, 0);
 
     if (mappingState.topLeftAlphaPixel) {
@@ -249,7 +249,7 @@ export async function importImg() {
 
 function flipBuffer(buffer, hflip, vflip) {
     const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
 
     return new Promise((resolve) => {
         canvas.width = buffer.width;
