@@ -1,5 +1,6 @@
 import React from 'react';
 import { environment } from '~/store/environment';
+import { mappingState } from '~/components/mappings/state';
 import { observer } from 'mobx-react';
 
 export const Tile = observer(
@@ -13,6 +14,7 @@ export const Tile = observer(
                 style={{
                     width: 8 * scale,
                     height: 8 * scale,
+                    overflow: 'hidden',
                 }}
                 {...otherProps}
             >
@@ -29,9 +31,10 @@ export const Tile = observer(
                                     pixel == 0 && transparency
                                         ? 'transparent'
                                         : palettes[paletteLine][pixel];
+                                const spread = mappingState.globalScale !== 1 ? ' 0 0.5px' : '';
                                 return `${((i % 8) + 1) * scale}px ${
                                     ((0 | (i / 8)) + 1) * scale
-                                }px ${color}`;
+                                }px${spread} ${color}`;
                             }).join`,`,
                     }}
                 />
