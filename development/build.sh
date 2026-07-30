@@ -82,6 +82,7 @@ Type=Application
 Categories=Development;
 EOF
 
+rm -rf flex2-linux-x64.AppImage
 ARCH=x86_64 "$APPIMAGETOOL" Flex2.AppDir flex2-linux-x64.AppImage
 rm -rf Flex2.AppDir
 

@@ -7,16 +7,19 @@ export function concatDPLCs(dplcs) {
 
     let tiles = [];
 
-    dplcs.forEach(({art, size}) => {
-        tiles.push(...range(art, art+size));
+    dplcs.forEach(({art, size, metadata}) => {
+        for (let i = 0; i < size; i++) {
+            tiles.push({ art: art + i, metadata });
+        }
     });
 
     let obj = {};
 
-    tiles.forEach((num) => {
+    tiles.forEach(({ art: num, metadata }) => {
         if (typeof obj.art == 'undefined') {
             obj.art = num;
             obj.size = 1;
+            if (metadata) obj.metadata = {...metadata};
         }
         else if (obj.size == 16 || obj.art + obj.size != num) {
             newDPLCs.push(obj);
@@ -24,6 +27,7 @@ export function concatDPLCs(dplcs) {
                 art: num,
                 size: 1,
             };
+            if (metadata) obj.metadata = {...metadata};
         }
         else {
             obj.size++;

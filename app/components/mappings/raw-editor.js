@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import {
     SortableContainer,
     SortableElement,
@@ -8,7 +8,7 @@ import arrayMove from 'array-move';
 import { mappingState } from './state';
 import { environment } from '~/store/environment';
 import { observer } from 'mobx-react';
-import { Select, Input, Item, Button, Modal } from '~/ui';
+import { Select, Input, Item } from '~/ui';
 import { Tile } from '../art/tile';
 import {
     isNumber,
@@ -25,100 +25,233 @@ const Handle = SortableHandle(() => (
     </div>
 ));
 
+// inline metadata
+
+const InlineMetadata = observer(({ obj }) => {
+    if (!obj.metadata) obj.metadata = {};
+    const meta = obj.metadata;
+    const keys = Object.keys(meta);
+    const [expanded, setExpanded] = useState(keys.length > 0);
+    const [adding, setAdding] = useState(false);
+    const [newKey, setNewKey] = useState('');
+
+    const commitKey = () => {
+        if (newKey.trim()) {
+            meta[newKey.trim()] = meta[newKey.trim()] || '';
+            if (!expanded) setExpanded(true);
+        }
+        setNewKey('');
+        setAdding(false);
+    };
+
+    return (
+        <div className="inline-metadata">
+            <div className="inline-metadata-bar">
+                {keys.length > 0 && (
+                    <span
+                        className="inline-metadata-toggle"
+                        onClick={() => setExpanded(!expanded)}
+                    >{expanded ? '▾' : '▸'} metadata</span>
+                )}
+                {keys.length === 0 && (
+                    <span className="inline-metadata-empty">metadata</span>
+                )}
+                {!adding ? (
+                    <span
+                        className="inline-metadata-add"
+                        onClick={() => setAdding(true)}
+                    >+</span>
+                ) : (
+                    <input
+                        type="text"
+                        className="inline-metadata-key-input"
+                        value={newKey}
+                        onChange={e => setNewKey(e.target.value)}
+                        placeholder="key"
+                        autoFocus
+                        onKeyDown={e => {
+                            if (e.key === 'Enter') commitKey();
+                            if (e.key === 'Escape') { setNewKey(''); setAdding(false); }
+                        }}
+                        onBlur={commitKey}
+                    />
+                )}
+            </div>
+            {expanded && keys.length > 0 && (
+                <div className="inline-metadata-fields">
+                    {keys.map(key => (
+                        <div key={key} className="inline-metadata-field">
+                            <span className="inline-metadata-label">{key}</span>
+                            <Input store={meta} accessor={key} />
+                            <span
+                                className="inline-metadata-remove"
+                                onClick={() => { delete meta[key]; }}
+                            >×</span>
+                        </div>
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+});
+
+// sprite-level metadata header
+
+const SpriteMetadataHeader = observer(() => {
+    const { metadata, index } = environment.currentSprite;
+    if (!metadata) return null;
+    const keys = Object.keys(metadata);
+    const [adding, setAdding] = useState(false);
+    const [newKey, setNewKey] = useState('');
+
+    const commitKey = () => {
+        if (newKey.trim()) {
+            metadata[newKey.trim()] = metadata[newKey.trim()] || '';
+        }
+        setNewKey('');
+        setAdding(false);
+    };
+
+    return (
+        <div className="sprite-metadata-header">
+            <div className="sprite-metadata-title">
+                <Item color="blue">Sprite 0x{index.toString(16).toUpperCase()}</Item>
+                {!adding ? (
+                    <span
+                        className="inline-metadata-add"
+                        onClick={() => setAdding(true)}
+                    >+</span>
+                ) : (
+                    <input
+                        type="text"
+                        className="inline-metadata-key-input"
+                        value={newKey}
+                        onChange={e => setNewKey(e.target.value)}
+                        placeholder="key"
+                        autoFocus
+                        onKeyDown={e => {
+                            if (e.key === 'Enter') commitKey();
+                            if (e.key === 'Escape') { setNewKey(''); setAdding(false); }
+                        }}
+                        onBlur={commitKey}
+                    />
+                )}
+            </div>
+            {keys.length > 0 && (
+                <div className="inline-metadata-fields">
+                    {keys.map(key => (
+                        <div key={key} className="inline-metadata-field">
+                            <span className="inline-metadata-label">{key}</span>
+                            <Input store={metadata} accessor={key} />
+                            <span
+                                className="inline-metadata-remove"
+                                onClick={() => { delete metadata[key]; }}
+                            >×</span>
+                        </div>
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+});
+
 // mappings
 
 const SortableMappingItem = SortableElement(
     observer(({ mapping, mappingIndex }) => (
         <div className="mapping-data">
             <Handle />
-            <div className="properties">
-                <div className="datum">
-                    <div className="label">top</div>
-                    <Input
-                        store={mapping}
-                        accessor="top"
-                        assert={isNumber}
-                        isNumber
-                    />
+            <div className="piece-content">
+                <div className="properties">
+                    <div className="datum">
+                        <div className="label">top</div>
+                        <Input
+                            store={mapping}
+                            accessor="top"
+                            assert={isNumber}
+                            isNumber
+                        />
+                    </div>
+                    <div className="datum">
+                        <div className="label">left</div>
+                        <Input
+                            store={mapping}
+                            accessor="left"
+                            assert={isNumber}
+                            isNumber
+                        />
+                    </div>
+                    <div className="datum">
+                        <div className="label">tile</div>
+                        <Input
+                            store={mapping}
+                            accessor="art"
+                            assert={isPositiveNumber}
+                            isNumber
+                        />
+                    </div>
+                    <div className="datum">
+                        <div className="label">width</div>
+                        <Input
+                            store={mapping}
+                            accessor="width"
+                            assert={isWidthHeight}
+                            isNumber
+                        />
+                    </div>
+                    <div className="datum">
+                        <div className="label">height</div>
+                        <Input
+                            store={mapping}
+                            accessor="height"
+                            assert={isWidthHeight}
+                            isNumber
+                        />
+                    </div>
+                    <div className="datum">
+                        <div className="label">priority</div>
+                        <Select
+                            store={mapping}
+                            accessor="priority"
+                            options={[
+                                { label: 'yes', value: true },
+                                { label: 'no', value: false },
+                            ]}
+                        />
+                    </div>
+                    <div className="datum">
+                        <div className="label">vflip</div>
+                        <Select
+                            store={mapping}
+                            accessor="vflip"
+                            options={[
+                                { label: 'yes', value: true },
+                                { label: 'no', value: false },
+                            ]}
+                        />
+                    </div>
+                    <div className="datum">
+                        <div className="label">hflip</div>
+                        <Select
+                            store={mapping}
+                            accessor="hflip"
+                            options={[
+                                { label: 'yes', value: true },
+                                { label: 'no', value: false },
+                            ]}
+                        />
+                    </div>
+                    <div className="datum">
+                        <div className="label">palette</div>
+                        <Select
+                            store={mapping}
+                            accessor="palette"
+                            options={[0, 1, 2, 3]}
+                            flipScroll
+                        />
+                    </div>
                 </div>
-                <div className="datum">
-                    <div className="label">left</div>
-                    <Input
-                        store={mapping}
-                        accessor="left"
-                        assert={isNumber}
-                        isNumber
-                    />
-                </div>
-                <div className="datum">
-                    <div className="label">tile</div>
-                    <Input
-                        store={mapping}
-                        accessor="art"
-                        assert={isPositiveNumber}
-                        isNumber
-                    />
-                </div>
-                <div className="datum">
-                    <div className="label">width</div>
-                    <Input
-                        store={mapping}
-                        accessor="width"
-                        assert={isWidthHeight}
-                        isNumber
-                    />
-                </div>
-                <div className="datum">
-                    <div className="label">height</div>
-                    <Input
-                        store={mapping}
-                        accessor="height"
-                        assert={isWidthHeight}
-                        isNumber
-                    />
-                </div>
-                <div className="datum">
-                    <div className="label">priority</div>
-                    <Select
-                        store={mapping}
-                        accessor="priority"
-                        options={[
-                            { label: 'yes', value: true },
-                            { label: 'no', value: false },
-                        ]}
-                    />
-                </div>
-                <div className="datum">
-                    <div className="label">vflip</div>
-                    <Select
-                        store={mapping}
-                        accessor="vflip"
-                        options={[
-                            { label: 'yes', value: true },
-                            { label: 'no', value: false },
-                        ]}
-                    />
-                </div>
-                <div className="datum">
-                    <div className="label">hflip</div>
-                    <Select
-                        store={mapping}
-                        accessor="hflip"
-                        options={[
-                            { label: 'yes', value: true },
-                            { label: 'no', value: false },
-                        ]}
-                    />
-                </div>
-                <div className="datum">
-                    <div className="label">palette</div>
-                    <Select
-                        store={mapping}
-                        accessor="palette"
-                        options={[0, 1, 2, 3]}
-                        flipScroll
-                    />
-                </div>
+                <InlineMetadata obj={mapping} />
             </div>
             <Item
                 inverted
@@ -161,34 +294,37 @@ const SortableDPLCItem = SortableElement(
     observer(({ dplc, dplcIndex }) => (
         <div className="mapping-data">
             <Handle />
-            <div className="properties">
-                <div className="datum">
-                    <div className="label">tile</div>
-                    <Input
-                        store={dplc}
-                        accessor="art"
-                        assert={isPositiveNumber}
-                        isNumber
-                    />
+            <div className="piece-content">
+                <div className="properties">
+                    <div className="datum">
+                        <div className="label">tile</div>
+                        <Input
+                            store={dplc}
+                            accessor="art"
+                            assert={isPositiveNumber}
+                            isNumber
+                        />
+                    </div>
+                    <div className="datum">
+                        <div className="label">length</div>
+                        <Input
+                            store={dplc}
+                            accessor="size"
+                            assert={isDPLCSize}
+                            isNumber
+                        />
+                    </div>
+                    <div className="dplc-tiles">
+                        {Array.from({ length: dplc.size }).map((_, i) => {
+                            const data =
+                                environment.tiles.length > dplc.art + i
+                                    ? environment.tiles[dplc.art + i]
+                                    : undefined;
+                            return <Tile key={i} data={data} />;
+                        })}
+                    </div>
                 </div>
-                <div className="datum">
-                    <div className="label">length</div>
-                    <Input
-                        store={dplc}
-                        accessor="size"
-                        assert={isDPLCSize}
-                        isNumber
-                    />
-                </div>
-                <div className="dplc-tiles">
-                    {Array.from({ length: dplc.size }).map((_, i) => {
-                        const data =
-                            environment.tiles.length > dplc.art + i
-                                ? environment.tiles[dplc.art + i]
-                                : undefined;
-                        return <Tile key={i} data={data} />;
-                    })}
-                </div>
+                <InlineMetadata obj={dplc} />
             </div>
             <Item
                 inverted
@@ -277,6 +413,7 @@ export const RawEditor = observer(
 
             return (
                 <div className="raw-editor">
+                    <SpriteMetadataHeader />
                     <SortableMappingList
                         axis="y"
                         lockAxis="y"

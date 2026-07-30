@@ -9,10 +9,7 @@
 /* http://info.sonicretro.org/Disassemblies */
 
 NEXT
-    combine raw + metadata
-    mapping metadata feature
-        UI needs improving
-
+    make the buttons look more clickable
     thanks selbi
 
 ---
