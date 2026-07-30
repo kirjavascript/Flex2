@@ -3,7 +3,7 @@
 import { LEFT, RIGHT } from './buttons';
 import { select, event, mouse } from 'd3-selection';
 import { mappingState } from './state';
-import { environment } from '#store/environment';
+import { environment } from '~/store/environment';
 
 export function draw(node) {
     const { sourceEvent: { buttons } } = event;
@@ -35,11 +35,8 @@ export function draw(node) {
                 const tileOffset = (mapX * height) + mapY;
                 const bufferOffset = art + tileOffset;
 
-                if (bufferOffset < buffer.length) {
-                    buffer[bufferOffset][tileX + (tileY*8)] = {
-                        [LEFT]: drawIndexLeft,
-                        [RIGHT]: drawIndexRight,
-                    }[buttons];
+                if (bufferOffset < buffer.length && (buttons === LEFT || buttons === RIGHT)) {
+                    buffer[bufferOffset][tileX + (tileY*8)] = buttons === LEFT ? drawIndexLeft : drawIndexRight;
                 }
             }
         });

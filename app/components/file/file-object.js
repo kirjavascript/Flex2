@@ -1,31 +1,28 @@
 import React, { useState, useRef } from 'react';
 import { observer } from 'mobx-react';
-import { Item, Input, File as FileInput, Select, Checkbox, Button } from '#ui';
-import { scripts, runScript, writeBIN, parseASMBasic } from '#formats/scripts';
-import { assemble } from '#formats/asm';
+import { Item, Input, File as FileInput, Select, Checkbox, Button } from '~/ui';
+import { scripts, runScript, writeBIN, parseASMBasic } from '~/formats/scripts';
+import { assemble } from '~/formats/asm';
 
-import { decompress, compress, compressionFormats } from '#formats/compression';
-import { bufferToTiles, tilesToBuffer } from '#formats/art';
-import { buffersToColors, colorsToBuffers } from '#formats/palette';
-import { environment } from '#store/environment';
-import { workspace } from '#store/workspace';
+import { decompress, compress, compressionFormats } from '~/formats/compression';
+import { bufferToTiles, tilesToBuffer } from '~/formats/art';
+import { buffersToColors, colorsToBuffers } from '~/formats/palette';
+import { environment } from '~/store/environment';
+import { workspace } from '~/store/workspace';
 import ErrorMsg from './error';
 import SaveLoad from './save-load';
 import { promises } from 'fs';
 import { extname, basename } from 'path';
-import { uuid } from '#util/uuid';
+import { uuid } from '~/util/uuid';
 
 const fs = promises;
 const compressionList = Object.keys(compressionFormats);
 
 const isASM = (path) => ['.asm', '.s'].includes(extname(path));
 
-export const FileObject = observer(({ obj }) => {
+export const FileObject = observer(({ obj, isAbsolute }) => {
     scripts.length; // react to script updates
-    const script = obj.format && runScript(obj.format);
-    const scriptSafe = script && !script.error;
-
-    const { isAbsolute } = obj; // set in store/workspace
+    const script = obj.format && runScript(obj);
 
     const mappingsASM = isASM(obj.mappings.path);
     const dplcsASM = isASM(obj.dplcs.path);
@@ -35,14 +32,11 @@ export const FileObject = observer(({ obj }) => {
 
     function ioWrap(filePath, setError, e, cb) {
         setError();
-        if (scriptSafe && filePath) {
+        if (script && !script.error && filePath) {
             const done = SaveLoad.indicator(e);
             requestIdleCallback(async () => {
-                const path = isAbsolute
-                    ? filePath
-                    : workspace.absolutePath(filePath);
                 try {
-                    await cb(path);
+                    await cb(workspace.fuzzyAbsolutePath(filePath));
                 } catch (e) {
                     setError(e);
                 } finally {
@@ -56,38 +50,34 @@ export const FileObject = observer(({ obj }) => {
         if (isASM) {
             const contents = await fs.readFile(path, 'utf8');
 
-            if (script.asm.basic) return await parseASMBasic(contents);
-
-            const buffer = await assemble(script.asm.prelude + contents, {
+            const result = await assemble(script.asm.prelude + contents, {
                 filename: basename(path),
             });
 
-            return buffer;
+            return result;
         }
 
-        return await fs.readFile(path);
+        return { buffer: await fs.readFile(path), symbols: null };
     }
 
     const loadRef = useRef();
 
     function loadObject() {
-        loadRef.current.childNodes.forEach(n => { n.textContent = ''; });
+        loadRef.current.childNodes.forEach((n) => {
+            n.textContent = '';
+        });
         loadArt({ target: loadRef.current.childNodes[0] });
-        loadMappings({ target: loadRef.current.childNodes[1] });
-        if (obj.dplcs.enabled) {
-            loadDPLCs({ target: loadRef.current.childNodes[2] });
-        }
-        loadPalettes({ target: loadRef.current.childNodes[3] });
+        loadMappingsAndDPLCs({ target: loadRef.current.childNodes[1] });
+        loadPalettes({ target: loadRef.current.childNodes[2] });
     }
 
     function saveObject() {
-        loadRef.current.childNodes.forEach(n => { n.textContent = ''; });
+        loadRef.current.childNodes.forEach((n) => {
+            n.textContent = '';
+        });
         saveArt({ target: loadRef.current.childNodes[0] });
-        saveMappings({ target: loadRef.current.childNodes[1] });
-        if (obj.dplcs.enabled) {
-            saveDPLCs({ target: loadRef.current.childNodes[2] });
-        }
-        savePalettes({ target: loadRef.current.childNodes[3] });
+        saveMappingsAndDPLCs({ target: loadRef.current.childNodes[1] });
+        savePalettes({ target: loadRef.current.childNodes[2] });
     }
 
     const [artError, setArtError] = useState();
@@ -96,115 +86,86 @@ export const FileObject = observer(({ obj }) => {
         ioWrap(obj.art.path, setArtError, e, async (path) => {
             const buffer = (await fs.readFile(path)).slice(obj.art.offset || 0);
 
-            if (script.art) {
-                environment.tiles.replace(script.readArt(buffer));
-            } else {
-                const decompBuffer = await decompress(
-                    buffer,
-                    obj.art.compression,
-                );
-                environment.tiles.replace(bufferToTiles(decompBuffer));
-            }
+            const decompBuffer = await decompress(buffer, obj.art.compression);
+            environment.tiles.replace(bufferToTiles(decompBuffer));
         });
     }
 
     function saveArt(e) {
         ioWrap(obj.art.path, setArtError, e, async (path) => {
-            if (obj.art.offset) {
+            if (Number(obj.art.offset)) {
                 throw new Error('Can only save art at offset 0');
             }
-            const tiles = script.art
-                ? script.writeArt(tiles)
-                : tilesToBuffer(environment.tiles, obj.art.compression);
+            const tiles = tilesToBuffer(environment.tiles, obj.art.compression);
             await fs.writeFile(path, tiles);
 
-            if (script.art) {
-                await fs.writeFile(path, script.writeArt(tiles));
-            } else {
-                const buffer = tilesToBuffer(environment.tiles);
-                await fs.writeFile(
-                    path,
-                    Buffer.from(await compress(buffer, obj.art.compression)),
-                );
-            }
+            const buffer = tilesToBuffer(environment.tiles);
+            await fs.writeFile(
+                path,
+                Buffer.from(await compress(buffer, obj.art.compression)),
+            );
         });
     }
 
     const [mappingError, setMappingError] = useState();
 
-    function loadMappings(e) {
+    function loadMappingsAndDPLCs(e) {
         ioWrap(obj.mappings.path, setMappingError, e, async (path) => {
             if (!obj.dplcs.enabled) environment.config.dplcsEnabled = false;
-            const buffer = await getBuffer(path, mappingsASM);
+            const { buffer, symbols } = await getBuffer(path, mappingsASM);
 
-            const mappings = script.readMappings(buffer);
-            if (mappings.error) throw mappings.error;
-            environment.mappings.replace(mappings.sprites);
-            if (
-                obj.dplcs.enabled &&
-                environment.dplcs.length < mappings.sprites.length
-            ) {
-                environment.dplcs.push(
-                    ...Array.from(
-                        {
-                            length:
-                                mappings.sprites.length -
-                                environment.dplcs.length,
-                        },
-                        () => [],
-                    ),
-                );
+            let dplcBuffer, dplcSymbols;
+            if (obj.dplcs.enabled) {
+                environment.config.dplcsEnabled = true;
+                const dplcPath = workspace.fuzzyAbsolutePath(obj.dplcs.path);
+                ({ buffer: dplcBuffer, symbols: dplcSymbols } = await getBuffer(dplcPath, dplcsASM));
+            }
+
+            const result = script.readMappings(buffer, symbols, dplcBuffer, dplcSymbols);
+            if (result.error) throw result.error;
+
+            environment.mappings.replace(result.mappings.sprites);
+            environment.spriteMetadata.replace(result.mappings.spriteMetadata || []);
+
+            if (result.dplcs) {
+                environment.dplcs.replace(result.dplcs.sprites);
             }
         });
     }
 
-    function saveMappings(e) {
+    function saveMappingsAndDPLCs(e) {
         ioWrap(obj.mappings.path, setMappingError, e, async (path) => {
-            const mappings = script.writeMappings(environment.mappings);
-            if (mappings.error) throw mappings.error;
+            const dplcsData = obj.dplcs.enabled ? environment.dplcs : null;
+            const result = script.writeMappings(environment.mappings, dplcsData, environment.spriteMetadata, environment);
+            if (result.error) throw result.error;
+
             if (!mappingsASM) {
-                await fs.writeFile(path, writeBIN(mappings));
+                await fs.writeFile(path, writeBIN(result.mappings));
             } else {
                 const label = obj.mappings.label || 'Map_' + uuid().slice(0, 4);
                 const asmOutput = script.generateMappingsASM({
                     label,
-                    listing: mappings,
+                    listing: result.mappings,
                     sprites: environment.sprites,
                 });
 
                 await fs.writeFile(path, asmOutput);
             }
-        });
-    }
 
-    const [dplcError, setDPLCError] = useState();
+            if (result.dplcs) {
+                const dplcPath = workspace.fuzzyAbsolutePath(obj.dplcs.path);
+                if (!dplcsASM) {
+                    await fs.writeFile(dplcPath, writeBIN(result.dplcs));
+                } else {
+                    const label = obj.dplcs.label || 'DPLC_' + uuid().slice(0, 4);
+                    const asmOutput = script.generateDPLCsASM({
+                        label,
+                        listing: result.dplcs,
+                        sprites: environment.sprites,
+                    });
 
-    function loadDPLCs(e) {
-        ioWrap(obj.dplcs.path, setDPLCError, e, async (path) => {
-            environment.config.dplcsEnabled = true;
-            const buffer = await getBuffer(path, dplcsASM);
-
-            const dplcs = script.readDPLCs(buffer);
-            if (dplcs.error) throw dplcs.error;
-            environment.dplcs.replace(dplcs.sprites);
-        });
-    }
-
-    function saveDPLCs(e) {
-        ioWrap(obj.dplcs.path, setDPLCError, e, async (path) => {
-            const dplcs = script.writeDPLCs(environment.dplcs);
-            if (dplcs.error) throw dplcs.error;
-            if (!dplcsASM) {
-                await fs.writeFile(path, writeBIN(dplcs));
-            } else {
-                const label = obj.dplcs.label || 'DPLC_' + uuid().slice(0, 4);
-                const asmOutput = script.generateDPLCsASM({
-                    label,
-                    listing: dplcs,
-                    sprites: environment.sprites,
-                });
-
-                await fs.writeFile(path, asmOutput);
+                    await fs.writeFile(dplcPath, asmOutput);
+                }
             }
         });
     }
@@ -220,11 +181,9 @@ export const FileObject = observer(({ obj }) => {
                     cursor += length;
                     continue;
                 }
-                const path = isAbsolute
-                    ? palPath
-                    : workspace.absolutePath(palPath);
+                const path = workspace.fuzzyAbsolutePath(palPath);
 
-                (script.palettes ? script.readPalettes : buffersToColors)({
+                buffersToColors({
                     buffer: await fs.readFile(path),
                     length,
                 }).forEach((line) => {
@@ -246,13 +205,13 @@ export const FileObject = observer(({ obj }) => {
                     cursor += length;
                     continue;
                 }
-                const path = isAbsolute
-                    ? palPath
-                    : workspace.absolutePath(palPath);
+                const path = workspace.fuzzyAbsolutePath(palPath);
 
-                const chunk = (
-                    script.palettes ? script.writePalettes : colorsToBuffers
-                )(environment.palettes, cursor, cursor + length);
+                const chunk = colorsToBuffers(
+                    environment.palettes,
+                    cursor,
+                    cursor + length,
+                );
                 await fs.writeFile(path, chunk);
                 cursor += length;
             }
@@ -270,7 +229,7 @@ export const FileObject = observer(({ obj }) => {
                 <Item color="blue">Object</Item>
                 <div className="load-ref">
                     <div ref={loadRef}>
-                        {Array.from({ length: 4 }, (_, i) => (
+                        {Array.from({ length: 3 }, (_, i) => (
                             <span key={i} />
                         ))}
                     </div>
@@ -281,22 +240,18 @@ export const FileObject = observer(({ obj }) => {
                 <Item color="green">Art</Item>
                 <SaveLoad load={loadArt} save={saveArt} />
             </div>
-            {!script.art && (
-                <>
-                    <div className="menu-item">
-                        <Item>Compression</Item>
-                        <Select
-                            options={compressionList}
-                            store={obj.art}
-                            accessor="compression"
-                        />
-                    </div>
-                    <div className="menu-item">
-                        <Item>Offset</Item>
-                        <Input store={obj.art} accessor="offset" isNumber />
-                    </div>
-                </>
-            )}
+            <div className="menu-item">
+                <Item>Compression</Item>
+                <Select
+                    options={compressionList}
+                    store={obj.art}
+                    accessor="compression"
+                />
+            </div>
+            <div className="menu-item">
+                <Item>Load Offset</Item>
+                <Input store={obj.art} accessor="offset" isNumber />
+            </div>
             <ErrorMsg error={artError} />
             <FileInput
                 label="Art"
@@ -307,7 +262,7 @@ export const FileObject = observer(({ obj }) => {
 
             <div className="menu-item">
                 <Item color="yellow">Mappings</Item>
-                <SaveLoad load={loadMappings} save={saveMappings} />
+                <SaveLoad load={loadMappingsAndDPLCs} save={saveMappingsAndDPLCs} />
             </div>
             <ErrorMsg error={mappingError} />
             <FileInput
@@ -323,19 +278,44 @@ export const FileObject = observer(({ obj }) => {
                 </div>
             )}
 
-            {script.DPLCs && (
+            {script?.config?.map((option, i) => {
+                return (
+                    <div className="menu-item" key={i}>
+                        <Item>{option.label || option.name}</Item>
+                        {(() => {
+                            if (option.type === 'number') {
+                                return (
+                                    <Input
+                                        isNumber
+                                        store={obj.config}
+                                        accessor={option.name}
+                                    />
+                                );
+                            }
+                            if (option.type === 'checkbox') {
+                                const value = !!obj.config[option.name];
+                                return (
+                                    <Checkbox
+                                        checked={value}
+                                        onChange={() => {
+                                            obj.config[option.name] = !value;
+                                        }}
+                                    />
+                                );
+                            }
+                        })()}
+                    </div>
+                );
+            })}
+
+            {script?.DPLCs && (
                 <>
                     <div className="menu-item" onClick={toggleDPLCs}>
-                        <Item>DPLCs Enabled</Item>
+                        <Item>Use PLCs</Item>
                         <Checkbox checked={obj.dplcs.enabled} readOnly />
                     </div>
                     {obj.dplcs.enabled && (
                         <>
-                            <div className="menu-item">
-                                <Item color="red">DPLCs</Item>
-                                <SaveLoad load={loadDPLCs} save={saveDPLCs} />
-                            </div>
-                            <ErrorMsg error={dplcError} />
                             <FileInput
                                 label="Mappings"
                                 store={obj.dplcs}

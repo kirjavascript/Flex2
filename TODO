@@ -1,8 +1,6 @@
 // formats to support
 
-// crackers
 // kid chameleon
-    // go back to qiuu with questions
 // chaotix
 // s3k sonic saving
 // ristar
@@ -10,15 +8,51 @@
 /* https://raw.githubusercontent.com/Dandaman955/Streets-of-Rage-1-Disassembly-Redux/master/SoR.asm */
 /* http://info.sonicretro.org/Disassemblies */
 
+NEXT
+    combine raw + metadata
+    mapping metadata feature
+        UI needs improving
 
-macros for mappings
-    perf
-    autoload mapping label if blank
+    thanks selbi
 
-metadata for mappings
+---
+    persist comments?
 
-redo tile rendering
-remove rotsprite
+    dropdown script option for s3k
+    s3k mapmacros
+
+    horizontal shift scrolling with mouse
+
+onion skinning
+
+TODO: fix project dir not being correct when loading the crackers project
+
+docs
+    crackers
+    mapping script configuration
+    raw editor
+    - string / number? or just autoparse?
+
+sublayout -> tabbed pane
+    mappings - raw editor - metadata - commands?
+
+
+metadata for mappings UI + scripts
+    in asm
+    label metadata
+    splitpoint for s3k mappings
+
+inputs
+    when copying to project, only use config{} data defined in scripts
+
+test windows styles and fix fullscreen
+    fullscreening nukes masory layout (and sprites when done from load?)
+
+WEB
+
+.zip local version
+scripts tab
+no projects
 
 ROADMAP
 
@@ -31,7 +65,6 @@ animation editor
 ==
 BUGS
 
-TODO: load / save / load broken in sonic CD
 pink surrounding tiles sometimes breaks
 
 FEATURES

@@ -5,7 +5,7 @@ window.ELECTRON_DISABLE_SECURITY_WARNINGS = true;
 import './controls/keyboard';
 import React from 'react';
 import { render } from 'react-dom';
-import { Layout } from '#components/layout';
+import { Layout } from '~/components/layout';
 import './components/import';
 import { configure } from 'mobx';
 
@@ -27,3 +27,10 @@ document.addEventListener('drop', (e) => {
     e.preventDefault();
     return false;
 }, false);
+
+// Expose stores for e2e tests.
+import { environment } from '~/store/environment';
+import { workspace } from '~/store/workspace';
+import { toJS } from 'mobx';
+import { exportSprite } from '~/formats/image';
+window.__test__ = { environment, workspace, toJS, exportSprite };

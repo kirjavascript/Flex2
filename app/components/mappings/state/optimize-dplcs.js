@@ -1,6 +1,6 @@
-import { environment } from '#store/environment';
+import { environment } from '~/store/environment';
 import range from 'lodash/range';
-import { arrayIndexOf } from '#util/array-index-of';
+import { arrayIndexOf } from '~/util/array-index-of';
 
 import { concatDPLCs } from './concat-dplcs';
 

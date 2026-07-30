@@ -1,5 +1,5 @@
 import { observable, computed, action, autorun, toJS, makeObservable } from 'mobx';
-import { storage } from '#store/storage';
+import { storage } from '~/store/storage';
 
 class SpriteState {
 

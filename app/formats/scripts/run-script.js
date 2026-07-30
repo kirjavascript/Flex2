@@ -1,6 +1,7 @@
 import { loadScript, scriptDir } from './file';
-import { writeASM } from '#formats/scripts';
+import { writeASM, sanitizeLabel } from '~/formats/scripts';
 import { logger } from './debug';
+import { makeOffsetTable } from './offset-table';
 import { toJS } from 'mobx';
 import fs from 'fs';
 import { join } from 'path';
@@ -50,98 +51,61 @@ function catchFunc(func) {
     };
 }
 
-function makeOffsetTable({ read, write }) {
-    return (size = constants.dc.w, { items } = {}) => [
-        ({ getCursor }) => ({ ref }) => {
-            const cursor = getCursor();
-            const mask = (2 ** (size - 1)) - 1; // 0x7FFF for dc.w
-            if (!ref.global.ptr) {
-                ref.global.ptr = mask;
-            }
-            const headers = [];
-            // we keep searching for headers until either;
-            // - cursor reaches a header pointer value
-            // - items is exceeded
-            for (let i = cursor; i < 1e5 && i < ref.global.ptr; i = getCursor()) {
-                const header = (read(size) & mask) + cursor;
-                headers.push(header);
-                logger('= HEADER =', header);
-                if (header < ref.global.ptr && !(header === 0)) {
-                    ref.global.ptr = header;
-                }
-                if (items && headers.length >= items) break;
-            }
-            if (!ref.global.firstHeader) {
-                ref.global.firstHeader = true;
-                ref.global.cleanup.push(({ sprites }) => {
-                    sprites.splice(0, sprites.length);
-                });
-            }
-            ref.global.cleanup.push(({ sprites, spritesAddr }) => {
-                headers.forEach(header => {
-                    if (header === 0) {
-                        sprites.push([]); // handle zero header optimization
-                    } else {
-                        if (spritesAddr[header]) {
-                            sprites.push(spritesAddr[header]);
-                        } else {
-                            logger('error', 'no sprite at ' + header);
-                        }
-                    }
-                });
-            });
-            return constants.endSection;
-        },
-        ({ ref }, spriteIndex) => {
-            if (spriteIndex === 0) {
-                ref.global.cleanup.push(({ sections }) => {
-                    const [header, mappings] = sections;
-
-                    let cursor = size * mappings.length; // bits
-
-                    mappings.forEach((frames, i)=> {
-                        const addr = header[i];
-                        addr.push([[address, size, cursor / 8]]);
-
-                        frames.forEach(frame => {
-                            frame.forEach(([, size]) => {
-                                cursor += size;
-                            });
-                        });
-                    });
-
-                });
-            }
-        },
-    ];
-}
-
-
-export default catchFunc((file) => {
+export default catchFunc((obj) => {
     const [write, setWrite] = useFunc();
     const [read, setRead] = useFunc();
 
-    const [artArgs, artFunc] = useDef();
     const [mappingArgs, mappingFunc] = useDef();
     const [dplcArgs, dplcFunc] = useDef();
-    const [paletteArgs, paletteFunc] = useDef();
-    const [asmArgs, asmFunc] = useDef();
 
-    (new Function('Flex2', loadScript(file)))({
+    const [asmArgs, asmFunc] = useDef();
+    let postReadFunc = null;
+
+    const configOptions = [];
+    const configFunc = (callback) => {
+        function element(name) {
+            return (options = {}) => {
+                if (!options.name) {
+                    throw new Error(`${name} needs a name`);
+                }
+                options.type = name;
+                return options;
+            };
+        }
+
+        configOptions.splice(0, configOptions.length, ...callback({
+            number: element('number'),
+            checkbox: element('checkbox'),
+        }));
+
+        configOptions.forEach(option => {
+            if (option.default != null && configFunc[option.name] == null) {
+                configFunc[option.name] = option.default;
+                obj.config[option.name] = option.default;
+            }
+            if (option.type === 'number' && configFunc[option.name] != null) {
+                configFunc[option.name] = Number(configFunc[option.name]);
+            }
+        });
+    };
+    Object.assign(configFunc, obj.config);
+
+    (new Function('Flex2', loadScript(obj.format)))({
         ...constants,
         write,
         read,
-        art: artFunc,
         mappings: mappingFunc,
         dplcs: dplcFunc,
-        palettes: paletteFunc,
+        plcs: dplcFunc,
         asm: asmFunc,
+        config: configFunc,
         offsetTable: makeOffsetTable({ read, write }),
+        postRead: (fn) => { postReadFunc = fn; },
     });
 
-    const readLimit = 1e3;
+    const readLimit = 2e3;
 
-    const createReader = (sectionList = []) => catchFunc((buffer) => {
+    const createReader = (sectionList = []) => catchFunc((buffer, symbols) => {
         logger('buf length', buffer.length);
         const bitBuffer = [];
         let cursor = 0;
@@ -189,6 +153,7 @@ export default catchFunc((file) => {
                 if (cursor >= buffer.length) break;
                 logger(`== SPRITE == ${spriteIndex.toString(16)} `);
                 const sprite = [];
+                sprite.metadata = {};
                 const ref = { global };
                 spritesAddr[cursor] = sprite;
                 const readMapping = readFrame({ getCursor }, spriteIndex);
@@ -196,7 +161,9 @@ export default catchFunc((file) => {
                     logger('read mapping');
                     for (let frameIndex = 0; frameIndex < readLimit; frameIndex++) {
                         logger(`= FRAME = ${frameIndex.toString(16)} `);
-                        const mapping = {};
+                        const mapping = {
+                            metadata: {},
+                        };
                         const param = {
                             mapping,
                             sprites,
@@ -227,13 +194,27 @@ export default catchFunc((file) => {
         });
         logger('spritesAddr', spritesAddr);
 
-        global.cleanup.forEach(task => task({ sprites, spritesAddr }));
+        global.cleanup.forEach(task => task({ sprites, spritesAddr, buffer }));
 
-        return {sprites};
+        if (symbols) {
+            const addrToSprite = new Map();
+            for (const [addr, sprite] of Object.entries(spritesAddr)) {
+                addrToSprite.set(sprite, Number(addr));
+            }
+            sprites.forEach(sprite => {
+                const addr = addrToSprite.get(sprite);
+                if (addr != null && symbols[addr]) {
+                    sprite.metadata.label = symbols[addr];
+                }
+            });
+        }
+
+        const spriteMetadata = sprites.map(s => s.metadata || {});
+        return {sprites, spriteMetadata};
     });
 
-    const readMappings = createReader(mappingArgs[0]);
-    const readDPLCs = createReader(dplcArgs[0]);
+    const readMappingsRaw = createReader(mappingArgs[0]);
+    const readDPLCsRaw = createReader(dplcArgs[0]);
 
     const unsign = (size, num) => {
         if (num < 0) {
@@ -242,22 +223,24 @@ export default catchFunc((file) => {
         return num;
     };
 
-    const createWriter = (sectionList = []) => catchFunc((mappings) => {
+    const createWriter = (sectionList = []) => catchFunc((mappings, spriteMetadata, environment) => {
         // mapping output format is [type, size, data]
 
         const global = { cleanup: [] };
+        const metadataList = toJS(spriteMetadata || []);
         const sections = sectionList.map(([, writeFrame]) => {
             const spriteList = toJS(mappings);
             const sprites = [];
 
             for (let spriteIndex = 0; spriteIndex < spriteList.length; spriteIndex++) {
                 const sprite = spriteList[spriteIndex];
+                sprite.metadata = metadataList[spriteIndex] || {};
                 const ref = { global };
                 const mappings = []
                 setWrite((size, data, type = binary) => {
                     mappings.push([[type, size, unsign(size, +data)]]);
                 });
-                const writeMapping = writeFrame({ sprite, ref }, spriteIndex);
+                const writeMapping = writeFrame({ sprite, ref, environment }, spriteIndex);
 
                 if (writeMapping) {
                     for (let frameIndex = 0; frameIndex < sprite.length; frameIndex++) {
@@ -293,45 +276,69 @@ export default catchFunc((file) => {
         return {sections};
     });
 
-    const writeMappings = createWriter(mappingArgs[0]);
-    const writeDPLCs = createWriter(dplcArgs[0]);
+    const writeMappingsRaw = createWriter(mappingArgs[0]);
+    const writeDPLCsRaw = createWriter(dplcArgs[0]);
+
+    function readMappings(buffer, symbols, dplcBuffer, dplcSymbols) {
+        const mappings = readMappingsRaw(buffer, symbols);
+        if (mappings.error) return mappings;
+
+        let dplcs;
+        if (dplcBuffer) {
+            dplcs = readDPLCsRaw(dplcBuffer, dplcSymbols);
+            if (dplcs.error) return dplcs;
+
+            for (let i = 0; i < dplcs.spriteMetadata.length; i++) {
+                const plcLabel = dplcs.spriteMetadata[i]?.label;
+                if (plcLabel) {
+                    if (!mappings.spriteMetadata[i]) mappings.spriteMetadata[i] = {};
+                    mappings.spriteMetadata[i].plcLabel = plcLabel;
+                }
+            }
+        }
+
+        if (postReadFunc) {
+            postReadFunc({
+                mappings: mappings.sprites,
+                dplcs: dplcs?.sprites,
+                spriteMetadata: mappings.spriteMetadata,
+            });
+        }
+
+        return { mappings, dplcs };
+    }
+
+    function writeMappings(mappingsData, dplcsData, spriteMetadata, environment) {
+        const mappings = writeMappingsRaw(mappingsData, spriteMetadata, environment);
+        if (mappings.error) return mappings;
+
+        let dplcs;
+        if (dplcsData) {
+            dplcs = writeDPLCsRaw(dplcsData, spriteMetadata, environment);
+            if (dplcs.error) return dplcs;
+        }
+
+        return { mappings, dplcs };
+    }
 
     const exports = {
         mappings: true,
         readMappings,
         writeMappings,
+        config: configOptions,
     };
 
     if (dplcArgs[0]) {
-        Object.assign(exports, {
-            DPLCs: true,
-            readDPLCs,
-            writeDPLCs,
-        });
+        exports.DPLCs = true;
     }
 
-    if (artArgs[0]) {
-        const [readArt, writeArt] = artArgs[0];
-        Object.assign(exports, {
-            art: true,
-            readArt,
-            writeArt,
-        });
-    }
-
-    if (paletteArgs[0]) {
-        const [readPalettes, writePalettes] = paletteArgs[0];
-        Object.assign(exports, {
-            palettes: true,
-            readPalettes,
-            writePalettes,
-        });
-    }
-
+    // ASM
 
     const asm = {
-        basic: false,
         prelude: `
+	cpu 68000
+	padding off
+
 even macro
     if (*)&1
         dc.b 0 ;ds.b 1
@@ -343,10 +350,6 @@ even macro
     if (asmArgs[0]) {
         const [writeMappingsArgs, writeMappingsFunc] = useDef();
         const [writeDPLCsArgs, writeDPLCsFunc] = useDef();
-
-        function basic() {
-            asm.basic = true;
-        }
 
         function addScript(code) {
             asm.prelude += code;
@@ -360,7 +363,6 @@ even macro
         }
 
         asmArgs[0]({
-            basic,
             addScript,
             importScript,
             writeMappings: writeMappingsFunc,
@@ -393,12 +395,12 @@ even macro
         listing,
     }) {
         if (!asm.writeMappings) {
-            return writeASM(label, listing);
+            return writeASM(label, listing, sprites);
         }
 
         return asm.writeMappings({
             label, sprites, listing,
-            renderHex,
+            renderHex, sanitizeLabel,
         });
     };
 
@@ -408,12 +410,12 @@ even macro
         listing,
     }) {
         if (!asm.writeDPLCs) {
-            return writeASM(label, listing);
+            return writeASM(label, listing, sprites, 'plcLabel');
         }
 
         return asm.writeDPLCs({
             label, sprites, listing,
-            renderHex,
+            renderHex, sanitizeLabel,
         });
     };
 

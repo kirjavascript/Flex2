@@ -1,5 +1,5 @@
 import { autorun, toJS } from 'mobx';
-import throttle from 'lodash/throttle';
+
 import { environment } from './environment';
 
 const maxHistory = 1000;
@@ -58,7 +58,7 @@ const addHistory = () => {
     }
 };
 
-export const undo = throttle(() => {
+export const undo = () => {
     timeTravelling = true;
 
     if (past.length) {
@@ -68,9 +68,9 @@ export const undo = throttle(() => {
 
         setCurrent();
     }
-}, 100);
+};
 
-export const redo = throttle(() => {
+export const redo = () => {
     timeTravelling = true;
 
     if (future.length) {
@@ -80,4 +80,4 @@ export const redo = throttle(() => {
 
         setCurrent();
     }
-}, 100);
+};

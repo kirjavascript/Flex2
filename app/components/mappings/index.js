@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { environment } from '#store/environment';
+import { environment } from '~/store/environment';
 import classNames from 'classnames';
 import { mappingState } from './state';
-import { Slider } from '#ui';
+import { Slider } from '~/ui';
 import { Mapping } from './mapping';
 import { Selection } from './selection';
 import { Axes } from './axis';
@@ -11,11 +11,11 @@ import { HUD } from './hud';
 import { PaletteHUD } from './hud-palette';
 import { Guidelines } from './guidelines';
 import { NewMapping } from './new-mapping';
-import { RawEditor } from './raw-editor';
 import { Rotate } from './rotate';
 import { DragSelect, attachDragSelectToNode } from './drag-select';
 import { attachDragMoveToNode } from './drag-move';
 import { Commands } from './commands';
+import { Settings } from './settings';
 
 export const Mappings = observer(class Mappings extends Component {
     mappingRef = (node) => {
@@ -132,8 +132,8 @@ export const Mappings = observer(class Mappings extends Component {
                     style={{ width: baseWidth }}
                 />
 
-                <RawEditor />
                 <Rotate />
+                <Settings />
 
                 <Commands />
             </div>

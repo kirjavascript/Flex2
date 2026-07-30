@@ -3,7 +3,7 @@ import range from 'lodash/range';
 import unique from 'lodash/uniq';
 import { storage } from './storage';
 import { initHistory } from './history';
-import { defaultPalettes } from '#formats/palette';
+import { defaultPalettes } from '~/formats/palette';
 import arrayMove from 'array-move';
 
 class Environment {
@@ -12,6 +12,7 @@ class Environment {
         currentTile: 0,
         transparency: true,
         dplcsEnabled: false,
+        artPaletteLine: 0,
     };
 
     // palettes must use colours of the form #NNN
@@ -29,6 +30,10 @@ class Environment {
         // {art, size}
     ];
 
+    spriteMetadata = [
+        // per-sprite KV metadata
+    ];
+
     constructor() {
         makeObservable(this, {
             config: observable,
@@ -36,6 +41,7 @@ class Environment {
             tiles: observable,
             mappings: observable,
             dplcs: observable,
+            spriteMetadata: observable,
             palettesRGB: computed,
             sprites: computed,
             currentSprite: computed,
@@ -73,51 +79,27 @@ class Environment {
                     buffer,
                     mappings: mappingList,
                     dplcs: this.dplcs[index],
+                    metadata: this.spriteMetadata[index] || {},
                 };
             } else {
                 return {
                     index,
                     buffer: this.tiles,
                     mappings: mappingList,
+                    metadata: this.spriteMetadata[index] || {},
                 };
             }
-
-
-            // let buffer = [];
-
-            // const dplcsAvailable = this.config.dplcsEnabled && this.dplcs.length > index;
-
-            // if (dplcsAvailable) {
-            //     this.dplcs[index].forEach(({art, size}) => {
-            //         Array.from({length: size}, (_, i) => {
-            //             if (this.tiles.length <= art + i) {
-            //                 buffer.push([]);
-            //             } else {
-            //                 buffer.push(this.tiles[art + i]);
-            //             }
-            //         });
-            //     });
-            // }
-            // else {
-            //     buffer = this.tiles;
-            // }
-
-            // return {
-            //     index, buffer,
-            //     mappings: mappingList,
-            //     dplcs: dplcsAvailable && this.dplcs[index],
-            // };
         });
     }
 
     get currentSprite() {
         return this.sprites[this.config.currentSprite]
             || this.sprites[0]
-            || { mappings: [], buffer: [], index: 0, dplcs: [], };
+            || { mappings: [], buffer: [], index: 0, dplcs: [], metadata: {} };
     }
 
     get activeTiles() {
-        const { config: { dplcsEnabled }, currentSprite: { mappings, dplcs } } = environment;
+        const { config: { dplcsEnabled }, currentSprite: { mappings, dplcs } } = this;
         let activeTiles = [];
 
         const objs = (dplcsEnabled && dplcs ? dplcs : mappings);
@@ -136,6 +118,7 @@ class Environment {
             this.config.dplcsEnabled &&
             this.dplcs.replace(arrayMove(this.dplcs, oldIndex, newIndex));
             this.mappings.replace(arrayMove(this.mappings, oldIndex, newIndex));
+            this.spriteMetadata.replace(arrayMove(this.spriteMetadata, oldIndex, newIndex));
         }
     };
 

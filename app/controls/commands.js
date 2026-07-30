@@ -1,8 +1,8 @@
-import { environment } from '#store/environment';
-import { mappingState } from '#components/mappings/state';
-import { importState } from '#components/import/state';
-import { undo, redo } from '#store/history';
-import { exportPNG, importImg, exportSpritesheet } from '#formats/image';
+import { environment } from '~/store/environment';
+import { mappingState } from '~/components/mappings/state';
+import { importState } from '~/components/import/state';
+import { undo, redo } from '~/store/history';
+import { exportPNG, importImg, exportSpritesheet } from '~/formats/image';
 import { getDistance } from './distance';
 import { toJS } from 'mobx';
 
@@ -56,6 +56,7 @@ export const commands = [
                 environment.mappings.splice(currentSprite+1, 0, []);
                 dplcsEnabled &&
                 environment.dplcs.splice(currentSprite+1, 0, []);
+                environment.spriteMetadata.splice(currentSprite+1, 0, {});
                 environment.config.currentSprite++;
             },
         },
@@ -81,6 +82,10 @@ export const commands = [
                 environment.mappings.splice(currentSprite+1, 0, toJS(mappings));
                 dplcsEnabled &&
                 environment.dplcs.splice(currentSprite+1, 0, toJS(dplcs));
+                const meta = toJS(environment.spriteMetadata[currentSprite] || {});
+                if (meta.label) meta.label += '_Clone';
+                if (meta.plcLabel) meta.plcLabel += '_Clone';
+                environment.spriteMetadata.splice(currentSprite+1, 0, meta);
             },
         },
         {
@@ -100,6 +105,10 @@ export const commands = [
                         });
                         environment.dplcs.splice(currentSprite+1, 0, newDPLCs);
                         environment.mappings.splice(currentSprite+1, 0, toJS(mappings));
+                        const meta = toJS(environment.spriteMetadata[currentSprite] || {});
+                        if (meta.label) meta.label += '_Clone';
+                        if (meta.plcLabel) meta.plcLabel += '_Clone';
+                        environment.spriteMetadata.splice(currentSprite+1, 0, meta);
                     }
                     else {
                         const newMappings = toJS(mappings);
@@ -111,6 +120,10 @@ export const commands = [
                             mapping.art = tiles.length - size;
                         });
                         environment.mappings.splice(currentSprite+1, 0, newMappings);
+                        const meta = toJS(environment.spriteMetadata[currentSprite] || {});
+                        if (meta.label) meta.label += '_Clone';
+                        if (meta.plcLabel) meta.plcLabel += '_Clone';
+                        environment.spriteMetadata.splice(currentSprite+1, 0, meta);
                     }
                 });
             },
@@ -233,6 +246,7 @@ export const commands = [
                 const { currentSprite } = environment.config;
                 environment.mappings.splice(currentSprite, 1);
                 environment.dplcs.splice(currentSprite, 1);
+                environment.spriteMetadata.splice(currentSprite, 1);
             },
         },
         {
@@ -258,6 +272,7 @@ export const commands = [
                 mappingState.deleteUnusedTiles();
             },
         },
+
     ],
 
 
@@ -275,15 +290,15 @@ export const commands = [
 
     [
         {
-            map: 'r', name: 'Raw Editor', color: 'white', noMultiplier: true,
-            func: () => {
-                mappingState.toggleRawEditor();
-            },
-        },
-        {
             map: 'R', name: 'Rotate Sprite', color: 'white', noMultiplier: true,
             func: () => {
                 mappingState.toggleRotate();
+            },
+        },
+        {
+            map: 'S', name: 'Settings', color: 'white', noMultiplier: true,
+            func: () => {
+                mappingState.toggleSettings();
             },
         },
     ],
@@ -367,6 +382,16 @@ export const commands = [
         {
             map: 'u p', name: 'Unload Palettes', color: 'red', noMultiplier: true,
             func: () => { environment.resetPalettes(); },
+        },
+        {
+            map: 'u e', name: 'Unload Everything', color: 'red', noMultiplier: true,
+            func: () => {
+                environment.tiles.replace([]);
+                environment.mappings.replace([]);
+                environment.config.dplcsEnabled &&
+                environment.dplcs.replace([]);
+                environment.resetPalettes();
+            },
         },
     ],
 

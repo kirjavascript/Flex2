@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { environment } from '#store/environment';
+import { environment } from '~/store/environment';
 import { observer } from 'mobx-react';
 import { mappingState } from './state';
-import { id } from '#util/uuid';
+import { id } from '~/util/uuid';
 import SVARS from 'sass-variables';
 
 export const Selection = observer(class Selection extends Component {

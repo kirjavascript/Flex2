@@ -1,4 +1,4 @@
-import { environment } from '#store/environment';
+import { environment } from '~/store/environment';
 import { getCenter } from '../mappings/state/bounds';
 import { concatDPLCs } from '../mappings/state/concat-dplcs';
 
@@ -36,7 +36,8 @@ export function importSprite(ctx, newMappings, paletteLine) {
         config: { currentSprite, dplcsEnabled },
     } = environment;
 
-    const palette = palettesRGB[paletteLine];
+    const shiftedLine = (paletteLine + environment.config.artPaletteLine) % 4;
+    const palette = palettesRGB[shiftedLine];
 
     let newMappingsList = [];
     let newDPLCsList = [];

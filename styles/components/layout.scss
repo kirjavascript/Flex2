@@ -9,10 +9,10 @@
     position: fixed;
     left: 0;
     right: 0;
-    top: 20px;
+    top: 25px;
     bottom: 0;
 
-    height: calc(100% - 20px);
+    height: calc(100% - 25px);
     overflow: auto;
 }
 
@@ -57,7 +57,7 @@
 .flexlayout__tab_button,
 .flexlayout__tabset_header,
 .flexlayout__drag_rect {
-    font-family: Hack,
+    font-family: 'Hack Regular';
 }
 
 .flexlayout__tabset_header_outer,

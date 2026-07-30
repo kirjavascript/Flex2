@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
-import { environment } from '#store/environment';
+import React from 'react';
+import { environment } from '~/store/environment';
 import { mappingState } from '../mappings/state';
 import { Tile } from './tile';
 import { observer } from 'mobx-react';
 import { scrollbarWidth } from 'sass-variables';
-import { DimensionsComponent } from '#util/dimensions-component';
+import { DimensionsComponent } from '~/util/dimensions-component';
 import { ActiveSelection } from './active-selection';
 
 export const Art = observer(class Art extends DimensionsComponent {
@@ -40,12 +40,13 @@ export const Art = observer(class Art extends DimensionsComponent {
         >
             <div ref={this.onContainerRef} className="tile-container">
                 <div className="tile-list" style={{height: totalHeight}}>
-                    <ActiveSelection
+                    {tiles.length > 0 && <ActiveSelection
                         remainder={remainder}
                         itemsPerRow={itemsPerRow}
                         baseIndex={baseIndex}
                         itemQty={itemQty}
-                    />
+                        totalHeight={totalHeight}
+                    />}
                     {tiles.map((tile, index) => {
 
                         const x = remainder + (index % itemsPerRow) * baseSize;
@@ -78,7 +79,6 @@ export const Art = observer(class Art extends DimensionsComponent {
                     })}
                 </div>
             </div>
-
         </div>;
     }
 

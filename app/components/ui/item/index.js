@@ -5,7 +5,7 @@ import { observer } from 'mobx-react';
 export const Item = observer(class Item extends Component {
 
     render() {
-        const { prefix, color, inverted, ...otherProps } = this.props;
+        const { prefix, color, inverted, bold, ...otherProps } = this.props;
         return <div
             className="item"
             style={
@@ -15,6 +15,7 @@ export const Item = observer(class Item extends Component {
                 } : {
                     color: SVARS[color],
                     padding: 0,
+                    ...(!color && !bold && { fontFamily: 'Hack Regular' }),
                 }
             }
             {...otherProps}

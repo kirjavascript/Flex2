@@ -1,4 +1,4 @@
-import { environment } from '#store/environment';
+import { environment } from '~/store/environment';
 import range from 'lodash/range';
 
 export function concatDPLCs(dplcs) {

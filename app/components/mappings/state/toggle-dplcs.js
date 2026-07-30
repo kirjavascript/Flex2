@@ -1,4 +1,4 @@
-import { environment } from '#store/environment';
+import { environment } from '~/store/environment';
 import { optimizeDPLCs } from './optimize-dplcs';
 import range from 'lodash/range';
 

@@ -7,15 +7,24 @@ const sizes = {
     32: 'l',
 };
 
-export function writeASM(baseLabel, { sections }) {
+export function sanitizeLabel(name) {
+    if (!name) return name;
+    let s = name.replace(/[^A-Za-z0-9_]/g, '_');
+    if (/^[0-9]/.test(s)) s = '_' + s;
+    return s || undefined;
+}
+
+export function writeASM(baseLabel, { sections }, sprites, nameKey = 'label') {
     const getLabel = addr => `${baseLabel}_${addr.toString(16).toUpperCase()}`;
     let cursor = 0;
     const labels = [];
-    const labelCache = new Set([]);
+    const addrLabels = new Map();
     sections.forEach(section => {
-        section.forEach(frames => {
-            const lbl = getLabel(cursor / 8);
-            labelCache.add(lbl);
+        section.forEach((frames, i) => {
+            const meta = sprites && sprites[i] && sprites[i].metadata;
+            const addr = cursor / 8;
+            const lbl = sanitizeLabel(meta && meta[nameKey]) || getLabel(addr);
+            addrLabels.set(addr, lbl);
             labels.push([ lbl, frames ]);
 
             frames.forEach(frame => {
@@ -28,14 +37,14 @@ export function writeASM(baseLabel, { sections }) {
 
     const output = [`${baseLabel}:\n`];
     labels.forEach(([label, values]) => {
-        output.push(`${label}: `)
+        const isTable = values.every(v => v.every(([type]) => type === constants.address));
+        if (!isTable) output.push(`${label}: `)
         values.forEach(value => {
             if (value.every(([type]) => type === constants.address)) {
                 value.forEach(([, size, data]) => {
                     const tSize = sizes[size] || '?';
-                    const tLabel = getLabel(data);
-                    if (labelCache.has(tLabel)) {
-                        output.push(`\tdc.${tSize} ${tLabel}-${baseLabel}\n`);
+                    if (addrLabels.has(data)) {
+                        output.push(`\tdc.${tSize} ${addrLabels.get(data)}-${baseLabel}\n`);
                     } else {
                         output.push(`\tdc.${tSize} $${data.toString(16).toUpperCase()}\n`);
                     }

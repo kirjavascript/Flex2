@@ -1,5 +1,5 @@
-import { observable, computed, action, makeObservable, observe } from 'mobx';
-import { environment } from '#store/environment';
+import { observable, computed, action, makeObservable, observe, reaction } from 'mobx';
+import { environment } from '~/store/environment';
 import clamp from 'lodash/clamp';
 import { getCenter } from './bounds';
 import { placeNewMapping } from './place-new-mapping';
@@ -7,7 +7,8 @@ import { optimizeCurrentDPLCs } from './optimize-dplcs';
 import { deleteUnusedTiles } from './delete-unused-tiles';
 import { toggleDPLCs } from './toggle-dplcs';
 import { arrangeTilesBySpriteOrder } from './arrange-tiles-by-sprite-order';
-import { storage } from '#store/storage';
+import { storage } from '~/store/storage';
+import { webFrame } from 'electron';
 
 class MappingState {
     // viewing
@@ -82,12 +83,16 @@ class MappingState {
             selectToggle: action,
             rotate: observable,
             toggleRotate: action,
-            rawEditor: observable,
-            toggleRawEditor: action,
+            settings: observable,
+            toggleSettings: action,
+            closeModals: action,
+            globalScale: observable,
             newMapping: observable,
             toggleNewMapping: action,
             autodismiss: observable,
             toggleAutodismiss: action,
+            topLeftAlphaPixel: observable,
+            toggleTopLeftAlphaPixel: action,
             placeNewMapping: action,
             activeMappings: computed,
             hasActive: computed,
@@ -99,8 +104,26 @@ class MappingState {
             arrangeTilesBySpriteOrder: action
         });
 
+        // when switching sprites, carry over "all selected" state
+        reaction(
+            () => ({
+                spriteIndex: environment.config.currentSprite,
+                mappingCount: environment.currentSprite.mappings.length,
+            }),
+            ({ spriteIndex, mappingCount }, prev) => {
+                if (spriteIndex === prev.spriteIndex) return;
+                const allWereSelected = prev.mappingCount > 0
+                    && this.selectedIndices.length >= prev.mappingCount;
+                if (allWereSelected && mappingCount > 0) {
+                    this.selectedIndices.replace(
+                        Array.from({ length: mappingCount }, (_, i) => i),
+                    );
+                }
+            },
+        );
+
         // ensure only one modal is open at once
-        const modals = ['newMapping', 'rawEditor', 'rotate'];
+        const modals = ['newMapping', 'rotate', 'settings'];
         modals.forEach(modal => {
             observe(this[modal], value => {
                 if (value.name === 'active' && value.object.active) {
@@ -175,28 +198,33 @@ class MappingState {
         }
     };
 
+    // settings
+
+    settings = {
+        active: false,
+    };
+
+    toggleSettings = () => {
+        this.settings.active = !this.settings.active;
+    };
+
+    globalScale = 1;
+
+    closeModals = () => {
+        this.newMapping.active = false;
+        this.rotate.active = false;
+        this.settings.active = false;
+    };
+
     // rotate
 
     rotate = {
         angle: 0,
         active: false,
-        algorithm: '3 shears',
     };
-
-    rotateAlgOptions = ['3 shears', 'rotsprite'];
 
     toggleRotate = () => {
         this.rotate.active = !this.rotate.active;
-    };
-
-    // raw editor
-
-    rawEditor = {
-        active: false,
-    };
-
-    toggleRawEditor = () => {
-        this.rawEditor.active = !this.rawEditor.active;
     };
 
     // new mappings
@@ -214,6 +242,12 @@ class MappingState {
 
     toggleAutodismiss = () => {
         this.autodismiss = !this.autodismiss
+    };
+
+    topLeftAlphaPixel = true;
+
+    toggleTopLeftAlphaPixel = () => {
+        this.topLeftAlphaPixel = !this.topLeftAlphaPixel;
     };
 
     placeNewMapping = placeNewMapping;
@@ -254,5 +288,13 @@ class MappingState {
 }
 
 const mappingState = new MappingState();
-storage(mappingState, 'mapping-state', ['autodismiss']);
+storage(mappingState, 'mapping-state', ['autodismiss', 'topLeftAlphaPixel', 'globalScale']);
+
+if (!mappingState.globalScale) {
+    mappingState.globalScale = 1;
+}
+if (mappingState.globalScale !== 1) {
+    webFrame.setZoomFactor(mappingState.globalScale);
+}
+
 export { mappingState };

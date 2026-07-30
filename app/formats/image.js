@@ -1,9 +1,10 @@
-import { environment } from '#store/environment';
+import { environment } from '~/store/environment';
 const { dialog } = require('@electron/remote');
 import { readFile, writeFile } from 'fs';
-import { errorMsg } from '#util/dialog';
-import { colorMatch } from '#components/import/color-match';
-import { removeBackground } from '#components/import/remove-background';
+import { errorMsg } from '~/util/dialog';
+import { colorMatch } from '~/components/import/color-match';
+import { removeBackground } from '~/components/import/remove-background';
+import { mappingState } from '~/components/mappings/state';
 
 export function exportSprite({ buffer, mappings }) {
 
@@ -15,7 +16,7 @@ export function exportSprite({ buffer, mappings }) {
         canvas.height = 32;
         return canvas;
     }
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
     let tileBuffer = ctx.getImageData(0, 0, 8, 8);
 
     const [xPoints, yPoints] = [[], []];
@@ -35,10 +36,12 @@ export function exportSprite({ buffer, mappings }) {
     canvas.height = height;
 
     const mappingCanvas = document.createElement('canvas');
-    const mappingCtx = mappingCanvas.getContext('2d');
+    const mappingCtx = mappingCanvas.getContext('2d', { willReadFrequently: true });
+
+    const { artPaletteLine } = environment.config;
 
     mappings.slice(0).reverse().forEach((mapping) => {
-        const palette = palettesRGB[mapping.palette];
+        const palette = palettesRGB[(mapping.palette + artPaletteLine) % 4];
 
         mappingCanvas.width = mapping.width * 8;
         mappingCanvas.height = mapping.height * 8;
@@ -103,7 +106,7 @@ export function exportSpritesheet() {
                 const canvas = document.createElement('canvas');
                 canvas.width = 8;
                 canvas.height = 8;
-                const ctx = canvas.getContext('2d');
+                const ctx = canvas.getContext('2d', { willReadFrequently: true });
                 // canvas.className = 'canvas-debug';
                 // document.body.appendChild(canvas);
 
@@ -206,18 +209,20 @@ export async function importImg() {
     const canvas = document.createElement('canvas');
     canvas.width = img.width;
     canvas.height = img.height;
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
     ctx.drawImage(img, 0, 0);
 
-    // remove background if not transparent
-    ctx.putImageData(removeBackground(ctx.getImageData(0, 0, img.width, img.height)), 0, 0);
+    if (mappingState.topLeftAlphaPixel) {
+        ctx.putImageData(removeBackground(ctx.getImageData(0, 0, img.width, img.height)), 0, 0);
+    }
 
     // convert to tiles
 
-    mappings.forEach(async ({ top, left, palette, vflip, hflip, width, height, art }) => {
+    for (const { top, left, palette, vflip, hflip, width, height, art } of mappings) {
         const x = left - minX;
         const y = top - minY;
-        const paletteLine = palettesRGB[palette];
+        const shiftedPalette = (palette + environment.config.artPaletteLine) % 4;
+        const paletteLine = palettesRGB[shiftedPalette];
 
         // handle flipping
         const flipCtx = await flipBuffer(
@@ -230,22 +235,21 @@ export async function importImg() {
             const offX = (0|(i / height)) * 8;
             const offY = (i % height) * 8;
 
-            const tileBuffer = colorMatch(flipCtx.getImageData(offX, offY, 8, 8), palette);
+            const tileBuffer = colorMatch(flipCtx.getImageData(offX, offY, 8, 8), shiftedPalette);
 
             const bufferOffset = art + i;
             if (bufferOffset < buffer.length) {
                 buffer[bufferOffset].replace(getPixels(tileBuffer, paletteLine));
             }
         }
-
-    });
+    }
 
     canvas.remove();
 }
 
 function flipBuffer(buffer, hflip, vflip) {
     const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
 
     return new Promise((resolve) => {
         canvas.width = buffer.width;
@@ -283,6 +287,7 @@ function getPixels(tileBuffer, paletteLine) {
             pixels.push(0);
         }
         else {
+            let matched = false;
             for (let p = 1; p < paletteLine.length; p++) {
                 let [R, G, B] = paletteLine[p];
                 if (
@@ -291,9 +296,11 @@ function getPixels(tileBuffer, paletteLine) {
                     B == tileBuffer.data[j+2]
                 ) {
                     pixels.push(p);
+                    matched = true;
                     break;
                 }
             }
+            if (!matched) pixels.push(0);
         }
     }
     return pixels;

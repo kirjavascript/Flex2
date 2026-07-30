@@ -1,4 +1,4 @@
-import { environment } from '#store/environment';
+import { environment } from '~/store/environment';
 import { closest } from 'color-diff';
 
 function nearestColor(line = 0) {

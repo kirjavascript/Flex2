@@ -4,3 +4,6 @@ _test
 static/bundles
 flex2-*.zip
 flex2-*.tar.gz
+*.AppImage
+test-results
+development/appimagetool

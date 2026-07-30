@@ -14,8 +14,8 @@ export const Input = observer(class Input extends Component {
     }
 
     mutateNum = (num = 1) => {
-        const { store, accessor, isNumber, assert = (d) => d } = this.props;
-        store[accessor] = assert(store[accessor] + num);
+        const { store, accessor, assert = (d) => d } = this.props;
+        store[accessor] = assert(Number(store[accessor] ?? '') + num);
         this.props.onChange &&
         this.props.onChange(store[accessor]);
     };
@@ -23,8 +23,7 @@ export const Input = observer(class Input extends Component {
     onKeyDown = (e) => {
         if (e.key === 'Escape') {
             e.target.blur();
-        }
-        else if (this.props.isNumber) {
+        } else if (this.props.isNumber) {
             if (e.key === 'ArrowUp') {
                 this.mutateNum(1);
                 e.preventDefault();

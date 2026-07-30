@@ -6,16 +6,16 @@ import {
 } from 'react-sortable-hoc';
 import arrayMove from 'array-move';
 import { mappingState } from './state';
-import { environment } from '#store/environment';
+import { environment } from '~/store/environment';
 import { observer } from 'mobx-react';
-import { Select, Input, Item, Button, Modal } from '#ui';
+import { Select, Input, Item, Button, Modal } from '~/ui';
 import { Tile } from '../art/tile';
 import {
     isNumber,
     isPositiveNumber,
     isDPLCSize,
     isWidthHeight,
-} from '#util/assertions';
+} from '~/util/assertions';
 
 const Handle = SortableHandle(() => (
     <div className="handle">
@@ -248,6 +248,7 @@ export const RawEditor = observer(
                 vflip: false,
                 hflip: false,
                 palette: 0,
+                metadata: {},
             });
         };
 
@@ -271,29 +272,11 @@ export const RawEditor = observer(
         render() {
             const {
                 currentSprite: { mappings, dplcs },
-                config: { currentTile, dplcsEnabled },
+                config: { dplcsEnabled },
             } = environment;
-            const {
-                rawEditor: { active },
-            } = mappingState;
 
             return (
-                <Modal
-                    spring={{
-                        top: active ? 15 : -100,
-                        opacity: active ? 1 : 0,
-                    }}
-                    className="raw-mapping-data"
-                >
-                    <div className="close">
-                        <Item>Raw Mapping Editor</Item>
-                        <Button
-                            color="magenta"
-                            onClick={mappingState.toggleRawEditor}
-                        >
-                            Close
-                        </Button>
-                    </div>
+                <div className="raw-editor">
                     <SortableMappingList
                         axis="y"
                         lockAxis="y"
@@ -328,7 +311,7 @@ export const RawEditor = observer(
                             </div>
                         </div>
                     )}
-                </Modal>
+                </div>
             );
         }
     },

@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
-import { environment } from '#store/environment';
+import { environment } from '~/store/environment';
 import { spriteState } from './state';
 import { observer } from 'mobx-react';
 import { Sprite } from './sprite';
 import { SortableContainer, SortableElement } from 'react-sortable-hoc';
-import { Slider } from '#ui';
+import { Slider } from '~/ui';
 import {
     baseSize,
     margin,
 } from 'sass-variables';
 import { scrollbarWidth } from 'sass-variables';
-import { DimensionsComponent } from '#util/dimensions-component';
+import { DimensionsComponent } from '~/util/dimensions-component';
 
 const realBaseSize = parseInt(baseSize) + parseInt(margin) * 2;
 

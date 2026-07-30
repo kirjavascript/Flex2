@@ -1,16 +1,15 @@
 const fs = require('fs');
 const esbuild = require('esbuild');
 const path = require('path');
+const devMode = process.argv.includes('--dev');
 
-module.exports = (mainWindow) => {
+module.exports = ({ mainWindow } = {}) => {
     const { writeFile, rmSync, readdirSync } = fs;
 
     mainWindow?.openDevTools();
 
     const outdir = './static/bundles';
     readdirSync(outdir).forEach((f) => rmSync(`${outdir}/${f}`));
-
-    const devMode = !!mainWindow;
 
     esbuild
         .build({
@@ -49,6 +48,7 @@ module.exports = (mainWindow) => {
             define: {
                 __DEV__: String(devMode),
                 __REACT_DEVTOOLS_GLOBAL_HOOK__: '{ "isDisabled": true }',
+                'process.env.NODE_ENV': devMode ? '"development"' : '"production"',
             },
             external: ['electron'],
             loader: {
@@ -88,27 +88,28 @@ module.exports = (mainWindow) => {
 };
 
 const aliases = {
-    '#store': __dirname + '/../app/store',
-    '#components': __dirname + '/../app/components',
-    '#controls': __dirname + '/../app/controls',
-    '#ui': __dirname + '/../app/components/ui',
-    '#util': __dirname + '/../app/util',
-    '#lib': __dirname + '/../app/lib',
-    '#formats': __dirname + '/../app/formats',
-    '#styles': __dirname + '/../styles/',
+    '~/store': __dirname + '/../app/store',
+    '~/components': __dirname + '/../app/components',
+    '~/controls': __dirname + '/../app/controls',
+    '~/ui': __dirname + '/../app/components/ui',
+    '~/util': __dirname + '/../app/util',
+    '~/lib': __dirname + '/../app/lib',
+    '~/formats': __dirname + '/../app/formats',
+    '~/styles': __dirname + '/../styles/',
 };
 
 const aliasPlugin = () => ({
     name: 'alias',
     setup(build) {
-        build.onResolve({ filter: /^#/ }, (args) => {
-            const [head, ...tail] = args.path.split('/');
+        build.onResolve({ filter: /^~\// }, (args) => {
+            const [, head, ...tail] = args.path.split('/');
+            const key = `~/${head}`;
             return {
                 path: require.resolve(
                     path.resolve(
                         __dirname,
                         '../../',
-                        [aliases[head], ...tail].join('/'),
+                        [aliases[key], ...tail].join('/'),
                     ),
                 ),
             };
@@ -142,6 +143,7 @@ const sassVarsPlugin = () => ({
         });
     },
 });
+
 
 const statsPlugin = () => ({
     name: 'stats',

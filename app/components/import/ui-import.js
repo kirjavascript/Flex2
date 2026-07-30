@@ -1,8 +1,8 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import { importState } from './state';
-import { Item, Select, Input } from '#ui';
-import { zoomAssert, paletteLineAssert } from '#util/assertions';
+import { Item, Select, Input } from '~/ui';
+import { zoomAssert, paletteLineAssert } from '~/util/assertions';
 
 export const ImportSprites = observer(() => {
     const { scale, sprites, spriteIndex, mappings, importWidth, importHeight } =

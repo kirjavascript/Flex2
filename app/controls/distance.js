@@ -1,6 +1,7 @@
 let distance = 1;
 
 document.addEventListener('keydown', (e) => {
+    if (e.repeat) return;
     if (e.key == 'Shift') {
         distance = 8;
     }

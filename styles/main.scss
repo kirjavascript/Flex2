@@ -8,9 +8,12 @@
 @import './components/art.scss';
 @import './components/sprites.scss';
 @import './components/mappings.scss';
+@import './components/raw-editor.scss';
+@import './components/metadata-editor.scss';
 @import './components/palettes.scss';
 @import './components/import.scss';
 @import './components/rotsprite.scss';
+@import './components/mapping-settings.scss';
 @import './components/documentation.scss';
 
 html {
@@ -34,7 +37,7 @@ body {
     background-color: $black;
     color: $white;
     font-size: 14px;
-    font-family: Hack Regular;
+    font-family: 'Hack Regular';
 }
 
 a {

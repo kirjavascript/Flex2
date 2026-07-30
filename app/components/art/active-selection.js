@@ -1,23 +1,24 @@
 import React, { Component } from 'react';
-import { environment } from '#store/environment';
+import { environment } from '~/store/environment';
 import { observer } from 'mobx-react';
 import { magenta } from 'sass-variables';
-import { id } from '#util/uuid';
+import { id } from '~/util/uuid';
 
 export const ActiveSelection = observer(class ActiveSelection extends Component {
 
     id = id();
 
     render() {
+        const { totalHeight, ...props } = this.props;
         return <svg
             width="100%"
-            height="100%"
+            height={totalHeight + 10}
             className="active-selection"
         >
             <defs>
                 <SelectionLayer
                     id={this.id}
-                    {...this.props}
+                    {...props}
                 />
             </defs>
             <mask id={`${this.id}-mask`}>
@@ -26,7 +27,7 @@ export const ActiveSelection = observer(class ActiveSelection extends Component 
             </mask>
             <SelectionLayer
                 mask={`url(#${this.id}-mask)`}
-                {...this.props}
+                {...props}
                 offset={1}
                 color={magenta}
             />

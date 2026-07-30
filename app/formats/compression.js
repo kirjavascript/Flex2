@@ -6,7 +6,10 @@ export const compressionFormats = {
     'Kosinski': 'kosinski',
     'Kosinski-M': 'moduled_kosinski',
     'KosinskiPlus': 'kosplus',
+    'KosinskiPlus-M': 'moduled_kosplus',
     'Comper': 'comper',
+    'ComperX': 'comperx',
+    'ComperX-M': 'moduled_comperx',
     'Enigma': 'enigma',
     'ArtC42': 'artc42',
     'LZKN1': 'lzkn1',
@@ -21,7 +24,6 @@ export async function decompress(buffer, compression) {
 
     if (!operation) return new Uint8Array(buffer);
     else return await worker.mdcomp(`_${operation}_decode`, buffer);
-
 }
 
 export async function compress(buffer, compression) {

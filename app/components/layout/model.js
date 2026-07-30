@@ -1,73 +1,111 @@
-import FlexLayout, { Actions } from 'flexlayout-react';
+import { Model, Actions } from 'flexlayout-react';
 
 window.resetLayout = () => {
     localStorage.removeItem('layout');
-    localStorage.removeItem('layout-version');
     window.location.reload();
 };
 
-const DEFAULT_LAYOUT = {
-    'global': {
-        'splitterSize': 6,
-        'tabEnableClose': false,
-        'tabEnableRename': false,
-        'tabSetEnableMaximize': true
-    },
-    'layout': {
-        'type': 'row',
-        'children': [
-            {
-                'type': 'tabset',
-                'weight': 16.5,
-                'children': [
-                    {
-                        'type': 'tab',
-                        'name': 'Art',
-                        'component': 'art',
-                    },
-                    {
-                        'type': 'tab',
-                        'name': 'Palettes',
-                        'component': 'palettes',
-                    }
-                ]
+const MAPPINGS_LAYOUT = {
+    type: 'tab',
+    name: 'Mappings',
+    component: 'sub',
+    config: {
+        model: {
+            global: {
+                tabSetTabLocation: 'bottom',
+                splitterSize: 6,
+                tabEnableClose: false,
+                tabEnableRename: false,
+                tabSetEnableMaximize: false,
             },
-            {
-                'type': 'tabset',
-                'weight': 67,
-                'selected': 0,
-                'children': [
+            borders: [],
+            layout: {
+                type: 'row',
+                children: [
                     {
-                        'type': 'tab',
-                        'name': 'File',
-                        'component': 'file',
-                    },
-                    {
-                        'type': 'tab',
-                        'name': 'Project',
-                        'component': 'project',
-                    },
-                    {
-                        'type': 'tab',
-                        'name': 'Mappings',
-                        'component': 'mappings',
-                    },
-                    {
-                        'type': 'tab',
-                        'name': 'Documentation',
-                        'component': 'documentation',
+                        type: 'tabset',
+                        weight: 50,
+                        children: [
+                            {
+                                type: 'tab',
+                                name: 'Visual',
+                                component: 'mappings-visual',
+                            },
+                            {
+                                type: 'tab',
+                                name: 'Raw',
+                                component: 'mappings-raw',
+                            },
+                            {
+                                type: 'tab',
+                                name: 'Metadata',
+                                component: 'mappings-metadata',
+                            },
+                        ],
                     },
                 ],
-                'active': true
+            },
+        },
+    },
+};
+
+const DEFAULT_LAYOUT = {
+    global: {
+        splitterSize: 6,
+        tabEnableClose: false,
+        tabEnableRename: false,
+        tabSetEnableMaximize: true,
+    },
+    layout: {
+        type: 'row',
+        children: [
+            {
+                type: 'tabset',
+                weight: 16.5,
+                children: [
+                    {
+                        type: 'tab',
+                        name: 'Art',
+                        component: 'art',
+                    },
+                    {
+                        type: 'tab',
+                        name: 'Palettes',
+                        component: 'palettes',
+                    },
+                ],
             },
             {
-                'type': 'tabset',
-                'weight': 20.4,
-                'children': [
+                type: 'tabset',
+                weight: 67,
+                selected: 0,
+                children: [
                     {
-                        'type': 'tab',
-                        'name': 'Sprites',
-                        'component': 'sprites',
+                        type: 'tab',
+                        name: 'File',
+                        component: 'file',
+                    },
+                    {
+                        type: 'tab',
+                        name: 'Project',
+                        component: 'project',
+                    },
+                    MAPPINGS_LAYOUT,
+                    {
+                        type: 'tab',
+                        name: 'About',
+                        component: 'documentation',
+                    },
+                ],
+            },
+            {
+                type: 'tabset',
+                weight: 20.4,
+                children: [
+                    {
+                        type: 'tab',
+                        name: 'Sprites',
+                        component: 'sprites',
                     },
                 ],
             },
@@ -76,27 +114,33 @@ const DEFAULT_LAYOUT = {
 };
 
 const savedLayout = localStorage.getItem('layout');
-const version = +localStorage.getItem('layout-version')
-if (!version) {
-    localStorage.setItem('layout-version', 1);
+
+const rawModel = savedLayout ? JSON.parse(savedLayout) : DEFAULT_LAYOUT;
+
+// migrations
+
+// 1.4.0
+const mappingsNode = findNode(
+    (child) => child.component === 'mappings',
+    rawModel.layout.children,
+);
+
+if (mappingsNode) {
+    Object.assign(mappingsNode, MAPPINGS_LAYOUT);
 }
 
-function findNode(name, children) {
-    if (!name) return;
+function findNode(cond, children) {
     for (let i = 0; i < children.length; i++) {
         const child = children[i];
-        if (child.name === name) return child;
+        if (cond(child)) return child;
         if (child.children) {
-            const result = findNode(name, child.children);
+            const result = findNode(cond, child.children);
             if (result) return result;
         }
     }
 }
 
-export const model = version && savedLayout
-    ? FlexLayout.Model.fromJson(JSON.parse(savedLayout))
-    : FlexLayout.Model.fromJson(DEFAULT_LAYOUT);
-
+export const model = Model.fromJson(rawModel);
 
 export function saveModel(model) {
     localStorage.setItem('layout', JSON.stringify(model.toJson()));
@@ -105,7 +149,10 @@ export function saveModel(model) {
 export function selectTab(name) {
     model.doAction(
         Actions.selectTab(
-            findNode(name, model.toJson().layout.children).id,
+            findNode(
+                (child) => child.name === name,
+                model.toJson().layout.children,
+            ).id,
         ),
     );
 }

@@ -1,6 +1,7 @@
 import Mousetrap from 'mousetrap';
-import { environment } from '#store/environment';
+import { environment } from '~/store/environment';
 import { commands } from './commands';
+import { mappingState } from '~/components/mappings/state';
 import flatten from 'lodash/flatten';
 
 // load commands
@@ -17,15 +18,19 @@ flatten(commands)
 // handle multiplier
 let multiplier = '';
 Mousetrap.bind([...'0123456789'], (e) => {
-    multiplier += String(e.key);
+    if (e.repeat) return;
+    if (e.key === '0' && !multiplier) return;
+    if (multiplier.length < 3) multiplier += String(e.key);
 });
 Mousetrap.bind('esc', () => {
     multiplier = '';
+    mappingState.closeModals();
 });
 function doCommand(obj, e) {
     environment.doAction(() => {
         if (!obj.noMultiplier && multiplier) {
-            for (let i = 0; i < +multiplier; i++) obj.func(e);
+            const count = Math.min(+multiplier, 999);
+            for (let i = 0; i < count; i++) obj.func(e);
             multiplier = '';
         }
         else {

@@ -1,4 +1,4 @@
-import { environment } from '#store/environment';
+import { environment } from '~/store/environment';
 import { mappingState } from './index';
 import range from 'lodash/range';
 
