@@ -60,9 +60,23 @@ The overlay can be configured to autodismiss when placing a piece, or return to 
 
 When entering drawing mode by pressing <kbd>m</kbd>, dragging over the sprite will draw in the respective colour of that mouse button. If mappings overlap, both will have the colour applied.
 
-### Raw Editor
+### Settings
 
-When doing actions like deleting a mapping, Flex 2 will attempt to remove corresponding unused DPLCs. The raw editor allows you to modify the raw data for mappings and DPLCs without performing any of these optimisations. It can also be used to change the draw order by reordering mappings.
+
+### Data Tab
+
+The Data tab (previously the raw editor) lets you view and edit the raw values of mappings and DPLCs for the current sprite without any automatic optimisations being applied.
+
+Each mapping piece shows its properties (top, left, tile, width, height, priority, vflip, hflip, palette) and each DPLC entry shows its tile index and length alongside a tile preview. Entries can be reordered by dragging the handle, deleted individually, or added with the buttons at the bottom. DPLCs can also be optimised in bulk.
+
+### Metadata
+
+The Data tab supports arbitrary key-value metadata at two levels;
+
+- **Sprite metadata** — displayed at the top of the Data tab for the current sprite. Use the <kbd>+</kbd> button next to the sprite header to add a new key.
+- **Mapping / DPLC metadata** — each mapping or DPLC entry has a collapsible metadata section. Click <kbd>+</kbd> to add a key, and <kbd>×</kbd> to remove one.
+
+Metadata values are preserved through save/load and can be used by custom format scripts.
 
 ## Palettes
 
@@ -76,7 +90,7 @@ The Sprites tab gives an overview of your full object's data, allowing you to ch
 
 When importing an image over the current frame there is no limitation on image dimensions.
 
-For importing a spritesheet, either the alpha channel or the top left pixel color will serve as transparency. The fuzziness dictates the minimum separation distance between sprites.
+For importing a spritesheet, either the alpha channel or the top left pixel color can serve as transparency. The fuzziness dictates the minimum separation distance between sprites.
 
 Mapping output can be configured to either reduce the number of tiles, or the number of mappings. The algorithm favours fewer horizontal sprites over vertical ones.
 
