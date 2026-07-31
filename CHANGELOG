@@ -1,8 +1,8 @@
 # Changelog
 
 ## [1.4.1]
-- Improve drawing to not miss pixels
-- Each full dragged line is treated as a single history item
+- Improve drawing to not miss pixels when dragging
+- Each drawn line is treated as a single history item
 
 ## [1.4.0]
 - Sonic Crackers Support

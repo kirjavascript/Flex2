@@ -60,9 +60,6 @@ The overlay can be configured to autodismiss when placing a piece, or return to 
 
 When entering drawing mode by pressing <kbd>m</kbd>, dragging over the sprite will draw in the respective colour of that mouse button. If mappings overlap, both will have the colour applied.
 
-### Settings
-
-
 ### Data Tab
 
 The Data tab (previously the raw editor) lets you view and edit the raw values of mappings and DPLCs for the current sprite without any automatic optimisations being applied.
