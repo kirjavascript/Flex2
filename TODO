@@ -12,6 +12,13 @@ NEXT
     make the buttons look more clickable
     thanks selbi
 
+    imrpove drawing mode (missing pixels)
+        bresenhams
+        single undo run
+    https://github.com/Nasina7/Flex2-Puyo
+
+key remapping
+
 ---
     persist comments?
 

@@ -2,7 +2,7 @@ import { mappingState } from './state';
 import { select, event, mouse } from 'd3-selection';
 import { drag } from 'd3-drag';
 import { LEFT, RIGHT, MIDDLE } from './buttons';
-import { draw } from './drawing';
+import { draw, drawStart, drawEnd } from './drawing';
 
 export function attachDragMoveToNode(node) {
     if (node) {
@@ -30,7 +30,7 @@ export function attachDragMoveToNode(node) {
                             move.active = true;
                         }
 
-                        draw(node);
+                        drawStart(node);
                     })
                     .on('drag', () => {
                         const { dx, dy, sourceEvent: { buttons, target } } = event;
@@ -60,6 +60,8 @@ export function attachDragMoveToNode(node) {
                         if (mappingState.move.active) {
                             mappingState.move.active = false;
                         }
+
+                        drawEnd();
                     })
             );
     }

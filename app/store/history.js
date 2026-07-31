@@ -7,6 +7,7 @@ const past = [];
 const future = [];
 let now;
 let timeTravelling = false;
+let drawingActive = false;
 
 export function initHistory() {
     autorun(() => {
@@ -42,13 +43,30 @@ function setCurrent() {
     });
 }
 
+export function setDrawing(active) {
+    if (!active && drawingActive) {
+        drawingActive = false;
+        addHistory();
+        return;
+    }
+    drawingActive = active;
+}
+
 const addHistory = () => {
+    if (drawingActive) {
+        return;
+    }
     if (timeTravelling) {
         timeTravelling = false;
     } else {
-        now && past.push(now);
+        const current = getCurrent();
+        // skip if state hasn't changed (e.g. duplicate autorun after a drawing stroke)
+        if (now && JSON.stringify(now) === JSON.stringify(current)) {
+            return;
+        }
 
-        now = getCurrent();
+        now && past.push(now);
+        now = current;
 
         future.splice(0, future.length);
 
