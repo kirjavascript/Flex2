@@ -7,6 +7,7 @@ import { getSpriteBBoxes } from './get-sprite';
 import { getMappings } from './generate-mappings';
 import { importSprite } from './import-sprite';
 import { environment } from '~/store/environment';
+import { workspace } from '~/store/workspace';
 import { readFile } from 'fs';
 
 class ImportState {
@@ -42,10 +43,12 @@ class ImportState {
         dialog.showOpenDialog({
             title: 'Import Spritesheet',
             properties: ['openFile'],
+            defaultPath: workspace.lastDialogDir || undefined,
             filters: [{name: 'Image File', extensions: ['bmp', 'jpg', 'jpeg', 'png', 'gif']}],
         })
             .then(({ filePaths: [path] }) => {
                 if (path) {
+                    workspace.lastDialogDir = require('path').dirname(path);
                     this.path = path;
                     this.config.active = true;
                 }

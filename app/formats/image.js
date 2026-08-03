@@ -1,4 +1,6 @@
 import { environment } from '~/store/environment';
+import { workspace } from '~/store/workspace';
+import nodePath from 'path';
 const { dialog } = require('@electron/remote');
 import { readFile, writeFile } from 'fs';
 import { errorMsg } from '~/util/dialog';
@@ -95,11 +97,12 @@ export function exportSpritesheet() {
 
     dialog.showSaveDialog({
         title: 'Export Spritesheet',
-        defaultPath: `spritesheet.png`,
+        defaultPath: nodePath.join(workspace.lastDialogDir || '', `spritesheet.png`),
         filters: [{name: 'PNG Image', extensions: ['png']}],
     })
         .then(({ filePath }) => {
             if (filePath) {
+                workspace.lastDialogDir = nodePath.dirname(filePath);
 
                 const canvases = sprites.map(({ buffer, mappings }) => exportSprite({ buffer, mappings }));
 
@@ -144,11 +147,12 @@ export function exportPNG() {
 
     dialog.showSaveDialog({
         title: 'Export Sprite',
-        defaultPath: `0x${environment.config.currentSprite.toString(16).toUpperCase()}.png`,
+        defaultPath: nodePath.join(workspace.lastDialogDir || '', `0x${environment.config.currentSprite.toString(16).toUpperCase()}.png`),
         filters: [{name: 'PNG Image', extensions: ['png']}],
     })
         .then(({ filePath }) => {
             if (filePath) {
+                workspace.lastDialogDir = nodePath.dirname(filePath);
                 const base64Data = canvas.toDataURL().replace(/data(.*?),/, '');
                 canvas.remove();
                 writeFile(filePath, Buffer.from(base64Data, 'base64'), (err, success) => {
@@ -166,9 +170,13 @@ export async function importImg() {
     const path = await dialog.showOpenDialog({
             title: 'Import Sprite',
             properties: ['openFile'],
+            defaultPath: workspace.lastDialogDir || undefined,
             filters: [{name: 'Image File', extensions: ['bmp', 'jpg', 'jpeg', 'png', 'gif']}],
         })
-            .then(({ filePaths: [path] }) => path)
+            .then(({ filePaths: [path] }) => {
+                if (path) workspace.lastDialogDir = nodePath.dirname(path);
+                return path;
+            })
             .catch(console.error);
 
     if (!path) return;

@@ -3,6 +3,7 @@
 ## [1.4.1]
 - Improve drawing to not miss pixels when dragging
 - Each drawn line is treated as a single history item
+- Smarter starting location for file dialogs
 - Fix OS compatilbility issues
 
 ## [1.4.0]

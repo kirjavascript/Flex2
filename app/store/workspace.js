@@ -1,4 +1,4 @@
-import { observable, toJS, action, makeObservable } from 'mobx';
+import { observable, toJS, action, computed, makeObservable } from 'mobx';
 import { storage } from './storage';
 import { Project } from './project';
 import { ObjectDef, editPaths } from  './objectdef';
@@ -13,6 +13,7 @@ class Workspace {
     file = fileState;
 
     projectPath = '';
+    lastDialogDir = '';
     project;
     recentProjects = [];
 
@@ -31,6 +32,10 @@ class Workspace {
             selection.clear();
         }
     };
+
+    get projectDir() {
+        return this.projectPath ? path.dirname(this.projectPath) : undefined;
+    }
 
     relativePath = (filepath) => {
         return path.relative(path.dirname(this.projectPath), filepath);
@@ -67,6 +72,7 @@ class Workspace {
         makeObservable(this, {
             file: observable,
             projectPath: observable,
+            lastDialogDir: observable,
             project: observable,
             recentProjects: observable,
             openProject: action,
@@ -75,13 +81,14 @@ class Workspace {
             absolutePath: action,
             fuzzyAbsolutePath: action,
             fileToProject: action,
-            projectToFile: action
+            projectToFile: action,
+            projectDir: computed,
         });
     }
 }
 
 const workspace = new Workspace();
-storage(workspace, 'workspace', ['projectPath', 'recentProjects']);
+storage(workspace, 'workspace', ['projectPath', 'recentProjects', 'lastDialogDir']);
 if (!workspace.recentProjects) workspace.recentProjects = [];
 if (workspace.projectPath) {
     workspace.openProject();

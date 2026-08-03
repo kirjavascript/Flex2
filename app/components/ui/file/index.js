@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { workspace } from '~/store/workspace';
 import { Input } from '~/ui';
+import path from 'path';
 
 const { dialog } = require('@electron/remote');
 
@@ -11,12 +12,19 @@ export const File = observer(class File extends Component {
     };
 
     openFile = () => {
+        const defaultPath = this.props.absolute ? workspace.lastDialogDir : workspace.projectDir;
         dialog
             .showOpenDialog({
                 title: `Choose ${this.props.label}`,
                 properties: ['openFile'],
+                ...(defaultPath && { defaultPath }),
             })
-            .then(({ filePaths: [path] }) => path && this.update(path))
+            .then(({ filePaths: [p] }) => {
+                if (p) {
+                    workspace.lastDialogDir = path.dirname(p);
+                    this.update(p);
+                }
+            })
             .catch(console.error);
     };
 
@@ -43,14 +51,17 @@ export const File = observer(class File extends Component {
     createFile = () => {
         const ext = this.props.ext || 'bin';
         const extensions = this.props.ext ? [this.props.ext] : ['bin', 'asm'];
+        const dir = this.props.absolute ? workspace.lastDialogDir : workspace.projectDir;
         dialog.showSaveDialog({
             title: `New ${this.props.label}`,
-            defaultPath: `${this.props.label.toLowerCase()}.${ext}`,
+            defaultPath: path.join(dir || '', `${this.props.label.toLowerCase()}.${ext}`),
             filters: [{name: `${this.props.label} File`, extensions }],
         })
             .then(({ filePath }) => {
-                filePath && this.update(filePath);
-
+                if (filePath) {
+                    workspace.lastDialogDir = path.dirname(filePath);
+                    this.update(filePath);
+                }
             })
             .catch(console.error);
     };
