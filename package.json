@@ -1,5 +1,5 @@
 {
-    "version": "1.4.0",
+    "version": "1.4.1",
     "scripts": {
         "start": "electron ./static --dev",
         "web": "node -e \"require('./development/build')()\" -- --dev",
