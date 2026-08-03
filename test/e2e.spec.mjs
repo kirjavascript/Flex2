@@ -1,6 +1,6 @@
 import { test, expect, _electron } from '@playwright/test';
 import { resolve, join } from 'path';
-import { mkdtempSync, rmSync } from 'fs';
+import { readFileSync, mkdtempSync, rmSync } from 'fs';
 import { tmpdir } from 'os';
 
 const ROOT = resolve(import.meta.dirname, '..');
@@ -639,4 +639,9 @@ test.describe('Compression', () => {
             expect(valid).toBe(true);
         });
     }
+});
+
+test('electron version is pinned to 22.3.27', () => {
+    const pkg = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8'));
+    expect(pkg.dependencies.electron).toBe('22.3.27');
 });
