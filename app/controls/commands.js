@@ -83,8 +83,8 @@ export const commands = [
                 dplcsEnabled &&
                 environment.dplcs.splice(currentSprite+1, 0, toJS(dplcs));
                 const meta = toJS(environment.spriteMetadata[currentSprite] || {});
-                if (meta.label) meta.label += '_Clone';
-                if (meta.plcLabel) meta.plcLabel += '_Clone';
+                delete meta.label;
+                delete meta.plcLabel;
                 environment.spriteMetadata.splice(currentSprite+1, 0, meta);
             },
         },
@@ -106,8 +106,8 @@ export const commands = [
                         environment.dplcs.splice(currentSprite+1, 0, newDPLCs);
                         environment.mappings.splice(currentSprite+1, 0, toJS(mappings));
                         const meta = toJS(environment.spriteMetadata[currentSprite] || {});
-                        if (meta.label) meta.label += '_Clone';
-                        if (meta.plcLabel) meta.plcLabel += '_Clone';
+                        delete meta.label;
+                        delete meta.plcLabel;
                         environment.spriteMetadata.splice(currentSprite+1, 0, meta);
                     }
                     else {
@@ -121,8 +121,8 @@ export const commands = [
                         });
                         environment.mappings.splice(currentSprite+1, 0, newMappings);
                         const meta = toJS(environment.spriteMetadata[currentSprite] || {});
-                        if (meta.label) meta.label += '_Clone';
-                        if (meta.plcLabel) meta.plcLabel += '_Clone';
+                        delete meta.label;
+                        delete meta.plcLabel;
                         environment.spriteMetadata.splice(currentSprite+1, 0, meta);
                     }
                 });
