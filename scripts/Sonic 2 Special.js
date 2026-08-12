@@ -11,7 +11,17 @@ const {
     endFrame,
     skipFrame,
     signed,
+    asm,
+    config,
 } = Flex2;
+
+config(({ checkbox }) => [
+    checkbox({
+        name: 'mapMacros',
+        label: 'Use MapMacros',
+        default: true,
+    }),
+]);
 
 mappings([
     offsetTable(dc.w),
@@ -95,3 +105,90 @@ dplcs([
         },
     ],
 ]);
+
+asm(({ addScript, importScript, writeMappings, writeDPLCs }) => {
+    if (!config.mapMacros) return;
+
+    addScript(`
+SonicMappingsVer := 2
+SonicDplcVer := 4
+    `);
+    importScript('MapMacros.asm');
+
+    /**
+     * MapMacros Mapping output
+     */
+    writeMappings(({ label, sprites, renderHex, sanitizeLabel }) => {
+        const list = [];
+
+        list.push(`${label}: mappingsTable`);
+        sprites.forEach((sprite, i) => {
+            const name = sanitizeLabel(sprite.metadata && sprite.metadata.label) || `${label}_${i}`;
+	        list.push(`\tmappingsTableEntry.w\t${name}`);
+        });
+        list.push('');
+
+        sprites.forEach((sprite, i) => {
+            const name = sanitizeLabel(sprite.metadata && sprite.metadata.label) || `${label}_${i}`;
+            list.push(`${name}:\tspriteHeader`);
+
+            sprite.mappings.forEach(mapping => {
+                const pieceInfo = [
+                    mapping.left,
+                    mapping.top,
+                    mapping.width,
+                    mapping.height,
+                    mapping.art,
+                    mapping.hflip,
+                    mapping.vflip,
+                    mapping.palette,
+                    mapping.priority,
+                ].map(renderHex).join(', ');
+
+                list.push(` spritePiece ${pieceInfo}`);
+            });
+
+            list.push(`${name}_End`);
+            list.push('');
+        });
+
+        list.push('\teven');
+
+        return list.join('\n');
+    });
+
+    /**
+     * MapMacros DPLC output
+     */
+    writeDPLCs(({ label, sprites, renderHex, sanitizeLabel }) => {
+        const list = [];
+
+        list.push(`${label}: mappingsTable`);
+        sprites.forEach((sprite, i) => {
+            const name = sanitizeLabel(sprite.metadata && sprite.metadata.plcLabel) || `${label}_${i}`;
+	        list.push(`\tmappingsTableEntry.w\t${name}`);
+        });
+        list.push('');
+
+        sprites.forEach((sprite, i) => {
+            const name = sanitizeLabel(sprite.metadata && sprite.metadata.plcLabel) || `${label}_${i}`;
+            list.push(`${name}:\tdplcHeader`);
+
+            sprite.dplcs.forEach(dplc => {
+                const pieceInfo = [
+                    dplc.size,
+                    dplc.art - getOffset(i),
+                ].map(renderHex).join(', ');
+
+                list.push(` dplcEntry ${pieceInfo}`);
+            });
+
+            list.push(`${name}_End`);
+            list.push('');
+        });
+
+        list.push('\teven');
+
+        return list.join('\n');
+    });
+});

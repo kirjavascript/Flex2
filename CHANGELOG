@@ -1,7 +1,7 @@
 # Changelog
 
 ## [1.4.2]
-- Cloned sprites have stripped labels
+- Strip labels from cloned sprites
 
 ## [1.4.1]
 - Improve drawing to not miss pixels when dragging
