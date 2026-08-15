@@ -1,0 +1,372 @@
+{
+  "dplcs": [
+    [
+      {
+        "art": 0,
+        "metadata": {},
+        "size": 12
+      }
+    ],
+    [
+      {
+        "art": 12,
+        "metadata": {},
+        "size": 12
+      }
+    ],
+    [
+      {
+        "art": 24,
+        "metadata": {},
+        "size": 12
+      }
+    ],
+    [
+      {
+        "art": 36,
+        "metadata": {},
+        "size": 2
+      },
+      {
+        "art": 38,
+        "metadata": {},
+        "size": 16
+      }
+    ],
+    [
+      {
+        "art": 54,
+        "metadata": {},
+        "size": 12
+      },
+      {
+        "art": 66,
+        "metadata": {},
+        "size": 2
+      }
+    ],
+    [
+      {
+        "art": 68,
+        "metadata": {},
+        "size": 12
+      },
+      {
+        "art": 80,
+        "metadata": {},
+        "size": 3
+      }
+    ],
+    [
+      {
+        "art": 83,
+        "metadata": {},
+        "size": 12
+      },
+      {
+        "art": 95,
+        "metadata": {},
+        "size": 2
+      }
+    ],
+    [
+      {
+        "art": 97,
+        "metadata": {},
+        "size": 12
+      },
+      {
+        "art": 109,
+        "metadata": {},
+        "size": 3
+      }
+    ],
+    [
+      {
+        "art": 112,
+        "metadata": {},
+        "size": 12
+      },
+      {
+        "art": 124,
+        "metadata": {},
+        "size": 3
+      }
+    ]
+  ],
+  "mappings": [
+    [
+      {
+        "art": 0,
+        "height": 4,
+        "hflip": false,
+        "left": -12,
+        "metadata": {},
+        "palette": 0,
+        "priority": false,
+        "top": -16,
+        "vflip": false,
+        "width": 3
+      }
+    ],
+    [
+      {
+        "art": 0,
+        "height": 4,
+        "hflip": false,
+        "left": -12,
+        "metadata": {},
+        "palette": 0,
+        "priority": false,
+        "top": -16,
+        "vflip": false,
+        "width": 3
+      }
+    ],
+    [
+      {
+        "art": 0,
+        "height": 4,
+        "hflip": false,
+        "left": -12,
+        "metadata": {},
+        "palette": 0,
+        "priority": false,
+        "top": -16,
+        "vflip": false,
+        "width": 3
+      }
+    ],
+    [
+      {
+        "art": 0,
+        "height": 2,
+        "hflip": false,
+        "left": -20,
+        "metadata": {},
+        "palette": 0,
+        "priority": false,
+        "top": -16,
+        "vflip": false,
+        "width": 1
+      },
+      {
+        "art": 2,
+        "height": 4,
+        "hflip": false,
+        "left": -12,
+        "metadata": {},
+        "palette": 0,
+        "priority": false,
+        "top": -16,
+        "vflip": false,
+        "width": 4
+      }
+    ],
+    [
+      {
+        "art": 0,
+        "height": 3,
+        "hflip": false,
+        "left": -20,
+        "metadata": {},
+        "palette": 0,
+        "priority": false,
+        "top": -12,
+        "vflip": false,
+        "width": 4
+      },
+      {
+        "art": 12,
+        "height": 2,
+        "hflip": false,
+        "left": 12,
+        "metadata": {},
+        "palette": 0,
+        "priority": false,
+        "top": -4,
+        "vflip": false,
+        "width": 1
+      }
+    ],
+    [
+      {
+        "art": 0,
+        "height": 3,
+        "hflip": false,
+        "left": -20,
+        "metadata": {},
+        "palette": 0,
+        "priority": false,
+        "top": -12,
+        "vflip": false,
+        "width": 4
+      },
+      {
+        "art": 12,
+        "height": 3,
+        "hflip": false,
+        "left": 12,
+        "metadata": {},
+        "palette": 0,
+        "priority": false,
+        "top": -12,
+        "vflip": false,
+        "width": 1
+      }
+    ],
+    [
+      {
+        "art": 0,
+        "height": 3,
+        "hflip": false,
+        "left": -20,
+        "metadata": {},
+        "palette": 0,
+        "priority": false,
+        "top": -12,
+        "vflip": false,
+        "width": 4
+      },
+      {
+        "art": 12,
+        "height": 2,
+        "hflip": false,
+        "left": 12,
+        "metadata": {},
+        "palette": 0,
+        "priority": false,
+        "top": -12,
+        "vflip": false,
+        "width": 1
+      }
+    ],
+    [
+      {
+        "art": 0,
+        "height": 3,
+        "hflip": false,
+        "left": -16,
+        "metadata": {},
+        "palette": 0,
+        "priority": false,
+        "top": -16,
+        "vflip": false,
+        "width": 4
+      },
+      {
+        "art": 12,
+        "height": 1,
+        "hflip": false,
+        "left": -16,
+        "metadata": {},
+        "palette": 0,
+        "priority": false,
+        "top": 8,
+        "vflip": false,
+        "width": 3
+      }
+    ],
+    [
+      {
+        "art": 0,
+        "height": 4,
+        "hflip": false,
+        "left": -12,
+        "metadata": {},
+        "palette": 0,
+        "priority": false,
+        "top": -20,
+        "vflip": false,
+        "width": 3
+      },
+      {
+        "art": 12,
+        "height": 1,
+        "hflip": false,
+        "left": -12,
+        "metadata": {},
+        "palette": 0,
+        "priority": false,
+        "top": 12,
+        "vflip": false,
+        "width": 3
+      }
+    ]
+  ],
+  "palettes": [
+    [
+      "#000",
+      "#000",
+      "#66a",
+      "#aae",
+      "#eee",
+      "#228",
+      "#44e",
+      "#804",
+      "#e00",
+      "#c60",
+      "#ea0",
+      "#ec6",
+      "#080",
+      "#4c2",
+      "#c4e",
+      "#e8a"
+    ],
+    [
+      "#000",
+      "#202",
+      "#404",
+      "#606",
+      "#808",
+      "#a0a",
+      "#c0c",
+      "#e0e",
+      "#c2c",
+      "#a2a",
+      "#828",
+      "#626",
+      "#624",
+      "#422",
+      "#200",
+      "#E00"
+    ],
+    [
+      "#000",
+      "#220",
+      "#442",
+      "#662",
+      "#884",
+      "#aa4",
+      "#cc6",
+      "#ee6",
+      "#cc4",
+      "#ac4",
+      "#8a4",
+      "#682",
+      "#482",
+      "#260",
+      "#040",
+      "#0e0"
+    ],
+    [
+      "#000",
+      "#022",
+      "#044",
+      "#066",
+      "#088",
+      "#0aa",
+      "#0cc",
+      "#0ee",
+      "#2cc",
+      "#2ac",
+      "#08a",
+      "#06a",
+      "#048",
+      "#028",
+      "#006",
+      "#00e"
+    ]
+  ],
+  "tileCount": 127
+}

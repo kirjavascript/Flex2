@@ -1,8 +1,10 @@
 # Changelog
 
 ## [1.4.3]
-
+- Puyo Puyo / Dr Robotnik's Mean Bean Machine support
 - Add MapMacros to Sonic 2 Special Stage format
+- Add MapMacros to S3K formats
+- Combine S3K formats into a single script with a dropdown for type
 
 ## [1.4.2]
 - Strip labels from cloned sprites
@@ -14,7 +16,7 @@
 - Fix OS compatibility issues
 
 ## [1.4.0]
-- Sonic Crackers Support
+- Sonic Crackers support
 - Added Moduled KosinskiPlus compression
 - Added ComperX compression
 - Added Moduled ComperX compression

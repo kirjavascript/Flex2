@@ -292,6 +292,15 @@ export const FileObject = observer(({ obj, isAbsolute }) => {
                                     />
                                 );
                             }
+                            if (option.type === 'select') {
+                                return (
+                                    <Select
+                                        options={option.options}
+                                        store={obj.config}
+                                        accessor={option.name}
+                                    />
+                                );
+                            }
                             if (option.type === 'checkbox') {
                                 const value = !!obj.config[option.name];
                                 return (

@@ -76,6 +76,7 @@ export default catchFunc((obj) => {
         configOptions.splice(0, configOptions.length, ...callback({
             number: element('number'),
             checkbox: element('checkbox'),
+            select: element('select'),
         }));
 
         configOptions.forEach(option => {

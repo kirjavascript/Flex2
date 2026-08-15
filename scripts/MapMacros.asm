@@ -80,3 +80,14 @@ dplcEntry macro tiles,offset
 	dc.w	(((tiles-1)&$F)<<12)|(offset&$FFF)
 	endif
 	endm
+
+; I don't know why, but S3K uses Sonic 2's DPLC format for players, and its own for everything else
+; So to avoid having to set and reset SonicMappingsVer I'll just make special macros
+s3kPlayerDplcHeader macro {INTLABEL}
+__LABEL__ label *
+	dc.w ((__LABEL___End - __LABEL__ - 2) / 2)
+    endm
+
+s3kPlayerDplcEntry macro tiles,offset
+	dc.w	(((tiles-1)&$F)<<12)|(offset&$FFF)
+	endm

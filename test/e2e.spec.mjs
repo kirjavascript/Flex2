@@ -1,6 +1,6 @@
 import { test, expect, _electron } from '@playwright/test';
 import { resolve, join } from 'path';
-import { readFileSync, mkdtempSync, rmSync } from 'fs';
+import { readFileSync, writeFileSync, mkdtempSync, rmSync } from 'fs';
 import { tmpdir } from 'os';
 
 const ROOT = resolve(import.meta.dirname, '..');
@@ -605,6 +605,190 @@ test.describe('Sonic Crackers', () => {
             expect(reloaded.mappings).toEqual(original.mappings);
             expect(reloaded.dplcs).toEqual(original.dplcs);
             expect(reloaded.tileCount).toBe(original.tileCount);
+        } finally {
+            rmSync(tmp, { recursive: true, force: true });
+        }
+    });
+});
+
+test.describe('Sonic 3&K', () => {
+
+    test('loads Penguinator mappings + DPLCs + art', async () => {
+        await setFileObject(page, {
+            format: 'Sonic 3&K.js',
+            mappingsPath: resolve(FIXTURES, 's3k/maps/Penguinator.asm'),
+            dplcsPath: resolve(FIXTURES, 's3k/dplc/Penguinator.asm'),
+            artPath: resolve(FIXTURES, 's3k/art/Penguinator.bin'),
+            artCompression: 'Uncompressed',
+            config: { format: 'object', mapMacros: true },
+        });
+        await clearEnvironment(page);
+        await clickLoad(page, 'Object');
+        await waitForMappings(page);
+        await waitForTiles(page);
+        await waitForDplcs(page);
+
+        const snap = await expectSnapshots(page, 's3k-penguinator');
+        expect(snap.mappings.length).toBeGreaterThan(0);
+        expect(snap.tileCount).toBeGreaterThan(0);
+        expect(snap.dplcs.length).toBe(snap.mappings.length);
+        expect(await getErrors(page)).toHaveLength(0);
+    });
+
+    test('loads Sonic frame tables', async () => {
+        await setFileObject(page, {
+            format: 'Sonic 3&K.js',
+            mappingsPath: resolve(FIXTURES, 's3k/maps/Sonic.asm'),
+            dplcsPath: resolve(FIXTURES, 's3k/dplc/Sonic.asm'),
+            config: { format: 'sonic', mapMacros: true },
+        });
+        await clearEnvironment(page);
+        await clickLoad(page, 'Object');
+        await waitForMappings(page);
+        await waitForDplcs(page);
+
+        const snap = await snapshotEnv(page);
+        // 251 frames, then the frames of the table that follows them
+        expect(snap.mappings.length).toBeGreaterThan(251);
+        expect(snap.dplcs.length).toBeGreaterThan(251);
+        expect(await getErrors(page)).toHaveLength(0);
+    });
+
+    test('round-trip: player ASM (MapMacros) save → reload', async () => {
+        const tmp = mkdtempSync(join(tmpdir(), 'flex2-test-'));
+        try {
+            const config = { format: 'player', mapMacros: true };
+            await setFileObject(page, {
+                format: 'Sonic 3&K.js',
+                mappingsPath: resolve(FIXTURES, 's3k/maps/Knuckles.asm'),
+                dplcsPath: resolve(FIXTURES, 's3k/dplc/Knuckles.asm'),
+                config,
+            });
+            await clearEnvironment(page);
+            await clickLoad(page, 'Object');
+            await waitForMappings(page);
+            await waitForDplcs(page);
+
+            const original = await snapshotEnv(page);
+            expect(await getErrors(page)).toHaveLength(0);
+
+            await setFileObject(page, {
+                format: 'Sonic 3&K.js',
+                mappingsPath: join(tmp, 'map.asm'),
+                dplcsPath: join(tmp, 'dplc.asm'),
+                config,
+            });
+            await clickSave(page, 'Object');
+            expect(await getErrors(page)).toHaveLength(0);
+
+            const listing = readFileSync(join(tmp, 'map.asm'), 'utf8');
+            expect(listing).toContain('spriteHeader');
+            expect(readFileSync(join(tmp, 'dplc.asm'), 'utf8'))
+                .toContain('s3kPlayerDplcHeader');
+
+            await clearEnvironment(page);
+            await clickLoad(page, 'Object');
+            await waitForMappings(page);
+            await waitForDplcs(page);
+
+            const reloaded = await snapshotEnv(page);
+            expect(await getErrors(page)).toHaveLength(0);
+            expect(reloaded.mappings).toEqual(original.mappings);
+            expect(reloaded.dplcs).toEqual(original.dplcs);
+        } finally {
+            rmSync(tmp, { recursive: true, force: true });
+        }
+    });
+
+    test('round-trip: object ASM without MapMacros save → reload', async () => {
+        const tmp = mkdtempSync(join(tmpdir(), 'flex2-test-'));
+        try {
+            const config = { format: 'object', mapMacros: false };
+            await setFileObject(page, {
+                format: 'Sonic 3&K.js',
+                mappingsPath: resolve(FIXTURES, 's3k/maps/Penguinator.asm'),
+                dplcsPath: resolve(FIXTURES, 's3k/dplc/Penguinator.asm'),
+                config,
+            });
+            await clearEnvironment(page);
+            await clickLoad(page, 'Object');
+            await waitForMappings(page);
+            await waitForDplcs(page);
+
+            const original = await snapshotEnv(page);
+            expect(await getErrors(page)).toHaveLength(0);
+
+            await setFileObject(page, {
+                format: 'Sonic 3&K.js',
+                mappingsPath: join(tmp, 'map.asm'),
+                dplcsPath: join(tmp, 'dplc.asm'),
+                config,
+            });
+            await clickSave(page, 'Object');
+            expect(await getErrors(page)).toHaveLength(0);
+
+            // raw dc listing, no macros
+            const listing = readFileSync(join(tmp, 'map.asm'), 'utf8');
+            expect(listing).toContain('dc.');
+            expect(listing).not.toContain('spritePiece');
+
+            await clearEnvironment(page);
+            await clickLoad(page, 'Object');
+            await waitForMappings(page);
+            await waitForDplcs(page);
+
+            const reloaded = await snapshotEnv(page);
+            expect(await getErrors(page)).toHaveLength(0);
+            expect(reloaded.mappings).toEqual(original.mappings);
+            expect(reloaded.dplcs).toEqual(original.dplcs);
+        } finally {
+            rmSync(tmp, { recursive: true, force: true });
+        }
+    });
+
+    test('round-trip: single frame and static piece formats', async () => {
+        const tmp = mkdtempSync(join(tmpdir(), 'flex2-test-'));
+        try {
+            // two pieces: top -8, 2x2 tiles, art 1 / 2, left -8 / 8
+            const pieceA = [0xF8, 0x05, 0x00, 0x01, 0xFF, 0xF8];
+            const pieceB = [0xF8, 0x05, 0x00, 0x02, 0x00, 0x08];
+
+            for (const [variant, bytes] of [
+                ['objectFrame', [0x00, 0x02, ...pieceA, ...pieceB]],
+                ['objectPiece', [...pieceA, ...pieceB]],
+            ]) {
+                const config = { format: variant, mapMacros: true };
+                const source = join(tmp, `${variant}.bin`);
+                writeFileSync(source, Buffer.from(bytes));
+
+                await setFileObject(page, {
+                    format: 'Sonic 3&K.js',
+                    mappingsPath: source,
+                    config,
+                });
+                await clearEnvironment(page);
+                await clickLoad(page, 'Object');
+                await waitForMappings(page);
+
+                const original = await snapshotEnv(page);
+                expect(await getErrors(page)).toHaveLength(0);
+
+                await setFileObject(page, {
+                    format: 'Sonic 3&K.js',
+                    mappingsPath: join(tmp, `${variant}.asm`),
+                    config,
+                });
+                await clickSave(page, 'Object');
+                expect(await getErrors(page)).toHaveLength(0);
+
+                await clearEnvironment(page);
+                await clickLoad(page, 'Object');
+                await waitForMappings(page);
+
+                const reloaded = await snapshotEnv(page);
+                expect(await getErrors(page)).toHaveLength(0);
+                expect(reloaded.mappings).toEqual(original.mappings);
+            }
         } finally {
             rmSync(tmp, { recursive: true, force: true });
         }
