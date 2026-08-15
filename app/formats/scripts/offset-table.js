@@ -22,6 +22,7 @@ export function makeOffsetTable({ read, write }) {
                 }
                 if (items && headers.length >= items) break;
             }
+            ref.global.headers = (ref.global.headers || []).concat(headers);
             if (!ref.global.firstHeader) {
                 ref.global.firstHeader = true;
                 ref.global.cleanup.push(({ sprites }) => {
