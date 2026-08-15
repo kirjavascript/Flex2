@@ -2,9 +2,9 @@
 
 ## [1.4.3]
 - Puyo Puyo / Dr Robotnik's Mean Bean Machine support
-- Add MapMacros to Sonic 2 Special Stage format
+- Combine S3K formats into a single script
 - Add MapMacros to S3K formats
-- Combine S3K formats into a single script with a dropdown for type
+- Add MapMacros to Sonic 2 Special Stage format
 
 ## [1.4.2]
 - Strip labels from cloned sprites

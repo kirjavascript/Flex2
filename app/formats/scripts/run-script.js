@@ -147,6 +147,8 @@ export default catchFunc((obj) => {
         const getCursor = () => cursor;
         const global = { cleanup: [] };
         const sprites = [];
+        const spriteTables = [];
+        const spriteTableAddrs = [];
         const spritesAddr = {};
         sectionList.forEach(([readFrame], i) => {
             logger(`====== SECTION ======`, i);
@@ -195,7 +197,7 @@ export default catchFunc((obj) => {
         });
         logger('spritesAddr', spritesAddr);
 
-        global.cleanup.forEach(task => task({ sprites, spritesAddr, buffer }));
+        global.cleanup.forEach(task => task({ sprites, spriteTables, spriteTableAddrs, spritesAddr, buffer }));
 
         if (symbols) {
             const addrToSprite = new Map();
@@ -210,7 +212,22 @@ export default catchFunc((obj) => {
             });
         }
 
-        const spriteMetadata = sprites.map(s => s.metadata || {});
+        // the same sprite can be referenced by more than one table entry, so
+        // metadata that belongs to the entry rather than the frame is per index
+        const spriteMetadata = sprites.map((sprite, i) => {
+            const metadata = { ...(sprite.metadata || {}) };
+            // only the sprite that opens a table is tagged, the ones after it
+            // belong to the same table until another tag turns up
+            const startsTable = i === 0 || spriteTables[i] !== spriteTables[i - 1];
+            if (startsTable && spriteTables[i]) {
+                metadata.table = spriteTables[i];
+            }
+            const tableLabel = startsTable && symbols?.[spriteTableAddrs[i]];
+            if (tableLabel) {
+                metadata.tableLabel = tableLabel;
+            }
+            return metadata;
+        });
         return {sprites, spriteMetadata};
     });
 
@@ -290,10 +307,11 @@ export default catchFunc((obj) => {
             if (dplcs.error) return dplcs;
 
             for (let i = 0; i < dplcs.spriteMetadata.length; i++) {
-                const plcLabel = dplcs.spriteMetadata[i]?.label;
-                if (plcLabel) {
+                const { label: plcLabel, tableLabel: plcTableLabel } = dplcs.spriteMetadata[i] || {};
+                if (plcLabel || plcTableLabel) {
                     if (!mappings.spriteMetadata[i]) mappings.spriteMetadata[i] = {};
-                    mappings.spriteMetadata[i].plcLabel = plcLabel;
+                    if (plcLabel) mappings.spriteMetadata[i].plcLabel = plcLabel;
+                    if (plcTableLabel) mappings.spriteMetadata[i].plcTableLabel = plcTableLabel;
                 }
             }
         }

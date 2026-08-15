@@ -21,10 +21,10 @@ config(({ select, checkbox }) => [
         label: 'Format',
         options: [
             { value: 'object', label: 'Object' },
-            { value: 'objectFrame', label: 'Object (single frame)' },
-            { value: 'objectPiece', label: 'Object (static piece)' },
             { value: 'player', label: 'Player' },
             { value: 'sonic', label: 'Sonic' },
+            { value: 'objectFrame', label: 'Single Frame' },
+            { value: 'objectPiece', label: 'Static' },
         ],
         default: 'object',
     }),
@@ -39,12 +39,11 @@ const format = config.format;
 
 // players use Sonic 2's DPLC format, everything else uses the S3K one
 const isPlayer = format === 'player' || format === 'sonic';
-// Sonic's frame list is a table of tables, which can be read but not written
-const readOnly = format === 'sonic';
+// Sonic's frames are split over a normal and a super table, each sprite is
+// tagged with the table it belongs to in its metadata
+const offsetTableOptions = format === 'sonic' ? { tables: 'auto' } : {};
 const hasOffsetTable = format === 'object' || isPlayer;
 const hasFrameHeader = format !== 'objectPiece';
-
-const unsupported = () => { throw new Error('unsupported'); };
 
 const readPiece = (mapping) => {
     mapping.top = read(dc.b, signed);
@@ -84,7 +83,7 @@ const mappingSection = [
             if (frameIndex === quantity - 1) return endFrame;
         });
     },
-    readOnly ? unsupported : ({ sprite }) => {
+    ({ sprite }) => {
         if (hasFrameHeader) write(dc.w, sprite.length);
         return ({ mapping }) => writePiece(mapping);
     },
@@ -107,7 +106,7 @@ const dplcSection = [
             if (frameIndex === quantity) return endFrame;
         };
     },
-    readOnly ? unsupported : ({ sprite }) => {
+    ({ sprite }) => {
         if (isPlayer) {
             write(dc.w, sprite.length);
             return ({ mapping }) => {
@@ -124,14 +123,12 @@ const dplcSection = [
 ];
 
 mappings([
-    ...(format === 'sonic' ? [offsetTable(dc.w, { items: 251 })] : []),
-    ...(hasOffsetTable ? [offsetTable(dc.w)] : []),
+    ...(hasOffsetTable ? [offsetTable(dc.w, offsetTableOptions)] : []),
     mappingSection,
 ]);
 
 dplcs([
-    ...(format === 'sonic' ? [offsetTable(dc.w, { items: 251 })] : []),
-    offsetTable(dc.w),
+    offsetTable(dc.w, offsetTableOptions),
     dplcSection,
 ]);
 
@@ -159,6 +156,31 @@ SonicDplcVer := 3
         });
     };
 
+    // sprites are grouped into consecutive tables by their metadata: only the
+    // sprite that opens a table is tagged, and it names the table too
+    const tableEntries = (label, sprites, names, sanitizeLabel, key) => {
+        const list = [];
+        let table = null;
+        let current = 0;
+
+        sprites.forEach((sprite, i) => {
+            const tag = sprite.metadata && sprite.metadata.table;
+            if (tag != null && tag !== '') current = Number(tag) || 0;
+            if (current !== table) {
+                const named = sanitizeLabel(sprite.metadata && sprite.metadata[key]);
+                if (table !== null) list.push('');
+                // a named first table keeps the file object's label on top of it
+                if (!current && named && named !== label) list.push(`${label}:`);
+                list.push(`${named || (current ? `${label}_Table${current}` : label)}: mappingsTable`);
+                table = current;
+            }
+            list.push(`\tmappingsTableEntry.w\t${names[i]}`);
+        });
+        list.push('');
+
+        return list;
+    };
+
     const pieceInfo = (renderHex, mapping) => [
         mapping.left,
         mapping.top,
@@ -173,9 +195,6 @@ SonicDplcVer := 3
 
     /**
      * MapMacros Mapping output
-     *
-     * NOTE: for the Sonic format the frame list is a table of tables, but this
-     * emits a single flat table, so the original structure isn't reproduced
      */
     writeMappings(({ label, sprites, renderHex, sanitizeLabel }) => {
         const list = [];
@@ -196,11 +215,7 @@ SonicDplcVer := 3
         }
 
         if (hasOffsetTable) {
-            list.push(`${label}: mappingsTable`);
-            sprites.forEach((sprite, i) => {
-                list.push(`\tmappingsTableEntry.w\t${names[i]}`);
-            });
-            list.push('');
+            list.push(...tableEntries(label, sprites, names, sanitizeLabel, 'tableLabel'));
         }
 
         sprites.forEach((sprite, i) => {
@@ -228,11 +243,7 @@ SonicDplcVer := 3
         const header = isPlayer ? 's3kPlayerDplcHeader' : 'dplcHeader';
         const entry = isPlayer ? 's3kPlayerDplcEntry' : 'dplcEntry';
 
-        list.push(`${label}: mappingsTable`);
-        sprites.forEach((sprite, i) => {
-            list.push(`\tmappingsTableEntry.w\t${names[i]}`);
-        });
-        list.push('');
+        list.push(...tableEntries(label, sprites, names, sanitizeLabel, 'plcTableLabel'));
 
         sprites.forEach((sprite, i) => {
             list.push(`${names[i]}:\t${header}`);

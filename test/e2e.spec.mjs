@@ -14,9 +14,11 @@ async function launchApp() {
         args: [APP_DIR],
     });
     const page = await app.firstWindow();
-    await page.evaluate(() => localStorage.clear());
-    await page.reload({ waitUntil: 'domcontentloaded', timeout: 30_000 });
-    await page.waitForSelector('.file-object', { timeout: 10_000 });
+    // clearing by hand doesn't stick: the reload's beforeunload writes the state
+    // that was already read back out. resetStorage turns saving off first
+    await page.evaluate(() => window.resetStorage()).catch(() => {});
+    await page.waitForSelector('.file-object', { timeout: 30_000 });
+    await page.waitForFunction(() => localStorage.length === 0, null, { timeout: 10_000 });
     return { app, page };
 }
 
@@ -72,6 +74,8 @@ async function setFileObject(page, {
                 length: typeof p === 'string' ? 1 : (p.length || 1),
             })),
         );
+        // start from the script's own defaults, not the last test's config
+        for (const key of Object.keys(file.config)) delete file.config[key];
         Object.assign(file.config, opts.config);
     }, { format, artPath, artCompression, artOffset, mappingsPath, dplcsPath, palettePaths, config });
     // wait for MobX → React re-render so FileObject picks up new paths
@@ -170,6 +174,21 @@ async function renderSpritesheet(page) {
         return dataUrl.replace(/^data:image\/png;base64,/, '');
     });
     return base64 ? Buffer.from(base64, 'base64') : null;
+}
+
+/**
+ * The table each sprite belongs to. Only the sprite that opens a table is
+ * tagged, the ones after it belong to the same table.
+ */
+async function spriteTables(page) {
+    return page.evaluate(() => {
+        const { environment, toJS } = window.__test__;
+        let table = 0;
+        return toJS(environment.spriteMetadata).map(meta => {
+            if (meta?.table != null && meta.table !== '') table = Number(meta.table) || 0;
+            return table;
+        });
+    });
 }
 
 async function getErrors(page) {
@@ -648,11 +667,89 @@ test.describe('Sonic 3&K', () => {
         await waitForDplcs(page);
 
         const snap = await snapshotEnv(page);
-        // 251 frames, then the frames of the table that follows them
-        expect(snap.mappings.length).toBeGreaterThan(251);
-        expect(snap.dplcs.length).toBeGreaterThan(251);
+        // the normal table, then the super table, both auto-detected
+        expect(snap.mappings.length).toBe(502);
+        expect(snap.dplcs.length).toBe(502);
         expect(await getErrors(page)).toHaveLength(0);
+
+        const tables = await spriteTables(page);
+        expect(tables.filter(t => !t)).toHaveLength(251);
+        expect(tables.filter(t => t === 1)).toHaveLength(251);
+
+        // only the sprite opening the super table is tagged
+        const tagged = await page.evaluate(() => {
+            const { environment, toJS } = window.__test__;
+            return toJS(environment.spriteMetadata)
+                .map((meta, i) => (meta?.table ? i : -1))
+                .filter(i => i >= 0);
+        });
+        expect(tagged).toEqual([251]);
     });
+
+    for (const [ext, mapMacros] of [['asm', true], ['asm', false], ['bin', true]]) {
+        const suffix = ext === 'asm' && !mapMacros ? ' (no MapMacros)' : '';
+        test(`round-trip: Sonic ${ext.toUpperCase()} save \u2192 reload${suffix}`, async () => {
+            const tmp = mkdtempSync(join(tmpdir(), 'flex2-test-'));
+            try {
+                const config = { format: 'sonic', mapMacros };
+                await setFileObject(page, {
+                    format: 'Sonic 3&K.js',
+                    mappingsPath: resolve(FIXTURES, 's3k/maps/Sonic.asm'),
+                    dplcsPath: resolve(FIXTURES, 's3k/dplc/Sonic.asm'),
+                    config,
+                });
+                await clearEnvironment(page);
+                await clickLoad(page, 'Object');
+                await waitForMappings(page);
+                await waitForDplcs(page);
+
+                const original = await snapshotEnv(page);
+                const originalTables = await spriteTables(page);
+                expect(await getErrors(page)).toHaveLength(0);
+
+                await setFileObject(page, {
+                    format: 'Sonic 3&K.js',
+                    mappingsPath: join(tmp, `map.${ext}`),
+                    dplcsPath: join(tmp, `dplc.${ext}`),
+                    config,
+                });
+                await clickSave(page, 'Object');
+                expect(await getErrors(page)).toHaveLength(0);
+
+                if (ext === 'asm') {
+                    const listing = readFileSync(join(tmp, `map.${ext}`), 'utf8');
+                    const dplcListing = readFileSync(join(tmp, `dplc.${ext}`), 'utf8');
+                    if (mapMacros) {
+                        expect(listing.match(/mappingsTable$/gm)).toHaveLength(2);
+                        // both tables keep the names they were read under
+                        expect(listing).toContain('Map_Sonic_: mappingsTable');
+                        expect(listing).toContain('Map_SuperSonic_: mappingsTable');
+                        expect(dplcListing).toContain('PLC_Sonic_: mappingsTable');
+                        expect(dplcListing).toContain('PLC_SuperSonic_: mappingsTable');
+                    } else {
+                        // each table's entries are offsets from its own label
+                        expect(listing).toContain('Map_SuperSonic_:');
+                        expect(listing).toMatch(/dc\.w \S+-Map_Sonic_\n/);
+                        expect(listing).toMatch(/dc\.w \S+-Map_SuperSonic_/);
+                        expect(dplcListing).toMatch(/dc\.w \S+-PLC_SuperSonic_/);
+                    }
+                }
+
+                await clearEnvironment(page);
+                await clickLoad(page, 'Object');
+                await waitForMappings(page);
+                await waitForDplcs(page);
+
+                const reloaded = await snapshotEnv(page);
+                expect(await getErrors(page)).toHaveLength(0);
+                expect(reloaded.mappings).toEqual(original.mappings);
+                expect(reloaded.dplcs).toEqual(original.dplcs);
+                expect(await spriteTables(page)).toEqual(originalTables);
+            } finally {
+                rmSync(tmp, { recursive: true, force: true });
+            }
+        });
+    }
 
     test('round-trip: player ASM (MapMacros) save → reload', async () => {
         const tmp = mkdtempSync(join(tmpdir(), 'flex2-test-'));
