@@ -23,6 +23,11 @@ __LABEL__ label *
 __LABEL___Begin label *
     endm
 
+; art slot DMA'd into the sprite's VRAM window, see PuyoDPLCSlotSize
+dplcEntry macro slot
+	dc.l slot*PuyoDPLCSlotSize
+	endm
+
 spritePiece macro xpos,ypos,width,height,tile,xflip,yflip,pal,pri,lnk
 	dc.w	ypos
 	dc.b	(((width-1)&3)<<2)|((height-1)&3)

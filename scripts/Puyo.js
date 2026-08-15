@@ -2,6 +2,7 @@
 
 const {
     mappings,
+    dplcs,
     offsetTable,
     write,
     read,
@@ -17,6 +18,11 @@ config(({ number }) => [
     number({
         name: 'tileOffset',
         label: 'Tile Offset',
+        default: 0,
+    }),
+    number({
+        name: 'dplcTiles',
+        label: 'PLC Tiles',
         default: 0,
     }),
 ]);
@@ -64,6 +70,20 @@ mappings([
     ],
 ]);
 
+dplcs([
+    [
+        () => ({ mapping }) => {
+            mapping.art = read(dc.l) / 0x20;
+            mapping.size = config.dplcTiles;
+            return endFrame;
+        },
+        () => ({ mapping }) => {
+            write(dc.l, mapping.art * 0x20);
+            return endFrame;
+        },
+    ],
+]);
+
 function nextSprite(ref, start) {
     return (ref.global.headers || []).reduce(
         (next, header) => (header > start && header < next ? header : next),
@@ -75,8 +95,9 @@ function link(mapping) {
     return Number(mapping.metadata && mapping.metadata.link) || 0;
 }
 
-asm(({ importScript, writeMappings }) => {
+asm(({ addScript, importScript, writeMappings, writeDPLCs }) => {
     importScript('PuyoMapMacros.asm');
+    addScript(`\nPuyoDPLCSlotSize = ${(config.dplcTiles || 0) * 0x20}\n`);
 
     writeMappings(({ label, sprites, renderHex, sanitizeLabel }) => {
         const list = [];
@@ -118,6 +139,23 @@ asm(({ importScript, writeMappings }) => {
         });
 
         list.push('\teven');
+
+        return list.join('\n');
+    });
+
+    writeDPLCs(({ label, sprites, renderHex }) => {
+        const list = [`${label}:`, ''];
+
+        sprites.forEach(({ dplcs: entries }) => {
+            entries.forEach(({ art }) => {
+                const slot = art / config.dplcTiles;
+                list.push(Number.isInteger(slot)
+                    ? `\tdplcEntry\t${slot}`
+                    : `\tdc.l\t${renderHex(art * 0x20)}`);
+            });
+        });
+
+        list.push('', '\teven');
 
         return list.join('\n');
     });
