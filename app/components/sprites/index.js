@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { reaction } from 'mobx';
 import { environment } from '~/store/environment';
 import { spriteState } from './state';
 import { observer } from 'mobx-react';
@@ -104,6 +105,35 @@ const SortableList = SortableContainer(
 export const Sprites = observer(class Sprites extends DimensionsComponent {
     getContainer = () => {
         return document.querySelector('.spriteSortContainer');
+    };
+
+    componentDidMount() {
+        super.componentDidMount();
+        this.disposeScrollToCurrent = reaction(
+            () => environment.config.currentSprite,
+            (index) => this.scrollToSprite(index),
+        );
+    }
+
+    componentWillUnmount() {
+        super.componentWillUnmount();
+        this.disposeScrollToCurrent && this.disposeScrollToCurrent();
+    }
+
+    scrollToSprite = (index) => {
+        const node = this.node;
+        if (!node || index < 0) return;
+
+        const realWidth = node.clientWidth - parseInt(scrollbarWidth) - 2;
+        const itemsPerRow = Math.max(1, Math.floor(realWidth / realBaseSize));
+        const top = (0 | (index / itemsPerRow)) * realBaseSize;
+        const bottom = top + realBaseSize;
+
+        if (top < node.scrollTop) {
+            node.scrollTop = top;
+        } else if (bottom > node.scrollTop + node.clientHeight) {
+            node.scrollTop = bottom - node.clientHeight;
+        }
     };
 
     onSortEnd = ({ oldIndex, newIndex }) => {
