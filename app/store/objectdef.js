@@ -9,6 +9,9 @@ export class ObjectDef {
         path: '',
         compression: 'Uncompressed',
         offset: 0,
+        // extra art files:
+        // {path, compression, offset, base, length, fromSprite, enabled}
+        extra: [],
     };
     mappings = {
         path: '',

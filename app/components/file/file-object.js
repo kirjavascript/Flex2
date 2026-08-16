@@ -6,6 +6,16 @@ import { assemble } from '~/formats/asm';
 
 import { decompress, compress, compressionFormats } from '~/formats/compression';
 import { bufferToTiles, tilesToBuffer } from '~/formats/art';
+import {
+    artSources,
+    hasExtraArt,
+    spriteArtBases,
+    rebaseSprites,
+    rememberLoadedSize,
+    loadedSize,
+    number,
+    validateArtSources,
+} from '~/formats/art-sources';
 import { buffersToColors, colorsToBuffers } from '~/formats/palette';
 import { environment } from '~/store/environment';
 import { workspace } from '~/store/workspace';
@@ -18,7 +28,7 @@ import { uuid } from '~/util/uuid';
 const fs = promises;
 const compressionList = Object.keys(compressionFormats);
 
-const isASM = (path) => ['.asm', '.s'].includes(extname(path));
+const isASM = (path) => ['.asm', '.s'].includes(extname(path).toLowerCase());
 
 export const FileObject = observer(({ obj, isAbsolute }) => {
     scripts.length; // react to script updates
@@ -82,28 +92,87 @@ export const FileObject = observer(({ obj, isAbsolute }) => {
 
     const [artError, setArtError] = useState();
 
-    function loadArt(e) {
-        ioWrap(obj.art.path, setArtError, e, async (path) => {
-            const buffer = (await fs.readFile(path)).slice(obj.art.offset || 0);
+    // the first source always starts at tile 0, the rest follow their own base
+    const sourceBase = (source, fallback) => {
+        const base = source.base === '' || source.base == null ? NaN : Number(source.base);
+        return Number.isFinite(base) ? base : fallback;
+    };
 
-            const decompBuffer = await decompress(buffer, obj.art.compression);
-            environment.tiles.replace(bufferToTiles(decompBuffer));
+    function loadArt(e) {
+        ioWrap(obj.art.path, setArtError, e, async () => {
+            validateArtSources(obj.art);
+            const tiles = [];
+
+            const sources = artSources(obj.art);
+            for (let i = 0; i < sources.length; i++) {
+                const source = sources[i];
+                if (!source.path) continue;
+                const path = workspace.fuzzyAbsolutePath(source.path);
+                const buffer = (await fs.readFile(path)).slice(Number(source.offset) || 0);
+                const decompBuffer = await decompress(buffer, source.compression);
+
+                const base = sourceBase(source, tiles.length);
+                // an unset base is pinned to where the file landed this load
+                if (source.extraIndex >= 0 && sourceBase(source, null) === null) {
+                    obj.art.extra[source.extraIndex].base = base;
+                }
+
+                const limit = number(source.length);
+                const sourceTiles = limit == null
+                    ? bufferToTiles(decompBuffer)
+                    : bufferToTiles(decompBuffer).slice(0, limit);
+                rememberLoadedSize(source.path, sourceTiles.length);
+
+                // a base past the end leaves a blank gap in front of the file,
+                // one before it overlays what is already there
+                while (tiles.length < base) tiles.push(new Array(64).fill(0));
+                sourceTiles.forEach((tile, index) => {
+                    tiles[base + index] = tile;
+                });
+            }
+
+            environment.tiles.replace(tiles);
         });
     }
 
     function saveArt(e) {
-        ioWrap(obj.art.path, setArtError, e, async (path) => {
-            if (Number(obj.art.offset)) {
-                throw new Error('Can only save art at offset 0');
-            }
-            const tiles = tilesToBuffer(environment.tiles, obj.art.compression);
-            await fs.writeFile(path, tiles);
+        ioWrap(obj.art.path, setArtError, e, async () => {
+            validateArtSources(obj.art);
+            const sources = artSources(obj.art).filter((source) => source.path);
+            const total = environment.tiles.length;
 
-            const buffer = tilesToBuffer(environment.tiles);
-            await fs.writeFile(
-                path,
-                Buffer.from(await compress(buffer, obj.art.compression)),
-            );
+            // work out every slice first: a source that would come back shorter
+            // than it went in is being overlaid by another one, and writing it
+            // would drop the tiles it lost
+            const writes = sources.map((source, i) => {
+                if (Number(source.offset)) {
+                    throw new Error('Can only save art at offset 0');
+                }
+                const base = sourceBase(source, 0);
+                const limit = number(source.length);
+                const end = limit != null
+                    ? base + limit
+                    : sources[i + 1] ? sourceBase(sources[i + 1], total) : total;
+
+                const tiles = environment.tiles.slice(base, end);
+                const loaded = loadedSize(source.path);
+                if (loaded != null && tiles.length < loaded) {
+                    throw new Error(
+                        `${source.path} is overlaid by later art and would be saved `
+                        + `${tiles.length} tiles short of the ${loaded} it was loaded with`,
+                    );
+                }
+                return { source, tiles };
+            });
+
+            for (const { source, tiles } of writes) {
+                const path = workspace.fuzzyAbsolutePath(source.path);
+                const buffer = tilesToBuffer(tiles);
+                await fs.writeFile(
+                    path,
+                    Buffer.from(await compress(buffer, source.compression)),
+                );
+            }
         });
     }
 
@@ -111,6 +180,8 @@ export const FileObject = observer(({ obj, isAbsolute }) => {
 
     function loadMappingsAndDPLCs(e) {
         ioWrap(obj.mappings.path, setMappingError, e, async (path) => {
+            // art bases decide how mapping/DPLC art indices are read back
+            validateArtSources(obj.art);
             if (!obj.dplcs.enabled) environment.config.dplcsEnabled = false;
             const { buffer, symbols } = await getBuffer(path, mappingsASM);
 
@@ -124,19 +195,44 @@ export const FileObject = observer(({ obj, isAbsolute }) => {
             const result = script.readMappings(buffer, symbols, dplcBuffer, dplcSymbols);
             if (result.error) throw result.error;
 
-            environment.mappings.replace(result.mappings.sprites);
-            environment.spriteMetadata.replace(result.mappings.spriteMetadata || []);
+            const spriteMetadata = result.mappings.spriteMetadata || [];
+            const indexed = result.dplcs ? result.dplcs.sprites : result.mappings.sprites;
+            const artBase = spriteArtBases(obj.art, spriteMetadata, indexed.length);
+
+            environment.mappings.replace(
+                result.dplcs
+                    ? result.mappings.sprites
+                    : rebaseSprites(result.mappings.sprites, artBase, 1),
+            );
+            environment.spriteMetadata.replace(spriteMetadata);
 
             if (result.dplcs) {
-                environment.dplcs.replace(result.dplcs.sprites);
+                environment.dplcs.replace(rebaseSprites(result.dplcs.sprites, artBase, 1));
             }
         });
     }
 
     function saveMappingsAndDPLCs(e) {
         ioWrap(obj.mappings.path, setMappingError, e, async (path) => {
-            const dplcsData = obj.dplcs.enabled ? environment.dplcs : null;
-            const result = script.writeMappings(environment.mappings, dplcsData, environment.spriteMetadata, environment);
+            validateArtSources(obj.art);
+            const useDPLCs = obj.dplcs.enabled;
+            const indexed = useDPLCs ? environment.dplcs : environment.mappings;
+            const artBase = spriteArtBases(obj.art, environment.spriteMetadata, indexed.length);
+
+            const dplcsData = useDPLCs ? rebaseSprites(environment.dplcs, artBase, -1) : null;
+            const mappingsData = useDPLCs
+                ? environment.mappings
+                : rebaseSprites(environment.mappings, artBase, -1);
+            // the ASM writers read art indices off the sprites, not the listing
+            const sprites = hasExtraArt(obj.art)
+                ? environment.sprites.map((sprite, i) => ({
+                      ...sprite,
+                      mappings: useDPLCs ? sprite.mappings : mappingsData[i],
+                      ...(sprite.dplcs && { dplcs: dplcsData[i] }),
+                  }))
+                : environment.sprites;
+
+            const result = script.writeMappings(mappingsData, dplcsData, environment.spriteMetadata, environment);
             if (result.error) throw result.error;
 
             if (!mappingsASM) {
@@ -146,7 +242,7 @@ export const FileObject = observer(({ obj, isAbsolute }) => {
                 const asmOutput = script.generateMappingsASM({
                     label,
                     listing: result.mappings,
-                    sprites: environment.sprites,
+                    sprites,
                 });
 
                 await fs.writeFile(path, asmOutput);
@@ -161,7 +257,7 @@ export const FileObject = observer(({ obj, isAbsolute }) => {
                     const asmOutput = script.generateDPLCsASM({
                         label,
                         listing: result.dplcs,
-                        sprites: environment.sprites,
+                        sprites,
                     });
 
                     await fs.writeFile(dplcPath, asmOutput);
@@ -257,6 +353,78 @@ export const FileObject = observer(({ obj, isAbsolute }) => {
                 label="Art"
                 store={obj.art}
                 accessor="path"
+                absolute={isAbsolute}
+            />
+
+            {(obj.art.extra || []).map((source, i) => (
+                <div key={i}>
+                    <div className="menu-item">
+                        <Item color="green">Extra Art</Item>
+                        <Button
+                            color="red"
+                            onClick={() => {
+                                obj.art.extra.splice(i, 1);
+                            }}
+                        >
+                            remove
+                        </Button>
+                    </div>
+                    <div
+                        className="menu-item"
+                        onClick={() => {
+                            source.enabled = source.enabled === false;
+                        }}
+                    >
+                        <Item>Enabled</Item>
+                        <Checkbox checked={source.enabled !== false} readOnly />
+                    </div>
+                    <div className="menu-item">
+                        <Item>Compression</Item>
+                        <Select
+                            options={compressionList}
+                            store={source}
+                            accessor="compression"
+                        />
+                    </div>
+                    <div className="menu-item">
+                        <Item>Load Offset</Item>
+                        <Input store={source} accessor="offset" isNumber />
+                    </div>
+                    <div className="menu-item">
+                        <Item>Tile Base</Item>
+                        <Input store={source} accessor="base" isNumber />
+                    </div>
+                    <div className="menu-item">
+                        <Item>Tile Length</Item>
+                        <Input store={source} accessor="length" isNumber />
+                    </div>
+                    <div className="menu-item">
+                        <Item>From Sprite</Item>
+                        <Input store={source} accessor="fromSprite" isNumber />
+                    </div>
+                    <FileInput
+                        label="Art"
+                        store={source}
+                        accessor="path"
+                        absolute={isAbsolute}
+                    />
+                </div>
+            ))}
+
+            <FileInput
+                label="Art"
+                onChange={(path) => {
+                    if (!obj.art.extra) obj.art.extra = [];
+                    obj.art.extra.push({
+                        path,
+                        compression: 'Uncompressed',
+                        offset: 0,
+                        base: '',
+                        length: '',
+                        fromSprite: '',
+                        enabled: true,
+                    });
+                }}
                 absolute={isAbsolute}
             />
 

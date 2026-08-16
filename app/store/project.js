@@ -11,6 +11,7 @@ function hydrate(objects) {
         delete obj.uuid;
         if (obj.art) {
             obj.art.offset = obj.art.offset || 0;
+            obj.art.extra ??= [];
         }
         obj.config ??= {};
         obj.children && hydrate(obj.children);

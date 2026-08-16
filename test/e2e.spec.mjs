@@ -8,15 +8,16 @@ const FIXTURES = resolve(import.meta.dirname, 'fixtures');
 const ELECTRON = resolve(ROOT, 'node_modules', '.bin', 'electron');
 const APP_DIR = resolve(ROOT, 'static');
 
+let userDataDir;
+
 async function launchApp() {
+    // throwaway profile so tests never touch the real app's localStorage
+    userDataDir = mkdtempSync(join(tmpdir(), 'flex2-userdata-'));
     const app = await _electron.launch({
         executablePath: ELECTRON,
-        args: [APP_DIR],
+        args: [APP_DIR, `--user-data-dir=${userDataDir}`],
     });
     const page = await app.firstWindow();
-    // clearing by hand doesn't stick: the reload's beforeunload writes the state
-    // that was already read back out. resetStorage turns saving off first
-    await page.evaluate(() => window.resetStorage()).catch(() => {});
     await page.waitForSelector('.file-object', { timeout: 30_000 });
     await page.waitForFunction(() => localStorage.length === 0, null, { timeout: 10_000 });
     return { app, page };
@@ -53,6 +54,7 @@ async function setFileObject(page, {
     artPath,
     artCompression = 'Uncompressed',
     artOffset = 0,
+    artExtra = [],
     mappingsPath,
     dplcsPath,
     palettePaths = [],
@@ -65,6 +67,15 @@ async function setFileObject(page, {
         file.art.path = opts.artPath || '';
         file.art.compression = opts.artCompression;
         file.art.offset = opts.artOffset;
+        file.art.extra.replace(opts.artExtra.map(source => ({
+            compression: 'Uncompressed',
+            offset: 0,
+            base: '',
+            length: '',
+            fromSprite: '',
+            enabled: true,
+            ...source,
+        })));
         file.mappings.path = opts.mappingsPath || '';
         file.dplcs.path = opts.dplcsPath || '';
         file.dplcs.enabled = !!opts.dplcsPath;
@@ -77,7 +88,7 @@ async function setFileObject(page, {
         // start from the script's own defaults, not the last test's config
         for (const key of Object.keys(file.config)) delete file.config[key];
         Object.assign(file.config, opts.config);
-    }, { format, artPath, artCompression, artOffset, mappingsPath, dplcsPath, palettePaths, config });
+    }, { format, artPath, artCompression, artOffset, artExtra, mappingsPath, dplcsPath, palettePaths, config });
     // wait for MobX → React re-render so FileObject picks up new paths
     await page.waitForTimeout(100);
 }
@@ -212,7 +223,10 @@ async function expectSnapshots(page, name) {
 
 let app, page;
 test.beforeAll(async () => { ({ app, page } = await launchApp()); });
-test.afterAll(async () => { await closeApp(app); });
+test.afterAll(async () => {
+    await closeApp(app);
+    if (userDataDir) rmSync(userDataDir, { recursive: true, force: true });
+});
 
 test.describe('Sonic 1', () => {
 
@@ -886,6 +900,333 @@ test.describe('Sonic 3&K', () => {
                 expect(await getErrors(page)).toHaveLength(0);
                 expect(reloaded.mappings).toEqual(original.mappings);
             }
+        } finally {
+            rmSync(tmp, { recursive: true, force: true });
+        }
+    });
+});
+
+test.describe('Extra art sources', () => {
+
+    const PENGUINATOR = resolve(FIXTURES, 's3k/art/Penguinator.bin');
+    // S3K's Sonic frames from $DA on index ArtUnc_Sonic_Extra instead of ArtUnc_Sonic
+    const FROM_SPRITE = 0xDA;
+    const SONIC_TABLE = 251;
+
+    const artFile = (tiles, fill) =>
+        Buffer.from(Array.from({ length: tiles * 0x20 }, (_, i) => (fill + i) & 0xFF));
+
+    async function tileAt(page, index) {
+        return page.evaluate((i) => window.__test__.toJS(window.__test__.environment.tiles[i]), index);
+    }
+
+    test('a second art file loads at its own tile base', async () => {
+        const tmp = mkdtempSync(join(tmpdir(), 'flex2-test-'));
+        try {
+            const extraPath = join(tmp, 'extra.bin');
+            writeFileSync(extraPath, artFile(2, 0x40));
+            const firstCount = readFileSync(PENGUINATOR).length / 0x20;
+            const base = firstCount + 2;
+
+            await setFileObject(page, {
+                format: 'Sonic 3&K.js',
+                artPath: PENGUINATOR,
+                artExtra: [{ path: extraPath, base }],
+            });
+            await clearEnvironment(page);
+            await clickLoad(page, 'Art');
+            await waitForTiles(page);
+            expect(await getErrors(page)).toHaveLength(0);
+
+            const tileCount = await page.evaluate(() => window.__test__.environment.tiles.length);
+            expect(tileCount).toBe(base + 2);
+
+            // the gap between the two files is blank, the extra art starts at its base
+            expect(await tileAt(page, base - 1)).toEqual(new Array(64).fill(0));
+            expect((await tileAt(page, base)).slice(0, 4)).toEqual([4, 0, 4, 1]);
+        } finally {
+            rmSync(tmp, { recursive: true, force: true });
+        }
+    });
+
+    test('an unset tile base is pinned to the end of the previous file', async () => {
+        const tmp = mkdtempSync(join(tmpdir(), 'flex2-test-'));
+        try {
+            const extraPath = join(tmp, 'extra.bin');
+            writeFileSync(extraPath, artFile(3, 0x10));
+            const firstCount = readFileSync(PENGUINATOR).length / 0x20;
+
+            await setFileObject(page, {
+                format: 'Sonic 3&K.js',
+                artPath: PENGUINATOR,
+                artExtra: [{ path: extraPath }],
+            });
+            await clearEnvironment(page);
+            await clickLoad(page, 'Art');
+            await waitForTiles(page);
+            expect(await getErrors(page)).toHaveLength(0);
+
+            const base = await page.evaluate(() => window.__test__.workspace.file.art.extra[0].base);
+            expect(base).toBe(firstCount);
+            expect(await page.evaluate(() => window.__test__.environment.tiles.length))
+                .toBe(firstCount + 3);
+        } finally {
+            rmSync(tmp, { recursive: true, force: true });
+        }
+    });
+
+    test('art save splits the tiles back over both files', async () => {
+        const tmp = mkdtempSync(join(tmpdir(), 'flex2-test-'));
+        try {
+            const firstPath = join(tmp, 'first.bin');
+            const extraPath = join(tmp, 'extra.bin');
+            const first = readFileSync(PENGUINATOR);
+            const extra = artFile(3, 0x10);
+            writeFileSync(firstPath, first);
+            writeFileSync(extraPath, extra);
+
+            await setFileObject(page, {
+                format: 'Sonic 3&K.js',
+                artPath: firstPath,
+                artExtra: [{ path: extraPath }],
+            });
+            await clearEnvironment(page);
+            await clickLoad(page, 'Art');
+            await waitForTiles(page);
+            await clickSave(page, 'Art');
+            expect(await getErrors(page)).toHaveLength(0);
+
+            expect(readFileSync(firstPath).equals(first)).toBe(true);
+            expect(readFileSync(extraPath).equals(extra)).toBe(true);
+        } finally {
+            rmSync(tmp, { recursive: true, force: true });
+        }
+    });
+
+    test('a disabled source is neither loaded nor written', async () => {
+        const tmp = mkdtempSync(join(tmpdir(), 'flex2-test-'));
+        try {
+            const firstPath = join(tmp, 'first.bin');
+            const extraPath = join(tmp, 'extra.bin');
+            const first = readFileSync(PENGUINATOR);
+            const extra = artFile(3, 0x10);
+            writeFileSync(firstPath, first);
+            writeFileSync(extraPath, extra);
+            const firstCount = first.length / 0x20;
+
+            await setFileObject(page, {
+                format: 'Sonic 3&K.js',
+                artPath: firstPath,
+                artExtra: [{ path: extraPath, base: firstCount, enabled: false }],
+            });
+            await clearEnvironment(page);
+            await clickLoad(page, 'Art');
+            await waitForTiles(page);
+
+            expect(await page.evaluate(() => window.__test__.environment.tiles.length))
+                .toBe(firstCount);
+
+            // saving leaves the file the disabled source points at alone
+            await clickSave(page, 'Art');
+            expect(readFileSync(firstPath).equals(first)).toBe(true);
+            expect(readFileSync(extraPath).equals(extra)).toBe(true);
+        } finally {
+            rmSync(tmp, { recursive: true, force: true });
+        }
+    });
+
+    test('tile length clips a source on load and on save', async () => {
+        const tmp = mkdtempSync(join(tmpdir(), 'flex2-test-'));
+        try {
+            const firstPath = join(tmp, 'first.bin');
+            const extraPath = join(tmp, 'extra.bin');
+            writeFileSync(firstPath, readFileSync(PENGUINATOR));
+            writeFileSync(extraPath, artFile(4, 0x10));
+            const firstCount = readFileSync(PENGUINATOR).length / 0x20;
+
+            await setFileObject(page, {
+                format: 'Sonic 3&K.js',
+                artPath: firstPath,
+                artExtra: [{ path: extraPath, base: firstCount, length: 1 }],
+            });
+            await clearEnvironment(page);
+            await clickLoad(page, 'Art');
+            await waitForTiles(page);
+
+            // only the first tile of the extra file is taken
+            expect(await page.evaluate(() => window.__test__.environment.tiles.length))
+                .toBe(firstCount + 1);
+
+            await clickSave(page, 'Art');
+            expect(readFileSync(extraPath).length).toBe(0x20);
+        } finally {
+            rmSync(tmp, { recursive: true, force: true });
+        }
+    });
+
+    test('saving a source that is overlaid by another one errors', async () => {
+        const tmp = mkdtempSync(join(tmpdir(), 'flex2-test-'));
+        try {
+            const firstPath = join(tmp, 'first.bin');
+            const extraPath = join(tmp, 'extra.bin');
+            const first = readFileSync(PENGUINATOR);
+            const extra = artFile(3, 0x10);
+            writeFileSync(firstPath, first);
+            writeFileSync(extraPath, extra);
+
+            await setFileObject(page, {
+                format: 'Sonic 3&K.js',
+                artPath: firstPath,
+                // lands in the middle of the first file, so it can't be saved back
+                artExtra: [{ path: extraPath, base: 10 }],
+            });
+            await clearEnvironment(page);
+            await clickLoad(page, 'Art');
+            await waitForTiles(page);
+            await clickSave(page, 'Art');
+
+            await expect(
+                page.locator('.file-object .item', { hasText: 'is overlaid by later art' }),
+            ).toHaveCount(1);
+            // neither file is touched
+            expect(readFileSync(firstPath).equals(first)).toBe(true);
+            expect(readFileSync(extraPath).equals(extra)).toBe(true);
+        } finally {
+            rmSync(tmp, { recursive: true, force: true });
+        }
+    });
+
+    test('nonsense source numbers stop art and mapping IO', async () => {
+        const tmp = mkdtempSync(join(tmpdir(), 'flex2-test-'));
+        try {
+            const firstPath = join(tmp, 'first.bin');
+            const extraPath = join(tmp, 'extra.bin');
+            const first = readFileSync(PENGUINATOR);
+            const extra = artFile(3, 0x10);
+            writeFileSync(firstPath, first);
+            writeFileSync(extraPath, extra);
+
+            const errorShown = (text) =>
+                expect(page.locator('.file-object .item', { hasText: text })).toHaveCount(1);
+
+            for (const [source, message] of [
+                [{ base: -3 }, 'tile base must be a whole number 0 or more, got -3'],
+                [{ base: 200, length: -3 }, 'tile length must be a whole number 1 or more, got -3'],
+                [{ base: 200, fromSprite: -5 }, 'from sprite must be a whole number 0 or more, got -5'],
+            ]) {
+                await setFileObject(page, {
+                    format: 'Sonic 3&K.js',
+                    artPath: firstPath,
+                    artExtra: [{ path: extraPath, ...source }],
+                });
+                await clearEnvironment(page);
+                await clickLoad(page, 'Art');
+                await waitForIO(page);
+                await errorShown(message);
+
+                // and nothing is written on the way out
+                await clickSave(page, 'Art');
+                await errorShown(message);
+                expect(readFileSync(firstPath).equals(first)).toBe(true);
+                expect(readFileSync(extraPath).equals(extra)).toBe(true);
+            }
+
+            // a bad fromSprite would rebase mappings, so it stops that too.
+            // a value the art error above doesn't mention, since that one is
+            // still on screen until art IO runs again
+            await setFileObject(page, {
+                format: 'Sonic 3&K.js',
+                artPath: firstPath,
+                artExtra: [{ path: extraPath, base: 200, fromSprite: -7 }],
+                mappingsPath: resolve(FIXTURES, 's3k/maps/Penguinator.asm'),
+                dplcsPath: resolve(FIXTURES, 's3k/dplc/Penguinator.asm'),
+                config: { format: 'object', mapMacros: true },
+            });
+            await clearEnvironment(page);
+            await clickLoad(page, 'Mappings');
+            await waitForIO(page);
+            await errorShown('from sprite must be a whole number 0 or more, got -7');
+            expect(await page.evaluate(() => window.__test__.environment.mappings.length)).toBe(0);
+        } finally {
+            rmSync(tmp, { recursive: true, force: true });
+        }
+    });
+
+    test('DPLC art past fromSprite is rebased, per table', async () => {
+        const tmp = mkdtempSync(join(tmpdir(), 'flex2-test-'));
+        try {
+            // saving the object writes art too, so keep it off the fixtures
+            const firstPath = join(tmp, 'first.bin');
+            writeFileSync(firstPath, readFileSync(PENGUINATOR));
+            const extraPath = join(tmp, 'extra.bin');
+            writeFileSync(extraPath, artFile(1, 0));
+            const base = 4103;
+            const sonic = {
+                format: 'Sonic 3&K.js',
+                mappingsPath: resolve(FIXTURES, 's3k/maps/Sonic.asm'),
+                dplcsPath: resolve(FIXTURES, 's3k/dplc/Sonic.asm'),
+                config: { format: 'sonic', mapMacros: true },
+            };
+
+            await setFileObject(page, sonic);
+            await clearEnvironment(page);
+            await clickLoad(page, 'Object');
+            await waitForMappings(page);
+            await waitForDplcs(page);
+            const plain = await snapshotEnv(page);
+            expect(await getErrors(page)).toHaveLength(0);
+
+            await setFileObject(page, {
+                ...sonic,
+                artPath: firstPath,
+                artExtra: [{ path: extraPath, base, fromSprite: FROM_SPRITE }],
+            });
+            await clearEnvironment(page);
+            await clickLoad(page, 'Object');
+            await waitForMappings(page);
+            await waitForDplcs(page);
+            const rebased = await snapshotEnv(page);
+            expect(await getErrors(page)).toHaveLength(0);
+
+            const shift = (sprite, i) =>
+                sprite.map((entry, j) => entry.art - plain.dplcs[i][j].art);
+            const expected = (i) => {
+                const relative = i < SONIC_TABLE ? i : i - SONIC_TABLE;
+                return relative >= FROM_SPRITE ? base : 0;
+            };
+
+            expect(rebased.dplcs).toHaveLength(plain.dplcs.length);
+            rebased.dplcs.forEach((sprite, i) => {
+                const shifts = new Set(shift(sprite, i));
+                expect([...shifts]).toEqual(sprite.length ? [expected(i)] : []);
+            });
+            // mappings index the sprite's own tiles, so they are left alone
+            expect(rebased.mappings).toEqual(plain.mappings);
+
+            // saved DPLCs go back out relative to their own art file
+            await setFileObject(page, {
+                ...sonic,
+                mappingsPath: join(tmp, 'map.asm'),
+                dplcsPath: join(tmp, 'dplc.asm'),
+                artPath: firstPath,
+                artExtra: [{ path: extraPath, base, fromSprite: FROM_SPRITE }],
+            });
+            await clickSave(page, 'Object');
+            expect(await getErrors(page)).toHaveLength(0);
+
+            await setFileObject(page, {
+                ...sonic,
+                mappingsPath: join(tmp, 'map.asm'),
+                dplcsPath: join(tmp, 'dplc.asm'),
+            });
+            await clearEnvironment(page);
+            await clickLoad(page, 'Object');
+            await waitForMappings(page);
+            await waitForDplcs(page);
+            const reloaded = await snapshotEnv(page);
+            expect(await getErrors(page)).toHaveLength(0);
+            expect(reloaded.dplcs).toEqual(plain.dplcs);
+            expect(reloaded.mappings).toEqual(plain.mappings);
         } finally {
             rmSync(tmp, { recursive: true, force: true });
         }

@@ -2,11 +2,14 @@
 
 ## [1.4.3]
 - Puyo Puyo / Dr Robotnik's Mean Bean Machine support
-- Full Sonic + Super Sonic S3K support (multiple header formats)
+- Full Sonic + Super Sonic S3K support (multiple headers, header labels)
+- Multiple art files per object (eg S3K Sonic, HUD)
 - Combine S3K formats into a single script
+- S3K Static and Single Frame formats
 - Add MapMacros to S3K formats
 - Add MapMacros to Sonic 2 Special Stage format
 - Always make current sprite visible in sprite list
+- Support uppercase .ASM and .S asm file detection
 
 ## [1.4.2]
 - Strip labels from cloned sprites
