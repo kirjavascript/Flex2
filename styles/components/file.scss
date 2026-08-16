@@ -23,4 +23,37 @@
     .file {
         margin-bottom: 10px;
     }
+
+    .art-summary {
+        cursor: pointer;
+
+        .art-numbers {
+            color: $white2;
+        }
+    }
+
+    .art-fields {
+        display: flex;
+        margin-bottom: 10px;
+
+        .art-field {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            min-width: 0;
+            margin-right: 5px;
+
+            &:last-child {
+                margin-right: 0;
+            }
+
+            span {
+                color: $white2;
+            }
+
+            input {
+                width: 100%;
+            }
+        }
+    }
 }

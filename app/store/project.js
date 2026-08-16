@@ -31,8 +31,11 @@ export class Project {
 
         (async () => {
             try {
+                let onDisk;
+
                 if (await exists(path)) {
-                    const json = JSON.parse(await fs.readFile(path, 'utf8'));
+                    onDisk = await fs.readFile(path, 'utf8');
+                    const json = JSON.parse(onDisk);
                     this.name = json.name;
                     hydrate(json.objects);
                     this.objects.replace(json.objects || []);
@@ -48,6 +51,7 @@ export class Project {
                     this.error = undefined;
                     try {
                         await fs.writeFile(path, json, 'utf8');
+                        onDisk = json;
                     } catch (e) {
                         this.error = e;
                     }
@@ -63,6 +67,11 @@ export class Project {
                         name: this.name,
                         objects: this.objects,
                     }, null, 4);
+
+                    if (latestJson === onDisk) {
+                        clearTimeout(timer);
+                        return;
+                    }
 
                     clearTimeout(timer);
                     timer = setTimeout(() => {

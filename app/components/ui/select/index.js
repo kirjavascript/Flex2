@@ -39,10 +39,13 @@ export const Select = observer(class Select extends Component {
         e.preventDefault();
     };
 
+    // wheel={false} for fields a stray scroll must not rewrite
     placeholderRef = (node) => {
         if (node) {
             this.placeholderRefNode = node;
-            node.addEventListener('wheel', this.onWheel, { passive: false });
+            if (this.props.wheel !== false) {
+                node.addEventListener('wheel', this.onWheel, { passive: false });
+            }
         } else {
             this.placeholderRefNode.removeEventListener('wheel', this.onWheel);
         }

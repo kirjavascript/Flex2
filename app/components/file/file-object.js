@@ -91,6 +91,8 @@ export const FileObject = observer(({ obj, isAbsolute }) => {
     }
 
     const [artError, setArtError] = useState();
+    // one extra art source open at a time, the rest stay as summary rows
+    const [openArt, setOpenArt] = useState(-1);
 
     // the first source always starts at tile 0, the rest follow their own base
     const sourceBase = (source, fallback) => {
@@ -342,11 +344,12 @@ export const FileObject = observer(({ obj, isAbsolute }) => {
                     options={compressionList}
                     store={obj.art}
                     accessor="compression"
+                    wheel={false}
                 />
             </div>
             <div className="menu-item">
                 <Item>Load Offset</Item>
-                <Input store={obj.art} accessor="offset" isNumber />
+                <Input store={obj.art} accessor="offset" isNumber wheel={false} />
             </div>
             <ErrorMsg error={artError} />
             <FileInput
@@ -357,57 +360,77 @@ export const FileObject = observer(({ obj, isAbsolute }) => {
             />
 
             {(obj.art.extra || []).map((source, i) => (
-                <div key={i}>
+                <div key={i} className="art-source">
                     <div className="menu-item">
-                        <Item color="green">Extra Art</Item>
-                        <Button
-                            color="red"
-                            onClick={() => {
-                                obj.art.extra.splice(i, 1);
-                            }}
+                        <Item
+                            className="item art-summary"
+                            onClick={() => setOpenArt(openArt === i ? -1 : i)}
                         >
-                            remove
-                        </Button>
-                    </div>
-                    <div
-                        className="menu-item"
-                        onClick={() => {
-                            source.enabled = source.enabled === false;
-                        }}
-                    >
-                        <Item>Enabled</Item>
-                        <Checkbox checked={source.enabled !== false} readOnly />
-                    </div>
-                    <div className="menu-item">
-                        <Item>Compression</Item>
-                        <Select
-                            options={compressionList}
-                            store={source}
-                            accessor="compression"
+                            {basename(source.path) || 'art'}
+                            <span className="art-numbers">
+                                {[
+                                    ['@', source.base],
+                                    ['\u00D7', source.length],
+                                    ['\u2265', source.fromSprite],
+                                ]
+                                    .filter(([, value]) => value !== '' && value != null)
+                                    .map(([mark, value]) => ` ${mark}${value}`)
+                                    .join('')}
+                            </span>
+                        </Item>
+                        <Checkbox
+                            checked={source.enabled !== false}
+                            onChange={() => {
+                                source.enabled = source.enabled === false;
+                            }}
                         />
                     </div>
-                    <div className="menu-item">
-                        <Item>Load Offset</Item>
-                        <Input store={source} accessor="offset" isNumber />
-                    </div>
-                    <div className="menu-item">
-                        <Item>Tile Base</Item>
-                        <Input store={source} accessor="base" isNumber />
-                    </div>
-                    <div className="menu-item">
-                        <Item>Tile Length</Item>
-                        <Input store={source} accessor="length" isNumber />
-                    </div>
-                    <div className="menu-item">
-                        <Item>From Sprite</Item>
-                        <Input store={source} accessor="fromSprite" isNumber />
-                    </div>
-                    <FileInput
-                        label="Art"
-                        store={source}
-                        accessor="path"
-                        absolute={isAbsolute}
-                    />
+                    {openArt === i && (
+                        <>
+                            <div className="menu-item">
+                                <Select
+                                    options={compressionList}
+                                    store={source}
+                                    accessor="compression"
+                                    wheel={false}
+                                />
+                                <Button
+                                    color="red"
+                                    onClick={() => {
+                                        obj.art.extra.splice(i, 1);
+                                        setOpenArt(-1);
+                                    }}
+                                >
+                                    remove
+                                </Button>
+                            </div>
+                            <div className="art-fields">
+                                {[
+                                    ['offset', 'offset'],
+                                    ['base', 'base'],
+                                    ['length', 'length'],
+                                    ['from', 'fromSprite'],
+                                ].map(([label, accessor]) => (
+                                    <div className="art-field" key={accessor}>
+                                        <span>{label}</span>
+                                        <Input
+                                            store={source}
+                                            accessor={accessor}
+                                            isNumber
+                                            wheel={false}
+                                            containerClass="art-input"
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                            <FileInput
+                                label="Art"
+                                store={source}
+                                accessor="path"
+                                absolute={isAbsolute}
+                            />
+                        </>
+                    )}
                 </div>
             ))}
 

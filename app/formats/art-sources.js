@@ -37,9 +37,21 @@ export function validateArtSources(art) {
             }
         };
 
-        check('tile base', number(source.base), 0);
+        const base = number(source.base);
+        const fromSprite = number(source.fromSprite);
+
+        check('tile base', base, 0);
         check('tile length', number(source.length), 1);
-        check('from sprite', number(source.fromSprite), 0);
+        check('from sprite', fromSprite, 0);
+
+        // rebasing every sprite is never what this field is for, and reads the
+        // same as leaving it off. blank is the way to say "don't rebase"
+        if (fromSprite === 0 && base) {
+            throw new Error(
+                `${name}: from sprite 0 would rebase every sprite by ${base}. `
+                + 'Leave it blank to load this art without rebasing',
+            );
+        }
     });
 }
 

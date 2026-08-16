@@ -42,10 +42,13 @@ export const Input = observer(class Input extends Component {
         }
     };
 
+    // wheel={false} for fields a stray scroll must not rewrite
     inputRef = (node) => {
         if (node) {
             this.inputRefNode = node;
-            node.addEventListener('wheel', this.onWheel, { passive: false });
+            if (this.props.wheel !== false) {
+                node.addEventListener('wheel', this.onWheel, { passive: false });
+            }
         } else {
             this.inputRefNode.removeEventListener('wheel', this.onWheel);
         }
@@ -60,6 +63,7 @@ export const Input = observer(class Input extends Component {
             assert,
             isNumber,
             onChange,
+            wheel,
             containerClass = 'ui-input',
             ...otherProps
         } = this.props;
