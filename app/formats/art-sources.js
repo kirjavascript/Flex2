@@ -55,16 +55,20 @@ export function validateArtSources(art) {
     });
 }
 
-// how many tiles each file gave us last load, so save can tell when a source
-// would be written back shorter than it came in
+// how many tiles each source gave us last load, so save knows where its art
+// ends instead of running on to wherever the next source starts. keyed by base
+// as well as path: the same file can be loaded at more than one base
 const loadedSizes = new Map();
 
-export function rememberLoadedSize(path, tiles) {
-    loadedSizes.set(path, tiles);
+const sourceKey = (source, base) => `${source.path}@${base}`;
+
+export function rememberLoadedSize(source, base, tiles) {
+    loadedSizes.set(sourceKey(source, base), tiles);
 }
 
-export function loadedSize(path) {
-    return loadedSizes.has(path) ? loadedSizes.get(path) : null;
+export function loadedSize(source, base) {
+    const key = sourceKey(source, base);
+    return loadedSizes.has(key) ? loadedSizes.get(key) : null;
 }
 
 // several tables can share one frame numbering, so `fromSprite` counts from the
@@ -112,6 +116,12 @@ export function spriteArtBases(art, spriteMetadata = [], spriteCount = 0) {
         });
         return base;
     };
+}
+
+export function sameTiles(a, b) {
+    return a.length === b.length
+        && a.every((tile, i) => tile.length === b[i].length
+            && tile.every((pixel, p) => pixel === b[i][p]));
 }
 
 // art indices live absolute in the editor, relative to their source on disk

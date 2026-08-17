@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { environment } from '~/store/environment';
 import { observer } from 'mobx-react';
 import { Mapping } from '~/components/mappings/mapping';
-import { getBounds } from '~/components/mappings/state/bounds';
 import SVARS from 'sass-variables';
 import { spriteState } from './state';
 

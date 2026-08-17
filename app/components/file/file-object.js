@@ -13,6 +13,7 @@ import {
     rebaseSprites,
     rememberLoadedSize,
     loadedSize,
+    sameTiles,
     number,
     validateArtSources,
 } from '~/formats/art-sources';
@@ -123,7 +124,7 @@ export const FileObject = observer(({ obj, isAbsolute }) => {
                 const sourceTiles = limit == null
                     ? bufferToTiles(decompBuffer)
                     : bufferToTiles(decompBuffer).slice(0, limit);
-                rememberLoadedSize(source.path, sourceTiles.length);
+                rememberLoadedSize(source, base, sourceTiles.length);
 
                 // a base past the end leaves a blank gap in front of the file,
                 // one before it overlays what is already there
@@ -143,32 +144,66 @@ export const FileObject = observer(({ obj, isAbsolute }) => {
             const sources = artSources(obj.art).filter((source) => source.path);
             const total = environment.tiles.length;
 
-            // work out every slice first: a source that would come back shorter
-            // than it went in is being overlaid by another one, and writing it
-            // would drop the tiles it lost
+            const blank = (tile) => !tile || !tile.some((pixel) => pixel);
+            const last = sources.length - 1;
+
+            // work out every slice first, so a source that can't be written
+            // back faithfully stops the save before anything is on disk
             const writes = sources.map((source, i) => {
                 if (Number(source.offset)) {
                     throw new Error('Can only save art at offset 0');
                 }
                 const base = sourceBase(source, 0);
                 const limit = number(source.length);
-                const end = limit != null
-                    ? base + limit
-                    : sources[i + 1] ? sourceBase(sources[i + 1], total) : total;
+                const loaded = loadedSize(source, base);
+                // the last source owns everything to the end, so art added in
+                // the editor still gets saved. the rest stop where the next
+                // source starts
+                const region = Math.max(
+                    (i === last ? total : sourceBase(sources[i + 1], total)) - base,
+                    0,
+                );
 
-                const tiles = environment.tiles.slice(base, end);
-                const loaded = loadedSize(source.path);
-                if (loaded != null && tiles.length < loaded) {
+                if (loaded != null && loaded > region) {
                     throw new Error(
                         `${source.path} is overlaid by later art and would be saved `
-                        + `${tiles.length} tiles short of the ${loaded} it was loaded with`,
+                        + `${region} tiles short of the ${loaded} it was loaded with`,
                     );
                 }
-                return { source, tiles };
+
+                // blank tiles past what this source loaded are the gap in front
+                // of the next one, not its art. without a load to compare
+                // against, every tile in the region belongs to it
+                let extent = region;
+                if (loaded != null) {
+                    while (extent > loaded && blank(environment.tiles[base + extent - 1])) {
+                        extent--;
+                    }
+                }
+
+                return {
+                    source,
+                    path: workspace.fuzzyAbsolutePath(source.path),
+                    tiles: environment.tiles.slice(base, base + (limit ?? extent)),
+                };
             });
 
-            for (const { source, tiles } of writes) {
-                const path = workspace.fuzzyAbsolutePath(source.path);
+            // one file can be loaded at several bases; write it once, and only
+            // when every copy of it still holds the same art
+            const byPath = new Map();
+            for (const write of writes) {
+                const seen = byPath.get(write.path);
+                if (!seen) {
+                    byPath.set(write.path, write);
+                } else if (!sameTiles(seen.tiles, write.tiles)) {
+                    throw new Error(
+                        `${write.source.path} is loaded at more than one tile base and `
+                        + 'they no longer hold the same art, so it cannot be saved',
+                    );
+                }
+            }
+
+            for (const { source, path, tiles } of byPath.values()) {
                 const buffer = tilesToBuffer(tiles);
                 await fs.writeFile(
                     path,
@@ -359,11 +394,20 @@ export const FileObject = observer(({ obj, isAbsolute }) => {
                 absolute={isAbsolute}
             />
 
+            {(obj.art.extra || []).length > 0 && (
+                <div className="menu-item">
+                    <Item color="green">Extra Art</Item>
+                </div>
+            )}
+
             {(obj.art.extra || []).map((source, i) => (
                 <div key={i} className="art-source">
                     <div className="menu-item">
                         <Item
-                            className="item art-summary"
+                            className={`item art-summary${
+                                source.enabled === false ? ' art-off' : ''
+                            }`}
+                            prefix={openArt === i ? '\u25BE\u2002' : '\u25B8\u2002'}
                             onClick={() => setOpenArt(openArt === i ? -1 : i)}
                         >
                             {basename(source.path) || 'art'}
@@ -386,30 +430,22 @@ export const FileObject = observer(({ obj, isAbsolute }) => {
                         />
                     </div>
                     {openArt === i && (
-                        <>
+                        <div className="art-body">
                             <div className="menu-item">
+                                <Item>Compression</Item>
                                 <Select
                                     options={compressionList}
                                     store={source}
                                     accessor="compression"
                                     wheel={false}
                                 />
-                                <Button
-                                    color="red"
-                                    onClick={() => {
-                                        obj.art.extra.splice(i, 1);
-                                        setOpenArt(-1);
-                                    }}
-                                >
-                                    remove
-                                </Button>
                             </div>
                             <div className="art-fields">
                                 {[
-                                    ['offset', 'offset'],
-                                    ['base', 'base'],
-                                    ['length', 'length'],
-                                    ['from', 'fromSprite'],
+                                    ['tile base', 'base'],
+                                    ['tile length', 'length'],
+                                    ['load offset', 'offset'],
+                                    ['from sprite', 'fromSprite'],
                                 ].map(([label, accessor]) => (
                                     <div className="art-field" key={accessor}>
                                         <span>{label}</span>
@@ -429,7 +465,18 @@ export const FileObject = observer(({ obj, isAbsolute }) => {
                                 accessor="path"
                                 absolute={isAbsolute}
                             />
-                        </>
+                            <div className="menu-item">
+                                <Item />
+                                <Button
+                                    onClick={() => {
+                                        obj.art.extra.splice(i, 1);
+                                        setOpenArt(-1);
+                                    }}
+                                >
+                                    remove
+                                </Button>
+                            </div>
+                        </div>
                     )}
                 </div>
             ))}

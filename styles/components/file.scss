@@ -26,25 +26,39 @@
 
     .art-summary {
         cursor: pointer;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
 
         .art-numbers {
             color: $white2;
         }
+
+        &.art-off {
+            color: $white2;
+        }
+    }
+
+    .art-body {
+        border-left: 1px solid $white2;
+        padding-left: 10px;
+        margin-left: 3px;
     }
 
     .art-fields {
         display: flex;
+        flex-wrap: wrap;
         margin-bottom: 10px;
 
         .art-field {
             display: flex;
             flex-direction: column;
-            flex: 1;
+            flex: 0 0 calc(50% - 5px);
             min-width: 0;
-            margin-right: 5px;
+            margin-bottom: 5px;
 
-            &:last-child {
-                margin-right: 0;
+            &:nth-child(odd) {
+                margin-right: 10px;
             }
 
             span {

@@ -1,6 +1,6 @@
 import { test, expect, _electron } from '@playwright/test';
 import { resolve, join } from 'path';
-import { readFileSync, writeFileSync, mkdtempSync, rmSync, statSync } from 'fs';
+import { readFileSync, writeFileSync, mkdtempSync, rmSync } from 'fs';
 import { tmpdir } from 'os';
 
 const ROOT = resolve(import.meta.dirname, '..');
@@ -900,6 +900,46 @@ test.describe('Sonic 3&K', () => {
                 expect(await getErrors(page)).toHaveLength(0);
                 expect(reloaded.mappings).toEqual(original.mappings);
             }
+        } finally {
+            rmSync(tmp, { recursive: true, force: true });
+        }
+    });
+});
+
+test.describe('Extra art sources', () => {
+
+    test('each art file keeps its own size when saved across a gap', async () => {
+        const tmp = mkdtempSync(join(tmpdir(), 'flex2-test-'));
+        try {
+            const firstPath = join(tmp, 'first.bin');
+            const extraPath = join(tmp, 'extra.bin');
+            const first = readFileSync(resolve(FIXTURES, 's3k/art/Penguinator.bin'));
+            const extra = Buffer.from(
+                Array.from({ length: 3 * 0x20 }, (_, i) => (0x10 + i) & 0xFF),
+            );
+            writeFileSync(firstPath, first);
+            writeFileSync(extraPath, extra);
+
+            // the second file sits $100 bytes past the end of the first, so the
+            // blank tiles between them belong to neither
+            const base = (first.length + 0x100) / 0x20;
+
+            await setFileObject(page, {
+                format: 'Sonic 3&K.js',
+                artPath: firstPath,
+                artExtra: [{ path: extraPath, base }],
+            });
+            await clearEnvironment(page);
+            await clickLoad(page, 'Art');
+            await waitForTiles(page);
+
+            expect(await page.evaluate(() => window.__test__.environment.tiles.length))
+                .toBe(base + 3);
+
+            // the gap must not be written into either file
+            await clickSave(page, 'Art');
+            expect(readFileSync(firstPath).equals(first)).toBe(true);
+            expect(readFileSync(extraPath).equals(extra)).toBe(true);
         } finally {
             rmSync(tmp, { recursive: true, force: true });
         }

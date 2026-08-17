@@ -1,4 +1,4 @@
-import { observable, computed, action, autorun, toJS, makeObservable } from 'mobx';
+import { observable, makeObservable } from 'mobx';
 import { storage } from '~/store/storage';
 
 class SpriteState {
