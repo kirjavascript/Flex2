@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { observer } from 'mobx-react';
+import { toJS } from 'mobx';
 import { Item, Input, File as FileInput, Select, Checkbox, Button } from '~/ui';
 import { scripts, runScript, writeBIN } from '~/formats/scripts';
 import { assemble } from '~/formats/asm';
@@ -8,13 +9,7 @@ import { decompress, compress, compressionFormats } from '~/formats/compression'
 import { bufferToTiles, tilesToBuffer } from '~/formats/art';
 import {
     artSources,
-    hasExtraArt,
-    spriteArtBases,
-    rebaseSprites,
-    rememberLoadedSize,
-    loadedSize,
     sameTiles,
-    number,
     validateArtSources,
 } from '~/formats/art-sources';
 import { buffersToColors, colorsToBuffers } from '~/formats/palette';
@@ -31,9 +26,11 @@ const compressionList = Object.keys(compressionFormats);
 
 const isASM = (path) => ['.asm', '.s'].includes(extname(path).toLowerCase());
 
-export const FileObject = observer(({ obj, isAbsolute }) => {
+export const FileObject = observer(({ obj, isInProject = false }) => {
     scripts.length; // react to script updates
     const script = obj.format && runScript(obj);
+
+    const isAbsolute = !isInProject;
 
     const mappingsASM = isASM(obj.mappings.path);
     const dplcsASM = isASM(obj.dplcs.path);
@@ -95,101 +92,73 @@ export const FileObject = observer(({ obj, isAbsolute }) => {
     // one extra art source open at a time, the rest stay as summary rows
     const [openArt, setOpenArt] = useState(-1);
 
-    // the first source always starts at tile 0, the rest follow their own base
-    const sourceBase = (source, fallback) => {
-        const base = source.base === '' || source.base == null ? NaN : Number(source.base);
-        return Number.isFinite(base) ? base : fallback;
+    // the first bank always starts at tile 0, the rest at their own address
+    const sourceAddress = (source, fallback) => {
+        const address = source.address === '' || source.address == null
+            ? NaN
+            : Number(source.address);
+        return Number.isFinite(address) ? address : fallback;
     };
 
     function loadArt(e) {
         ioWrap(obj.art.path, setArtError, e, async () => {
             validateArtSources(obj.art);
-            const tiles = [];
 
-            const sources = artSources(obj.art);
-            for (let i = 0; i < sources.length; i++) {
-                const source = sources[i];
+            // one bank per file, holding its own tiles at its own address
+            const banks = [];
+            let end = 0;
+
+            for (const source of artSources(obj.art)) {
                 if (!source.path) continue;
                 const path = workspace.fuzzyAbsolutePath(source.path);
                 const buffer = (await fs.readFile(path)).slice(Number(source.offset) || 0);
                 const decompBuffer = await decompress(buffer, source.compression);
 
-                const base = sourceBase(source, tiles.length);
-                // an unset base is pinned to where the file landed this load
-                if (source.extraIndex >= 0 && sourceBase(source, null) === null) {
-                    obj.art.extra[source.extraIndex].base = base;
+                const address = sourceAddress(source, end);
+                // an unset address is pinned to where the file landed this load
+                if (source.extraIndex >= 0 && sourceAddress(source, null) === null) {
+                    obj.art.extra[source.extraIndex].address = address;
                 }
 
-                const limit = number(source.length);
-                const sourceTiles = limit == null
-                    ? bufferToTiles(decompBuffer)
-                    : bufferToTiles(decompBuffer).slice(0, limit);
-                rememberLoadedSize(source, base, sourceTiles.length);
-
-                // a base past the end leaves a blank gap in front of the file,
-                // one before it overlays what is already there
-                while (tiles.length < base) tiles.push(new Array(64).fill(0));
-                sourceTiles.forEach((tile, index) => {
-                    tiles[base + index] = tile;
-                });
+                const tiles = bufferToTiles(decompBuffer);
+                // every source is loaded: the checkbox is the state a bank
+                // starts in, and the art panel switches it live from there
+                banks.push({ address, tiles, enabled: true });
+                end = Math.max(end, address + tiles.length);
             }
 
-            environment.tiles.replace(tiles);
+            environment.setArt(banks);
         });
     }
 
     function saveArt(e) {
         ioWrap(obj.art.path, setArtError, e, async () => {
             validateArtSources(obj.art);
-            const sources = artSources(obj.art).filter((source) => source.path);
-            const total = environment.tiles.length;
 
-            const blank = (tile) => !tile || !tile.some((pixel) => pixel);
-            const last = sources.length - 1;
-
-            // work out every slice first, so a source that can't be written
-            // back faithfully stops the save before anything is on disk
-            const writes = sources.map((source, i) => {
-                if (Number(source.offset)) {
-                    throw new Error('Can only save art at offset 0');
-                }
-                const base = sourceBase(source, 0);
-                const limit = number(source.length);
-                const loaded = loadedSize(source, base);
-                // the last source owns everything to the end, so art added in
-                // the editor still gets saved. the rest stop where the next
-                // source starts
-                const region = Math.max(
-                    (i === last ? total : sourceBase(sources[i + 1], total)) - base,
-                    0,
-                );
-
-                if (loaded != null && loaded > region) {
-                    throw new Error(
-                        `${source.path} is overlaid by later art and would be saved `
-                        + `${region} tiles short of the ${loaded} it was loaded with`,
-                    );
-                }
-
-                // blank tiles past what this source loaded are the gap in front
-                // of the next one, not its art. without a load to compare
-                // against, every tile in the region belongs to it
-                let extent = region;
-                if (loaded != null) {
-                    while (extent > loaded && blank(environment.tiles[base + extent - 1])) {
-                        extent--;
+            // each bank writes the tiles it holds, so there is nothing to work
+            // out: no lengths, no file sizes, no gaps to attribute. banks line
+            // up with the sources they were loaded from
+            const writes = artSources(obj.art)
+                .filter((source) => source.path)
+                .map((source, i) => {
+                    if (Number(source.offset)) {
+                        throw new Error('Can only save art at offset 0');
                     }
-                }
+                    const bank = environment.art[i];
+                    if (!bank) {
+                        throw new Error(
+                            `${source.path} is not loaded, so there is no art to save for it`,
+                        );
+                    }
+                    return {
+                        source,
+                        path: workspace.fuzzyAbsolutePath(source.path),
+                        tiles: toJS(bank.tiles),
+                    };
+                });
 
-                return {
-                    source,
-                    path: workspace.fuzzyAbsolutePath(source.path),
-                    tiles: environment.tiles.slice(base, base + (limit ?? extent)),
-                };
-            });
-
-            // one file can be loaded at several bases; write it once, and only
-            // when every copy of it still holds the same art
+            // one file can be loaded into several banks; write it once, and
+            // only when every copy of it still holds the same art
             const byPath = new Map();
             for (const write of writes) {
                 const seen = byPath.get(write.path);
@@ -197,7 +166,7 @@ export const FileObject = observer(({ obj, isAbsolute }) => {
                     byPath.set(write.path, write);
                 } else if (!sameTiles(seen.tiles, write.tiles)) {
                     throw new Error(
-                        `${write.source.path} is loaded at more than one tile base and `
+                        `${write.source.path} is loaded into more than one bank and `
                         + 'they no longer hold the same art, so it cannot be saved',
                     );
                 }
@@ -217,8 +186,6 @@ export const FileObject = observer(({ obj, isAbsolute }) => {
 
     function loadMappingsAndDPLCs(e) {
         ioWrap(obj.mappings.path, setMappingError, e, async (path) => {
-            // art bases decide how mapping/DPLC art indices are read back
-            validateArtSources(obj.art);
             if (!obj.dplcs.enabled) environment.config.dplcsEnabled = false;
             const { buffer, symbols } = await getBuffer(path, mappingsASM);
 
@@ -232,44 +199,21 @@ export const FileObject = observer(({ obj, isAbsolute }) => {
             const result = script.readMappings(buffer, symbols, dplcBuffer, dplcSymbols);
             if (result.error) throw result.error;
 
-            const spriteMetadata = result.mappings.spriteMetadata || [];
-            const indexed = result.dplcs ? result.dplcs.sprites : result.mappings.sprites;
-            const artBase = spriteArtBases(obj.art, spriteMetadata, indexed.length);
-
-            environment.mappings.replace(
-                result.dplcs
-                    ? result.mappings.sprites
-                    : rebaseSprites(result.mappings.sprites, artBase, 1),
-            );
-            environment.spriteMetadata.replace(spriteMetadata);
+            environment.mappings.replace(result.mappings.sprites);
+            environment.spriteMetadata.replace(result.mappings.spriteMetadata || []);
 
             if (result.dplcs) {
-                environment.dplcs.replace(rebaseSprites(result.dplcs.sprites, artBase, 1));
+                environment.dplcs.replace(result.dplcs.sprites);
             }
         });
     }
 
     function saveMappingsAndDPLCs(e) {
         ioWrap(obj.mappings.path, setMappingError, e, async (path) => {
-            validateArtSources(obj.art);
-            const useDPLCs = obj.dplcs.enabled;
-            const indexed = useDPLCs ? environment.dplcs : environment.mappings;
-            const artBase = spriteArtBases(obj.art, environment.spriteMetadata, indexed.length);
+            const dplcsData = obj.dplcs.enabled ? environment.dplcs : null;
+            const sprites = environment.sprites;
 
-            const dplcsData = useDPLCs ? rebaseSprites(environment.dplcs, artBase, -1) : null;
-            const mappingsData = useDPLCs
-                ? environment.mappings
-                : rebaseSprites(environment.mappings, artBase, -1);
-            // the ASM writers read art indices off the sprites, not the listing
-            const sprites = hasExtraArt(obj.art)
-                ? environment.sprites.map((sprite, i) => ({
-                      ...sprite,
-                      mappings: useDPLCs ? sprite.mappings : mappingsData[i],
-                      ...(sprite.dplcs && { dplcs: dplcsData[i] }),
-                  }))
-                : environment.sprites;
-
-            const result = script.writeMappings(mappingsData, dplcsData, environment.spriteMetadata, environment);
+            const result = script.writeMappings(environment.mappings, dplcsData, environment.spriteMetadata, environment);
             if (result.error) throw result.error;
 
             if (!mappingsASM) {
@@ -382,10 +326,12 @@ export const FileObject = observer(({ obj, isAbsolute }) => {
                     wheel={false}
                 />
             </div>
+            {!isInProject &&
             <div className="menu-item">
                 <Item>Load Offset</Item>
                 <Input store={obj.art} accessor="offset" isNumber wheel={false} />
-            </div>
+            </div>}
+
             <ErrorMsg error={artError} />
             <FileInput
                 label="Art"
@@ -404,30 +350,17 @@ export const FileObject = observer(({ obj, isAbsolute }) => {
                 <div key={i} className="art-source">
                     <div className="menu-item">
                         <Item
-                            className={`item art-summary${
-                                source.enabled === false ? ' art-off' : ''
-                            }`}
+                            className="item art-summary"
                             prefix={openArt === i ? '\u25BE\u2002' : '\u25B8\u2002'}
                             onClick={() => setOpenArt(openArt === i ? -1 : i)}
                         >
                             {basename(source.path) || 'art'}
                             <span className="art-numbers">
-                                {[
-                                    ['@', source.base],
-                                    ['\u00D7', source.length],
-                                    ['\u2265', source.fromSprite],
-                                ]
-                                    .filter(([, value]) => value !== '' && value != null)
-                                    .map(([mark, value]) => ` ${mark}${value}`)
-                                    .join('')}
+                                {source.address === '' || source.address == null
+                                    ? ''
+                                    : ` @${source.address}`}
                             </span>
                         </Item>
-                        <Checkbox
-                            checked={source.enabled !== false}
-                            onChange={() => {
-                                source.enabled = source.enabled === false;
-                            }}
-                        />
                     </div>
                     {openArt === i && (
                         <div className="art-body">
@@ -442,10 +375,8 @@ export const FileObject = observer(({ obj, isAbsolute }) => {
                             </div>
                             <div className="art-fields">
                                 {[
-                                    ['tile base', 'base'],
-                                    ['tile length', 'length'],
+                                    ['tile address', 'address'],
                                     ['load offset', 'offset'],
-                                    ['from sprite', 'fromSprite'],
                                 ].map(([label, accessor]) => (
                                     <div className="art-field" key={accessor}>
                                         <span>{label}</span>
@@ -489,10 +420,7 @@ export const FileObject = observer(({ obj, isAbsolute }) => {
                         path,
                         compression: 'Uncompressed',
                         offset: 0,
-                        base: '',
-                        length: '',
-                        fromSprite: '',
-                        enabled: true,
+                        address: '',
                     });
                 }}
                 absolute={isAbsolute}

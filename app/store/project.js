@@ -12,6 +12,20 @@ function hydrate(objects) {
         if (obj.art) {
             obj.art.offset = obj.art.offset || 0;
             obj.art.extra ??= [];
+            // art is loaded into banks now: a bank is tiles at an address, so
+            // everything that used to describe its extent is gone
+            delete obj.art.length;
+            obj.art.extra.forEach((source) => {
+                if (source.address == null && source.base != null) {
+                    source.address = source.base;
+                }
+                delete source.base;
+                delete source.length;
+                delete source.clip;
+                delete source.fromSprite;
+                // which banks are on is a view setting, not project data
+                delete source.enabled;
+            });
         }
         obj.config ??= {};
         obj.children && hydrate(obj.children);

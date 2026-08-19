@@ -31,6 +31,6 @@ export function arrangeTilesBySpriteOrder() {
 
     });
 
-    tiles.replace(newTiles);
+    environment.replaceTiles(newTiles);
 
 }

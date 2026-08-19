@@ -6,10 +6,13 @@ import { initHistory } from './history';
 import { defaultPalettes } from '~/formats/palette';
 import arrayMove from 'array-move';
 
+const blankTile = () => new Array(64).fill(0);
+
 class Environment {
     config = {
         currentSprite: 0,
         currentTile: 0,
+        currentBank: 0,
         transparency: true,
         dplcsEnabled: false,
         artPaletteLine: 0,
@@ -18,8 +21,11 @@ class Environment {
     // palettes must use colours of the form #NNN
     palettes = defaultPalettes;
 
-    tiles = [
-        // each tile is a length 16 array of palette line indexes
+    // art is a list of banks: tiles at an address. a bank holds its own tiles,
+    // so how far it reaches is simply how many it has. banks can be switched
+    // off to see past one that overlaps another
+    art = [
+        // {address, tiles: [...], enabled}, in load order
     ];
 
     mappings = [
@@ -38,20 +44,97 @@ class Environment {
         makeObservable(this, {
             config: observable,
             palettes: observable,
-            tiles: observable,
+            art: observable,
             mappings: observable,
             dplcs: observable,
             spriteMetadata: observable,
             palettesRGB: computed,
+            tiles: computed,
+            enabledBanks: computed,
+            currentBank: computed,
             sprites: computed,
             currentSprite: computed,
             activeTiles: computed,
+            setTile: action,
+            appendTiles: action,
+            toggleBank: action,
+            replaceTiles: action,
+            setArt: action,
+            clearArt: action,
             swapSprite: action,
             swapPalette: action,
             resetPalettes: action,
             doAction: action
         });
     }
+
+    get enabledBanks() {
+        return this.art.filter(({ enabled }) => enabled !== false);
+    }
+
+    // tile indices are absolute, so the banks are laid out flat for reading.
+    // where two banks cover the same tile the lower one owns it; each still
+    // holds its own tiles either way
+    get tiles() {
+        const flat = [];
+        const owned = new Set();
+
+        this.enabledBanks.forEach(({ address, tiles }) => {
+            tiles.forEach((tile, i) => {
+                const at = address + i;
+                if (owned.has(at)) return;
+                owned.add(at);
+                while (flat.length < at) flat.push(blankTile());
+                flat[at] = tile;
+            });
+        });
+
+        return flat;
+    }
+
+    // the bank tiles are added to, drawn into and rearranged in
+    get currentBank() {
+        const bank = this.art[this.config.currentBank];
+        return bank && bank.enabled !== false ? bank : this.enabledBanks[0];
+    }
+
+    // where two banks overlap, the lower one owns the tile
+    bankAt(index) {
+        return this.enabledBanks.find(({ address, tiles }) =>
+            index >= address && index < address + tiles.length);
+    }
+
+    setTile = (index, tile) => {
+        const bank = this.bankAt(index);
+        if (bank) bank.tiles[index - bank.address] = tile;
+    };
+
+    appendTiles = (newTiles) => {
+        const bank = this.currentBank;
+        if (bank) bank.tiles.push(...newTiles);
+        else this.art.push({ address: 0, tiles: newTiles, enabled: true });
+    };
+
+    toggleBank = (index) => {
+        const bank = this.art[index];
+        if (bank) bank.enabled = bank.enabled === false;
+    };
+
+    // tools that reorder or drop tiles work on the active bank
+    replaceTiles = (newTiles) => {
+        const index = this.art.indexOf(this.currentBank);
+        if (index < 0) this.art.replace([{ address: 0, tiles: newTiles }]);
+        else this.art[index] = { ...this.art[index], tiles: newTiles };
+    };
+
+    setArt = (banks) => {
+        this.art.replace(banks);
+        if (this.config.currentBank >= banks.length) this.config.currentBank = 0;
+    };
+
+    clearArt = () => {
+        this.art.replace([]);
+    };
 
     get palettesRGB() {
         return this.palettes.map((palette) => (

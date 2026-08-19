@@ -11,10 +11,10 @@ let drawingActive = false;
 
 export function initHistory() {
     autorun(() => {
-        const { config, palettes, mappings, dplcs, tiles } = environment;
+        const { config, palettes, mappings, dplcs, art } = environment;
         // traverse everything we want to react to...
         config.dplcsEnabled;
-        tiles.forEach((a) => a.forEach((b) => b));
+        art.forEach(({ base, tiles }) => { base; tiles.forEach((a) => a.forEach((b) => b)); });
         palettes.forEach((a) => a.forEach((b) => b));
         mappings.forEach((a) => a.forEach((b) => Object.values(b)));
         dplcs.forEach((a) => a.forEach((b) => Object.values(b)));
@@ -24,21 +24,21 @@ export function initHistory() {
 }
 
 function getCurrent() {
-    const { config, palettes, mappings, dplcs, tiles } = toJS(environment);
+    const { config, palettes, mappings, dplcs, art } = toJS(environment);
 
     return {
         dplcsEnabled: config.dplcsEnabled,
-        palettes, mappings, tiles, dplcs,
+        palettes, mappings, art, dplcs,
     };
 }
 
 function setCurrent() {
-    const { dplcsEnabled, palettes, mappings, tiles, dplcs } = now;
+    const { dplcsEnabled, palettes, mappings, art, dplcs } = now;
     environment.doAction(() => {
         environment.config.dplcsEnabled = dplcsEnabled;
         environment.palettes.replace(palettes);
         environment.mappings.replace(mappings);
-        environment.tiles.replace(tiles);
+        environment.setArt(art);
         environment.dplcs.replace(dplcs);
     });
 }

@@ -47,7 +47,7 @@ export function deleteUnusedTiles() {
     });
 
     // apply new tiles
-    tiles.replace(tiles.filter((d) => !d.unused));
+    environment.replaceTiles(tiles.filter((d) => !d.unused));
 
     // cleanup
     sprites.forEach(({dplcs, mappings}) => {

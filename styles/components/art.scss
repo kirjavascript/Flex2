@@ -3,6 +3,51 @@
     opacity: .3;
 }
 
+// bank controls and headers: only shown with more than one art bank
+.art-banks {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 5px 0;
+    border-bottom: 1px solid $darkgrey;
+}
+
+.art-bank-chip {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+    padding: 3px;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    color: $white2;
+    font-size: 12px;
+
+    &.active {
+        border-color: $blue;
+        color: $white;
+    }
+
+    .art-bank-index {
+        padding: 0 8px;
+        cursor: pointer;
+    }
+}
+
+.art-bank {
+    position: absolute;
+    z-index: 2;
+    height: 18px;
+    padding: 2px 6px;
+    border-left: 2px solid $white2;
+    color: $white2;
+    font-size: 11px;
+    cursor: pointer;
+
+    &.active {
+        border-left-color: $blue;
+        color: $white;
+    }
+}
+
 .art {
     height: 100%;
     overflow: hidden;

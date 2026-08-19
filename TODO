@@ -10,15 +10,28 @@
 
 NEXT
     make the buttons look more clickable
-    thanks selbi
-
-    Rrose80149 @ drawing
 
     https://discord.com/channels/202859782779043840/202861068224036864/1532826556341293227
 
     https://github.com/Nasina7/Flex2-Puyo
 
-key remapping
+    multiart
+
+        have multiple banks
+
+        if 1 bank -> 'normal mode'
+
+        have active bank new tile etc operates on
+
+        now we can remove 'enabled' from the project
+
+        we can remove load offset too, lets only have that on the file screen
+
+    write the name of the sprite on the sprite in the sprits view
+
+    make windows exe
+
+    key remapping
 
 ---
     persist comments?
@@ -29,8 +42,6 @@ key remapping
     horizontal shift scrolling with mouse
 
 onion skinning
-
-TODO: fix project dir not being correct when loading the crackers project
 
 docs
     crackers

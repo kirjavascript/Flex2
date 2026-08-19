@@ -69,9 +69,9 @@ export const commands = [
         {
             map: 'n t', name: 'New Tile', color: 'green', count: true,
             func: () => {
-                environment.tiles.push(
+                environment.appendTiles([
                     Array.from({length: 64}).fill((0|Math.random()*15)+1)
-                );
+                ]);
             },
         },
         {
@@ -95,13 +95,20 @@ export const commands = [
                 const { currentSprite, dplcsEnabled } = config;
                 const { mappings, dplcs } = environment.currentSprite;
                 doAction(() => {
+                    // cloned tiles go on the end of the last art file
+                    let end = tiles.length;
+                    const cloneTiles = (art, size) => {
+                        environment.appendTiles(
+                            Array.from({length: size}, (_, i) => toJS(tiles[art + i])),
+                        );
+                        end += size;
+                        return end - size;
+                    };
+
                     if (dplcsEnabled) {
                         const newDPLCs = toJS(dplcs);
                         newDPLCs.forEach((dplc) => {
-                            for (let i = 0; i < dplc.size; i++) {
-                                tiles.push(toJS(tiles[dplc.art + i]));
-                            }
-                            dplc.art = tiles.length - dplc.size;
+                            dplc.art = cloneTiles(dplc.art, dplc.size);
                         });
                         environment.dplcs.splice(currentSprite+1, 0, newDPLCs);
                         environment.mappings.splice(currentSprite+1, 0, toJS(mappings));
@@ -113,11 +120,10 @@ export const commands = [
                     else {
                         const newMappings = toJS(mappings);
                         newMappings.forEach((mapping) => {
-                            const size = mapping.width * mapping.height;
-                            for (let i = 0; i < size; i++) {
-                                tiles.push(toJS(tiles[mapping.art + i]));
-                            }
-                            mapping.art = tiles.length - size;
+                            mapping.art = cloneTiles(
+                                mapping.art,
+                                mapping.width * mapping.height,
+                            );
                         });
                         environment.mappings.splice(currentSprite+1, 0, newMappings);
                         const meta = toJS(environment.spriteMetadata[currentSprite] || {});
@@ -369,7 +375,7 @@ export const commands = [
     [
         {
             map: 'u a', name: 'Unload Art', color: 'red', noMultiplier: true,
-            func: () => { environment.tiles.replace([]); },
+            func: () => { environment.clearArt(); },
         },
         {
             map: 'u m', name: 'Unload Mappings', color: 'red', noMultiplier: true,
@@ -386,7 +392,7 @@ export const commands = [
         {
             map: 'u e', name: 'Unload Everything', color: 'red', noMultiplier: true,
             func: () => {
-                environment.tiles.replace([]);
+                environment.clearArt();
                 environment.mappings.replace([]);
                 environment.config.dplcsEnabled &&
                 environment.dplcs.replace([]);

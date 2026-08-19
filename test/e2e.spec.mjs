@@ -40,7 +40,7 @@ async function closeApp(app) {
 async function clearEnvironment(page) {
     await page.evaluate(() => {
         const { environment } = window.__test__;
-        environment.tiles.replace([]);
+        environment.clearArt();
         environment.mappings.replace([]);
         environment.dplcs.replace([]);
         environment.spriteMetadata.replace([]);
@@ -70,10 +70,7 @@ async function setFileObject(page, {
         file.art.extra.replace(opts.artExtra.map(source => ({
             compression: 'Uncompressed',
             offset: 0,
-            base: '',
-            length: '',
-            fromSprite: '',
-            enabled: true,
+            address: '',
             ...source,
         })));
         file.mappings.path = opts.mappingsPath || '';
@@ -922,21 +919,32 @@ test.describe('Extra art sources', () => {
 
             // the second file sits $100 bytes past the end of the first, so the
             // blank tiles between them belong to neither
-            const base = (first.length + 0x100) / 0x20;
+            const address = (first.length + 0x100) / 0x20;
 
             await setFileObject(page, {
                 format: 'Sonic 3&K.js',
                 artPath: firstPath,
-                artExtra: [{ path: extraPath, base }],
+                artExtra: [{ path: extraPath, address }],
             });
             await clearEnvironment(page);
             await clickLoad(page, 'Art');
             await waitForTiles(page);
 
             expect(await page.evaluate(() => window.__test__.environment.tiles.length))
-                .toBe(base + 3);
+                .toBe(address + 3);
+
+            // each file is its own bank, so how far it reaches is just what it
+            // holds: nothing has to work out where the space between them starts
+            expect(await page.evaluate(() => window.__test__.environment.art.map(
+                (bank) => [bank.address, bank.tiles.length],
+            ))).toEqual([[0, first.length / 0x20], [address, 3]]);
 
             // the gap must not be written into either file
+            await clickSave(page, 'Art');
+            expect(readFileSync(firstPath).equals(first)).toBe(true);
+            expect(readFileSync(extraPath).equals(extra)).toBe(true);
+
+            // and a save with the ranges already known writes the same bytes
             await clickSave(page, 'Art');
             expect(readFileSync(firstPath).equals(first)).toBe(true);
             expect(readFileSync(extraPath).equals(extra)).toBe(true);
