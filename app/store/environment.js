@@ -51,6 +51,7 @@ class Environment {
             palettesRGB: computed,
             tiles: computed,
             enabledBanks: computed,
+            bankOrder: computed,
             currentBank: computed,
             sprites: computed,
             currentSprite: computed,
@@ -72,14 +73,22 @@ class Environment {
         return this.art.filter(({ enabled }) => enabled !== false);
     }
 
+    // the order banks claim a contested tile in: the bank being worked on
+    // first, then the lowest one that covers it
+    get bankOrder() {
+        const current = this.currentBank;
+        return current
+            ? [current, ...this.enabledBanks.filter((bank) => bank !== current)]
+            : this.enabledBanks;
+    }
+
     // tile indices are absolute, so the banks are laid out flat for reading.
-    // where two banks cover the same tile the lower one owns it; each still
-    // holds its own tiles either way
+    // what is shown is what an edit would land in
     get tiles() {
         const flat = [];
         const owned = new Set();
 
-        this.enabledBanks.forEach(({ address, tiles }) => {
+        this.bankOrder.forEach(({ address, tiles }) => {
             tiles.forEach((tile, i) => {
                 const at = address + i;
                 if (owned.has(at)) return;
@@ -98,9 +107,9 @@ class Environment {
         return bank && bank.enabled !== false ? bank : this.enabledBanks[0];
     }
 
-    // where two banks overlap, the lower one owns the tile
+    // where two banks overlap, the active one owns the tile
     bankAt(index) {
-        return this.enabledBanks.find(({ address, tiles }) =>
+        return this.bankOrder.find(({ address, tiles }) =>
             index >= address && index < address + tiles.length);
     }
 

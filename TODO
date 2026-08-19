@@ -27,6 +27,12 @@ NEXT
 
         we can remove load offset too, lets only have that on the file screen
 
+        make overlapping be based on the active bank
+
+        activeselection on activebank
+
+        check perf
+
     write the name of the sprite on the sprite in the sprits view
 
     make windows exe
