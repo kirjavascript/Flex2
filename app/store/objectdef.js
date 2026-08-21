@@ -39,6 +39,18 @@ export class ObjectDef {
     }
 }
 
+export function hydrate(objects) {
+    objects && objects.forEach((obj) => {
+        delete obj.uuid;
+        if (obj.art) {
+            obj.art.offset = obj.art.offset || 0;
+            obj.art.extra ??= [];
+        }
+        obj.config ??= {};
+        obj.children && hydrate(obj.children);
+    });
+}
+
 export function editPaths(obj, lambda) {
     for (const name in obj) {
         if (name === 'path') {

@@ -1,36 +1,10 @@
 import { observable, autorun, action, makeObservable } from 'mobx';
-import { ObjectDef } from '~/store/objectdef';
+import { ObjectDef, hydrate } from '~/store/objectdef';
 import { promises, exists as fsExists } from 'fs';
 import { promisify } from 'util';
 
 const fs = promises;
 const exists = promisify(fsExists);
-
-function hydrate(objects) {
-    objects && objects.forEach((obj) => {
-        delete obj.uuid;
-        if (obj.art) {
-            obj.art.offset = obj.art.offset || 0;
-            obj.art.extra ??= [];
-            // art is loaded into banks now: a bank is tiles at an address, so
-            // everything that used to describe its extent is gone
-            delete obj.art.length;
-            obj.art.extra.forEach((source) => {
-                if (source.address == null && source.base != null) {
-                    source.address = source.base;
-                }
-                delete source.base;
-                delete source.length;
-                delete source.clip;
-                delete source.fromSprite;
-                // which banks are on is a view setting, not project data
-                delete source.enabled;
-            });
-        }
-        obj.config ??= {};
-        obj.children && hydrate(obj.children);
-    });
-}
 
 export class Project {
 

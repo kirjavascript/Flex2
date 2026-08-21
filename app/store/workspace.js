@@ -1,13 +1,14 @@
 import { observable, toJS, action, computed, makeObservable } from 'mobx';
 import { storage } from './storage';
 import { Project } from './project';
-import { ObjectDef, editPaths } from  './objectdef';
+import { ObjectDef, editPaths, hydrate } from  './objectdef';
 import { selectTab } from '~/components/layout/model';
 import { selection } from '~/store/selection';
 import path from 'path';
 
 const fileState = new ObjectDef();
 storage(fileState, 'file-state');
+hydrate([fileState]);
 
 class Workspace {
     file = fileState;
