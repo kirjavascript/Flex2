@@ -1,7 +1,7 @@
 {
     "version": "1.4.2",
     "scripts": {
-        "start": "electron ./static --dev",
+        "start": "electron ./static --dev --user-data-dir=.userdata",
         "web": "node -e \"require('./development/build')()\" -- --dev",
         "test": "npx playwright test"
     },

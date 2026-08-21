@@ -7,3 +7,4 @@ flex2-*.tar.gz
 *.AppImage
 test-results
 development/appimagetool
+.userdata

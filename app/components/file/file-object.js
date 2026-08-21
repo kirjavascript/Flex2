@@ -121,8 +121,6 @@ export const FileObject = observer(({ obj, isInProject = false }) => {
                 }
 
                 const tiles = bufferToTiles(decompBuffer);
-                // every source is loaded: the checkbox is the state a bank
-                // starts in, and the art panel switches it live from there
                 banks.push({ address, tiles, enabled: true });
                 end = Math.max(end, address + tiles.length);
             }
@@ -135,9 +133,6 @@ export const FileObject = observer(({ obj, isInProject = false }) => {
         ioWrap(obj.art.path, setArtError, e, async () => {
             validateArtSources(obj.art);
 
-            // each bank writes the tiles it holds, so there is nothing to work
-            // out: no lengths, no file sizes, no gaps to attribute. banks line
-            // up with the sources they were loaded from
             const writes = artSources(obj.art)
                 .filter((source) => source.path)
                 .map((source, i) => {
@@ -157,8 +152,6 @@ export const FileObject = observer(({ obj, isInProject = false }) => {
                     };
                 });
 
-            // one file can be loaded into several banks; write it once, and
-            // only when every copy of it still holds the same art
             const byPath = new Map();
             for (const write of writes) {
                 const seen = byPath.get(write.path);

@@ -6,7 +6,7 @@ import { initHistory } from './history';
 import { defaultPalettes } from '~/formats/palette';
 import arrayMove from 'array-move';
 
-const blankTile = () => new Array(64).fill(0);
+const emptyTile = Object.freeze(new Array(64).fill(0));
 
 class Environment {
     config = {
@@ -86,17 +86,21 @@ class Environment {
     // what is shown is what an edit would land in
     get tiles() {
         const flat = [];
-        const owned = new Set();
 
         this.bankOrder.forEach(({ address, tiles }) => {
             tiles.forEach((tile, i) => {
                 const at = address + i;
-                if (owned.has(at)) return;
-                owned.add(at);
-                while (flat.length < at) flat.push(blankTile());
-                flat[at] = tile;
+                // written to sparsely: an empty slot is one no bank has claimed,
+                // which saves tracking ownership separately
+                if (flat[at] === undefined) flat[at] = tile;
             });
         });
+
+        // one shared tile stands in for every gap. it is frozen because it
+        // belongs to no bank, so nothing may draw into it
+        for (let i = 0; i < flat.length; i++) {
+            if (flat[i] === undefined) flat[i] = emptyTile;
+        }
 
         return flat;
     }
@@ -154,33 +158,40 @@ class Environment {
     }
 
     get sprites() {
+        const dplcsEnabled = this.config.dplcsEnabled;
+
         return this.mappings.map((mappingList, index) => {
-            if (this.config.dplcsEnabled && this.dplcs.length > index) {
-                const buffer = [];
-                this.dplcs[index].forEach(({art, size}) => {
-                    Array.from({length: size}, (_, i) => {
-                        if (this.tiles.length <= art + i) {
-                            buffer.push([]);
-                        } else {
-                            buffer.push(this.tiles[art + i]);
+            const dplcs = dplcsEnabled && this.dplcs.length > index
+                ? this.dplcs[index]
+                : null;
+
+            const sprite = {
+                index,
+                mappings: mappingList,
+                metadata: this.spriteMetadata[index] || {},
+                ...(dplcs && { dplcs }),
+            };
+
+            // most sprites are off screen most of the time, so a buffer is only
+            // gathered for the ones something actually reads
+            Object.defineProperty(sprite, 'buffer', {
+                enumerable: true,
+                configurable: true,
+                get: () => {
+                    if (!dplcs) return this.tiles;
+
+                    const tiles = this.tiles;
+                    const buffer = [];
+                    dplcs.forEach(({ art, size }) => {
+                        for (let i = 0; i < size; i++) {
+                            buffer.push(tiles.length <= art + i ? [] : tiles[art + i]);
                         }
                     });
-                });
-                return {
-                    index,
-                    buffer,
-                    mappings: mappingList,
-                    dplcs: this.dplcs[index],
-                    metadata: this.spriteMetadata[index] || {},
-                };
-            } else {
-                return {
-                    index,
-                    buffer: this.tiles,
-                    mappings: mappingList,
-                    metadata: this.spriteMetadata[index] || {},
-                };
-            }
+                    return buffer;
+                },
+            });
+
+            return sprite;
         });
     }
 
