@@ -2,7 +2,6 @@
 
 // kid chameleon
 // chaotix
-// s3k sonic saving
 // ristar
 // github issues
 /* https://raw.githubusercontent.com/Dandaman955/Streets-of-Rage-1-Disassembly-Redux/master/SoR.asm */
@@ -17,11 +16,9 @@ NEXT
 
     multiart
         activeselection on activebank
-        check what happens with a non-zero extra bank
+        check what happens with a non-zero extra bank with no main art
 
         selbi issue
-
-        get puyo update from radiotails
 
     write the name of the sprite on the sprite in the sprits view
 
@@ -32,28 +29,11 @@ NEXT
 ---
     persist comments?
 
-    dropdown script option for s3k
-    s3k mapmacros
-
     horizontal shift scrolling with mouse
 
 onion skinning
 
 docs
-    crackers
-    mapping script configuration
-    raw editor
-    - string / number? or just autoparse?
-
-sublayout -> tabbed pane
-    mappings - raw editor - metadata - commands?
-
-
-metadata for mappings UI + scripts
-    in asm
-    label metadata
-    splitpoint for s3k mappings
-
 inputs
     when copying to project, only use config{} data defined in scripts
 
@@ -68,20 +48,12 @@ no projects
 
 ROADMAP
 
-drawing mode bugs
-    disable mapping editing
-improve undo/redo when drawing pixels / moving things
 animation editor
     export to gif
 
 ==
-BUGS
-
-pink surrounding tiles sometimes breaks
-
 FEATURES
 set colour of art tiles
-ctrl+wheel for horiz scroll
 ==
 select multiple sprites at once to reorder
 copy / paste mappings

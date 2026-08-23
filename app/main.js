@@ -28,7 +28,7 @@ document.addEventListener('drop', (e) => {
     return false;
 }, false);
 
-// Expose stores for e2e tests.
+// used in e2e tests
 import { environment } from '~/store/environment';
 import { workspace } from '~/store/workspace';
 import { toJS } from 'mobx';

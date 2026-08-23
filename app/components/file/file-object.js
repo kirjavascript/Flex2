@@ -15,6 +15,7 @@ import {
 import { buffersToColors, colorsToBuffers } from '~/formats/palette';
 import { environment } from '~/store/environment';
 import { workspace } from '~/store/workspace';
+import { toggleDPLCs as mappingStateToggleDPLCs } from '~/components/mappings/state/toggle-dplcs';
 import ErrorMsg from './error';
 import SaveLoad from './save-load';
 import { promises } from 'fs';
@@ -36,7 +37,7 @@ export const FileObject = observer(({ obj, isInProject = false }) => {
     const dplcsASM = isASM(obj.dplcs.path);
     const linesLeft = obj.palettes.reduce((a, c) => a - c.length, 4);
 
-    const toggleDPLCs = () => (obj.dplcs.enabled = !obj.dplcs.enabled);
+    const toggleObjectDPLCs = () => (obj.dplcs.enabled = !obj.dplcs.enabled);
 
     function ioWrap(filePath, setError, e, cb) {
         setError();
@@ -47,6 +48,7 @@ export const FileObject = observer(({ obj, isInProject = false }) => {
                     await cb(workspace.fuzzyAbsolutePath(filePath));
                 } catch (e) {
                     setError(e);
+                    console.error(e);
                 } finally {
                     done();
                 }
@@ -181,12 +183,13 @@ export const FileObject = observer(({ obj, isInProject = false }) => {
 
     function loadMappingsAndDPLCs(e) {
         ioWrap(obj.mappings.path, setMappingError, e, async (path) => {
-            if (!obj.dplcs.enabled) environment.config.dplcsEnabled = false;
             const { buffer, symbols } = await getBuffer(path, mappingsASM);
 
             let dplcBuffer, dplcSymbols;
+
+            environment.config.dplcsEnabled = obj.dplcs.enabled;
+
             if (obj.dplcs.enabled) {
-                environment.config.dplcsEnabled = true;
                 const dplcPath = workspace.fuzzyAbsolutePath(obj.dplcs.path);
                 ({ buffer: dplcBuffer, symbols: dplcSymbols } = await getBuffer(dplcPath, dplcsASM));
             }
@@ -205,6 +208,13 @@ export const FileObject = observer(({ obj, isInProject = false }) => {
 
     function saveMappingsAndDPLCs(e) {
         ioWrap(obj.mappings.path, setMappingError, e, async (path) => {
+            if (
+                (obj.dplcs.enabled && !environment.config.dplcsEnabled)
+                || (!obj.dplcs.enabled && environment.config.dplcsEnabled)
+            ) {
+                mappingStateToggleDPLCs();
+            }
+
             const dplcsData = obj.dplcs.enabled ? environment.dplcs : null;
             const sprites = environment.sprites;
 
@@ -466,8 +476,8 @@ export const FileObject = observer(({ obj, isInProject = false }) => {
 
             {script?.DPLCs && (
                 <>
-                    <div className="menu-item" onClick={toggleDPLCs}>
-                        <Item>Use PLCs</Item>
+                    <div className="menu-item" onClick={toggleObjectDPLCs}>
+                        <Item>Use DPLCs</Item>
                         <Checkbox checked={obj.dplcs.enabled} readOnly />
                     </div>
                     {obj.dplcs.enabled && (
