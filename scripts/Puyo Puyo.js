@@ -105,12 +105,24 @@ asm(({ addScript, importScript, writeMappings, writeDPLCs }) => {
             sanitizeLabel(sprite.metadata && sprite.metadata.label) || `${label}_${i}`
         ));
 
+        // @RadioTails Create the Equ Labels
+        sprites.forEach((sprite, i) => {
+            list.push(`Sprite_${sprite.mappings.length ? names[i] : '0'}:\tEqu ${i}`);
+        });
+        list.push('');
+        list.push('; ---------------------------------------------------------------------------');
+        list.push('');
+
+        // @RadioTails Create the Mapping Table
         list.push(`${label}:\tmappingsTable`);
         sprites.forEach((sprite, i) => {
             list.push(`\tmappingsTableEntry.l\t${sprite.mappings.length ? names[i] : '0'}`);
         });
         list.push('');
+        list.push('; ---------------------------------------------------------------------------');
+        list.push('');
 
+        // @RadioTails Create the Sprites
         sprites.forEach((sprite, i) => {
             if (!sprite.mappings.length) return;
 
@@ -135,6 +147,8 @@ asm(({ addScript, importScript, writeMappings, writeDPLCs }) => {
             });
 
             list.push(`${names[i]}_End`);
+            list.push('');
+            list.push('; ---------------------------------------------------------------------------');
             list.push('');
         });
 

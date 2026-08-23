@@ -9,8 +9,7 @@ export class ObjectDef {
         path: '',
         compression: 'Uncompressed',
         offset: 0,
-        // extra art banks: {path, compression, offset, address}
-        extra: [],
+        extra: [/* {path, compression, address} */],
     };
     mappings = {
         path: '',

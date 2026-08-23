@@ -111,7 +111,9 @@ export const FileObject = observer(({ obj, isInProject = false }) => {
             for (const source of artSources(obj.art)) {
                 if (!source.path) continue;
                 const path = workspace.fuzzyAbsolutePath(source.path);
-                const buffer = (await fs.readFile(path)).slice(Number(source.offset) || 0);
+                // only the primary art can start part way into its file
+                const offset = source.extraIndex < 0 ? Number(source.offset) || 0 : 0;
+                const buffer = (await fs.readFile(path)).slice(offset);
                 const decompBuffer = await decompress(buffer, source.compression);
 
                 const address = sourceAddress(source, end);
@@ -136,7 +138,7 @@ export const FileObject = observer(({ obj, isInProject = false }) => {
             const writes = artSources(obj.art)
                 .filter((source) => source.path)
                 .map((source, i) => {
-                    if (Number(source.offset)) {
+                    if (source.extraIndex < 0 && Number(source.offset)) {
                         throw new Error('Can only save art at offset 0');
                     }
                     const bank = environment.art[i];
@@ -333,11 +335,22 @@ export const FileObject = observer(({ obj, isInProject = false }) => {
                 absolute={isAbsolute}
             />
 
-            {(obj.art.extra || []).length > 0 && (
-                <div className="menu-item">
-                    <Item color="green">Extra Art</Item>
-                </div>
-            )}
+            <div className="menu-item">
+                <Item color="green">Extra Art</Item>
+                <Button
+                    onClick={() => {
+                        if (!obj.art.extra) obj.art.extra = [];
+                        obj.art.extra.push({
+                            path: '',
+                            compression: 'Uncompressed',
+                            address: '',
+                        });
+                        setOpenArt(obj.art.extra.length - 1);
+                    }}
+                >
+                    add
+                </Button>
+            </div>
 
             {(obj.art.extra || []).map((source, i) => (
                 <div key={i} className="art-source">
@@ -347,16 +360,33 @@ export const FileObject = observer(({ obj, isInProject = false }) => {
                             prefix={openArt === i ? '\u25BE\u2002' : '\u25B8\u2002'}
                             onClick={() => setOpenArt(openArt === i ? -1 : i)}
                         >
-                            {basename(source.path) || 'art'}
+                            {basename(source.path) || 'no file'}
                             <span className="art-numbers">
                                 {source.address === '' || source.address == null
                                     ? ''
                                     : ` @${source.address}`}
                             </span>
                         </Item>
+                        <Button
+                            onClick={() => {
+                                obj.art.extra.splice(i, 1);
+                                setOpenArt(-1);
+                            }}
+                        >
+                            remove
+                        </Button>
                     </div>
                     {openArt === i && (
                         <div className="art-body">
+                            <div className="menu-item">
+                                <Item>Base Tile</Item>
+                                <Input
+                                    store={source}
+                                    accessor="address"
+                                    isNumber
+                                    wheel={false}
+                                />
+                            </div>
                             <div className="menu-item">
                                 <Item>Compression</Item>
                                 <Select
@@ -366,58 +396,16 @@ export const FileObject = observer(({ obj, isInProject = false }) => {
                                     wheel={false}
                                 />
                             </div>
-                            <div className="art-fields">
-                                {[
-                                    ['tile address', 'address'],
-                                    ['load offset', 'offset'],
-                                ].map(([label, accessor]) => (
-                                    <div className="art-field" key={accessor}>
-                                        <span>{label}</span>
-                                        <Input
-                                            store={source}
-                                            accessor={accessor}
-                                            isNumber
-                                            wheel={false}
-                                            containerClass="art-input"
-                                        />
-                                    </div>
-                                ))}
-                            </div>
                             <FileInput
                                 label="Art"
                                 store={source}
                                 accessor="path"
                                 absolute={isAbsolute}
                             />
-                            <div className="menu-item">
-                                <Item />
-                                <Button
-                                    onClick={() => {
-                                        obj.art.extra.splice(i, 1);
-                                        setOpenArt(-1);
-                                    }}
-                                >
-                                    remove
-                                </Button>
-                            </div>
                         </div>
                     )}
                 </div>
             ))}
-
-            <FileInput
-                label="Art"
-                onChange={(path) => {
-                    if (!obj.art.extra) obj.art.extra = [];
-                    obj.art.extra.push({
-                        path,
-                        compression: 'Uncompressed',
-                        offset: 0,
-                        address: '',
-                    });
-                }}
-                absolute={isAbsolute}
-            />
 
             <div className="menu-item">
                 <Item color="yellow">Mappings</Item>

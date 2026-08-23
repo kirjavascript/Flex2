@@ -69,7 +69,6 @@ async function setFileObject(page, {
         file.art.offset = opts.artOffset;
         file.art.extra.replace(opts.artExtra.map(source => ({
             compression: 'Uncompressed',
-            offset: 0,
             address: '',
             ...source,
         })));

@@ -90,7 +90,7 @@ export const Art = observer(class Art extends DimensionsComponent {
                         itemQty={itemQty}
                         totalHeight={totalHeight}
                     />}
-                    {banked && layout.map(({ index, headerTop }) => (
+                    {banked && layout.map(({ bank, index, headerTop }) => (
                         <div
                             key={`bank-${index}`}
                             className={`art-bank${
@@ -100,6 +100,7 @@ export const Art = observer(class Art extends DimensionsComponent {
                             onMouseDown={() => { config.currentBank = index; }}
                         >
                             {index}
+                            <span className="art-bank-address">@{bank.address}</span>
                         </div>
                     ))}
                     {layout.map(({ bank, index, top }) => bank.tiles.map((tile, i) => {

@@ -16,22 +16,12 @@ NEXT
     https://github.com/Nasina7/Flex2-Puyo
 
     multiart
-
-        have multiple banks
-
-        if 1 bank -> 'normal mode'
-
-        have active bank new tile etc operates on
-
-        now we can remove 'enabled' from the project
-
-        we can remove load offset too, lets only have that on the file screen
-
-        make overlapping be based on the active bank
-
         activeselection on activebank
+        check what happens with a non-zero extra bank
 
-        check perf
+        selbi issue
+
+        get puyo update from radiotails
 
     write the name of the sprite on the sprite in the sprits view
 
