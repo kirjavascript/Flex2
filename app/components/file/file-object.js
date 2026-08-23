@@ -343,6 +343,8 @@ export const FileObject = observer(({ obj, isInProject = false }) => {
                 store={obj.art}
                 accessor="path"
                 absolute={isAbsolute}
+                filtername="Art File"
+                filterextensions={['bin', 'unc', 'kos', 'nem', 'eni', 'sor']}
             />
 
             <div className="menu-item">
@@ -411,6 +413,8 @@ export const FileObject = observer(({ obj, isInProject = false }) => {
                                 store={source}
                                 accessor="path"
                                 absolute={isAbsolute}
+                                filtername="Art File"
+                                filterextensions={['bin', 'unc', 'kos', 'nem', 'eni', 'sor']}
                             />
                         </div>
                     )}
@@ -427,6 +431,8 @@ export const FileObject = observer(({ obj, isInProject = false }) => {
                 store={obj.mappings}
                 accessor="path"
                 absolute={isAbsolute}
+                filtername="Mapping File"
+                filterextensions={['asm', 's', 'bin']}
             />
             {mappingsASM && (
                 <div className="menu-item">
@@ -487,6 +493,8 @@ export const FileObject = observer(({ obj, isInProject = false }) => {
                                 store={obj.dplcs}
                                 accessor="path"
                                 absolute={isAbsolute}
+                                filtername="DPLC Mapping File"
+                                filterextensions={['asm', 's', 'bin']}
                             />
                             {dplcsASM && (
                                 <div className="menu-item">
@@ -536,6 +544,8 @@ export const FileObject = observer(({ obj, isInProject = false }) => {
                             store={palette}
                             accessor="path"
                             absolute={isAbsolute}
+                            filtername="Palette File"
+                            filterextensions={['pal', 'bin']}
                         >
                             <div
                                 className="dashed-box new"
@@ -561,6 +571,8 @@ export const FileObject = observer(({ obj, isInProject = false }) => {
                             });
                         }}
                         absolute={isAbsolute}
+                        filtername="Palette File"
+                        filterextensions={['pal', 'bin']}
                     >
                         <div
                             className="dashed-box new"

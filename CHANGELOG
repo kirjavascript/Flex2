@@ -10,6 +10,7 @@
 - Add MapMacros to Sonic 2 Special Stage format
 - Always make current sprite visible in sprite list
 - Support uppercase .ASM and .S asm file detection
+- Filter by common file extensions in file dialogs
 
 ## [1.4.2]
 - Strip labels from cloned sprites

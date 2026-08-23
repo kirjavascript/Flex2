@@ -48,6 +48,8 @@ const Project = observer(() => {
                         }
                     }}
                     ext="flex.json"
+                    filtername="Flex2 Project"
+                    filterextensions={['json']}
                     absolute
                 />
                 {workspace.recentProjects.length > 0 && (

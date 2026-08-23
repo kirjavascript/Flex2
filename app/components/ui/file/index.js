@@ -13,11 +13,20 @@ export const File = observer(class File extends Component {
 
     openFile = () => {
         const defaultPath = this.props.absolute ? workspace.lastDialogDir : workspace.projectDir;
+        const { filtername, filterextensions } = this.props;
+        const filters = filterextensions && [
+            {
+                name: `${filtername} (${filterextensions.map((e) => `.${e}`).join(' ')})`,
+                extensions: filterextensions,
+            },
+            { name: 'All Files', extensions: ['*'] },
+        ];
         dialog
             .showOpenDialog({
                 title: `Choose ${this.props.label}`,
                 properties: ['openFile'],
                 ...(defaultPath && { defaultPath }),
+                ...(filters && { filters }),
             })
             .then(({ filePaths: [p] }) => {
                 if (p) {
@@ -79,7 +88,7 @@ export const File = observer(class File extends Component {
     };
 
     render() {
-        const { label, store, accessor, absolute, ...otherProps } = this.props;
+        const { label, store, accessor, absolute, filtername, filterextensions, ...otherProps } = this.props;
         const { dragging } = this.state;
 
         return (
