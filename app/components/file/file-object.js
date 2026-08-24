@@ -378,11 +378,10 @@ export const FileObject = observer(({ obj, isInProject = false }) => {
                             <span className="art-numbers">
                                 {source.address === '' || source.address == null
                                     ? ''
-                                    : ` @0x${Number(source.address).toString(16)}`}
+                                    : ` 0x${Number(source.address).toString(16)}`}
                             </span>
                         </Item>
                         <Button
-                            color="red"
                             onClick={() => {
                                 obj.art.extra.splice(i, 1);
                                 setOpenArt(-1);

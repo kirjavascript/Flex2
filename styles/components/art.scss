@@ -35,6 +35,8 @@
 .art-bank {
     position: absolute;
     z-index: 2;
+    display: flex;
+    align-items: center;
     height: 18px;
     padding: 2px 6px;
     border-left: 2px solid $white2;
@@ -48,7 +50,7 @@
     }
 
     .art-bank-address {
-        margin-left: 6px;
+        margin-left: auto;
         color: $white2;
     }
 }

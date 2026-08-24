@@ -36,7 +36,10 @@ export const Art = observer(class Art extends DimensionsComponent {
         // the tiles between two banks aren't art and aren't drawn, and a bank
         // that is switched off isn't either
         const banked = art.length > 1;
-        const headerHeight = banked ? 18 : 0;
+        // the header itself is 18px; the rest is breathing room before the tiles
+        const headerHeight = banked ? 24 : 0;
+        // and the same again after them, so the next header isn't on top of them
+        const bankGap = banked ? 6 : 0;
         let offset = 0;
         const layout = art
             .map((bank, index) => ({ bank, index }))
@@ -45,7 +48,7 @@ export const Art = observer(class Art extends DimensionsComponent {
                 const headerTop = offset;
                 const top = offset + headerHeight;
                 const rows = Math.ceil(bank.tiles.length / itemsPerRow) || 0;
-                offset = top + rows * baseSize;
+                offset = top + rows * baseSize + bankGap;
                 return { bank, index, headerTop, top };
             });
 
@@ -96,7 +99,9 @@ export const Art = observer(class Art extends DimensionsComponent {
                             className={`art-bank${
                                 index === config.currentBank ? ' active' : ''
                             }`}
-                            style={{ top: headerTop, left: remainder }}
+                            // spans the grid so the address lands on its right edge
+                            // width is unknown until the container is measured
+                            style={{ top: headerTop, left: remainder, width: itemsPerRow * baseSize || undefined }}
                             onMouseDown={() => { config.currentBank = index; }}
                         >
                             {index}
