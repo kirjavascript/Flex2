@@ -5,6 +5,8 @@ static/bundles
 flex2-*.zip
 flex2-*.tar.gz
 *.AppImage
+*.exe
 test-results
 development/appimagetool
+development/nsis
 .userdata

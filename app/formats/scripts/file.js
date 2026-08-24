@@ -6,6 +6,7 @@ import { observable } from 'mobx';
 
 const scriptPaths = uniq([
     process.env.APPIMAGE && dirname(process.env.APPIMAGE),
+    process.env.FLEX2_PORTABLE,
     dirname(process.execPath),
     process.cwd(),
 ].filter(Boolean)).map(

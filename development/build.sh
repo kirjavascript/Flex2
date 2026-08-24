@@ -22,13 +22,43 @@ npx electron-packager@17.1.2 ./static Flex2 --platform=linux --arch=x64 --asar -
 npx electron-packager@17.1.2 ./static Flex2 --platform=darwin --arch=x64 --asar --overwrite --package-manager yarn
 
 
+VERSION="$(node -p "require('./package.json').version")"
+BUILDID="$(date +%s)"
+
+# makensis is run under wine, which is already required for the win32 icon
+MAKENSIS="development/nsis/makensis.exe"
+NSIS_URL="https://downloads.sourceforge.net/project/nsis/NSIS%203/3.12/nsis-3.12.zip"
+
+build_portable() {
+    if [ ! -f "$MAKENSIS" ]; then
+        echo "nsis not found, downloading..."
+        curl -Lo /tmp/nsis.zip "$NSIS_URL"
+        rm -rf /tmp/nsis-extract
+        7z x -y -o/tmp/nsis-extract /tmp/nsis.zip > /dev/null
+        mkdir -p development/nsis
+        mv /tmp/nsis-extract/*/* development/nsis/
+        rm -rf /tmp/nsis.zip /tmp/nsis-extract
+    fi
+    rm -f "flex2-$1-portable.exe"
+    wine "$MAKENSIS" -V2 \
+        "-DPAYLOAD=$(winepath -w "$PWD/Flex2-$1")" \
+        "-DICON=$(winepath -w "$PWD/development/icon.ico")" \
+        "-DOUTFILE=$(winepath -w "$PWD/flex2-$1-portable.exe")" \
+        "-DVERSION=$VERSION" \
+        "-DBUILDID=$BUILDID" \
+        development/portable.nsi
+    echo "Built flex2-$1-portable.exe"
+}
+
 cp -r scripts Flex2-win32-ia32
+build_portable win32-ia32
 cd Flex2-win32-ia32
 zip -r ../flex2-win32-ia32.zip *
 cd ..
 rm -r Flex2-win32-ia32
 
 cp -r scripts Flex2-win32-x64
+build_portable win32-x64
 cd Flex2-win32-x64
 zip -r ../flex2-win32-x64.zip *
 cd ..
