@@ -100,7 +100,7 @@ export const Art = observer(class Art extends DimensionsComponent {
                             onMouseDown={() => { config.currentBank = index; }}
                         >
                             {index}
-                            <span className="art-bank-address">@{bank.address}</span>
+                            <span className="art-bank-address">@0x{Number(bank.address).toString(16)}</span>
                         </div>
                     ))}
                     {layout.map(({ bank, index, top }) => bank.tiles.map((tile, i) => {

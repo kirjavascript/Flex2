@@ -347,9 +347,11 @@ export const FileObject = observer(({ obj, isInProject = false }) => {
                 filterextensions={['bin', 'unc', 'kos', 'nem', 'eni', 'sor']}
             />
 
+            {!!obj.art.path && <>
             <div className="menu-item">
                 <Item color="green">Extra Art</Item>
                 <Button
+                    color="blue"
                     onClick={() => {
                         if (!obj.art.extra) obj.art.extra = [];
                         obj.art.extra.push({
@@ -376,10 +378,11 @@ export const FileObject = observer(({ obj, isInProject = false }) => {
                             <span className="art-numbers">
                                 {source.address === '' || source.address == null
                                     ? ''
-                                    : ` @${source.address}`}
+                                    : ` @0x${Number(source.address).toString(16)}`}
                             </span>
                         </Item>
                         <Button
+                            color="red"
                             onClick={() => {
                                 obj.art.extra.splice(i, 1);
                                 setOpenArt(-1);
@@ -420,6 +423,7 @@ export const FileObject = observer(({ obj, isInProject = false }) => {
                     )}
                 </div>
             ))}
+            </>}
 
             <div className="menu-item">
                 <Item color="yellow">Mappings</Item>
