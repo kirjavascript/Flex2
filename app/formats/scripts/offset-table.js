@@ -1,4 +1,5 @@
 import { constants } from './run-script';
+import { frameKey } from './write-bin';
 import { logger } from './debug';
 
 export function makeOffsetTable({ read, write }) {
@@ -54,10 +55,36 @@ export function makeOffsetTable({ read, write }) {
                     });
 
                     let cursor = size * mappings.length; // bits
+                    // the same bytes are only written once and pointed at as
+                    // many times as they are used, which is how a ROM holds
+                    // them - the ASM writers work from the listing itself, so
+                    // the packed layout is handed to writeBIN on the side
+                    let packed = cursor;
+                    const shared = new Map();
+                    const packedHeader = [];
+                    const packedFrames = [];
 
                     mappings.forEach((frames, i)=> {
+                        const base = tableBase[spriteTables[i]];
                         const addr = header[i];
-                        addr.push([[constants.address, size, (cursor / 8) - tableBase[spriteTables[i]]]]);
+                        const entry = addr.slice();
+                        addr.push([[constants.address, size, (cursor / 8) - base]]);
+
+                        const key = frames.length && frameKey(frames);
+                        if (key && shared.has(key)) {
+                            entry.push([[constants.address, size, shared.get(key) - base]]);
+                        } else {
+                            const at = packed / 8;
+                            if (key) shared.set(key, at);
+                            entry.push([[constants.address, size, at - base]]);
+                            packedFrames.push(frames);
+                            frames.forEach(frame => {
+                                frame.forEach(([, size]) => {
+                                    packed += size;
+                                });
+                            });
+                        }
+                        packedHeader.push(entry);
 
                         frames.forEach(frame => {
                             frame.forEach(([, size]) => {
@@ -66,6 +93,7 @@ export function makeOffsetTable({ read, write }) {
                         });
                     });
 
+                    sections.layout = [packedHeader, packedFrames];
                 });
             }
         },

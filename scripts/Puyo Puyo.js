@@ -99,37 +99,11 @@ asm(({ addScript, importScript, writeMappings, writeDPLCs }) => {
     importScript('PuyoMapMacros.asm');
     addScript(`\nPuyoDPLCSlotSize = ${(config.dplcTiles || 0) * 0x20}\n`);
 
-    writeMappings(({ label, sprites, renderHex, sanitizeLabel }) => {
+    writeMappings(({ label, sprites, renderHex, frameLabels }) => {
         const list = [];
-        const names = sprites.map((sprite, i) => (
-            sanitizeLabel(sprite.metadata && sprite.metadata.label) || `${label}_${i}`
-        ));
-
-        // @RadioTails Create the Equ Labels
-        sprites.forEach((sprite, i) => {
-            list.push(`Sprite_${sprite.mappings.length ? names[i] : '0'}:\tEqu ${i}`);
-        });
-        list.push('');
-        list.push('; ---------------------------------------------------------------------------');
-        list.push('');
-
-        // @RadioTails Create the Mapping Table
-        list.push(`${label}:\tmappingsTable`);
-        sprites.forEach((sprite, i) => {
-            list.push(`\tmappingsTableEntry.l\t${sprite.mappings.length ? names[i] : '0'}`);
-        });
-        list.push('');
-        list.push('; ---------------------------------------------------------------------------');
-        list.push('');
-
-        // @RadioTails Create the Sprites
-        sprites.forEach((sprite, i) => {
-            if (!sprite.mappings.length) return;
-
-            list.push(`${names[i]}:\tspriteHeader`);
-            list.push('\t; X, Y, Width, Height, Tile, X Flip, Y Flip, Palette, Priority, Link');
-
-            sprite.mappings.forEach(mapping => {
+        const { names, blocks } = frameLabels(
+            // an empty sprite is a null entry, so it never takes a name
+            (sprite) => sprite.mappings.length && sprite.mappings.map(mapping => {
                 const pieceInfo = [
                     mapping.left,
                     mapping.top,
@@ -143,10 +117,40 @@ asm(({ addScript, importScript, writeMappings, writeDPLCs }) => {
                     link(mapping),
                 ].map(renderHex).join(', ');
 
-                list.push(`\tspritePiece ${pieceInfo}`);
-            });
+                return `\tspritePiece ${pieceInfo}`;
+            }),
+        );
+        const entryName = (i) => names[i] || '0';
 
-            list.push(`${names[i]}_End`);
+        // @RadioTails Create the Equ Labels
+        // sprites sharing a frame share its name, which is defined once, on the
+        // first of them
+        const equs = new Set();
+        sprites.forEach((_, i) => {
+            const name = entryName(i);
+            if (equs.has(name)) return;
+            equs.add(name);
+            list.push(`Sprite_${name}:\tEqu ${i}`);
+        });
+        list.push('');
+        list.push('; ---------------------------------------------------------------------------');
+        list.push('');
+
+        // @RadioTails Create the Mapping Table
+        list.push(`${label}:\tmappingsTable`);
+        sprites.forEach((_, i) => {
+            list.push(`\tmappingsTableEntry.l\t${entryName(i)}`);
+        });
+        list.push('');
+        list.push('; ---------------------------------------------------------------------------');
+        list.push('');
+
+        // @RadioTails Create the Sprites
+        blocks.forEach(({ name, rows }) => {
+            list.push(`${name}:\tspriteHeader`);
+            list.push('\t; X, Y, Width, Height, Tile, X Flip, Y Flip, Palette, Priority, Link');
+            list.push(...rows);
+            list.push(`${name}_End`);
             list.push('');
             list.push('; ---------------------------------------------------------------------------');
             list.push('');

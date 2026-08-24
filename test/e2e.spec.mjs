@@ -736,12 +736,18 @@ test.describe('Sonic 3&K', () => {
                         expect(listing).toContain('Map_SuperSonic_: mappingsTable');
                         expect(dplcListing).toContain('PLC_Sonic_: mappingsTable');
                         expect(dplcListing).toContain('PLC_SuperSonic_: mappingsTable');
+                        // the twelve entries on word_147A6E share a single frame
+                        expect(listing.match(/^word_147A6E:/gm)).toHaveLength(1);
+                        expect(listing.match(/mappingsTableEntry\.w\tword_147A6E$/gm))
+                            .toHaveLength(12);
                     } else {
                         // each table's entries are offsets from its own label
                         expect(listing).toContain('Map_SuperSonic_:');
                         expect(listing).toMatch(/dc\.w \S+-Map_Sonic_\n/);
                         expect(listing).toMatch(/dc\.w \S+-Map_SuperSonic_/);
                         expect(dplcListing).toMatch(/dc\.w \S+-PLC_SuperSonic_/);
+                        expect(listing.match(/^word_147A6E: /gm)).toHaveLength(1);
+                        expect(listing.match(/dc\.w word_147A6E-/g)).toHaveLength(12);
                     }
                 }
 

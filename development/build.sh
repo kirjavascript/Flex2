@@ -50,7 +50,6 @@ build_portable() {
 }
 
 cp -r scripts Flex2-win32-ia32
-build_portable win32-ia32
 cd Flex2-win32-ia32
 zip -r ../flex2-win32-ia32.zip *
 cd ..

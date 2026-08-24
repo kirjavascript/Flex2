@@ -1,5 +1,5 @@
 import { loadScript, scriptDir } from './file';
-import { writeASM, sanitizeLabel } from '~/formats/scripts';
+import { writeASM, sanitizeLabel, makeFrameLabels } from '~/formats/scripts';
 import { logger } from './debug';
 import { makeOffsetTable } from './offset-table';
 import { toJS } from 'mobx';
@@ -420,6 +420,7 @@ even macro
         return asm.writeMappings({
             label, sprites, listing,
             renderHex, sanitizeLabel,
+            frameLabels: makeFrameLabels({ label, sprites }),
         });
     };
 
@@ -435,6 +436,7 @@ even macro
         return asm.writeDPLCs({
             label, sprites, listing,
             renderHex, sanitizeLabel,
+            frameLabels: makeFrameLabels({ label, sprites, key: 'plcLabel' }),
         });
     };
 

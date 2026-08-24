@@ -141,21 +141,6 @@ SonicDplcVer := 3
     `);
     importScript('MapMacros.asm');
 
-    // several table entries can point at the same frame, so the same symbol can
-    // come back on more than one sprite - each emitted frame needs its own label
-    const frameNames = (label, sprites, sanitizeLabel, key, allowBare) => {
-        const used = new Set();
-        return sprites.map((sprite, i) => {
-            let name = sanitizeLabel(sprite.metadata && sprite.metadata[key]) ||
-                (allowBare && sprites.length === 1 ? label : `${label}_${i}`);
-            for (let attempt = 0; used.has(name); attempt++) {
-                name = attempt ? `${label}_${i}_${attempt}` : `${label}_${i}`;
-            }
-            used.add(name);
-            return name;
-        });
-    };
-
     // sprites are grouped into consecutive tables by their metadata: only the
     // sprite that opens a table is tagged, and it names the table too
     const tableEntries = (label, sprites, names, sanitizeLabel, key) => {
@@ -196,16 +181,18 @@ SonicDplcVer := 3
     /**
      * MapMacros Mapping output
      */
-    writeMappings(({ label, sprites, renderHex, sanitizeLabel }) => {
+    writeMappings(({ label, sprites, renderHex, sanitizeLabel, frameLabels }) => {
         const list = [];
-        // without an offset table a lone frame takes the label itself
-        const names = frameNames(label, sprites, sanitizeLabel, 'label', !hasOffsetTable);
+        const { names, blocks } = frameLabels(
+            (sprite) => sprite.mappings.map(mapping => ` spritePiece ${pieceInfo(renderHex, mapping)}`),
+            { table: hasOffsetTable },
+        );
 
         if (format === 'objectPiece') {
-            sprites.forEach((sprite, i) => {
-                sprite.mappings.forEach((mapping, pieceIndex) => {
-                    const prefix = pieceIndex === 0 ? `${names[i]}:` : '';
-                    list.push(`${prefix}\tspritePiece ${pieceInfo(renderHex, mapping)}`);
+            blocks.forEach(({ name, rows }) => {
+                rows.forEach((row, pieceIndex) => {
+                    const prefix = pieceIndex === 0 ? `${name}:` : '';
+                    list.push(`${prefix}\t${row.trim()}`);
                 });
             });
 
@@ -218,14 +205,10 @@ SonicDplcVer := 3
             list.push(...tableEntries(label, sprites, names, sanitizeLabel, 'tableLabel'));
         }
 
-        sprites.forEach((sprite, i) => {
-            list.push(`${names[i]}:\tspriteHeader`);
-
-            sprite.mappings.forEach(mapping => {
-                list.push(` spritePiece ${pieceInfo(renderHex, mapping)}`);
-            });
-
-            list.push(`${names[i]}_End`);
+        blocks.forEach(({ name, rows }) => {
+            list.push(`${name}:\tspriteHeader`);
+            list.push(...rows);
+            list.push(`${name}_End`);
             list.push('');
         });
 
@@ -237,27 +220,27 @@ SonicDplcVer := 3
     /**
      * MapMacros DPLC output
      */
-    writeDPLCs(({ label, sprites, renderHex, sanitizeLabel }) => {
+    writeDPLCs(({ label, sprites, renderHex, sanitizeLabel, frameLabels }) => {
         const list = [];
-        const names = frameNames(label, sprites, sanitizeLabel, 'plcLabel', false);
         const header = isPlayer ? 's3kPlayerDplcHeader' : 'dplcHeader';
         const entry = isPlayer ? 's3kPlayerDplcEntry' : 'dplcEntry';
-
-        list.push(...tableEntries(label, sprites, names, sanitizeLabel, 'plcTableLabel'));
-
-        sprites.forEach((sprite, i) => {
-            list.push(`${names[i]}:\t${header}`);
-
-            sprite.dplcs.forEach(dplc => {
+        const { names, blocks } = frameLabels(
+            (sprite) => sprite.dplcs.map(dplc => {
                 const dplcInfo = [
                     dplc.size,
                     dplc.art,
                 ].map(renderHex).join(', ');
 
-                list.push(` ${entry} ${dplcInfo}`);
-            });
+                return ` ${entry} ${dplcInfo}`;
+            }),
+        );
 
-            list.push(`${names[i]}_End`);
+        list.push(...tableEntries(label, sprites, names, sanitizeLabel, 'plcTableLabel'));
+
+        blocks.forEach(({ name, rows }) => {
+            list.push(`${name}:\t${header}`);
+            list.push(...rows);
+            list.push(`${name}_End`);
             list.push('');
         });
 

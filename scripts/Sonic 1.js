@@ -93,21 +93,10 @@ SonicDplcVer := 1
     /**
      * MapMacros Mapping output
      */
-    writeMappings(({ label, sprites, renderHex, sanitizeLabel }) => {
+    writeMappings(({ label, renderHex, frameLabels }) => {
         const list = [];
-
-        list.push(`${label}: mappingsTable`);
-        sprites.forEach((sprite, i) => {
-            const name = sanitizeLabel(sprite.metadata && sprite.metadata.label) || `${label}_${i}`;
-	        list.push(`\tmappingsTableEntry.w\t${name}`);
-        });
-        list.push('');
-
-        sprites.forEach((sprite, i) => {
-            const name = sanitizeLabel(sprite.metadata && sprite.metadata.label) || `${label}_${i}`;
-            list.push(`${name}:\tspriteHeader`);
-
-            sprite.mappings.forEach(mapping => {
+        const { names, blocks } = frameLabels(
+            (sprite) => sprite.mappings.map(mapping => {
                 const pieceInfo = [
                     mapping.left,
                     mapping.top,
@@ -120,9 +109,19 @@ SonicDplcVer := 1
                     mapping.priority,
                 ].map(renderHex).join(', ');
 
-                list.push(` spritePiece ${pieceInfo}`);
-            });
+                return ` spritePiece ${pieceInfo}`;
+            }),
+        );
 
+        list.push(`${label}: mappingsTable`);
+        names.forEach((name) => {
+	        list.push(`\tmappingsTableEntry.w\t${name}`);
+        });
+        list.push('');
+
+        blocks.forEach(({ name, rows }) => {
+            list.push(`${name}:\tspriteHeader`);
+            list.push(...rows);
             list.push(`${name}_End`);
             list.push('');
         });
@@ -135,29 +134,28 @@ SonicDplcVer := 1
     /**
      * MapMacros DPLC output
      */
-    writeDPLCs(({ label, sprites, renderHex, sanitizeLabel }) => {
+    writeDPLCs(({ label, renderHex, frameLabels }) => {
         const list = [];
-
-        list.push(`${label}: mappingsTable`);
-        sprites.forEach((sprite, i) => {
-            const name = sanitizeLabel(sprite.metadata && sprite.metadata.plcLabel) || `${label}_${i}`;
-	        list.push(`\tmappingsTableEntry.w\t${name}`);
-        });
-        list.push('');
-
-        sprites.forEach((sprite, i) => {
-            const name = sanitizeLabel(sprite.metadata && sprite.metadata.plcLabel) || `${label}_${i}`;
-            list.push(`${name}:\tdplcHeader`);
-
-            sprite.dplcs.forEach(dplc => {
+        const { names, blocks } = frameLabels(
+            (sprite) => sprite.dplcs.map(dplc => {
                 const pieceInfo = [
                     dplc.size,
                     dplc.art,
                 ].map(renderHex).join(', ');
 
-                list.push(` dplcEntry ${pieceInfo}`);
-            });
+                return ` dplcEntry ${pieceInfo}`;
+            }),
+        );
 
+        list.push(`${label}: mappingsTable`);
+        names.forEach((name) => {
+	        list.push(`\tmappingsTableEntry.w\t${name}`);
+        });
+        list.push('');
+
+        blocks.forEach(({ name, rows }) => {
+            list.push(`${name}:\tdplcHeader`);
+            list.push(...rows);
             list.push(`${name}_End`);
             list.push('');
         });
