@@ -16,8 +16,6 @@ NEXT
 
     multiart
         activeselection on activebank
-        check what happens with a non-zero extra bank with no main art
-        whgat happens when you save with extra banks loaded
 
     write the name of the sprite on the sprite in the sprits view
 
