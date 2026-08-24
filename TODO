@@ -14,12 +14,10 @@ NEXT
 
     https://github.com/Nasina7/Flex2-Puyo
 
-    multiart
-        activeselection on activebank
+    dedupe identical sprites?
+    alias labels with duplicate names UNLESS they contain the exact same data - then just duplicate the pointer and don't dupe the data
 
     write the name of the sprite on the sprite in the sprits view
-
-    make windows exe
 
     key remapping
 

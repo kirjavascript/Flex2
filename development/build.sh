@@ -25,7 +25,6 @@ npx electron-packager@17.1.2 ./static Flex2 --platform=darwin --arch=x64 --asar 
 VERSION="$(node -p "require('./package.json').version")"
 BUILDID="$(date +%s)"
 
-# makensis is run under wine, which is already required for the win32 icon
 MAKENSIS="development/nsis/makensis.exe"
 NSIS_URL="https://downloads.sourceforge.net/project/nsis/NSIS%203/3.12/nsis-3.12.zip"
 
