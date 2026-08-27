@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.5.1]
+
+- Fix default name for dplc files, make default extension asm
+
 ## [1.5.0]
 - Puyo Puyo / Dr Robotnik's Mean Bean Machine support
 - Full Sonic + Super Sonic S3K support (multiple headers, header labels)

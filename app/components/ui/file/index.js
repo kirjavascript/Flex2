@@ -58,8 +58,8 @@ export const File = observer(class File extends Component {
     };
 
     createFile = () => {
-        const ext = this.props.ext || 'bin';
-        const extensions = this.props.ext ? [this.props.ext] : ['bin', 'asm'];
+        const ext = this.props.ext || 'asm';
+        const extensions = this.props.ext ? [this.props.ext] : ['asm', 'bin', 's'];
         const dir = this.props.absolute ? workspace.lastDialogDir : workspace.projectDir;
         dialog.showSaveDialog({
             title: `New ${this.props.label}`,

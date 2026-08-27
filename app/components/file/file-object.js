@@ -492,7 +492,7 @@ export const FileObject = observer(({ obj, isInProject = false }) => {
                     {obj.dplcs.enabled && (
                         <>
                             <FileInput
-                                label="Mappings"
+                                label="dplcs"
                                 store={obj.dplcs}
                                 accessor="path"
                                 absolute={isAbsolute}

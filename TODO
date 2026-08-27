@@ -10,12 +10,9 @@
 NEXT
     make the buttons look more clickable
 
-    https://discord.com/channels/202859782779043840/202861068224036864/1532826556341293227
-
-    https://github.com/Nasina7/Flex2-Puyo
-
-    dedupe identical sprites?
-    alias labels with duplicate names UNLESS they contain the exact same data - then just duplicate the pointer and don't dupe the data
+    clear undo history when loading an object
+    double click (or middle?) on object icon to load object
+    make the file path clearer in project listing
 
     write the name of the sprite on the sprite in the sprits view
 
