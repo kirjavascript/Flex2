@@ -3,6 +3,7 @@
 ## [1.5.1]
 
 - Fix default name for dplc files, make default extension asm
+- Fix broken spritesheet imports
 
 ## [1.5.0]
 - Puyo Puyo / Dr Robotnik's Mean Bean Machine support
