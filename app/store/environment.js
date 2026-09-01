@@ -53,6 +53,7 @@ class Environment {
             enabledBanks: computed,
             bankOrder: computed,
             currentBank: computed,
+            nextTile: computed,
             sprites: computed,
             currentSprite: computed,
             activeTiles: computed,
@@ -109,6 +110,12 @@ class Environment {
     get currentBank() {
         const bank = this.art[this.config.currentBank];
         return bank && bank.enabled !== false ? bank : this.enabledBanks[0];
+    }
+
+    // the absolute index appendTiles will write its first tile at
+    get nextTile() {
+        const bank = this.currentBank;
+        return bank ? bank.address + bank.tiles.length : 0;
     }
 
     // where two banks overlap, the active one owns the tile

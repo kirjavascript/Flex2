@@ -3,7 +3,14 @@ import { mappingState } from './index';
 import range from 'lodash/range';
 
 export function deleteUnusedTiles() {
-    const { sprites, config: { dplcsEnabled }, tiles } = environment;
+    const { sprites, config: { dplcsEnabled }, currentBank } = environment;
+
+    if (!currentBank) return;
+
+    // only the bank being worked on loses tiles: every other bank keeps its
+    // address, so indices outside this bank must not move
+    const base = currentBank.address;
+    const end = base + currentBank.tiles.length;
 
     let usedIndices = [];
 
@@ -20,40 +27,20 @@ export function deleteUnusedTiles() {
         }
     });
 
-    const unusedIndices = Array.from({length: tiles.length}, (_, i) => i)
+    const unusedIndices = range(base, end)
         .filter((index) => !usedIndices.includes(index));
 
-    // save initial art positions to compare against
-    sprites.forEach(({mappings, dplcs}) => {
-        (dplcsEnabled ? dplcs : mappings)
-            .forEach((obj) => {
-                obj.initialArt = obj.art;
-            });
-    });
+    if (!unusedIndices.length) return;
 
-    unusedIndices.forEach((index) => {
-        // mark as unused
-        tiles[index].unused = true;
-
-        // shift art positions
-        sprites.forEach(({dplcs, mappings}) => {
-            (dplcsEnabled ? dplcs : mappings)
-                .forEach((obj) => {
-                    if (obj.initialArt > index) {
-                        obj.art -= 1;
-                    }
-                });
-        });
-    });
-
-    // apply new tiles
-    environment.replaceTiles(tiles.filter((d) => !d.unused));
-
-    // cleanup
     sprites.forEach(({dplcs, mappings}) => {
         (dplcsEnabled ? dplcs : mappings)
             .forEach((obj) => {
-                delete obj.initialArt;
+                if (obj.art < base || obj.art >= end) return;
+                obj.art -= unusedIndices.filter((index) => index < obj.art).length;
             });
     });
+
+    environment.replaceTiles(
+        currentBank.tiles.filter((tile, i) => !unusedIndices.includes(base + i)),
+    );
 }

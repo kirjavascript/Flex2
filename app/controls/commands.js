@@ -95,14 +95,13 @@ export const commands = [
                 const { currentSprite, dplcsEnabled } = config;
                 const { mappings, dplcs } = environment.currentSprite;
                 doAction(() => {
-                    // cloned tiles go on the end of the last art file
-                    let end = tiles.length;
+                    // cloned tiles go on the end of the bank being worked on
                     const cloneTiles = (art, size) => {
+                        const start = environment.nextTile;
                         environment.appendTiles(
                             Array.from({length: size}, (_, i) => toJS(tiles[art + i])),
                         );
-                        end += size;
-                        return end - size;
+                        return start;
                     };
 
                     if (dplcsEnabled) {
