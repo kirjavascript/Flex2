@@ -2,8 +2,7 @@ import { environment } from '~/store/environment';
 import { getCenter } from '../mappings/state/bounds';
 import { concatDPLCs } from '../mappings/state/concat-dplcs';
 
-function addTile(ctx, x, y, palette) {
-    const { tiles } = environment;
+function readTile(ctx, x, y, palette) {
     const tile = ctx.getImageData(x, y, 8, 8);
 
     let pixels = [];
@@ -24,13 +23,12 @@ function addTile(ctx, x, y, palette) {
             }
         }
     }
-    tiles.push(pixels);
+    return pixels;
 }
 
 export function importSprite(ctx, newMappings, paletteLine) {
     const {
         palettesRGB,
-        tiles,
         mappings,
         dplcs,
         config: { currentSprite, dplcsEnabled },
@@ -44,14 +42,18 @@ export function importSprite(ctx, newMappings, paletteLine) {
     let lastDPLCIndex = 0;
 
     newMappings.forEach(({x, y, width, height}) => {
-        const startTile = tiles.length;
+        // tiles go into the bank being worked on, so the index they land at is
+        // that bank's, not the length of the flattened view over every bank
+        const startTile = environment.nextTile;
+        const newTiles = [];
         for (let h = 0; h < width; h++) {
             for (let v = 0; v < height; v++) {
                 const xPos = x + (h*8);
                 const yPos = y + (v*8);
-                addTile(ctx, xPos, yPos, palette);
+                newTiles.push(readTile(ctx, xPos, yPos, palette));
             }
         }
+        environment.appendTiles(newTiles);
 
         newMappingsList.push({
             art: dplcsEnabled ? lastDPLCIndex : startTile,

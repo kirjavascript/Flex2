@@ -7,23 +7,32 @@ export function arrangeTilesBySpriteOrder() {
     let newTiles = [];
     let newTilesIndices = [];
 
-    const { tiles, mappings, dplcs, config: { dplcsEnabled } } = environment;
+    const { mappings, dplcs, config: { dplcsEnabled }, currentBank } = environment;
 
-    (dplcsEnabled ? dplcs : mappings).forEach((objList, index) => {
+    if (!currentBank) return;
+
+    // only the bank being worked on is rearranged, at its own address: objects
+    // reading from another bank are left where they point
+    const base = currentBank.address;
+    const end = base + currentBank.tiles.length;
+
+    (dplcsEnabled ? dplcs : mappings).forEach((objList) => {
 
         objList.forEach((obj) => {
             const length = obj.size || obj.width * obj.height;
             const { art } = obj;
 
+            if (art < base || art + length > end) return;
+
             const objTileIndices = range(art, art +length);
             const indicesTileIndex = arrayIndexOf(objTileIndices, newTilesIndices);
 
             if (indicesTileIndex != -1) {
-                obj.art = indicesTileIndex;
+                obj.art = base + indicesTileIndex;
             }
             else {
-                obj.art = newTiles.length;
-                newTiles.push(...tiles.slice(art, art + length));
+                obj.art = base + newTiles.length;
+                newTiles.push(...currentBank.tiles.slice(art - base, art - base + length));
                 newTilesIndices.push(...objTileIndices);
             }
 

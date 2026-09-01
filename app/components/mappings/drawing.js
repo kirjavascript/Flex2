@@ -42,8 +42,12 @@ function plotPixel(x, y, colorIndex, mappings, buffer) {
             const tileOffset = (mapX * height) + mapY;
             const bufferOffset = art + tileOffset;
 
-            if (bufferOffset < buffer.length) {
-                buffer[bufferOffset][tileX + (tileY*8)] = colorIndex;
+            const tile = buffer[bufferOffset];
+
+            // a gap between banks is stood in for by a frozen shared tile:
+            // it belongs to no bank, so there is nothing there to draw into
+            if (tile && !Object.isFrozen(tile)) {
+                tile[tileX + (tileY*8)] = colorIndex;
             }
         }
     });
