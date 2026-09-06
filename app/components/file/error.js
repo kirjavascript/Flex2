@@ -15,7 +15,7 @@ function ErrorMsg({ error }) {
     const visibleLines = truncated ? lines.slice(0, MAX_LINES) : lines;
 
     return (
-        <div className="menu-item">
+        <div className="menu-item error-text">
             <Item color="red">
                 {error.name}:{' '}
                 {visibleLines

@@ -43,7 +43,7 @@ export class Version extends Component {
                     </A>
                 </p>
             )}
-            {error && <div className="red">{error}</div>}
+            {error && <div className="red error-text">{error}</div>}
         </div>;
     }
 

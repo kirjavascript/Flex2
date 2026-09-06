@@ -11,7 +11,9 @@ NEXT
 
     clear undo history when loading an object
     double click (or middle?) on object icon to load object
-    make the file path clearer in project listing
+
+    when importing, dedupe tiles
+    when importing, figure out how to line up sprites
 
     write the name of the sprite on the sprite in the sprits view
 

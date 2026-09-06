@@ -21,7 +21,8 @@ export function buffersToColors({ buffer, length }) {
     const data = Uint8Array.from(buffer);
     for (let i = 0; i < length * 32; i+=2) {
         if (data.length <= i) {
-            throw new Error('Trying to load more palettes than exist');
+            console.error('Trying to load more palettes than exist');
+            break;
         }
         const [b, gr] = [
             data[i].toString(16),

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
 import { workspace } from '~/store/workspace';
 import { selection } from '~/store/selection';
@@ -7,6 +7,7 @@ import ErrorMsg from '~/components/file/error';
 import { File as FileInput, Button, Item, Input } from '~/ui';
 import SortableTree from 'react-sortable-tree';
 import { basename } from 'path';
+import { promises as fs } from 'fs';
 import objectMenu from './object-menu';
 import theme from './theme';
 
@@ -30,6 +31,42 @@ function fromTree(objects) {
         return node;
     });
 }
+
+const RecentProject = ({ projectPath }) => {
+    const [name, setName] = useState();
+
+    useEffect(() => {
+        let cancelled = false;
+
+        setName(undefined);
+        (async () => {
+            try {
+                const json = JSON.parse(await fs.readFile(projectPath, 'utf8'));
+                if (!cancelled) setName(json.name);
+            } catch (_e) {
+                if (!cancelled) setName(undefined);
+            }
+        })();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [projectPath]);
+
+    return (
+        <div
+            key={projectPath}
+            className="recent-entry"
+            onClick={() => {
+                workspace.projectPath = projectPath;
+                requestAnimationFrame(workspace.openProject);
+            }}
+        >
+            {name || basename(projectPath)}
+            <span className="recent-path">{projectPath}</span>
+        </div>
+    );
+};
 
 const Project = observer(() => {
     const { project } = workspace;
@@ -56,17 +93,7 @@ const Project = observer(() => {
                     <div className="recent-projects">
                         <Item style={{ paddingBottom: '8px' }}><b>Recent Projects</b></Item>
                         {workspace.recentProjects.map((p) => (
-                            <div
-                                key={p}
-                                className="recent-entry"
-                                onClick={() => {
-                                    workspace.projectPath = p;
-                                    requestAnimationFrame(workspace.openProject);
-                                }}
-                            >
-                                {basename(p)}
-                                <span className="recent-path">{p}</span>
-                            </div>
+                            <RecentProject key={p} projectPath={p} />
                         ))}
                     </div>
                 )}

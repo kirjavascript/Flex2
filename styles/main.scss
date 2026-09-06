@@ -58,6 +58,11 @@ canvas {
     image-rendering: pixelated;
 }
 
+.error-text {
+    user-select: text;
+    cursor: text;
+}
+
 .canvas-debug {
     position: absolute;
     z-index: 10;

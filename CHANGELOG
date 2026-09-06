@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.5.2]
+
+- Improve recent project listing UI
+- Make all error text selectable
+
 ## [1.5.1]
 
 - Fix default name for dplc files, make default extension asm
