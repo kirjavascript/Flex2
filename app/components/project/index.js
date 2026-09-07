@@ -5,6 +5,7 @@ import { selection } from '~/store/selection';
 import { FileObject } from '~/components/file/file-object';
 import { createObjectIO } from '~/components/file/object-io';
 import ErrorMsg from '~/components/file/error';
+import { errorMsg } from '~/util/dialog';
 import { File as FileInput, Button, Item, Input } from '~/ui';
 import SortableTree from 'react-sortable-tree';
 import { basename } from 'path';
@@ -32,6 +33,12 @@ function fromTree(objects) {
         return node;
     });
 }
+
+const showLoadError = (section) => (error) => {
+    if (error) {
+        errorMsg(`Failed to load ${section}`, error.message || String(error));
+    }
+};
 
 const RecentProject = ({ projectPath }) => {
     const [name, setName] = useState();
@@ -162,7 +169,11 @@ const Project = observer(() => {
                                     onDoubleClick={(e) => {
                                         e.stopPropagation();
                                         selection.select(rowInfo.node.ref);
-                                        createObjectIO(rowInfo.node.ref).loadObject();
+                                        createObjectIO(rowInfo.node.ref, {
+                                            setArtError: showLoadError('Art'),
+                                            setMappingError: showLoadError('Mappings'),
+                                            setPaletteError: showLoadError('Palettes'),
+                                        }).loadObject();
                                     }}
                                 >
                                     OBJ
