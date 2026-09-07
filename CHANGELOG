@@ -2,6 +2,7 @@
 
 ## [1.5.2]
 
+- Double click on object icon in project to load object
 - Improve recent project listing UI
 - Make all error text selectable
 

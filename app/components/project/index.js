@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import { workspace } from '~/store/workspace';
 import { selection } from '~/store/selection';
 import { FileObject } from '~/components/file/file-object';
+import { createObjectIO } from '~/components/file/object-io';
 import ErrorMsg from '~/components/file/error';
 import { File as FileInput, Button, Item, Input } from '~/ui';
 import SortableTree from 'react-sortable-tree';
@@ -155,7 +156,18 @@ const Project = observer(() => {
                         },
                         icons: rowInfo.node.isDirectory
                             ? [<div className="folder" />]
-                            : [<div className="object">OBJ</div>],
+                            : [
+                                <div
+                                    className="object"
+                                    onDoubleClick={(e) => {
+                                        e.stopPropagation();
+                                        selection.select(rowInfo.node.ref);
+                                        createObjectIO(rowInfo.node.ref).loadObject();
+                                    }}
+                                >
+                                    OBJ
+                                </div>
+                            ],
                     })}
                 />
             </div>
