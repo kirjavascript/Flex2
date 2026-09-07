@@ -10,10 +10,18 @@ NEXT
     make the buttons look more clickable
 
     clear undo history when loading an object
-    double click (or middle?) on object icon to load object
+
+    allow specifying per-sprite canvas size, show grid when importing
+
+    Sonic 1 [folder name]
+        detect where there is a .git folder I guess
+
+    highlighing tiles with more than one art source
 
     when importing, dedupe tiles
     when importing, figure out how to line up sprites
+
+    make available updates more obvious
 
     write the name of the sprite on the sprite in the sprits view
 

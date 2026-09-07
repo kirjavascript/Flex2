@@ -1,0 +1,62 @@
+.update-notification {
+    position: fixed;
+    z-index: $z-float + 1;
+    top: 50%;
+    left: 50%;
+    width: calc(100vw - 80px);
+    max-width: 720px;
+    max-height: calc(100vh - 80px);
+    padding: 24px;
+    overflow: auto;
+    transform: translate(-50%, -50%);
+    background-color: $yellow;
+    color: $black;
+    border: 3px solid lighten($yellow, 15%);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7);
+    user-select: text;
+    cursor: text;
+
+    a {
+        color: $black;
+        font-weight: bold;
+        cursor: pointer;
+    }
+}
+
+.update-notification__heading {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 18px;
+}
+
+.update-notification__dismiss {
+    margin-left: auto;
+    padding: 3px 7px;
+    color: $black;
+    background: darken($yellow, 12%);
+    border: 1px solid darken($yellow, 25%);
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.update-notification__footer {
+    margin-top: 20px;
+    text-align: right;
+
+    a {
+        font-size: 18px;
+    }
+}
+
+.update-notification__changes {
+    section + section {
+        margin-top: 20px;
+    }
+
+    ul {
+        margin: 8px 0 0;
+        padding-left: 20px;
+    }
+}

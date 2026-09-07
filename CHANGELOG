@@ -5,6 +5,7 @@
 - Double click on object icon in project to load object
 - Improve recent project listing UI
 - Make all error text selectable
+- Show update modal when there is a newer release
 
 ## [1.5.1]
 

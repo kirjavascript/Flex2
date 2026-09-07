@@ -12,6 +12,7 @@ import { Sprites } from '~/components/sprites';
 import { Mappings } from '~/components/mappings';
 import { RawEditor } from '~/components/mappings/raw-editor';
 import { Documentation } from '~/components/documentation';
+import { UpdateNotification } from '~/components/update';
 
 export class Layout extends Component {
     factory = (node) => {
@@ -75,13 +76,13 @@ export class Layout extends Component {
     };
 
     render() {
-        return (
+        return <>
+            <UpdateNotification />
             <FlexLayout
                 model={model}
                 factory={this.factory}
                 onModelChange={saveModel}
             />
-        );
+        </>;
     }
 }
-
