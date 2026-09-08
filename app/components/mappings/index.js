@@ -16,6 +16,7 @@ import { DragSelect, attachDragSelectToNode } from './drag-select';
 import { attachDragMoveToNode } from './drag-move';
 import { Commands } from './commands';
 import { Settings } from './settings';
+import { importState } from '~/components/import/state';
 
 export const Mappings = observer(class Mappings extends Component {
     mappingRef = (node) => {
@@ -32,6 +33,14 @@ export const Mappings = observer(class Mappings extends Component {
         const { scale } = mappingState;
         mappingState.setZoom(scale + (e.deltaY > 0 ? -1 : 1));
         e.preventDefault();
+    };
+
+    onDrop = (e) => {
+        e.preventDefault();
+        const [file] = e.dataTransfer.files;
+        if (file && /\.(bmp|jpe?g|png|gif)$/i.test(file.name)) {
+            importState.openImport(file.path);
+        }
     };
 
     onRef = (node) => {
@@ -61,6 +70,8 @@ export const Mappings = observer(class Mappings extends Component {
                 <div
                     ref={this.mappingRef}
                     className="mappingContainer"
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={this.onDrop}
                     style={{
                         width: '100%',
                         height: 600,

@@ -38,6 +38,12 @@ class ImportState {
         this.mappings.replace([]);
     };
 
+    openImport = (path) => {
+        workspace.lastDialogDir = require('path').dirname(path);
+        this.path = path;
+        this.config.active = true;
+    };
+
     newImport = () => {
 
         dialog.showOpenDialog({
@@ -47,11 +53,7 @@ class ImportState {
             filters: [{name: 'Image File', extensions: ['bmp', 'jpg', 'jpeg', 'png', 'gif']}],
         })
             .then(({ filePaths: [path] }) => {
-                if (path) {
-                    workspace.lastDialogDir = require('path').dirname(path);
-                    this.path = path;
-                    this.config.active = true;
-                }
+                if (path) this.openImport(path);
             })
             .catch(console.error);
     };
@@ -159,6 +161,7 @@ class ImportState {
             fuzziness: observable,
             scale: observable,
             reset: action,
+            openImport: action,
             newImport: action,
             cancel: action,
             getBBoxes: action,

@@ -7,7 +7,7 @@ function readTile(ctx, x, y, palette) {
 
     let pixels = [];
     for (let j = 0; j < tile.data.length; j+=4) {
-        if (tile.data[j+3] < 255) {
+        if (tile.data[j+3] <= 0x80) {
             pixels.push(0);
         } else {
             for (let p = 1; p < palette.length; p++) {
