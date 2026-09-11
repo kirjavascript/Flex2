@@ -9,6 +9,7 @@ import { Selection } from './selection';
 import { Axes } from './axis';
 import { HUD } from './hud';
 import { PaletteHUD } from './hud-palette';
+import { DrawingPreview } from './drawing-preview';
 import { Guidelines } from './guidelines';
 import { NewMapping } from './new-mapping';
 import { Rotate } from './rotate';
@@ -69,7 +70,10 @@ export const Mappings = observer(class Mappings extends Component {
             <div className="mappings" ref={this.onRef}>
                 <div
                     ref={this.mappingRef}
-                    className="mappingContainer"
+                    className={classNames('mappingContainer', {
+                        drawing: mode == 'drawing',
+                        [`drawing-${mappingState.drawTool}`]: mode == 'drawing',
+                    })}
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={this.onDrop}
                     style={{
@@ -123,6 +127,7 @@ export const Mappings = observer(class Mappings extends Component {
                         {mode == 'drawing' ? (
                             <g>
                                 <Selection color="blue" opacity={0} all />
+                                <DrawingPreview />
                             </g>
                         ) : (
                             <g>

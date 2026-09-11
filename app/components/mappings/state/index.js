@@ -46,6 +46,9 @@ class MappingState {
     drawIndexLeft = 1;
     drawIndexRight = 0;
     drawPalette = 0;
+    drawTool = 'pencil';
+    drawWidth = 1;
+    drawingPreview = undefined;
     mode = 'mapping';
 
     toggleMode = () => {
@@ -70,6 +73,9 @@ class MappingState {
             drawIndexLeft: observable,
             drawIndexRight: observable,
             drawPalette: observable,
+            drawTool: observable,
+            drawWidth: observable,
+            drawingPreview: observable,
             mode: observable,
             toggleMode: action,
             guidelines: observable,

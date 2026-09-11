@@ -8,7 +8,7 @@ export const PaletteHUD = observer(
     class PaletteHUD extends Component {
         render() {
             const { palettes } = environment;
-            const { drawIndexLeft, drawIndexRight, drawPalette } = mappingState;
+            const { drawIndexLeft, drawIndexRight, drawPalette, drawTool, drawWidth } = mappingState;
             const palette = ['erase', ...palettes[drawPalette].slice(1)];
             return (
                 <div className="hud">
@@ -40,6 +40,26 @@ export const PaletteHUD = observer(
                         store={mappingState}
                         accessor="drawPalette"
                         flipScroll
+                    />
+                    <Select
+                        key={`tool-${drawTool}`}
+                        options={[
+                            { value: 'pencil', label: 'pencil' },
+                            { value: 'line', label: 'line' },
+                            { value: 'fill', label: 'fill' },
+                            { value: 'rectangle', label: 'rectangle' },
+                            { value: 'ellipse', label: 'ellipse' },
+                        ]}
+                        label="tool"
+                        store={mappingState}
+                        accessor="drawTool"
+                    />
+                    <Select
+                        key={`width-${drawWidth}`}
+                        options={[1, 2, 3, 4, 5, 6, 7, 8]}
+                        label="width"
+                        store={mappingState}
+                        accessor="drawWidth"
                     />
                 </div>
             );
