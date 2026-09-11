@@ -15,6 +15,11 @@ export function storage(obj, name, keys) {
             (keys || Object.keys(saved))
                 .forEach((prop) => {
                     const value = saved[prop];
+
+                    // a key missing from an older save must keep the default:
+                    // writing undefined back would break consumers
+                    if (value === undefined) return;
+
                     const current = obj[prop];
 
                     try {

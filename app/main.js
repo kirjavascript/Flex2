@@ -2,6 +2,17 @@
 // the messages are hidden in prod, and we dont do network stuff anyway
 window.ELECTRON_DISABLE_SECURITY_WARNINGS = true;
 
+// flexlayout logs render errors it catches via console.debug, which devtools
+// hides at default verbosity: promote those so they are actually visible
+const debug = console.debug.bind(console);
+console.debug = (...args) => {
+    if (args.some((arg) => arg instanceof Error || arg?.componentStack)) {
+        console.error(...args);
+    } else {
+        debug(...args);
+    }
+};
+
 import './controls/keyboard';
 import React from 'react';
 import { render } from 'react-dom';
