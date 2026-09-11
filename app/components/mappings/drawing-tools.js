@@ -82,6 +82,9 @@ function floodFill(surface, x, y, color) {
     }
 }
 
+// a live tool draws nothing until the stroke ends: its `end` shape is instead
+// re-rendered straight into the tiles on every move, so the preview and the
+// commit can never drift apart
 export const drawingTools = {
     pencil: {
         start(point, color, surface, width) {
@@ -90,11 +93,9 @@ export const drawingTools = {
         move(point, color, surface, previousPoint, _startPoint, width) {
             drawLine(surface, previousPoint.x, previousPoint.y, point.x, point.y, color, width, true);
         },
-        end() {},
     },
     line: {
-        start() {},
-        move() {},
+        live: true,
         end(point, color, surface, startPoint, width) {
             drawLine(surface, startPoint.x, startPoint.y, point.x, point.y, color, width);
         },
@@ -103,19 +104,15 @@ export const drawingTools = {
         start(point, color, surface) {
             floodFill(surface, point.x, point.y, color);
         },
-        move() {},
-        end() {},
     },
     rectangle: {
-        start() {},
-        move() {},
+        live: true,
         end(point, color, surface, startPoint, width) {
             drawRectangle(surface, startPoint.x, startPoint.y, point.x, point.y, color, width);
         },
     },
     ellipse: {
-        start() {},
-        move() {},
+        live: true,
         end(point, color, surface, startPoint, width) {
             drawEllipse(surface, startPoint.x, startPoint.y, point.x, point.y, color, width);
         },

@@ -18,6 +18,10 @@ export function createDrawingSurface(mappings, buffer) {
         return tile && tile[(absX % 8) + ((absY % 8) * 8)];
     };
 
+    // every tile the surface could write to, copied once per stroke so live
+    // previews can be redrawn from a clean base on every frame
+    let snapshot;
+
     return {
         getPixel(x, y) {
             const mapping = mappingAt(x, y);
@@ -42,6 +46,27 @@ export function createDrawingSurface(mappings, buffer) {
                 // Frozen tiles are shared bank-boundary placeholders.
                 if (tile && !Object.isFrozen(tile)) {
                     tile[(absX % 8) + ((absY % 8) * 8)] = colorIndex;
+                }
+            });
+        },
+
+        snapshot() {
+            const tiles = new Set();
+            mappings.forEach(({art, width, height}) => {
+                for (let i = 0; i < width * height; i++) {
+                    const tile = buffer[art + i];
+                    // Frozen tiles are shared bank-boundary placeholders.
+                    if (tile && !Object.isFrozen(tile)) tiles.add(tile);
+                }
+            });
+            snapshot = Array.from(tiles, (tile) => ({ tile, pixels: tile.slice() }));
+        },
+
+        restore() {
+            if (!snapshot) return;
+            snapshot.forEach(({tile, pixels}) => {
+                for (let i = 0; i < pixels.length; i++) {
+                    tile[i] = pixels[i];
                 }
             });
         },

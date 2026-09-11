@@ -9,7 +9,6 @@ import { Selection } from './selection';
 import { Axes } from './axis';
 import { HUD } from './hud';
 import { PaletteHUD } from './hud-palette';
-import { DrawingPreview } from './drawing-preview';
 import { Guidelines } from './guidelines';
 import { NewMapping } from './new-mapping';
 import { Rotate } from './rotate';
@@ -127,7 +126,6 @@ export const Mappings = observer(class Mappings extends Component {
                         {mode == 'drawing' ? (
                             <g>
                                 <Selection color="blue" opacity={0} all />
-                                <DrawingPreview />
                             </g>
                         ) : (
                             <g>

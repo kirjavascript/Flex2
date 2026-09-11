@@ -48,7 +48,6 @@ class MappingState {
     drawPalette = 0;
     drawTool = 'pencil';
     drawWidth = 1;
-    drawingPreview = undefined;
     mode = 'mapping';
 
     toggleMode = () => {
@@ -75,7 +74,6 @@ class MappingState {
             drawPalette: observable,
             drawTool: observable,
             drawWidth: observable,
-            drawingPreview: observable,
             mode: observable,
             toggleMode: action,
             guidelines: observable,
@@ -294,7 +292,7 @@ class MappingState {
 }
 
 const mappingState = new MappingState();
-storage(mappingState, 'mapping-state', ['autodismiss', 'topLeftAlphaPixel', 'globalScale']);
+storage(mappingState, 'mapping-state', ['mode', 'autodismiss', 'topLeftAlphaPixel', 'globalScale']);
 
 if (!mappingState.globalScale) {
     mappingState.globalScale = 1;

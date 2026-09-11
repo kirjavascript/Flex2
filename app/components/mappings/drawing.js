@@ -31,21 +31,23 @@ export function drawStart(node) {
     if (mode !== 'drawing' || !mappings.length || (buttons !== LEFT && buttons !== RIGHT)) return;
 
     const point = getPoint(node);
-    const surface = createDrawingSurface(mappings, buffer);
     const color = getColor(buttons);
     const tool = drawingTools[drawTool];
+    const surface = createDrawingSurface(mappings, buffer);
     activeDrawing = { point, startPoint: point, color, surface, tool, width: drawWidth };
-    mappingState.drawingPreview = { point, startPoint: point, color, tool: drawTool, width: drawWidth };
-    tool.start(point, color, surface, drawWidth);
+    if (tool.live) surface.snapshot();
+    if (tool.start) tool.start(point, color, surface, drawWidth);
 }
 
 export function drawEnd() {
     if (activeDrawing) {
         const { point, color, surface, tool, startPoint, width } = activeDrawing;
-        tool.end(point, color, surface, startPoint, width);
+        // a live tool's last preview is not necessarily at the release point:
+        // reset to the snapshot, then commit the final shape
+        surface.restore();
+        if (tool.end) tool.end(point, color, surface, startPoint, width);
     }
     activeDrawing = undefined;
-    mappingState.drawingPreview = undefined;
     setDrawing(false);
 }
 
@@ -53,11 +55,16 @@ export function draw(node) {
     if (!activeDrawing) return;
 
     const point = getPoint(node);
-    const { point: previousPoint, color, surface, tool, width } = activeDrawing;
-    tool.move(point, color, surface, previousPoint, activeDrawing.startPoint, width);
+    const { point: previousPoint, color, surface, tool, width, startPoint } = activeDrawing;
+
+    if (tool.live) {
+        // preview into the real tiles: clean up the last frame, redraw the
+        // shape at the cursor
+        surface.restore();
+        tool.end(point, color, surface, startPoint, width);
+    } else if (tool.move) {
+        tool.move(point, color, surface, previousPoint, startPoint, width);
+    }
+
     activeDrawing.point = point;
-    mappingState.drawingPreview = {
-        ...mappingState.drawingPreview,
-        point,
-    };
 }
