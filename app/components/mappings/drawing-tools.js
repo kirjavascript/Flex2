@@ -61,27 +61,6 @@ function drawEllipse(surface, x0, y0, x1, y1, color, width) {
     }
 }
 
-function floodFill(surface, x, y, color) {
-    const target = surface.getPixel(x, y);
-    if (target === undefined || target === color) return;
-
-    const pending = [[x, y]];
-    const seen = new Set();
-    while (pending.length) {
-        const [currentX, currentY] = pending.pop();
-        const key = `${currentX},${currentY}`;
-        if (seen.has(key) || surface.getPixel(currentX, currentY) !== target) continue;
-        seen.add(key);
-        surface.setPixel(currentX, currentY, color);
-        pending.push(
-            [currentX + 1, currentY],
-            [currentX - 1, currentY],
-            [currentX, currentY + 1],
-            [currentX, currentY - 1],
-        );
-    }
-}
-
 // a live tool draws nothing until the stroke ends: its `end` shape is instead
 // re-rendered straight into the tiles on every move, so the preview and the
 // commit can never drift apart
@@ -102,7 +81,7 @@ export const drawingTools = {
     },
     fill: {
         start(point, color, surface) {
-            floodFill(surface, point.x, point.y, color);
+            surface.fill(point.x, point.y, color);
         },
     },
     rectangle: {

@@ -2,6 +2,7 @@
 
 import { LEFT, RIGHT } from './buttons';
 import { event, mouse } from 'd3-selection';
+import { runInAction } from 'mobx';
 import { mappingState } from './state';
 import { environment } from '~/store/environment';
 import { setDrawing } from '~/store/history';
@@ -35,8 +36,13 @@ export function drawStart(node) {
     const tool = drawingTools[drawTool];
     const surface = createDrawingSurface(mappings, buffer);
     activeDrawing = { point, startPoint: point, color, surface, tool, width: drawWidth };
-    if (tool.live) surface.snapshot();
-    if (tool.start) tool.start(point, color, surface, drawWidth);
+    // one action per stroke event: every pixel write inside triggers its
+    // reactions at the end, so tiles re-render once per frame instead of once
+    // per changed pixel
+    runInAction(() => {
+        if (tool.live) surface.snapshot();
+        if (tool.start) tool.start(point, color, surface, drawWidth);
+    });
 }
 
 export function drawEnd() {
@@ -44,8 +50,10 @@ export function drawEnd() {
         const { point, color, surface, tool, startPoint, width } = activeDrawing;
         // a live tool's last preview is not necessarily at the release point:
         // reset to the snapshot, then commit the final shape
-        surface.restore();
-        if (tool.end) tool.end(point, color, surface, startPoint, width);
+        runInAction(() => {
+            surface.restore();
+            if (tool.end) tool.end(point, color, surface, startPoint, width);
+        });
     }
     activeDrawing = undefined;
     setDrawing(false);
@@ -60,10 +68,14 @@ export function draw(node) {
     if (tool.live) {
         // preview into the real tiles: clean up the last frame, redraw the
         // shape at the cursor
-        surface.restore();
-        tool.end(point, color, surface, startPoint, width);
+        runInAction(() => {
+            surface.restore();
+            tool.end(point, color, surface, startPoint, width);
+        });
     } else if (tool.move) {
-        tool.move(point, color, surface, previousPoint, startPoint, width);
+        runInAction(() => {
+            tool.move(point, color, surface, previousPoint, startPoint, width);
+        });
     }
 
     activeDrawing.point = point;

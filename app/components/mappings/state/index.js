@@ -8,6 +8,7 @@ import { deleteUnusedTiles } from './delete-unused-tiles';
 import { toggleDPLCs } from './toggle-dplcs';
 import { arrangeTilesBySpriteOrder } from './arrange-tiles-by-sprite-order';
 import { storage } from '~/store/storage';
+import { drawingTools } from '../drawing-tools';
 import { webFrame } from 'electron';
 
 class MappingState {
@@ -292,7 +293,25 @@ class MappingState {
 }
 
 const mappingState = new MappingState();
-storage(mappingState, 'mapping-state', ['mode', 'autodismiss', 'topLeftAlphaPixel', 'globalScale']);
+storage(mappingState, 'mapping-state', [
+    'mode',
+    'drawTool',
+    'drawWidth',
+    'drawIndexLeft',
+    'drawIndexRight',
+    'drawPalette',
+    'autodismiss',
+    'topLeftAlphaPixel',
+    'globalScale',
+]);
+
+// storage restores verbatim, so stale/corrupt values must not reach the tools
+if (!drawingTools[mappingState.drawTool]) {
+    mappingState.drawTool = 'pencil';
+}
+if (!(mappingState.drawWidth >= 1 && mappingState.drawWidth <= 8)) {
+    mappingState.drawWidth = 1;
+}
 
 if (!mappingState.globalScale) {
     mappingState.globalScale = 1;
