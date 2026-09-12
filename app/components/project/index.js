@@ -8,8 +8,9 @@ import ErrorMsg from '~/components/file/error';
 import { errorMsg } from '~/util/dialog';
 import { File as FileInput, Button, Item, Input } from '~/ui';
 import SortableTree from 'react-sortable-tree';
-import { basename } from 'path';
+import { basename, dirname } from 'path';
 import { promises as fs } from 'fs';
+import { exec } from 'child_process';
 import objectMenu from './object-menu';
 import theme from './theme';
 
@@ -42,11 +43,13 @@ const showLoadError = (section) => (error) => {
 
 const RecentProject = ({ projectPath }) => {
     const [name, setName] = useState();
+    const [gitRoot, setGitRoot] = useState();
 
     useEffect(() => {
         let cancelled = false;
 
         setName(undefined);
+        setGitRoot(undefined);
         (async () => {
             try {
                 const json = JSON.parse(await fs.readFile(projectPath, 'utf8'));
@@ -55,6 +58,13 @@ const RecentProject = ({ projectPath }) => {
                 if (!cancelled) setName(undefined);
             }
         })();
+        exec(
+            'git rev-parse --show-toplevel',
+            { cwd: dirname(projectPath) },
+            (error, stdout) => {
+                if (!cancelled && !error) setGitRoot(stdout.trim());
+            }
+        );
 
         return () => {
             cancelled = true;
@@ -70,7 +80,10 @@ const RecentProject = ({ projectPath }) => {
                 requestAnimationFrame(workspace.openProject);
             }}
         >
-            {name || basename(projectPath)}
+            <div className="recent-title">
+                {name || basename(projectPath)}
+                {gitRoot && <span className="recent-git">[{basename(gitRoot)}]</span>}
+            </div>
             <span className="recent-path">{projectPath}</span>
         </div>
     );

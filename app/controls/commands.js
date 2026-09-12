@@ -41,15 +41,6 @@ export function getCommandLabel(name) {
 export const commands = [
     [
         {
-            map: 'f12', name: 'DevTools', hidden: true,
-            func: () => {
-                require('@electron/remote')
-                    .getCurrentWindow()
-                    .webContents
-                    .toggleDevTools();
-            },
-        },
-        {
             map: 'n s', name: 'New Sprite', color: 'green',
             func: () => {
                 const { currentSprite, dplcsEnabled } = environment.config;

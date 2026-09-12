@@ -17,6 +17,19 @@
             &:hover {
                 background-color: $grey;
             }
+            .recent-title {
+                display: flex;
+                align-items: baseline;
+                gap: 10px;
+                overflow: hidden;
+                white-space: nowrap;
+            }
+            .recent-git {
+                color: $green;
+                font-size: 0.85em;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
             .recent-path {
                 color: $blue;
                 margin-top: 5px;

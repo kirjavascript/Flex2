@@ -6,7 +6,7 @@ const devMode = process.argv.includes('--dev');
 module.exports = ({ mainWindow } = {}) => {
     const { writeFile, rmSync, readdirSync } = fs;
 
-    mainWindow?.openDevTools();
+    // mainWindow?.openDevTools();
 
     const outdir = './static/bundles';
     readdirSync(outdir).forEach((f) => rmSync(`${outdir}/${f}`));

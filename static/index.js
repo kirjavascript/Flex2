@@ -27,6 +27,10 @@ function createWindow() {
         mainWindow.webContents.toggleDevTools();
     });
 
+    globalShortcut.register('F12', () => {
+        mainWindow.webContents.toggleDevTools();
+    });
+
     mainWindow.loadFile('./index.html');
 
     mainWindow.on('ready-to-show', () => {
