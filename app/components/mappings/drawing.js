@@ -1,6 +1,6 @@
 // called from drag-move
 
-import { LEFT, RIGHT } from './buttons';
+import { LEFT, RIGHT, MIDDLE } from './buttons';
 import { event, mouse } from 'd3-selection';
 import { runInAction } from 'mobx';
 import { mappingState } from './state';
@@ -10,6 +10,7 @@ import { createDrawingSurface } from './drawing-surface';
 import { drawingTools } from './drawing-tools';
 
 let activeDrawing;
+let eyedropSurface;
 
 function getPoint(node) {
     const [xPos, yPos] = mouse(node);
@@ -29,9 +30,19 @@ export function drawStart(node) {
     const { mode, drawTool, drawWidth } = mappingState;
     const { currentSprite: { mappings, buffer } } = environment;
 
-    if (mode !== 'drawing' || !mappings.length || (buttons !== LEFT && buttons !== RIGHT)) return;
+    if (mode !== 'drawing' || !mappings.length
+        || (buttons !== LEFT && buttons !== RIGHT && buttons !== MIDDLE)) return;
 
     const point = getPoint(node);
+
+    // middle button: eyedropper. samples the pixel under the cursor into the
+    // left (primary) color, and keeps sampling while held so you can scrub
+    if (buttons === MIDDLE) {
+        eyedropSurface = createDrawingSurface(mappings, buffer);
+        eyedrop(node);
+        return;
+    }
+
     const color = getColor(buttons);
     const tool = drawingTools[drawTool];
     const surface = createDrawingSurface(mappings, buffer);
@@ -56,10 +67,24 @@ export function drawEnd() {
         });
     }
     activeDrawing = undefined;
+    eyedropSurface = undefined;
     setDrawing(false);
 }
 
+function eyedrop(node) {
+    const point = getPoint(node);
+    const color = eyedropSurface.getPixel(point.x, point.y);
+    // undefined = pressed in a gap between mappings: keep the current color
+    if (color !== undefined) {
+        mappingState.drawIndexLeft = color;
+    }
+}
+
 export function draw(node) {
+    if (eyedropSurface) {
+        eyedrop(node);
+        return;
+    }
     if (!activeDrawing) return;
 
     const point = getPoint(node);

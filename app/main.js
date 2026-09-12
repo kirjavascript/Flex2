@@ -31,6 +31,7 @@ document.addEventListener('drop', (e) => {
 // used in e2e tests
 import { environment } from '~/store/environment';
 import { workspace } from '~/store/workspace';
+import { mappingState } from '~/components/mappings/state';
 import { toJS } from 'mobx';
 import { exportSprite } from '~/formats/image';
-window.__test__ = { environment, workspace, toJS, exportSprite };
+window.__test__ = { environment, workspace, mappingState, toJS, exportSprite };
