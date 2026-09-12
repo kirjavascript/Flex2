@@ -10,6 +10,7 @@
 - Make all error text selectable
 - Drop an image in the mappings area to import as spritesheet
 - Fix some alpha channel behaviour when importing
+- Show label name in sprites tab
 - Show update modal when there is a newer release
 
 ## [1.5.1]

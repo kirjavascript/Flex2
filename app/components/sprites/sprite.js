@@ -11,7 +11,7 @@ export const Sprite = observer(class Sprite extends Component {
         const { config } = environment;
         const { currentSprite } = config;
 
-        const { index, mappings, buffer } = this.props.data;
+        const { index, mappings, buffer, metadata } = this.props.data;
 
         return <div
             className="sprite"
@@ -22,6 +22,9 @@ export const Sprite = observer(class Sprite extends Component {
             <div className="index">
                 0x{index.toString(16).toUpperCase()}
             </div>
+            {metadata?.label && (
+                <div className="label">{metadata.label}</div>
+            )}
 
             {!mappings.length && (
                 <div className="blank">

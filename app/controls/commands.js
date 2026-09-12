@@ -371,6 +371,7 @@ export const commands = [
             map: 'u m', name: 'Unload Mappings', color: 'red', noMultiplier: true,
             func: () => {
                 environment.mappings.replace([]);
+                environment.spriteMetadata.replace([]);
                 environment.config.dplcsEnabled &&
                 environment.dplcs.replace([]);
             },
@@ -384,6 +385,7 @@ export const commands = [
             func: () => {
                 environment.clearArt();
                 environment.mappings.replace([]);
+                environment.spriteMetadata.replace([]);
                 environment.config.dplcsEnabled &&
                 environment.dplcs.replace([]);
                 environment.resetPalettes();
