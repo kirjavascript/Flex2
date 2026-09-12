@@ -27,7 +27,7 @@ function getColor(buttons) {
 export function drawStart(node) {
     setDrawing(true);
     const { sourceEvent: { buttons } } = event;
-    const { mode, drawTool, drawWidth } = mappingState;
+    const { mode, drawTool, drawWidth, drawPoints } = mappingState;
     const { currentSprite: { mappings, buffer } } = environment;
 
     if (mode !== 'drawing' || !mappings.length
@@ -46,24 +46,24 @@ export function drawStart(node) {
     const color = getColor(buttons);
     const tool = drawingTools[drawTool];
     const surface = createDrawingSurface(mappings, buffer);
-    activeDrawing = { point, startPoint: point, color, surface, tool, width: drawWidth };
+    activeDrawing = { point, startPoint: point, color, surface, tool, width: drawWidth, points: drawPoints };
     // one action per stroke event: every pixel write inside triggers its
     // reactions at the end, so tiles re-render once per frame instead of once
     // per changed pixel
     runInAction(() => {
         if (tool.live) surface.snapshot();
-        if (tool.start) tool.start(point, color, surface, drawWidth);
+        if (tool.start) tool.start(point, color, surface, drawWidth, drawPoints);
     });
 }
 
 export function drawEnd() {
     if (activeDrawing) {
-        const { point, color, surface, tool, startPoint, width } = activeDrawing;
+        const { point, color, surface, tool, startPoint, width, points } = activeDrawing;
         // a live tool's last preview is not necessarily at the release point:
         // reset to the snapshot, then commit the final shape
         runInAction(() => {
             surface.restore();
-            if (tool.end) tool.end(point, color, surface, startPoint, width);
+            if (tool.end) tool.end(point, color, surface, startPoint, width, points);
         });
     }
     activeDrawing = undefined;
@@ -88,18 +88,18 @@ export function draw(node) {
     if (!activeDrawing) return;
 
     const point = getPoint(node);
-    const { point: previousPoint, color, surface, tool, width, startPoint } = activeDrawing;
+    const { point: previousPoint, color, surface, tool, width, points, startPoint } = activeDrawing;
 
     if (tool.live) {
         // preview into the real tiles: clean up the last frame, redraw the
         // shape at the cursor
         runInAction(() => {
             surface.restore();
-            tool.end(point, color, surface, startPoint, width);
+            tool.end(point, color, surface, startPoint, width, points);
         });
     } else if (tool.move) {
         runInAction(() => {
-            tool.move(point, color, surface, previousPoint, startPoint, width);
+            tool.move(point, color, surface, previousPoint, startPoint, width, points);
         });
     }
 

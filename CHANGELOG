@@ -2,6 +2,9 @@
 
 ## [1.5.2]
 
+- Drawing tools
+    - Pencil / Line / Rectangle / Fill / Ellipse / Star
+    - Middle click for eyedropper
 - Double click on object icon in project to load object
 - Improve recent project listing UI
 - Make all error text selectable

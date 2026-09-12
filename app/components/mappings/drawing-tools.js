@@ -61,6 +61,38 @@ function drawEllipse(surface, x0, y0, x1, y1, color, width) {
     }
 }
 
+function drawStar(surface, x0, y0, x1, y1, color, width, points) {
+    const left = Math.min(x0, x1);
+    const right = Math.max(x0, x1);
+    const top = Math.min(y0, y1);
+    const bottom = Math.max(y0, y1);
+    const centerX = (left + right) / 2;
+    const centerY = (top + bottom) / 2;
+    const radiusX = (right - left) / 2;
+    const radiusY = (bottom - top) / 2;
+
+    if (!radiusX || !radiusY) {
+        drawLine(surface, x0, y0, x1, y1, color, width);
+        return;
+    }
+
+    // outer vertices sit on the bbox ellipse, inner ones at half radius;
+    // first vertex points straight up, last segment closes the shape
+    const vertices = points * 2;
+    const innerRatio = 0.5;
+    let prevX;
+    let prevY;
+    for (let i = 0; i <= vertices; i++) {
+        const angle = ((i % vertices) / vertices) * 2 * Math.PI - (Math.PI / 2);
+        const ratio = i % 2 === 0 ? 1 : innerRatio;
+        const vx = Math.round(centerX + (Math.cos(angle) * radiusX * ratio));
+        const vy = Math.round(centerY + (Math.sin(angle) * radiusY * ratio));
+        if (i > 0) drawLine(surface, prevX, prevY, vx, vy, color, width);
+        prevX = vx;
+        prevY = vy;
+    }
+}
+
 // a live tool draws nothing until the stroke ends: its `end` shape is instead
 // re-rendered straight into the tiles on every move, so the preview and the
 // commit can never drift apart
@@ -94,6 +126,12 @@ export const drawingTools = {
         live: true,
         end(point, color, surface, startPoint, width) {
             drawEllipse(surface, startPoint.x, startPoint.y, point.x, point.y, color, width);
+        },
+    },
+    star: {
+        live: true,
+        end(point, color, surface, startPoint, width, points) {
+            drawStar(surface, startPoint.x, startPoint.y, point.x, point.y, color, width, points);
         },
     },
 };

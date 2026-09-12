@@ -11,9 +11,6 @@ NEXT
 
     clear undo history when loading an object
 
-    massively improve the drawing experience: squares, circles, lines, flood fill, etc
-        remove the SVG bits
-
     allow specifying per-sprite canvas size, show grid when importing
 
     Sonic 1 [folder name]

@@ -49,6 +49,7 @@ class MappingState {
     drawPalette = 0;
     drawTool = 'pencil';
     drawWidth = 1;
+    drawPoints = 5;
     mode = 'mapping';
 
     toggleMode = () => {
@@ -75,6 +76,7 @@ class MappingState {
             drawPalette: observable,
             drawTool: observable,
             drawWidth: observable,
+            drawPoints: observable,
             mode: observable,
             toggleMode: action,
             guidelines: observable,
@@ -297,6 +299,7 @@ storage(mappingState, 'mapping-state', [
     'mode',
     'drawTool',
     'drawWidth',
+    'drawPoints',
     'drawIndexLeft',
     'drawIndexRight',
     'drawPalette',
@@ -311,6 +314,10 @@ if (!drawingTools[mappingState.drawTool]) {
 }
 if (!(mappingState.drawWidth >= 1 && mappingState.drawWidth <= 8)) {
     mappingState.drawWidth = 1;
+}
+if (!Number.isInteger(mappingState.drawPoints)
+    || mappingState.drawPoints < 3 || mappingState.drawPoints > 12) {
+    mappingState.drawPoints = 5;
 }
 
 if (!mappingState.globalScale) {
