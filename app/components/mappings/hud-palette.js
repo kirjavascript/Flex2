@@ -47,7 +47,7 @@ export const PaletteHUD = observer(
                             { value: 'pencil', label: 'pencil' },
                             { value: 'line', label: 'line' },
                             { value: 'fill', label: 'fill' },
-                            { value: 'rectangle', label: 'rectangle' },
+                            { value: 'rectangle', label: 'rect' },
                             { value: 'ellipse', label: 'ellipse' },
                             { value: 'star', label: 'star' },
                         ]}

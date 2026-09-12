@@ -13,6 +13,10 @@ NEXT
 
     allow specifying per-sprite canvas size, show grid when importing
 
+    put each load type in boxes, rename to LOAD ALL, make the dropzone target the whole box?
+
+    key remapping
+
     highlighing tiles with more than one art source
 
     when importing, dedupe tiles
@@ -20,7 +24,6 @@ NEXT
 
     write the name of the sprite on the sprite in the sprits view
 
-    key remapping
 
 ---
     persist comments?
