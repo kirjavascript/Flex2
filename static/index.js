@@ -1,4 +1,4 @@
-const { app, BrowserWindow, globalShortcut } = require('electron');
+const { app, BrowserWindow } = require('electron');
 const devMode = process.argv.includes('--dev');
 
 function createWindow() {
@@ -23,12 +23,17 @@ function createWindow() {
 
     mainWindow.setMenu(null);
 
-    globalShortcut.register('CommandOrControl+Shift+I', () => {
-        mainWindow.webContents.toggleDevTools();
-    });
-
-    globalShortcut.register('F12', () => {
-        mainWindow.webContents.toggleDevTools();
+    mainWindow.webContents.on('before-input-event', (event, input) => {
+        if (input.type !== 'keyDown') return;
+        const toggle =
+            input.key === 'F12' ||
+            (input.key.toUpperCase() === 'I' &&
+                input.shift &&
+                (process.platform === 'darwin' ? input.meta : input.control));
+        if (toggle) {
+            event.preventDefault();
+            mainWindow.webContents.toggleDevTools();
+        }
     });
 
     mainWindow.loadFile('./index.html');
