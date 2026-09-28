@@ -12,6 +12,8 @@ const compressionList = Object.keys(compressionFormats);
 
 const isASM = (path) => ['.asm', '.s'].includes(extname(path).toLowerCase());
 
+const artExtensions = ['bin', 'unc', 'nem', 'kos', 'kosm', 'kospls', 'kospm', 'comp', 'compx', 'compxm', 'eni', 'sor'];
+
 export const FileObject = observer(({ obj, isInProject = false }) => {
     scripts.length; // react to script updates
     const script = obj.format && runScript(obj);
@@ -84,7 +86,7 @@ export const FileObject = observer(({ obj, isInProject = false }) => {
                 accessor="path"
                 absolute={isAbsolute}
                 filtername="Art File"
-                filterextensions={['bin', 'unc', 'kos', 'nem', 'eni', 'sor']}
+                filterextensions={artExtensions}
             />
 
             {!!obj.art.path && <>
@@ -156,7 +158,7 @@ export const FileObject = observer(({ obj, isInProject = false }) => {
                                 accessor="path"
                                 absolute={isAbsolute}
                                 filtername="Art File"
-                                filterextensions={['bin', 'unc', 'kos', 'nem', 'eni', 'sor']}
+                                filterextensions={artExtensions}
                             />
                         </div>
                     )}

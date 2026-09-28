@@ -11,6 +11,12 @@ NEXT
 
     clear undo history when loading an object
 
+    conflict bug (selbi)
+
+    change mapping order from the visual editor
+
+    find a way to inject tiles part way through the editr
+
     allow specifying per-sprite canvas size, show grid when importing
 
     put each load type in boxes, rename to LOAD ALL, make the dropzone target the whole box?
@@ -21,8 +27,6 @@ NEXT
 
     when importing, dedupe tiles
     when importing, figure out how to line up sprites
-
-    write the name of the sprite on the sprite in the sprits view
 
 
 ---

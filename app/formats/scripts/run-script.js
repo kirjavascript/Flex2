@@ -204,10 +204,19 @@ export default catchFunc((obj) => {
             for (const [addr, sprite] of Object.entries(spritesAddr)) {
                 addrToSprite.set(sprite, Number(addr));
             }
+            // names the writer made up itself (`<header>_N`, `<header>_N_M`)
+            // are not kept, or they would follow the sprites into a file with
+            // a different header label instead of being regenerated
+            const header = symbols[0];
+            const isAutoName = (name) => {
+                if (!header || !name.startsWith(header + '_')) return false;
+                return /^\d+(_\d+)?$/.test(name.slice(header.length + 1));
+            };
             sprites.forEach(sprite => {
                 const addr = addrToSprite.get(sprite);
-                if (addr != null && symbols[addr]) {
-                    sprite.metadata.label = symbols[addr];
+                const name = addr != null && symbols[addr];
+                if (name && !isAutoName(name)) {
+                    sprite.metadata.label = name;
                 }
             });
         }

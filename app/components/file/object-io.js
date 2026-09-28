@@ -12,12 +12,11 @@ import { scripts, runScript, writeBIN } from '~/formats/scripts';
 import { environment } from '~/store/environment';
 import { workspace } from '~/store/workspace';
 import { toggleDPLCs as mappingStateToggleDPLCs } from '~/components/mappings/state/toggle-dplcs';
-import { promises } from 'fs';
+import { promises as fs } from 'fs';
 import { extname, basename } from 'path';
 import { uuid } from '~/util/uuid';
 import SaveLoad from './save-load';
 
-const fs = promises;
 const noop = () => {};
 const isASM = (path) => ['.asm', '.s'].includes(extname(path).toLowerCase());
 const sourceAddress = (source, fallback) => {
