@@ -3,7 +3,8 @@
     "scripts": {
         "start": "electron ./static --dev --user-data-dir=.userdata",
         "web": "node -e \"require('./development/build')()\" -- --dev",
-        "test": "npx playwright test"
+        "test": "npx playwright test",
+        "test:headless": "xvfb-run -a npx playwright test"
     },
     "devDependencies": {
         "@playwright/test": "^1.61.1",
