@@ -140,24 +140,20 @@ export function createObjectIO(obj, options = {}) {
                         throw new Error('Can only save art at offset 0');
                     }
                     const bank = environment.art[i];
-                    if (!bank) {
-                        throw new Error(
-                            `${source.path} is not loaded, so there is no art to save for it`,
-                        );
-                    }
                     return {
                         source,
                         path: workspace.fuzzyAbsolutePath(source.path),
-                        tiles: toJS(bank.tiles),
+                        tiles: bank ? toJS(bank.tiles) : [],
+                        loaded: !!bank,
                     };
                 });
 
             const byPath = new Map();
             for (const write of writes) {
                 const seen = byPath.get(write.path);
-                if (!seen) {
+                if (!seen || !seen.loaded) {
                     byPath.set(write.path, write);
-                } else if (!sameTiles(seen.tiles, write.tiles)) {
+                } else if (write.loaded && !sameTiles(seen.tiles, write.tiles)) {
                     throw new Error(
                         `${write.source.path} is loaded into more than one bank and `
                         + 'they no longer hold the same art, so it cannot be saved',
