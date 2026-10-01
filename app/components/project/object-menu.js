@@ -17,7 +17,7 @@ export default function(node) {
         }));
     }
     menu.append(new MenuItem({
-        label: 'copy ' + type,
+        label: 'dupe ' + type,
         click: () => {
             const clone = toJS(node.parent[index]);
             delete clone.uuid;

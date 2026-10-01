@@ -14,6 +14,8 @@ const isASM = (path) => ['.asm', '.s'].includes(extname(path).toLowerCase());
 
 const artExtensions = ['bin', 'unc', 'nem', 'kos', 'kosm', 'kospls', 'kospm', 'comp', 'compx', 'compxm', 'eni', 'sor'];
 
+const asmExtensions = ['asm', 'bin', 's'];
+
 export const FileObject = observer(({ obj, isInProject = false }) => {
     scripts.length; // react to script updates
     const script = obj.format && runScript(obj);
@@ -177,7 +179,7 @@ export const FileObject = observer(({ obj, isInProject = false }) => {
                 accessor="path"
                 absolute={isAbsolute}
                 filtername="Mapping File"
-                filterextensions={['asm', 's', 'bin']}
+                filterextensions={asmExtensions}
             />
             {mappingsASM && (
                 <div className="menu-item">
@@ -239,7 +241,7 @@ export const FileObject = observer(({ obj, isInProject = false }) => {
                                 accessor="path"
                                 absolute={isAbsolute}
                                 filtername="DPLC Mapping File"
-                                filterextensions={['asm', 's', 'bin']}
+                                filterextensions={asmExtensions}
                             />
                             {dplcsASM && (
                                 <div className="menu-item">
