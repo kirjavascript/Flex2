@@ -11,8 +11,6 @@ NEXT
 
     clear undo history when loading an object
 
-    conflict bug (selbi)
-
     change mapping order from the visual editor
 
     find a way to inject tiles part way through the editr

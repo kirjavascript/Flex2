@@ -14,6 +14,7 @@
 - Fix a bug that causes label conflicts
 - Show label name in sprites tab
 - Show update modal when there is a newer release
+- Make Shift+Ctrl+I only work when window is focused
 
 ## [1.5.1]
 
