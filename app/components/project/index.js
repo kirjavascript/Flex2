@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
+import { observable } from 'mobx';
 import { workspace } from '~/store/workspace';
 import { selection } from '~/store/selection';
 import { FileObject } from '~/components/file/file-object';
@@ -24,6 +25,18 @@ function toTree(objects) {
         };
     });
 }
+
+function filterTree(nodes, query) {
+    return nodes.flatMap((node) => {
+        if (node.isDirectory) {
+            const children = filterTree(node.children || [], query);
+            return children.length ? [{ ...node, expanded: true, children }] : [];
+        }
+        return node.name.toLowerCase().includes(query) ? [node] : [];
+    });
+}
+
+const search = observable({ query: '' });
 
 function fromTree(objects) {
     return objects.map((obj) => {
@@ -122,7 +135,11 @@ const Project = observer(() => {
         );
     }
 
-    const tree = toTree(project.objects);
+    const query = search.query.trim().toLowerCase();
+    // the filtered tree is a partial view, so it must never be written back
+    const tree = query
+        ? filterTree(toTree(project.objects), query)
+        : toTree(project.objects);
 
     const node = selection.resolve(project.objects);
 
@@ -138,11 +155,16 @@ const Project = observer(() => {
                         folder
                     </Button>
                 </div>
+                <div className="tree-search">
+                    <Input placeholder="search" store={search} accessor="query" />
+                </div>
                 <SortableTree
                     treeData={tree}
-                    onChange={(tree) => project.objects.replace(fromTree(tree))}
+                    onChange={(tree) => {
+                        if (!query) project.objects.replace(fromTree(tree));
+                    }}
                     theme={theme}
-                    canDrag={({ node }) => !node.dragDisabled}
+                    canDrag={({ node }) => !query && !node.dragDisabled}
                     canDrop={({ nextParent }) =>
                         (!nextParent || nextParent.isDirectory)
                     }

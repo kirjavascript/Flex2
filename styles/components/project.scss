@@ -61,6 +61,14 @@
         min-width: 215px;
     }
 
+    .tree-search {
+        padding: 0 10px 10px 10px;
+        input {
+            width: 100%;
+            box-sizing: border-box;
+        }
+    }
+
     .config {
         width: 100%;
         max-width: 1000px;
