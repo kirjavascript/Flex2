@@ -11,11 +11,11 @@ NEXT
 
     TODO:
         review git checkout photoshop-better-boxing -- .
-        check DPLC metadata issue
+            check DPLC metadata issue
+            maybe remove auto palette
 
         when every metadata has a certain entry, on new sprite guess what it should be
 
-        maybe remove auto palette
 
     clear undo history when loading an object
 
