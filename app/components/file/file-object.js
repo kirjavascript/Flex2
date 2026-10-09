@@ -72,7 +72,6 @@ export const FileObject = observer(({ obj, isInProject = false }) => {
                     options={compressionList}
                     store={obj.art}
                     accessor="compression"
-                    wheel={false}
                 />
             </div>
             {!isInProject &&
@@ -151,7 +150,6 @@ export const FileObject = observer(({ obj, isInProject = false }) => {
                                     options={compressionList}
                                     store={source}
                                     accessor="compression"
-                                    wheel={false}
                                 />
                             </div>
                             <FileInput

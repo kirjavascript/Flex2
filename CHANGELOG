@@ -9,10 +9,11 @@
 - Improve recent project listing UI
 - Drop an image in the mappings area to import as spritesheet
 - Add more valid file extensions for art
-- Make all error text selectable
 - Show label name in sprites tab
 - Show update modal when there is a newer release
+- Make all error text selectable
 - Make Shift+Ctrl+I only work when window is focused
+- Make Compression dropdowns wheel-scrollable
 - Fix some alpha channel behaviour when importing
 - Fix a bug that causes label conflicts
 - Fix an issue where you couldn't save with empty art

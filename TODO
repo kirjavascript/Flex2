@@ -9,17 +9,25 @@
 NEXT
     make the buttons look more clickable
 
+    TODO:
+        review git checkout photoshop-better-boxing -- .
+        check DPLC metadata issue
+
+        when every metadata has a certain entry, on new sprite guess what it should be
+
+        maybe remove auto palette
+
     clear undo history when loading an object
 
     change mapping order from the visual editor
 
-    find a way to inject tiles part way through the editr
+    find a way to inject tiles part way through the art (shift everything after)
 
     allow specifying per-sprite canvas size, show grid when importing
 
     put each load type in boxes, rename to LOAD ALL, make the dropzone target the whole box?
 
-    key remapping
+    settings (& key remapping) tab
 
     highlighing tiles with more than one art source
 
@@ -50,5 +58,4 @@ no projects
 ==
 select multiple sprites at once to reorder
 copy / paste mappings
-time travel for undo/redo
 import palette from spritesheet https://yarnpkg.com/en/package/node-vibrant
