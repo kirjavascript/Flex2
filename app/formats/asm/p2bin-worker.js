@@ -1,6 +1,6 @@
 import * as Comlink from 'comlink';
 
-function binary(pFile, { messages }) {
+function binary(pFile) {
     return new Promise((resolve, reject) => {
         self.Module = {
             locateFile: url => `../wasm/${url}`,
@@ -15,11 +15,8 @@ function binary(pFile, { messages }) {
                 });
             },
             onAbort: (e) => reject(new Error('p2bin aborted: ' + e)),
-            preInit: () => {
-                FS.writeFile('p2bin.msg', messages.p2binmsg);
-                FS.writeFile('ioerrs.msg', messages.ioerrsmsg);
-                FS.writeFile('cmdarg.msg', messages.cmdargmsg);
-                FS.writeFile('tools.msg', messages.toolsmsg);
+            // memory only exists once the wasm is instantiated, so not preInit
+            preRun: () => {
                 FS.writeFile('data.p', pFile);
             },
             postRun: () => {

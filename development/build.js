@@ -54,7 +54,6 @@ module.exports = ({ mainWindow } = {}) => {
             loader: {
                 '.js': 'jsx',
                 '.md': 'text',
-                '.msg': 'binary',
             },
         })
         .catch(() => {

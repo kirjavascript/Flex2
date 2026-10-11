@@ -2,7 +2,7 @@ import * as Comlink from 'comlink';
 
 const errorList = [];
 
-function assemble(code, { messages, filename }) {
+function assemble(code, { filename }) {
     return new Promise((resolve, reject) => {
         self.Module = {
             locateFile: url => `../wasm/${url}`,
@@ -14,10 +14,8 @@ function assemble(code, { messages, filename }) {
                 errorList.push(text);
             },
             onAbort: (e) => reject(new Error('asl aborted: ' + e)),
-            preInit: () => {
-                FS.writeFile('as.msg', messages.asmsg);
-                FS.writeFile('cmdarg.msg', messages.cmdargmsg);
-                FS.writeFile('ioerrs.msg', messages.ioerrsmsg);
+            // memory only exists once the wasm is instantiated, so not preInit
+            preRun: () => {
                 FS.writeFile(filename, code);
             },
             postRun: () => handleResult(resolve, reject, code),

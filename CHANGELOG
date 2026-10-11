@@ -22,6 +22,7 @@
 - Fix an issue where you couldn't save with empty art
 - Fix metadata edits being lost on imported sprites
 - Fix Puyo Puyo DPLC support
+- Update AS to 1.42 Bld 313
 
 ## [1.5.1]
 

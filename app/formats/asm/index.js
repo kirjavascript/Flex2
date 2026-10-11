@@ -1,24 +1,5 @@
 import * as Comlink from 'comlink';
 
-import asmsg from './messages/as.msg';
-import ioerrsmsg from './messages/ioerrs.msg';
-import cmdargmsg from './messages/cmdarg.msg';
-import p2binmsg from './messages/p2bin.msg';
-import toolsmsg from './messages/tools.msg';
-
-const asMessages = {
-    asmsg,
-    ioerrsmsg,
-    cmdargmsg,
-};
-
-const p2binMessages = {
-    p2binmsg,
-    ioerrsmsg,
-    cmdargmsg,
-    toolsmsg,
-};
-
 function atLabels(code) {
     const labels = /^@[a-zA-Z0-9_$]+\s*:/gm;
 
@@ -41,10 +22,7 @@ export async function assemble(
     const aslWorker = new Worker('bundles/asl-worker.js');
     const asl = Comlink.wrap(aslWorker);
 
-    const result = await asl.assemble(atLabels(code), {
-        messages: asMessages,
-        filename,
-    });
+    const result = await asl.assemble(atLabels(code), { filename });
     aslWorker.terminate();
 
     const pFile = result.binary || result;
@@ -52,9 +30,7 @@ export async function assemble(
 
     const p2binWorker = new Worker('bundles/p2bin-worker.js');
     const p2bin = Comlink.wrap(p2binWorker);
-    const bin = await p2bin.binary(pFile, {
-        messages: p2binMessages,
-    });
+    const bin = await p2bin.binary(pFile);
     p2binWorker.terminate();
 
     return { buffer: bin, symbols };
