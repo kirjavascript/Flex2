@@ -6,6 +6,7 @@ import {
 } from 'react-sortable-hoc';
 import arrayMove from 'array-move';
 import { mappingState } from './state';
+import { prepareMetadataFill } from './state/fill-metadata';
 import { environment } from '~/store/environment';
 import { observer } from 'mobx-react';
 import { Select, Input, Item } from '~/ui';
@@ -372,8 +373,9 @@ export const RawEditor = observer(
 
         addNewMapping = () => {
             const {
-                currentSprite: { mappings },
+                currentSprite: { mappings, index },
             } = environment;
+            const fillMetadata = prepareMetadataFill();
             mappings.push({
                 art: 0,
                 priority: false,
@@ -386,6 +388,7 @@ export const RawEditor = observer(
                 palette: 0,
                 metadata: {},
             });
+            fillMetadata(index);
         };
 
         onSortEndDPLC = ({ oldIndex, newIndex }) => {
@@ -397,12 +400,14 @@ export const RawEditor = observer(
 
         addNewDPLC = () => {
             const {
-                currentSprite: { dplcs },
+                currentSprite: { dplcs, index },
             } = environment;
+            const fillMetadata = prepareMetadataFill();
             dplcs.push({
                 art: 0,
                 size: 1,
             });
+            fillMetadata(index);
         };
 
         render() {

@@ -1,6 +1,8 @@
 import { environment } from '~/store/environment';
 import { getCenter } from '../mappings/state/bounds';
 import { concatDPLCs } from '../mappings/state/concat-dplcs';
+import { prepareMetadataFill } from '../mappings/state/fill-metadata';
+import { dplcOptions } from '../mappings/state/dplc-options';
 
 function readTile(ctx, x, y, palette) {
     const tile = ctx.getImageData(x, y, 8, 8);
@@ -31,8 +33,10 @@ export function importSprite(ctx, newMappings, paletteLine) {
         palettesRGB,
         mappings,
         dplcs,
+        spriteMetadata,
         config: { currentSprite, dplcsEnabled },
     } = environment;
+    const fillMetadata = prepareMetadataFill();
 
     const shiftedLine = (paletteLine + environment.config.artPaletteLine) % 4;
     const palette = palettesRGB[shiftedLine];
@@ -80,7 +84,7 @@ export function importSprite(ctx, newMappings, paletteLine) {
     });
 
     if (dplcsEnabled) {
-        dplcs.push(concatDPLCs(newDPLCsList));
+        dplcs.push(concatDPLCs(newDPLCsList, dplcOptions()));
     }
     const center = getCenter(newMappingsList);
     mappings.push(newMappingsList.map((mapping) => {
@@ -88,6 +92,11 @@ export function importSprite(ctx, newMappings, paletteLine) {
         mapping.top -= center.y;
         return mapping;
     }));
+    // without a real entry the sprite gets a throwaway {} and edits are lost
+    while (spriteMetadata.length < mappings.length) {
+        spriteMetadata.push({});
+    }
+    fillMetadata(mappings.length - 1);
     environment.config.currentSprite = mappings.length -1;
 
 }

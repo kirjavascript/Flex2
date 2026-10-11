@@ -100,6 +100,10 @@ class MappingState {
             toggleAutodismiss: action,
             topLeftAlphaPixel: observable,
             toggleTopLeftAlphaPixel: action,
+            autofillMetadata: observable,
+            toggleAutofillMetadata: action,
+            uncappedDPLCs: observable,
+            toggleUncappedDPLCs: action,
             placeNewMapping: action,
             activeMappings: computed,
             hasActive: computed,
@@ -257,6 +261,18 @@ class MappingState {
         this.topLeftAlphaPixel = !this.topLeftAlphaPixel;
     };
 
+    autofillMetadata = true;
+
+    toggleAutofillMetadata = () => {
+        this.autofillMetadata = !this.autofillMetadata;
+    };
+
+    uncappedDPLCs = true;
+
+    toggleUncappedDPLCs = () => {
+        this.uncappedDPLCs = !this.uncappedDPLCs;
+    };
+
     placeNewMapping = placeNewMapping;
 
     // active mappings
@@ -305,6 +321,8 @@ storage(mappingState, 'mapping-state', [
     'drawPalette',
     'autodismiss',
     'topLeftAlphaPixel',
+    'autofillMetadata',
+    'uncappedDPLCs',
     'globalScale',
 ]);
 

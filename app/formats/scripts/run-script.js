@@ -2,6 +2,7 @@ import { loadScript, scriptDir } from './file';
 import { writeASM, sanitizeLabel, makeFrameLabels } from '~/formats/scripts';
 import { logger } from './debug';
 import { makeOffsetTable } from './offset-table';
+import { compatible, isEmpty } from '~/components/mappings/state/concat-dplcs';
 import { toJS } from 'mobx';
 import fs from 'fs';
 import { join } from 'path';
@@ -306,7 +307,8 @@ export default catchFunc((obj) => {
     const writeMappingsRaw = createWriter(mappingArgs[0]);
     const writeDPLCsRaw = createWriter(dplcArgs[0]);
 
-    function readMappings(buffer, symbols, dplcBuffer, dplcSymbols) {
+    // sources holds the ASM text of each file, or null for binaries
+    function readMappings(buffer, symbols, dplcBuffer, dplcSymbols, sources = {}) {
         const mappings = readMappingsRaw(buffer, symbols);
         if (mappings.error) return mappings;
 
@@ -330,23 +332,88 @@ export default catchFunc((obj) => {
                 mappings: mappings.sprites,
                 dplcs: dplcs?.sprites,
                 spriteMetadata: mappings.spriteMetadata,
+                sources: { mappings: sources.mappings || null, dplcs: sources.dplcs || null },
             });
         }
 
         return { mappings, dplcs };
     }
 
+    // the editor doesn't cap DPLC entries, so each format fits them to its own
+    // limits on save, declared as dplcs(sections, { maxSize, maxEntries,
+    // mergeContiguous }). maxSize may be a function when it depends on config.
+    // oversized entries are split; adjacent ones with agreeing metadata are
+    // only merged when a frame has more entries than the format allows, or
+    // always with mergeContiguous, so untouched data round-trips otherwise
+    const {
+        maxSize: maxSizeArg = 16,
+        maxEntries = Infinity,
+        mergeContiguous = false,
+    } = dplcArgs[1] || {};
+    const normaliseDPLCs = catchFunc((dplcsData) => {
+        const maxSize = typeof maxSizeArg === 'function' ? maxSizeArg() : maxSizeArg;
+        return toJS(dplcsData).map((entries, spriteIndex) => normaliseFrame(entries, spriteIndex, maxSize));
+    });
+
+    function normaliseFrame(entries, spriteIndex, maxSize) {
+        if (mergeContiguous || entries.length > maxEntries) {
+            entries = entries.reduce((acc, entry) => {
+                const last = acc[acc.length - 1];
+                if (last && last.art + last.size === entry.art && compatible(last.metadata, entry.metadata)) {
+                    last.size += entry.size;
+                    if (isEmpty(last.metadata) && !isEmpty(entry.metadata)) {
+                        last.metadata = { ...entry.metadata };
+                    }
+                } else {
+                    acc.push({ ...entry });
+                }
+                return acc;
+            }, []);
+        }
+        const split = entries.flatMap((entry) => {
+            if (entry.size <= maxSize) return [entry];
+            const chunks = [];
+            for (let offset = 0; offset < entry.size; offset += maxSize) {
+                chunks.push({
+                    ...entry,
+                    art: entry.art + offset,
+                    size: Math.min(maxSize, entry.size - offset),
+                    ...(entry.metadata && { metadata: { ...entry.metadata } }),
+                });
+            }
+            return chunks;
+        });
+        if (split.length > maxEntries) {
+            const sprite = spriteIndex.toString(16).toUpperCase();
+            throw new Error(
+                `Sprite 0x${sprite} needs ${split.length} DPLC entries but this format allows ${maxEntries} per frame (its tiles must be contiguous in the art and share metadata)`,
+            );
+        }
+        return split;
+    }
+
     function writeMappings(mappingsData, dplcsData, spriteMetadata, environment) {
-        const mappings = writeMappingsRaw(mappingsData, spriteMetadata, environment);
+        let dplcSprites;
+        if (dplcsData) {
+            dplcSprites = normaliseDPLCs(dplcsData);
+            if (dplcSprites.error) return dplcSprites;
+        }
+
+        // mapping writers that read the DPLCs must see what actually gets written
+        const env = dplcSprites && environment
+            ? Object.create(environment, { dplcs: { value: dplcSprites } })
+            : environment;
+
+        const mappings = writeMappingsRaw(mappingsData, spriteMetadata, env);
         if (mappings.error) return mappings;
 
         let dplcs;
-        if (dplcsData) {
-            dplcs = writeDPLCsRaw(dplcsData, spriteMetadata, environment);
+        if (dplcSprites) {
+            dplcs = writeDPLCsRaw(dplcSprites, spriteMetadata, env);
             if (dplcs.error) return dplcs;
         }
 
-        return { mappings, dplcs };
+        return { mappings, dplcs, dplcSprites };
     }
 
     const exports = {

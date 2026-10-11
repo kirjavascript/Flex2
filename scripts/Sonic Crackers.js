@@ -62,25 +62,29 @@ dplcs([
                 mapping.art = read(12);
                 mapping.metadata.unknown = read(4);
                 mapping.metadata.dmaDst = read(dc.w);
-                const plcEnd = read(dc.w);
-                mapping.metadata.plcEnd = plcEnd;
-                if (plcEnd === 0xFFFF) return endFrame;
+                // 0xFFFF ends the frame, anything else continues it
+                if (read(dc.w) === 0xFFFF) return endFrame;
             });
         },
-        ({ environment }) => {
+        ({ environment, sprite }) => {
             const artBase = environment?.spriteMetadata?.[0]?.artBase || 0;
-            return ({ mapping }) => {
+            return ({ mapping }, frameIndex) => {
+                const metadata = mapping.metadata || {};
                 write(dc.w, swapBytes(mapping.size * 0x10));
-                write(dc.w, mapping.metadata.dmaSrc || 0);
+                write(dc.w, metadata.dmaSrc || 0);
                 write(12, mapping.art + artBase);
-                write(4, mapping.metadata.unknown || 0);
-                write(dc.w, mapping.metadata.dmaDst || 0);
-                write(dc.w, mapping.metadata.plcEnd || 0);
-                if (mapping.metadata.plcEnd === 0xFFFF) return endFrame;
+                write(4, metadata.unknown || 0);
+                write(dc.w, metadata.dmaDst || 0);
+                write(dc.w, frameIndex === sprite.length - 1 ? 0xFFFF : 0);
             };
         },
     ],
-]);
+], {
+    maxSize: 0xFFF,
+    // contiguous sections with the same DMA addresses would overwrite each
+    // other in VRAM, so they are written as one
+    mergeContiguous: true,
+});
 
 function buildVramRegions(dplcPieces) {
     const regions = [];

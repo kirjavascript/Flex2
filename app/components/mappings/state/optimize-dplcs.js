@@ -3,6 +3,7 @@ import range from 'lodash/range';
 import { arrayIndexOf } from '~/util/array-index-of';
 
 import { concatDPLCs } from './concat-dplcs';
+import { dplcOptions } from './dplc-options';
 
 export function optimizeCurrentDPLCs() {
     const { currentSprite: { mappings, dplcs }, config } = environment;
@@ -47,15 +48,12 @@ export function optimizeDPLCs(mappings, dplcs) {
     });
 
 
-    const newDPLCEntries = concatDPLCs(newDPLCs.map((d, i) => ({art: d, size: 1})));
-
-    // restore metadata from original DPLCs by looking up the first tile in each new entry
-    newDPLCEntries.forEach((entry) => {
-        const originalIndex = tiles.indexOf(entry.art);
-        if (originalIndex !== -1 && tileMetadata[originalIndex]) {
-            entry.metadata = {...tileMetadata[originalIndex]};
-        }
-    });
+    // each tile keeps the metadata of the entry it came from
+    const newDPLCEntries = concatDPLCs(newDPLCs.map((art) => ({
+        art,
+        size: 1,
+        metadata: tileMetadata[tiles.indexOf(art)],
+    })), dplcOptions());
 
     dplcs.replace(newDPLCEntries);
 }

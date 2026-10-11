@@ -93,6 +93,22 @@ export const Settings = observer(() => {
                         onChange={mappingState.toggleAutodismiss}
                     />
                 </div>
+
+                <div className="setting-row">
+                    <span>Autofill metadata on new mappings and DPLCs</span>
+                    <Checkbox
+                        checked={mappingState.autofillMetadata}
+                        onChange={mappingState.toggleAutofillMetadata}
+                    />
+                </div>
+
+                <div className="setting-row">
+                    <span>Uncapped DPLC entries, kept apart by metadata (fitted to the format's limit on save; off caps at 16 tiles)</span>
+                    <Checkbox
+                        checked={mappingState.uncappedDPLCs}
+                        onChange={mappingState.toggleUncappedDPLCs}
+                    />
+                </div>
                 <ScaleSlider />
             </div>
 

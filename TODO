@@ -14,7 +14,9 @@ NEXT
             check DPLC metadata issue
             maybe remove auto palette
 
-        when every metadata has a certain entry, on new sprite guess what it should be
+    update ASL
+
+    settings (& key remapping) tab
 
 
     clear undo history when loading an object
@@ -27,7 +29,6 @@ NEXT
 
     put each load type in boxes, rename to LOAD ALL, make the dropzone target the whole box?
 
-    settings (& key remapping) tab
 
     highlighing tiles with more than one art source
 

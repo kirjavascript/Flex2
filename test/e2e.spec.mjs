@@ -959,6 +959,325 @@ test.describe('Extra art sources', () => {
     });
 });
 
+test.describe('DPLC entry limits', () => {
+
+    const crackersSonic = {
+        format: 'Sonic Crackers.js',
+        mappingsPath: resolve(FIXTURES, 'crackers/maps/Sonic.asm'),
+        dplcsPath: resolve(FIXTURES, 'crackers/maps/PLC_Sonic.asm'),
+        artPath: resolve(FIXTURES, 'crackers/art/Sonic.bin'),
+        artCompression: 'Uncompressed',
+        palettePaths: [{ path: resolve(FIXTURES, 'crackers/palette/Primary-full.bin'), length: 4 }],
+    };
+
+    async function loadObject(page) {
+        await clearEnvironment(page);
+        await clickLoad(page, 'Object');
+        await waitForMappings(page);
+        await waitForTiles(page);
+        await waitForDplcs(page);
+    }
+
+    const setUncapped = (page, value) => page.evaluate((value) => {
+        window.__test__.mappingState.uncappedDPLCs = value;
+    }, value);
+
+    test.afterEach(() => setUncapped(page, true));
+
+    // one 20 tile piece over one DPLC entry
+    function optimiseLongEntry(page) {
+        return page.evaluate(() => {
+            const { environment, mappingState, toJS } = window.__test__;
+            environment.config.dplcsEnabled = true;
+            environment.mappings.replace([[{
+                art: 0, width: 4, height: 4, left: 0, top: 0,
+                priority: false, vflip: false, hflip: false, palette: 0,
+            }, {
+                art: 16, width: 4, height: 1, left: 0, top: 32,
+                priority: false, vflip: false, hflip: false, palette: 0,
+            }]]);
+            environment.dplcs.replace([[{ art: 100, size: 20 }]]);
+            environment.config.currentSprite = 0;
+            mappingState.optimizeCurrentDPLCs();
+            return toJS(environment.dplcs[0]);
+        });
+    }
+
+    test('optimising caps entries at 16 tiles when disabled', async () => {
+        await setUncapped(page, false);
+        expect(await optimiseLongEntry(page)).toEqual([
+            { art: 100, size: 16 },
+            { art: 116, size: 4 },
+        ]);
+    });
+
+    test('optimising leaves entries uncapped by default', async () => {
+        expect(await optimiseLongEntry(page)).toEqual([
+            { art: 100, size: 20 },
+        ]);
+    });
+
+    test('a Crackers frame over 16 tiles stays one entry', async () => {
+        await setFileObject(page, crackersSonic);
+        await loadObject(page);
+
+        const result = await page.evaluate(() => {
+            const { environment, mappingState, toJS } = window.__test__;
+            const [entry] = toJS(environment.dplcs[0]);
+            environment.dplcs[0].replace([
+                { ...entry, size: 16 },
+                { ...entry, art: entry.art + 16, size: entry.size - 16 },
+            ]);
+            environment.config.currentSprite = 0;
+            mappingState.optimizeCurrentDPLCs();
+            return { entry, after: toJS(environment.dplcs[0]) };
+        });
+        expect(result.entry.size).toBeGreaterThan(16);
+        expect(result.after).toEqual([result.entry]);
+    });
+
+    const optimiseMixedMetadata = (page) => page.evaluate(() => {
+        const { environment, mappingState, toJS } = window.__test__;
+        const piece = (art, width) => ({
+            art, width, height: 1, left: 0, top: 0,
+            priority: false, vflip: false, hflip: false, palette: 0,
+        });
+        environment.config.dplcsEnabled = true;
+        environment.mappings.replace([[piece(0, 2), piece(2, 1), piece(3, 1)]]);
+        environment.dplcs.replace([[
+            { art: 10, size: 2, metadata: { k: 1 } },
+            { art: 12, size: 1, metadata: { k: 2 } },
+            { art: 13, size: 1 },
+        ]]);
+        environment.config.currentSprite = 0;
+        mappingState.optimizeCurrentDPLCs();
+        return toJS(environment.dplcs[0]);
+    });
+
+    test('optimising merges regardless of metadata when disabled', async () => {
+        await setUncapped(page, false);
+        expect(await optimiseMixedMetadata(page)).toEqual([
+            { art: 10, size: 4, metadata: { k: 1 } },
+        ]);
+    });
+
+    test('optimising keeps entries with different metadata apart by default', async () => {
+        // contiguous tiles only join when the metadata agrees, and an entry
+        // without any takes on its neighbour's
+        expect(await optimiseMixedMetadata(page)).toEqual([
+            { art: 10, size: 2, metadata: { k: 1 } },
+            { art: 12, size: 2, metadata: { k: 2 } },
+        ]);
+    });
+
+    test('Crackers writes a frame split at 16 tiles as one section', async () => {
+        const tmp = mkdtempSync(join(tmpdir(), 'flex2-test-'));
+        try {
+            await setUncapped(page, false);
+            await setFileObject(page, crackersSonic);
+            await loadObject(page);
+            const original = await snapshotEnv(page);
+
+            const split = await page.evaluate(() => {
+                const { environment, mappingState, toJS } = window.__test__;
+                environment.config.currentSprite = 0;
+                mappingState.optimizeCurrentDPLCs();
+                return toJS(environment.dplcs[0]);
+            });
+            expect(split.length).toBeGreaterThan(1);
+
+            await setFileObject(page, {
+                ...crackersSonic,
+                mappingsPath: join(tmp, 'map.bin'),
+                dplcsPath: join(tmp, 'dplc.bin'),
+                artPath: join(tmp, 'art.bin'),
+            });
+            await clickSave(page, 'Object');
+            expect(await getErrors(page)).toHaveLength(0);
+            await loadObject(page);
+
+            const reloaded = await snapshotEnv(page);
+            expect(reloaded.dplcs).toEqual(original.dplcs);
+            expect(reloaded.mappings).toEqual(original.mappings);
+        } finally {
+            rmSync(tmp, { recursive: true, force: true });
+        }
+    });
+
+    test('Crackers keeps a frame with several PLC sections', async () => {
+        const tmp = mkdtempSync(join(tmpdir(), 'flex2-test-'));
+        try {
+            await setFileObject(page, crackersSonic);
+            await loadObject(page);
+            const original = await snapshotEnv(page);
+
+            // each section DMAs to its own VRAM address, so they must not be merged
+            const sections = await page.evaluate(() => {
+                const { environment, toJS } = window.__test__;
+                const [entry] = toJS(environment.dplcs[0]);
+                const sections = [
+                    { ...entry, size: 16 },
+                    {
+                        ...entry,
+                        art: entry.art + 16,
+                        size: entry.size - 16,
+                        metadata: { ...entry.metadata, dmaDst: entry.metadata.dmaDst + 16 * 0x20 },
+                    },
+                ];
+                environment.dplcs[0].replace(sections);
+                return sections;
+            });
+
+            await setFileObject(page, {
+                ...crackersSonic,
+                mappingsPath: join(tmp, 'map.bin'),
+                dplcsPath: join(tmp, 'dplc.bin'),
+                artPath: join(tmp, 'art.bin'),
+            });
+            await clickSave(page, 'Object');
+            expect(await getErrors(page)).toHaveLength(0);
+            await loadObject(page);
+
+            const reloaded = await snapshotEnv(page);
+            expect(reloaded.dplcs[0]).toEqual(sections);
+            expect(reloaded.dplcs.slice(1)).toEqual(original.dplcs.slice(1));
+            expect(reloaded.mappings).toEqual(original.mappings);
+        } finally {
+            rmSync(tmp, { recursive: true, force: true });
+        }
+    });
+
+    for (const ext of ['bin', 'asm']) {
+        test(`Sonic 2 splits an oversized entry on ${ext} save`, async () => {
+            const tmp = mkdtempSync(join(tmpdir(), 'flex2-test-'));
+            const sonic2 = {
+                format: 'Sonic 2.js',
+                mappingsPath: resolve(FIXTURES, 's2/maps/Sonic.asm'),
+                dplcsPath: resolve(FIXTURES, 's2/dplc/Sonic.asm'),
+                artPath: resolve(FIXTURES, 's2/art/uncompressed/Sonic.bin'),
+                artCompression: 'Uncompressed',
+                palettePaths: [{ path: resolve(FIXTURES, 's2/palette/SonicAndTails-full.bin'), length: 4 }],
+            };
+            try {
+                await setFileObject(page, sonic2);
+                await loadObject(page);
+                const original = await snapshotEnv(page);
+                const index = original.dplcs.findIndex((entries) => entries.length);
+                const [first, ...rest] = original.dplcs[index];
+
+                await page.evaluate(({ index, first }) => {
+                    window.__test__.environment.dplcs[index][0].size = first.size + 16;
+                }, { index, first });
+
+                await setFileObject(page, {
+                    ...sonic2,
+                    mappingsPath: join(tmp, `map.${ext}`),
+                    dplcsPath: join(tmp, `dplc.${ext}`),
+                    artPath: join(tmp, 'art.bin'),
+                });
+                await clickSave(page, 'Object');
+                expect(await getErrors(page)).toHaveLength(0);
+                await loadObject(page);
+
+                const reloaded = await snapshotEnv(page);
+                expect(reloaded.dplcs[index]).toEqual([
+                    { ...first, size: 16 },
+                    { ...first, art: first.art + 16, size: first.size },
+                    ...rest,
+                ]);
+                const others = (dplcs) => dplcs.filter((_, i) => i !== index);
+                expect(others(reloaded.dplcs)).toEqual(others(original.dplcs));
+                expect(reloaded.mappings).toEqual(original.mappings);
+            } finally {
+                rmSync(tmp, { recursive: true, force: true });
+            }
+        });
+    }
+});
+
+test.describe('Puyo Puyo', () => {
+
+    // the DPLC style from the Mean Bean Machine disassembly: each entry names
+    // the art the game loads, and the slot Flex2 shows
+    const mappingsASM = `Map_Test:\tmappingsTable
+${[0, 1, 2, 3, 4].map((i) => `\tmappingsTableEntry.l\tFrame_${i}`).join('\n')}
+${[0, 1, 2, 3, 4].map((i) => `
+Frame_${i}:\tspriteHeader
+\tspritePiece\t0, 0, 2, 2, 0, 0, 0, 0, 0, 0
+Frame_${i}_End`).join('\n')}
+\teven
+`;
+    const dplcsASM = `DPLC_Test:
+\t; Offset, ID
+\tdplcEntry\tArtUnc_Test_0, 0
+\tdplcEntry\tArtUnc_Test_2, 2\t
+\tdplcEntry\tArtNem_Test, 1 ; comment
+\tdplcEntry\t1
+\tdc.l\t$40
+\teven
+`;
+
+    test('keeps DPLC art labels through an ASM save', async () => {
+        const tmp = mkdtempSync(join(tmpdir(), 'flex2-test-'));
+        try {
+            writeFileSync(join(tmp, 'map.asm'), mappingsASM);
+            writeFileSync(join(tmp, 'dplc.asm'), dplcsASM);
+            writeFileSync(join(tmp, 'art.bin'), Buffer.alloc(16 * 0x20, 0x12));
+            const puyo = {
+                format: 'Puyo Puyo.js',
+                mappingsPath: join(tmp, 'map.asm'),
+                dplcsPath: join(tmp, 'dplc.asm'),
+                artPath: join(tmp, 'art.bin'),
+                config: { dplcTiles: 4 },
+            };
+            await setFileObject(page, puyo);
+            await clearEnvironment(page);
+            await clickLoad(page, 'Object');
+            await waitForMappings(page);
+            await waitForTiles(page);
+            await waitForDplcs(page);
+            expect(await getErrors(page)).toHaveLength(0);
+
+            const original = await snapshotEnv(page);
+            expect(original.dplcs).toEqual([
+                [{ art: 0, size: 4, metadata: { artLabel: 'ArtUnc_Test_0' } }],
+                [{ art: 8, size: 4, metadata: { artLabel: 'ArtUnc_Test_2' } }],
+                [{ art: 4, size: 4, metadata: { artLabel: 'ArtNem_Test' } }],
+                [{ art: 4, size: 4, metadata: {} }],
+                [{ art: 2, size: 4, metadata: {} }],
+            ]);
+
+            await setFileObject(page, {
+                ...puyo,
+                mappingsPath: join(tmp, 'map2.asm'),
+                dplcsPath: join(tmp, 'dplc2.asm'),
+            });
+            await clickSave(page, 'Object');
+            expect(await getErrors(page)).toHaveLength(0);
+
+            const saved = readFileSync(join(tmp, 'dplc2.asm'), 'utf8');
+            expect(saved).toContain('\tdplcEntry\tArtUnc_Test_0, 0\n');
+            expect(saved).toContain('\tdplcEntry\tArtUnc_Test_2, 2\n');
+            expect(saved).toContain('\tdplcEntry\tArtNem_Test, 1\n');
+            // a missing label is named after the others
+            expect(saved).toContain('\tdplcEntry\tArtUnc_Test_1, 1\n');
+            expect(saved).toMatch(/\tdc\.l\t\$0*40\n/);
+
+            await clearEnvironment(page);
+            await clickLoad(page, 'Object');
+            await waitForMappings(page);
+            await waitForDplcs(page);
+            const reloaded = await snapshotEnv(page);
+            expect(reloaded.mappings).toEqual(original.mappings);
+            expect(reloaded.dplcs).toEqual(original.dplcs.map((entries, i) => i === 3
+                ? [{ ...entries[0], metadata: { artLabel: 'ArtUnc_Test_1' } }]
+                : entries));
+        } finally {
+            rmSync(tmp, { recursive: true, force: true });
+        }
+    });
+});
+
 test.describe('Compression', () => {
     for (const [name, file, compression, snapName] of [
         ['Nemesis (S1)', resolve(FIXTURES, 's1/art/Rings.nem'), 'Nemesis', 'compression-nemesis-s1'],
