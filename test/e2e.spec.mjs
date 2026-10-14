@@ -1195,6 +1195,33 @@ test.describe('DPLC entry limits', () => {
     }
 });
 
+test.describe('Autofill', () => {
+    const place = (page, autofill) => page.evaluate((autofill) => {
+        const { environment, mappingState, toJS } = window.__test__;
+        mappingState.autofillMetadata = autofill;
+        environment.config.dplcsEnabled = false;
+        const piece = (palette, priority) => ({
+            art: 0, width: 1, height: 1, left: 0, top: 0,
+            priority, vflip: false, hflip: false, palette,
+        });
+        environment.mappings.replace([[piece(0, false), piece(2, true)]]);
+        environment.config.currentSprite = 0;
+        mappingState.newMapping.piece = piece(0, false);
+        mappingState.placeNewMapping();
+        mappingState.autofillMetadata = true;
+        const [, , placed] = toJS(environment.mappings[0]);
+        return { palette: placed.palette, priority: placed.priority };
+    }, autofill);
+
+    test('a placed piece takes the palette and priority of the previous one', async () => {
+        expect(await place(page, true)).toEqual({ palette: 2, priority: true });
+    });
+
+    test('palette and priority are left alone when autofill is off', async () => {
+        expect(await place(page, false)).toEqual({ palette: 0, priority: false });
+    });
+});
+
 test.describe('Puyo Puyo', () => {
 
     // the DPLC style from the Mean Bean Machine disassembly: each entry names

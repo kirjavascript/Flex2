@@ -89,8 +89,20 @@ export function prepareMetadataFill() {
     const { mappings, dplcs, config: { dplcsEnabled } } = environment;
     const pools = [[mappings, keysByIndex(mappings), allKeys(mappings)]];
     if (dplcsEnabled) pools.push([dplcs, keysByIndex(dplcs), allKeys(dplcs)]);
+    const lengths = mappings.map((sprite) => sprite.length);
 
     return (spriteIndex) => {
+        // new pieces take the palette and priority of the piece before them
+        const sprite = mappings[spriteIndex] || [];
+        const before = lengths[spriteIndex] || 0;
+        const source = sprite[before - 1];
+        if (source) {
+            sprite.slice(before).forEach((piece) => {
+                piece.palette = source.palette;
+                piece.priority = source.priority;
+            });
+        }
+
         pools.forEach(([sprites, byIndex, everywhere]) =>
             fillSprite(sprites, spriteIndex, byIndex, everywhere));
     };

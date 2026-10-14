@@ -95,7 +95,7 @@ export const Settings = observer(() => {
                 </div>
 
                 <div className="setting-row">
-                    <span>Autofill metadata on new mappings and DPLCs</span>
+                    <span>Autofill metadata, palette and priority on new mappings and DPLCs</span>
                     <Checkbox
                         checked={mappingState.autofillMetadata}
                         onChange={mappingState.toggleAutofillMetadata}
