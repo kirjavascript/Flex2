@@ -11,6 +11,7 @@ import { Art } from '~/components/art/index';
 import { Sprites } from '~/components/sprites';
 import { Mappings } from '~/components/mappings';
 import { RawEditor } from '~/components/mappings/raw-editor';
+import { Settings } from '~/components/settings';
 import { Documentation } from '~/components/documentation';
 import { UpdateNotification } from '~/components/update';
 
@@ -47,6 +48,8 @@ export class Layout extends Component {
                         return <RawEditor node={node} />;
                     } else if (component === 'documentation') {
                         return <Documentation node={node} />;
+                    } else if (component === 'settings') {
+                        return <Settings node={node} />;
                     }
 
                     if (component === 'sub') {

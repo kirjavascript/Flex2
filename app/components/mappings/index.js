@@ -15,7 +15,6 @@ import { Rotate } from './rotate';
 import { DragSelect, attachDragSelectToNode } from './drag-select';
 import { attachDragMoveToNode } from './drag-move';
 import { Commands } from './commands';
-import { Settings } from './settings';
 import { importState } from '~/components/import/state';
 
 export const Mappings = observer(class Mappings extends Component {
@@ -147,7 +146,6 @@ export const Mappings = observer(class Mappings extends Component {
                 />
 
                 <Rotate />
-                <Settings />
 
                 <Commands />
             </div>

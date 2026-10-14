@@ -1,18 +1,15 @@
 .mapping-settings {
-    position: fixed;
-    z-index: 2;
-    width: 400px;
-    .settings {
-        padding: 20px 0;
-    }
+    padding: 40px;
+    max-width: 700px;
+    margin: 0 auto;
 
     .setting-row {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        padding: 2px 5px;
-        margin: 4px 0;
-        font-size: 11px;
+        padding: 4px 5px;
+        margin: 6px 0;
+        font-size: 14px;
         font-weight: 200;
 
         .slider {
@@ -22,12 +19,12 @@
         }
 
         .render-line {
-            width: 28px;
+            width: 34px;
             text-align: center;
             background: transparent;
             border: 1px solid rgba(white, .2);
             color: inherit;
-            font-size: 11px;
+            font-size: 14px;
             padding: 2px;
             &::-webkit-inner-spin-button {
                 -webkit-appearance: none;

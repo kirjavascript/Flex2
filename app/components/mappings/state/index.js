@@ -90,8 +90,6 @@ class MappingState {
             selectToggle: action,
             rotate: observable,
             toggleRotate: action,
-            settings: observable,
-            toggleSettings: action,
             closeModals: action,
             globalScale: observable,
             newMapping: observable,
@@ -134,7 +132,7 @@ class MappingState {
         );
 
         // ensure only one modal is open at once
-        const modals = ['newMapping', 'rotate', 'settings'];
+        const modals = ['newMapping', 'rotate'];
         modals.forEach(modal => {
             observe(this[modal], value => {
                 if (value.name === 'active' && value.object.active) {
@@ -209,22 +207,11 @@ class MappingState {
         }
     };
 
-    // settings
-
-    settings = {
-        active: false,
-    };
-
-    toggleSettings = () => {
-        this.settings.active = !this.settings.active;
-    };
-
     globalScale = 1;
 
     closeModals = () => {
         this.newMapping.active = false;
         this.rotate.active = false;
-        this.settings.active = false;
     };
 
     // rotate

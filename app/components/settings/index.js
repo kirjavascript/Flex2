@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { webFrame } from 'electron';
 import { observer } from 'mobx-react';
 import { environment } from '~/store/environment';
-import { Modal, Item, Button, Checkbox } from '~/ui';
-import { mappingState } from './state';
+import { Checkbox } from '~/ui';
+import { mappingState } from '~/components/mappings/state';
 
 const ScaleSlider = observer(() => {
     const [draft, setDraft] = useState(null);
@@ -44,18 +44,8 @@ const ScaleSlider = observer(() => {
 });
 
 export const Settings = observer(() => {
-    const { active } = mappingState.settings;
-
     return (
-        <Modal
-            className="mapping-settings"
-            spring={{
-                top: active ? 60 : -100,
-                opacity: active ? 1 : 0,
-            }}
-        >
-            <Item bold>Settings</Item>
-
+        <div className="mapping-settings">
             <div className="settings">
                 <div className="setting-row">
                     <span>Render starting with palette line</span>
@@ -103,7 +93,7 @@ export const Settings = observer(() => {
                 </div>
 
                 <div className="setting-row">
-                    <span>Uncapped DPLC entries, kept apart by metadata (fitted to the format's limit on save; off caps at 16 tiles)</span>
+                    <span>Uncapped DPLC entries (chunked on save; off caps at 16 tiles)</span>
                     <Checkbox
                         checked={mappingState.uncappedDPLCs}
                         onChange={mappingState.toggleUncappedDPLCs}
@@ -111,12 +101,6 @@ export const Settings = observer(() => {
                 </div>
                 <ScaleSlider />
             </div>
-
-            <div className="actions">
-                <Button color="magenta" onClick={mappingState.toggleSettings}>
-                    close
-                </Button>
-            </div>
-        </Modal>
+        </div>
     );
 });

@@ -1195,6 +1195,86 @@ test.describe('DPLC entry limits', () => {
     }
 });
 
+test.describe('Settings tab', () => {
+    const mainTabs = (page) => page.evaluate(() => {
+        const { layout } = JSON.parse(localStorage.getItem('layout') || 'null')
+            || { layout: { children: [] } };
+        const find = (nodes) => nodes.flatMap((n) =>
+            n.children?.some((c) => c.component === 'documentation')
+                ? [n.children.map((c) => c.component)]
+                : find(n.children || []));
+        return find(layout.children)[0];
+    });
+
+    test.afterEach(() => page.locator('.flexlayout__tab_button', { hasText: /^File$/ }).click());
+
+    test('settings live in their own tab', async () => {
+        await page.locator('.flexlayout__tab_button', { hasText: /^Settings$/ }).click();
+        await expect(page.locator('.mapping-settings')).toContainText('Autofill metadata');
+        await expect(page.locator('.mapping-settings .setting-row').first()).toHaveCSS('font-size', '14px');
+        const { left, right } = await page.locator('.mapping-settings').evaluate((el) => {
+            const box = el.getBoundingClientRect();
+            const parent = el.parentElement.getBoundingClientRect();
+            return { left: box.left - parent.left, right: parent.right - box.right };
+        });
+        expect(Math.abs(left - right)).toBeLessThan(2);
+    });
+
+    // a layout saved without the settings tab, and optionally its version
+    const stripSettings = (page, version) => page.evaluate((version) => {
+        const strip = (n) => {
+            if (n.children) n.children = n.children.filter((c) => c.component !== 'settings').map(strip);
+            return n;
+        };
+        const saved = JSON.parse(localStorage.getItem('layout') || 'null');
+        if (!saved) throw new Error('no saved layout');
+        strip(saved.layout);
+        localStorage.setItem('layout', JSON.stringify(saved));
+        if (version) localStorage.setItem('layout-version', version);
+        else localStorage.removeItem('layout-version');
+    }, version);
+
+    async function reload(page) {
+        await page.reload();
+        await page.waitForSelector('.flexlayout__tab_button');
+    }
+
+    test('an unversioned saved layout gets the settings tab before Documentation', async () => {
+        await stripSettings(page, null);
+        expect(await mainTabs(page)).not.toContain('settings');
+        await reload(page);
+        const tabs = await mainTabs(page);
+        expect(tabs.indexOf('settings')).toBe(tabs.indexOf('documentation') - 1);
+        expect(await page.evaluate(() => localStorage.getItem('layout-version'))).toBe('1.6.0 documentation tab');
+    });
+
+    test('migrations already applied are not run again', async () => {
+        await stripSettings(page, '1.6.0 documentation tab');
+        await reload(page);
+        expect(await mainTabs(page)).not.toContain('settings');
+        // a layout from before 1.6.0 still gets it
+        await stripSettings(page, '1.4.0 mappings sub-tabs');
+        await reload(page);
+        expect(await mainTabs(page)).toContain('settings');
+    });
+
+    test('a saved About tab is renamed to Documentation', async () => {
+        await page.evaluate(() => {
+            const saved = JSON.parse(localStorage.getItem('layout'));
+            const rename = (n) => {
+                if (n.component === 'documentation') n.name = 'About';
+                (n.children || []).forEach(rename);
+            };
+            rename(saved.layout);
+            localStorage.setItem('layout', JSON.stringify(saved));
+            localStorage.setItem('layout-version', '1.6.0 settings tab');
+        });
+        await reload(page);
+        await expect(page.locator('.flexlayout__tab_button', { hasText: /^Documentation$/ })).toHaveCount(1);
+        await expect(page.locator('.flexlayout__tab_button', { hasText: /^About$/ })).toHaveCount(0);
+    });
+});
+
 test.describe('Autofill', () => {
     const place = (page, autofill) => page.evaluate((autofill) => {
         const { environment, mappingState, toJS } = window.__test__;
