@@ -34,4 +34,5 @@ import { workspace } from '~/store/workspace';
 import { mappingState } from '~/components/mappings/state';
 import { toJS } from 'mobx';
 import { exportSprite } from '~/formats/image';
-window.__test__ = { environment, workspace, mappingState, toJS, exportSprite };
+import { keymap } from '~/store/keymap';
+window.__test__ = { environment, workspace, mappingState, toJS, exportSprite, keymap };

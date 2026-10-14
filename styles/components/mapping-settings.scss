@@ -31,4 +31,72 @@
             }
         }
     }
+
+    hr {
+        border: 0;
+        border-top: 1px solid rgba(white, .2);
+        margin: 24px 0;
+    }
+
+    .keys-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 16px;
+        padding: 4px 5px;
+        margin-bottom: 8px;
+
+        .button {
+            width: auto;
+            margin: 0;
+            padding: 3px 8px;
+            white-space: nowrap;
+        }
+    }
+
+    .key-label {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .key-group {
+        margin-bottom: 16px;
+    }
+
+    .key-capture {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        flex-shrink: 0;
+
+        .key {
+            min-width: 120px;
+            padding: 3px 8px;
+            background: transparent;
+            border: 1px solid rgba(white, .2);
+            color: inherit;
+            font-family: monospace;
+            font-size: 13px;
+            cursor: pointer;
+
+            &.recording {
+                border-color: $magenta;
+            }
+        }
+
+        .slot {
+            width: 26px;
+
+            .button {
+                width: 26px;
+                min-width: 0;
+                padding: 2px 0;
+            }
+        }
+    }
+
+    .key-error {
+        color: $red;
+        font-size: 12px;
+    }
 }

@@ -16,7 +16,9 @@ NEXT
 
         highlighing tiles with more than one art source
 
-    settings (& key remapping) tab
+        settings (& key remapping) tab
+
+        radiotails stuff
 
 
     clear undo history when loading an object
@@ -28,8 +30,6 @@ NEXT
     allow specifying per-sprite canvas size, show grid when importing
 
     put each load type in boxes, rename to LOAD ALL, make the dropzone target the whole box?
-
-
 
     when importing, dedupe tiles
     when importing, figure out how to line up sprites

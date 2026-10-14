@@ -1,31 +1,18 @@
 import Mousetrap from 'mousetrap';
+import { autorun } from 'mobx';
 import { environment } from '~/store/environment';
+import { keymap } from '~/store/keymap';
 import { commands } from './commands';
 import { mappingState } from '~/components/mappings/state';
 import flatten from 'lodash/flatten';
 
-// load commands
-flatten(commands)
-    .forEach((obj) => {
-        if (obj.hasShift) {
-            Mousetrap.bind([obj.map, `shift+${obj.map}`], doCommand.bind(null, obj));
-        }
-        else {
-            Mousetrap.bind(obj.map, doCommand.bind(null, obj));
-        }
-    });
+const defaultStopCallback = Mousetrap.prototype.stopCallback;
+Mousetrap.prototype.stopCallback = function (...args) {
+    return keymap.recording || defaultStopCallback.apply(this, args);
+};
 
-// handle multiplier
 let multiplier = '';
-Mousetrap.bind([...'0123456789'], (e) => {
-    if (e.repeat) return;
-    if (e.key === '0' && !multiplier) return;
-    if (multiplier.length < 3) multiplier += String(e.key);
-});
-Mousetrap.bind('esc', () => {
-    multiplier = '';
-    mappingState.closeModals();
-});
+
 function doCommand(obj, e) {
     environment.doAction(() => {
         if (!obj.noMultiplier && multiplier) {
@@ -38,3 +25,34 @@ function doCommand(obj, e) {
         }
     });
 }
+
+autorun(() => {
+    const handlers = new Map();
+    const add = (combo, fn) => {
+        if (!combo) return;
+        if (!handlers.has(combo)) handlers.set(combo, []);
+        handlers.get(combo).push(fn);
+    };
+
+    const coarse = keymap.combo('coarse');
+    flatten(commands).forEach((obj) => {
+        const combo = keymap.combo(obj.id);
+        const run = (e) => doCommand(obj, e);
+        add(combo, run);
+        if (obj.hasShift && coarse) add(`${coarse}+${combo}`, run);
+    });
+    add('esc', () => {
+        multiplier = '';
+        mappingState.closeModals();
+    });
+
+    Mousetrap.reset();
+    [...'0123456789'].forEach((digit) => Mousetrap.bind(digit, (e) => {
+        if (e.repeat) return;
+        if (e.key === '0' && !multiplier) return;
+        if (multiplier.length < 3) multiplier += String(e.key);
+    }));
+    handlers.forEach((fns, combo) => {
+        Mousetrap.bind(combo, (e) => { fns.forEach((fn) => fn(e)); });
+    });
+});

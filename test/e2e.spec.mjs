@@ -1208,6 +1208,19 @@ test.describe('Settings tab', () => {
 
     test.afterEach(() => page.locator('.flexlayout__tab_button', { hasText: /^File$/ }).click());
 
+    test('scrolling the palette line field changes it without scrolling the tab', async () => {
+        await page.locator('.flexlayout__tab_button', { hasText: /^Settings$/ }).click();
+        const field = page.locator('.mapping-settings .render-line');
+        const scrollTop = () => field.evaluate((el) => el.closest('.flexlayout__tab').scrollTop);
+        // scrolling down, since the tab starts at the top
+        await page.evaluate(() => { window.__test__.environment.config.artPaletteLine = 3; });
+        await field.hover();
+        await page.mouse.wheel(0, 100);
+        await expect(field).toHaveValue('2');
+        await page.waitForTimeout(200);
+        expect(await scrollTop()).toBe(0);
+    });
+
     test('settings live in their own tab', async () => {
         await page.locator('.flexlayout__tab_button', { hasText: /^Settings$/ }).click();
         await expect(page.locator('.mapping-settings')).toContainText('Autofill metadata');
@@ -1272,6 +1285,79 @@ test.describe('Settings tab', () => {
         await reload(page);
         await expect(page.locator('.flexlayout__tab_button', { hasText: /^Documentation$/ })).toHaveCount(1);
         await expect(page.locator('.flexlayout__tab_button', { hasText: /^About$/ })).toHaveCount(0);
+    });
+});
+
+test.describe('Key remapping', () => {
+    const tab = (name) => page.locator('.flexlayout__tab_button', { hasText: new RegExp(`^${name}$`) });
+    const keyButton = (name) => page.locator('.keys .setting-row', { hasText: name }).locator('button.key');
+
+    test.afterEach(async () => {
+        await page.evaluate(() => {
+            window.__test__.keymap.resetAll();
+            window.__test__.mappingState.newMapping.active = false;
+        });
+        await tab('File').click();
+    });
+
+    // one selected piece, returning its hflip after the keys are pressed
+    async function flipAfter(page, keys) {
+        await page.evaluate(() => {
+            const { environment, mappingState } = window.__test__;
+            environment.config.dplcsEnabled = false;
+            environment.mappings.replace([[{
+                art: 0, width: 1, height: 1, left: 0, top: 0,
+                priority: false, vflip: false, hflip: false, palette: 0,
+            }]]);
+            environment.config.currentSprite = 0;
+            mappingState.selectedIndices.replace([0]);
+        });
+        for (const key of keys) await page.keyboard.press(key);
+        return page.evaluate(() => window.__test__.environment.mappings[0][0].hflip);
+    }
+
+    test('a command remapped in settings fires on the new key, with a count', async () => {
+        await tab('Settings').click();
+        await keyButton('Horizontal Flip').click();
+        await page.keyboard.press('j');
+        await page.keyboard.press('Escape');
+        await expect(keyButton('Horizontal Flip')).toHaveText('h');
+        await expect(keyButton('Horizontal Flip')).not.toBeFocused();
+
+        await keyButton('Horizontal Flip').click();
+        await page.keyboard.press('k');
+        await page.keyboard.press('Enter');
+        await expect(keyButton('Horizontal Flip')).toHaveText('k');
+        await expect(keyButton('Horizontal Flip')).not.toBeFocused();
+
+        // leaving the field saves too
+        await keyButton('Vertical Flip').click();
+        await page.keyboard.press('j');
+        await page.locator('.keys-header span').click();
+        await expect(keyButton('Vertical Flip')).toHaveText('j');
+
+        expect(await flipAfter(page, ['h'])).toBe(false);
+        expect(await flipAfter(page, ['3', 'k'])).toBe(true);
+        expect(await flipAfter(page, ['2', 'k'])).toBe(false);
+    });
+
+    test('esc still clears the count and closes windows', async () => {
+        await page.evaluate(() => {
+            window.__test__.mappingState.newMapping.active = true;
+        });
+        // the count is dropped, so h flips once rather than twice
+        expect(await flipAfter(page, ['2', 'Escape', 'h'])).toBe(true);
+        expect(await page.evaluate(() => window.__test__.mappingState.newMapping.active)).toBe(false);
+    });
+
+    test('a digit cannot be recorded, it would take the count', async () => {
+        await tab('Settings').click();
+        await keyButton('Vertical Flip').click();
+        await page.keyboard.press('5');
+        await expect(page.locator('.keys .setting-row', { hasText: 'Vertical Flip' }))
+            .toContainText('digits are for counts');
+        await page.locator('.keys-header span').click();
+        await expect(keyButton('Vertical Flip')).toHaveText('v');
     });
 });
 

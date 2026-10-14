@@ -5,16 +5,16 @@
 - Drawing tools
     - Pencil / Line / Rectangle / Fill / Ellipse / Star
     - Middle click for eyedropper
-- Double click on object icon in project to load object
+- Remappable keys
 - Improve recent project listing UI
 - Drop an image in the mappings area to import as spritesheet
+- Double click on object icon in project to load object
 - Move Settings modal to a tab
 - Add search to object tree
 - Add more valid file extensions for art
 - Add an option to autofill metadata, palette and priority on new mappings and DPLCs
 - Add an option for uncapped DPLC entries: entries are no longer limited to 16 tiles and each format fits them to its own limit on save
 - Show label name in sprites tab
-- Move settings from a modal to their own tab
 - Show update modal when there is a newer release
 - Make all error text selectable
 - Make Shift+Ctrl+I only work when window is focused
