@@ -136,6 +136,14 @@ export const commands = [
             id: 'selectNone', map: 'mod+d', name: 'Select None', noMultiplier: true,
             func: () => { mappingState.selectNone(); },
         },
+        {
+            id: 'selectPrev', map: ',', name: 'Select Previous Piece',
+            func: () => { mappingState.selectCycle(-1); },
+        },
+        {
+            id: 'selectNext', map: '.', name: 'Select Next Piece',
+            func: () => { mappingState.selectCycle(1); },
+        },
     ],
     [
         {

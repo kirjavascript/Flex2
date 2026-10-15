@@ -195,6 +195,17 @@ class MappingState {
         this.selectedIndices.replace([]);
     };
 
+    selectCycle = (dir) => {
+        if (this.move.active) return;
+        const { length } = environment.currentSprite.mappings;
+        if (!length) return;
+        const valid = this.selectedIndices.filter((i) => i < length);
+        const from = valid.length
+            ? (dir > 0 ? Math.max(...valid) : Math.min(...valid))
+            : (dir > 0 ? -1 : length);
+        this.selectedIndices.replace([(from + dir + length) % length]);
+    };
+
     selectToggle = (index) => {
         if (this.move.active) return;
         if (~this.selectedIndices.indexOf(index)) {

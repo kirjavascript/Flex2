@@ -12,6 +12,7 @@
 - Move Settings modal to a tab
 - Add search to object tree
 - Add more valid file extensions for art
+- Add ability to cycle through sprite pieces
 - Add an option to autofill metadata, palette and priority on new mappings and DPLCs
 - Add an option for uncapped DPLC entries: entries are no longer limited to 16 tiles and each format fits them to its own limit on save
 - Show label name in sprites tab

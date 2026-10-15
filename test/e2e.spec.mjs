@@ -1350,6 +1350,31 @@ test.describe('Key remapping', () => {
         expect(await page.evaluate(() => window.__test__.mappingState.newMapping.active)).toBe(false);
     });
 
+    test('pieces can be cycled through, even when overlapping', async () => {
+        const selectedAfter = async (selected, keys) => {
+            await page.evaluate((selected) => {
+                const { environment, mappingState } = window.__test__;
+                environment.config.dplcsEnabled = false;
+                const piece = () => ({
+                    art: 0, width: 1, height: 1, left: 0, top: 0,
+                    priority: false, vflip: false, hflip: false, palette: 0,
+                });
+                environment.mappings.replace([[piece(), piece(), piece()]]);
+                environment.config.currentSprite = 0;
+                mappingState.selectedIndices.replace(selected);
+            }, selected);
+            for (const key of keys) await page.keyboard.press(key);
+            return page.evaluate(() => [...window.__test__.mappingState.selectedIndices]);
+        };
+        expect(await selectedAfter([], ['.'])).toEqual([0]);
+        expect(await selectedAfter([], [','])).toEqual([2]);
+        expect(await selectedAfter([0], ['.', '.'])).toEqual([2]);
+        expect(await selectedAfter([2], ['.'])).toEqual([0]);
+        expect(await selectedAfter([0], [','])).toEqual([2]);
+        expect(await selectedAfter([0, 1], ['.'])).toEqual([2]);
+        expect(await selectedAfter([0], ['2', '.'])).toEqual([2]);
+    });
+
     test('a digit cannot be recorded, it would take the count', async () => {
         await tab('Settings').click();
         await keyButton('Vertical Flip').click();
