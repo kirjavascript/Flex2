@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import { environment } from '~/store/environment';
 import classNames from 'classnames';
 import { mappingState } from './state';
+import { inputState } from '~/controls/distance';
 import { Slider } from '~/ui';
 import { Mapping } from './mapping';
 import { Selection } from './selection';
@@ -71,6 +72,7 @@ export const Mappings = observer(class Mappings extends Component {
                     className={classNames('mappingContainer', {
                         drawing: mode == 'drawing',
                         [`drawing-${mappingState.drawTool}`]: mode == 'drawing',
+                        picking: mode == 'drawing' && inputState.ctrl,
                     })}
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={this.onDrop}

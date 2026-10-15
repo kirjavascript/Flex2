@@ -4,7 +4,7 @@
 
 - Drawing tools
     - Pencil / Line / Rectangle / Fill / Ellipse / Star
-    - Middle click for eyedropper
+    - Middle/Ctrl click for eyedropper
 - Remappable keys
 - Improve recent project listing UI
 - Drop an image in the mappings area to import as spritesheet

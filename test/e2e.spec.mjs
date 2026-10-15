@@ -1424,6 +1424,44 @@ test.describe('Key remapping', () => {
     });
 });
 
+test.describe('Eyedropper', () => {
+    test.afterEach(async () => {
+        await page.keyboard.up('Control');
+        await page.evaluate(() => { window.__test__.mappingState.mode = 'mapping'; });
+        await clearEnvironment(page);
+        await page.locator('.flexlayout__tab_button', { hasText: /^File$/ }).click();
+    });
+
+    test('ctrl+click picks the colour into left without drawing', async () => {
+        await page.evaluate(() => {
+            const { environment, mappingState } = window.__test__;
+            environment.clearArt();
+            environment.appendTiles([Array(64).fill(5)]);
+            environment.mappings.replace([[{
+                art: 0, width: 1, height: 1, left: 0, top: 0,
+                priority: false, vflip: false, hflip: false, palette: 0,
+            }]]);
+            environment.config.currentSprite = 0;
+            mappingState.mode = 'drawing';
+            mappingState.drawTool = 'pencil';
+            mappingState.drawIndexLeft = 1;
+        });
+        await page.locator('.flexlayout__tab_button', { hasText: /^Mappings$/ }).click();
+
+        const container = page.locator('.mappingContainer');
+        await page.keyboard.down('Control');
+        await expect(container).toHaveClass(/picking/);
+        await page.locator('.mappingContainer .mapping').first().click();
+        await page.keyboard.up('Control');
+        await expect(container).not.toHaveClass(/picking/);
+
+        expect(await page.evaluate(() => {
+            const { environment, mappingState } = window.__test__;
+            return [mappingState.drawIndexLeft, [...environment.tiles[0]].every((p) => p === 5)];
+        })).toEqual([5, true]);
+    });
+});
+
 test.describe('Autofill', () => {
     const place = (page, autofill) => page.evaluate((autofill) => {
         const { environment, mappingState, toJS } = window.__test__;

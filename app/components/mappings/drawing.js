@@ -26,7 +26,7 @@ function getColor(buttons) {
 
 export function drawStart(node) {
     setDrawing(true);
-    const { sourceEvent: { buttons } } = event;
+    const { sourceEvent: { buttons, ctrlKey } } = event;
     const { mode, drawTool, drawWidth, drawPoints } = mappingState;
     const { currentSprite: { mappings, buffer } } = environment;
 
@@ -35,9 +35,10 @@ export function drawStart(node) {
 
     const point = getPoint(node);
 
-    // middle button: eyedropper. samples the pixel under the cursor into the
-    // left (primary) color, and keeps sampling while held so you can scrub
-    if (buttons === MIDDLE) {
+    // middle button or ctrl+left (no middle button on many laptops): eyedropper.
+    // samples the pixel under the cursor into the left (primary) color, and
+    // keeps sampling while held so you can scrub
+    if (buttons === MIDDLE || (buttons === LEFT && ctrlKey)) {
         eyedropSurface = createDrawingSurface(mappings, buffer);
         eyedrop(node);
         return;
