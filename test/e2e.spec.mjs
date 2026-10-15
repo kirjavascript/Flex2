@@ -1295,6 +1295,7 @@ test.describe('Key remapping', () => {
     test.afterEach(async () => {
         await page.evaluate(() => {
             window.__test__.keymap.resetAll();
+            window.__test__.keymap.counts = true;
             window.__test__.mappingState.newMapping.active = false;
         });
         await tab('File').click();
@@ -1350,6 +1351,27 @@ test.describe('Key remapping', () => {
         expect(await page.evaluate(() => window.__test__.mappingState.newMapping.active)).toBe(false);
     });
 
+    test('the HUD shows a pending count and the coarse step', async () => {
+        await tab('Mappings').click();
+        const hud = page.locator('.hud').first();
+        await page.keyboard.press('1');
+        await page.keyboard.press('6');
+        await expect(hud).toContainText('count: 16');
+        await page.keyboard.press('Escape');
+        await expect(hud).not.toContainText('count:');
+
+        await page.keyboard.down('Shift');
+        await expect(hud).toContainText('step: 8');
+        await page.keyboard.up('Shift');
+        await expect(hud).not.toContainText('step:');
+
+        await page.keyboard.down('Shift');
+        await expect(hud).toContainText('step: 8');
+        await page.evaluate(() => window.dispatchEvent(new Event('blur')));
+        await expect(hud).not.toContainText('step:');
+        await page.keyboard.up('Shift');
+    });
+
     test('pieces can be cycled through, even when overlapping', async () => {
         const selectedAfter = async (selected, keys) => {
             await page.evaluate((selected) => {
@@ -1373,6 +1395,22 @@ test.describe('Key remapping', () => {
         expect(await selectedAfter([0], [','])).toEqual([2]);
         expect(await selectedAfter([0, 1], ['.'])).toEqual([2]);
         expect(await selectedAfter([0], ['2', '.'])).toEqual([2]);
+    });
+
+    test('with counts off a digit can be bound, and is kept but inert when counts return', async () => {
+        await page.evaluate(() => { window.__test__.keymap.toggleCounts(); });
+        await tab('Settings').click();
+        await keyButton('Horizontal Flip').click();
+        await page.keyboard.press('5');
+        await page.keyboard.press('Enter');
+        await expect(keyButton('Horizontal Flip')).toHaveText('5');
+        expect(await flipAfter(page, ['5'])).toBe(true);
+
+        await page.evaluate(() => { window.__test__.keymap.toggleCounts(); });
+        await expect(keyButton('Horizontal Flip')).toHaveText('5');
+        await expect(page.locator('.keys .setting-row', { hasText: 'Horizontal Flip' }))
+            .toContainText('inactive');
+        expect(await flipAfter(page, ['5'])).toBe(false);
     });
 
     test('a digit cannot be recorded, it would take the count', async () => {

@@ -4,6 +4,7 @@ import { environment } from '~/store/environment';
 import { keymap } from '~/store/keymap';
 import { commands } from './commands';
 import { mappingState } from '~/components/mappings/state';
+import { inputState } from './distance';
 import flatten from 'lodash/flatten';
 
 const defaultStopCallback = Mousetrap.prototype.stopCallback;
@@ -11,14 +12,12 @@ Mousetrap.prototype.stopCallback = function (...args) {
     return keymap.recording || defaultStopCallback.apply(this, args);
 };
 
-let multiplier = '';
-
 function doCommand(obj, e) {
     environment.doAction(() => {
-        if (!obj.noMultiplier && multiplier) {
-            const count = Math.min(+multiplier, 999);
+        if (!obj.noMultiplier && inputState.multiplier) {
+            const count = Math.min(+inputState.multiplier, 999);
             for (let i = 0; i < count; i++) obj.func(e);
-            multiplier = '';
+            inputState.multiplier = '';
         }
         else {
             obj.func(e);
@@ -37,21 +36,26 @@ autorun(() => {
     const coarse = keymap.combo('coarse');
     flatten(commands).forEach((obj) => {
         const combo = keymap.combo(obj.id);
+        if (keymap.blocked(combo)) return;
         const run = (e) => doCommand(obj, e);
         add(combo, run);
         if (obj.hasShift && coarse) add(`${coarse}+${combo}`, run);
     });
     add('esc', () => {
-        multiplier = '';
+        inputState.multiplier = '';
         mappingState.closeModals();
     });
 
     Mousetrap.reset();
-    [...'0123456789'].forEach((digit) => Mousetrap.bind(digit, (e) => {
-        if (e.repeat) return;
-        if (e.key === '0' && !multiplier) return;
-        if (multiplier.length < 3) multiplier += String(e.key);
-    }));
+    if (keymap.counts) {
+        [...'0123456789'].forEach((digit) => Mousetrap.bind(digit, (e) => {
+            if (e.repeat) return;
+            if (e.key === '0' && !inputState.multiplier) return;
+            if (inputState.multiplier.length < 3) inputState.multiplier += String(e.key);
+        }));
+    } else {
+        inputState.multiplier = '';
+    }
     handlers.forEach((fns, combo) => {
         Mousetrap.bind(combo, (e) => { fns.forEach((fn) => fn(e)); });
     });

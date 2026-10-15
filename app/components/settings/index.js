@@ -4,6 +4,7 @@ import { observer } from 'mobx-react';
 import { environment } from '~/store/environment';
 import { Checkbox } from '~/ui';
 import { mappingState } from '~/components/mappings/state';
+import { keymap } from '~/store/keymap';
 import { Keys } from './keys';
 
 const ScaleSlider = observer(() => {
@@ -113,6 +114,13 @@ export const Settings = observer(() => {
                     <Checkbox
                         checked={mappingState.uncappedDPLCs}
                         onChange={mappingState.toggleUncappedDPLCs}
+                    />
+                </div>
+                <div className="setting-row">
+                    <span>Use number keys as command multipliers</span>
+                    <Checkbox
+                        checked={keymap.counts}
+                        onChange={keymap.toggleCounts}
                     />
                 </div>
                 <ScaleSlider />

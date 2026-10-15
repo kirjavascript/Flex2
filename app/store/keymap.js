@@ -38,11 +38,14 @@ class Keymap {
     overrides = {};
     recording = false;
     defaults = {};
+    counts = true;
 
     constructor() {
         makeObservable(this, {
             overrides: observable,
             recording: observable,
+            counts: observable,
+            toggleCounts: action,
             setRecording: action,
             set: action,
             reset: action,
@@ -60,10 +63,15 @@ class Keymap {
     // while a key is being recorded no binding fires
     setRecording = (value) => { this.recording = value; };
 
+    toggleCounts = () => { this.counts = !this.counts; };
+
+    // digits are taken by counts, so bindings using them are kept but inert
+    blocked = (combo) => this.counts && combo.split(' ').some((step) => /^\d$/.test(step));
+
     set = (id, combo) => { this.overrides[id] = combo; };
     reset = (id) => { delete this.overrides[id]; };
     resetAll = () => { Object.keys(this.overrides).forEach(this.reset); };
 }
 
 export const keymap = new Keymap();
-storage(keymap, 'keymap', ['overrides']);
+storage(keymap, 'keymap', ['overrides', 'counts']);

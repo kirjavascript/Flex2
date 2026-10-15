@@ -16,7 +16,7 @@ function findConflicts() {
     const global = [];
     commands.flat().forEach(({ id, hasShift }) => {
         const combo = keymap.combo(id);
-        if (!combo) return;
+        if (!combo || keymap.blocked(combo)) return;
         global.push({ id, combo });
         if (hasShift && coarse) global.push({ id, combo: `${coarse}+${combo}` });
     });
@@ -68,7 +68,7 @@ const KeyCapture = observer(({ binding, setError }) => {
         }
         const key = eventToKey(e);
         if (!key) return;
-        if (/^\d$/.test(key)) return setError('digits are for counts');
+        if (keymap.counts && /^\d$/.test(key)) return setError('digits are for counts');
         const coarse = keymap.combo('coarse');
         if (hasShift && key.split('+').includes(coarse)) {
             return setError(`${coarse} is the coarse step for this`);
@@ -110,6 +110,9 @@ const KeyRow = observer(({ binding, clashes }) => {
             <div className="key-label">
                 <span style={{ color: SVARS[binding.color || 'white'] }}>{label(binding)}</span>
                 {clashes && <div className="key-error">clashes with {clashes}</div>}
+                {keymap.blocked(keymap.combo(binding.id)) && (
+                    <div className="key-error">inactive: digits are for counts</div>
+                )}
                 {error && <div className="key-error">{error}</div>}
             </div>
             <KeyCapture binding={binding} setError={setError} />
