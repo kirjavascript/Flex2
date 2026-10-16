@@ -19,15 +19,9 @@
         }
 
         .render-line {
-            width: 34px;
-            text-align: center;
-            background: transparent;
-            border: 1px solid rgba(white, .2);
-            color: inherit;
-            font-size: 14px;
-            padding: 2px;
-            &::-webkit-inner-spin-button {
-                -webkit-appearance: none;
+            .Dropdown-placeholder, .Dropdown-menu {
+                width: 50px;
+                text-align: center;
             }
         }
     }

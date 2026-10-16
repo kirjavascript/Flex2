@@ -1210,13 +1210,13 @@ test.describe('Settings tab', () => {
 
     test('scrolling the palette line field changes it without scrolling the tab', async () => {
         await page.locator('.flexlayout__tab_button', { hasText: /^Settings$/ }).click();
-        const field = page.locator('.mapping-settings .render-line');
+        const field = page.locator('.mapping-settings .render-line .Dropdown-placeholder');
         const scrollTop = () => field.evaluate((el) => el.closest('.flexlayout__tab').scrollTop);
         // scrolling down, since the tab starts at the top
         await page.evaluate(() => { window.__test__.environment.config.artPaletteLine = 3; });
         await field.hover();
         await page.mouse.wheel(0, 100);
-        await expect(field).toHaveValue('2');
+        await expect(field).toHaveText('2');
         await page.waitForTimeout(200);
         expect(await scrollTop()).toBe(0);
     });
@@ -1413,6 +1413,19 @@ test.describe('Key remapping', () => {
         expect(await flipAfter(page, ['5'])).toBe(false);
     });
 
+    test('the render palette line can be set from keys', async () => {
+        const line = () => page.evaluate(() => window.__test__.environment.config.artPaletteLine);
+        await page.evaluate(() => {
+            const { environment, keymap } = window.__test__;
+            environment.config.artPaletteLine = 2;
+            keymap.toggleCounts();
+            keymap.set('paletteLine1', '1');
+        });
+        await page.keyboard.press('1');
+        expect(await line()).toBe(1);
+        await page.evaluate(() => { window.__test__.environment.config.artPaletteLine = 0; });
+    });
+
     test('a digit cannot be recorded, it would take the count', async () => {
         await tab('Settings').click();
         await keyButton('Vertical Flip').click();
@@ -1421,6 +1434,10 @@ test.describe('Key remapping', () => {
             .toContainText('digits are for counts');
         await page.locator('.keys-header span').click();
         await expect(keyButton('Vertical Flip')).toHaveText('v');
+
+        await page.locator('.keys-header .button', { hasText: 'reset all' }).click();
+        await expect(page.locator('.keys .setting-row', { hasText: 'Vertical Flip' }))
+            .not.toContainText('digits are for counts');
     });
 });
 
@@ -1432,7 +1449,7 @@ test.describe('Eyedropper', () => {
         await page.locator('.flexlayout__tab_button', { hasText: /^File$/ }).click();
     });
 
-    test('ctrl+click picks the colour into left without drawing', async () => {
+    test('ctrl+click picks the colour into that side without drawing', async () => {
         await page.evaluate(() => {
             const { environment, mappingState } = window.__test__;
             environment.clearArt();
@@ -1445,20 +1462,28 @@ test.describe('Eyedropper', () => {
             mappingState.mode = 'drawing';
             mappingState.drawTool = 'pencil';
             mappingState.drawIndexLeft = 1;
+            mappingState.drawIndexRight = 2;
         });
         await page.locator('.flexlayout__tab_button', { hasText: /^Mappings$/ }).click();
 
         const container = page.locator('.mappingContainer');
         await page.keyboard.down('Control');
         await expect(container).toHaveClass(/picking/);
-        await page.locator('.mappingContainer .mapping').first().click();
+        const piece = page.locator('.mappingContainer .mapping').first();
+        await piece.click();
+        expect(await page.evaluate(() => window.__test__.mappingState.drawIndexRight)).toBe(2);
+        await piece.click({ button: 'right' });
         await page.keyboard.up('Control');
         await expect(container).not.toHaveClass(/picking/);
 
         expect(await page.evaluate(() => {
             const { environment, mappingState } = window.__test__;
-            return [mappingState.drawIndexLeft, [...environment.tiles[0]].every((p) => p === 5)];
-        })).toEqual([5, true]);
+            return [
+                mappingState.drawIndexLeft,
+                mappingState.drawIndexRight,
+                [...environment.tiles[0]].every((p) => p === 5),
+            ];
+        })).toEqual([5, 5, true]);
     });
 });
 

@@ -11,6 +11,7 @@ import { drawingTools } from './drawing-tools';
 
 let activeDrawing;
 let eyedropSurface;
+let eyedropTarget;
 
 function getPoint(node) {
     const [xPos, yPos] = mouse(node);
@@ -35,11 +36,12 @@ export function drawStart(node) {
 
     const point = getPoint(node);
 
-    // middle button or ctrl+left (no middle button on many laptops): eyedropper.
-    // samples the pixel under the cursor into the left (primary) color, and
-    // keeps sampling while held so you can scrub
-    if (buttons === MIDDLE || (buttons === LEFT && ctrlKey)) {
+    // middle button or ctrl+click (no middle button on many laptops): eyedropper.
+    // samples the pixel under the cursor into the clicked side's color (middle
+    // is left), and keeps sampling while held so you can scrub
+    if (buttons === MIDDLE || ctrlKey) {
         eyedropSurface = createDrawingSurface(mappings, buffer);
+        eyedropTarget = buttons === RIGHT ? 'drawIndexRight' : 'drawIndexLeft';
         eyedrop(node);
         return;
     }
@@ -77,7 +79,7 @@ function eyedrop(node) {
     const color = eyedropSurface.getPixel(point.x, point.y);
     // undefined = pressed in a gap between mappings: keep the current color
     if (color !== undefined) {
-        mappingState.drawIndexLeft = color;
+        mappingState[eyedropTarget] = color;
     }
 }
 

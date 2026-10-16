@@ -409,6 +409,11 @@ export const commands = [
             id: 'guidelines', map: 'g', name: 'Guidelines', color: 'magenta', noMultiplier: true,
             func: () => { mappingState.guidelines.enabled = !mappingState.guidelines.enabled; },
         },
+        ...[0, 1, 2, 3].map((line) => ({
+            id: `paletteLine${line}`, map: '', name: `Render Palette Line ${line}`,
+            color: 'magenta', noMultiplier: true, hidden: true,
+            func: () => { environment.config.artPaletteLine = line; },
+        })),
     ],
 
 ];

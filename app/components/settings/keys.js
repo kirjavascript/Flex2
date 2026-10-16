@@ -94,10 +94,10 @@ const KeyCapture = observer(({ binding, setError }) => {
                     : combo || '—'}
             </button>
             <span className="slot">
-                <Button title="unbind" onClick={() => keymap.set(id, '')}>×</Button>
+                <Button title="unbind" onClick={() => { keymap.set(id, ''); setError(''); }}>×</Button>
             </span>
             <span className="slot">
-                <Button title="reset to default" onClick={() => keymap.reset(id)}>↺</Button>
+                <Button title="reset to default" onClick={() => { keymap.reset(id); setError(''); }}>↺</Button>
             </span>
         </div>
     );
@@ -121,6 +121,7 @@ const KeyRow = observer(({ binding, clashes }) => {
 });
 
 export const Keys = observer(() => {
+    const [resets, setResets] = useState(0);
     const conflicts = findConflicts();
     const names = Object.fromEntries(allBindings().map((b) => [b.id, label(b)]));
 
@@ -129,13 +130,18 @@ export const Keys = observer(() => {
             <hr />
             <div className="keys-header">
                 <span>Keybindings</span>
-                <Button color="magenta" onClick={keymap.resetAll}>reset all</Button>
+                <Button
+                    color="magenta"
+                    onClick={() => { keymap.resetAll(); setResets((n) => n + 1); }}
+                >
+                    reset all
+                </Button>
             </div>
             {[...commands, generalBindings].map((group, i) => (
                 <div className="key-group" key={i}>
                     {group.map((binding) => (
                         <KeyRow
-                            key={binding.id}
+                            key={`${binding.id}-${resets}`}
                             binding={binding}
                             clashes={conflicts[binding.id]
                                 && [...conflicts[binding.id]].map((c) => names[c]).join(', ')}
