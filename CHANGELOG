@@ -9,6 +9,7 @@
 - Improve recent project listing UI
 - Drop an image in the mappings area to import as spritesheet
 - Double click on object icon in project to load object
+- Double click on a guideline to reset it
 - Move Settings modal to a tab
 - Add option to autofill metadata, palette and priority on new mappings and DPLCs
 - Add option for uncapped DPLC entries: entries are no longer limited to 16 tiles and each format fits them to its own limit on save

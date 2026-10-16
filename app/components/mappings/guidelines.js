@@ -54,6 +54,7 @@ export const Guidelines = observer(class Guidelines extends Component {
                     left: x,
                 }}
                 ref={this.onRefX}
+                onDoubleClick={() => { mappingState.guidelines.x = 0; }}
             />
             <div
                 className="y"
@@ -61,6 +62,7 @@ export const Guidelines = observer(class Guidelines extends Component {
                     top: y,
                 }}
                 ref={this.onRefY}
+                onDoubleClick={() => { mappingState.guidelines.y = 0; }}
             />
         </div>;
     }

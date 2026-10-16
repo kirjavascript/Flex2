@@ -1441,6 +1441,31 @@ test.describe('Key remapping', () => {
     });
 });
 
+test.describe('Guidelines', () => {
+    test.afterEach(async () => {
+        await page.evaluate(() => {
+            Object.assign(window.__test__.mappingState.guidelines, { x: 0, y: 0, enabled: false });
+        });
+        await page.locator('.flexlayout__tab_button', { hasText: /^File$/ }).click();
+    });
+
+    test('double clicking a guideline resets it', async () => {
+        await page.evaluate(() => {
+            Object.assign(window.__test__.mappingState.guidelines, { x: 40, y: -30, enabled: true });
+        });
+        await page.locator('.flexlayout__tab_button', { hasText: /^Mappings$/ }).click();
+        const at = () => page.evaluate(() => {
+            const { x, y } = window.__test__.mappingState.guidelines;
+            return [x, y];
+        });
+
+        await page.locator('.guidelines .x').dblclick({ position: { x: 2, y: 20 } });
+        expect(await at()).toEqual([0, -30]);
+        await page.locator('.guidelines .y').dblclick({ position: { x: 20, y: 2 } });
+        expect(await at()).toEqual([0, 0]);
+    });
+});
+
 test.describe('Eyedropper', () => {
     test.afterEach(async () => {
         await page.keyboard.up('Control');
