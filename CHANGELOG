@@ -17,6 +17,7 @@
 - Add more valid file extensions for art
 - Add ability to cycle through sprite pieces
 - Add count/step display
+- Add timeout for compression to catch crashes / errors from invalid data
 - Show label name in sprites tab
 - Show update modal when there is a newer release
 - Make all error text selectable

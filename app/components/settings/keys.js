@@ -5,6 +5,8 @@ import { commands } from '~/controls/commands';
 import { keymap, generalBindings, eventToKey, modifierFromEvent } from '~/store/keymap';
 import { Button } from '~/ui';
 
+const countsError = 'digit keys can\'t be used while "Use number keys as command multipliers" is enabled';
+
 const labels = { '[mode]': 'Toggle Mode', '[dplcs]': 'Toggle DPLCs' };
 const label = ({ name }) => labels[name] || name;
 
@@ -68,7 +70,7 @@ const KeyCapture = observer(({ binding, setError }) => {
         }
         const key = eventToKey(e);
         if (!key) return;
-        if (keymap.counts && /^\d$/.test(key)) return setError('digits are for counts');
+        if (keymap.counts && /^\d$/.test(key)) return setError(countsError);
         const coarse = keymap.combo('coarse');
         if (hasShift && key.split('+').includes(coarse)) {
             return setError(`${coarse} is the coarse step for this`);
@@ -111,7 +113,7 @@ const KeyRow = observer(({ binding, clashes }) => {
                 <span style={{ color: SVARS[binding.color || 'white'] }}>{label(binding)}</span>
                 {clashes && <div className="key-error">clashes with {clashes}</div>}
                 {keymap.blocked(keymap.combo(binding.id)) && (
-                    <div className="key-error">inactive: digits are for counts</div>
+                    <div className="key-error">inactive: {countsError}</div>
                 )}
                 {error && <div className="key-error">{error}</div>}
             </div>

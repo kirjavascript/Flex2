@@ -199,7 +199,7 @@ async function spriteTables(page) {
 }
 
 async function getErrors(page) {
-    const errors = await page.locator('.error').allTextContents();
+    const errors = await page.locator('.error-text').allTextContents();
     return errors.filter(Boolean);
 }
 
@@ -1431,13 +1431,13 @@ test.describe('Key remapping', () => {
         await keyButton('Vertical Flip').click();
         await page.keyboard.press('5');
         await expect(page.locator('.keys .setting-row', { hasText: 'Vertical Flip' }))
-            .toContainText('digits are for counts');
+            .toContainText('digit keys can\'t be used while "Use number keys as command multipliers" is enabled');
         await page.locator('.keys-header span').click();
         await expect(keyButton('Vertical Flip')).toHaveText('v');
 
         await page.locator('.keys-header .button', { hasText: 'reset all' }).click();
         await expect(page.locator('.keys .setting-row', { hasText: 'Vertical Flip' }))
-            .not.toContainText('digits are for counts');
+            .not.toContainText('digit keys can\'t be used');
     });
 });
 
@@ -1649,6 +1649,46 @@ test.describe('Compression', () => {
             expect(valid).toBe(true);
         });
     }
+
+    async function loadArtExpectingError(artPath, artCompression) {
+        await setFileObject(page, { format: 'Sonic 1.js', artPath, artCompression });
+        await clearEnvironment(page);
+        await clickLoad(page, 'Art');
+        await waitForIO(page);
+        return (await getErrors(page)).join();
+    }
+
+    async function expectWorkerStillWorks() {
+        await setFileObject(page, {
+            format: 'Sonic 1.js',
+            artPath: resolve(FIXTURES, 's1/art/Rings.nem'),
+            artCompression: 'Nemesis',
+        });
+        await clickLoad(page, 'Art');
+        await waitForTiles(page);
+        expect(await getErrors(page)).toHaveLength(0);
+    }
+
+    test('an empty file as Nemesis reports an error', async () => {
+        const tmp = mkdtempSync(join(tmpdir(), 'flex2-test-'));
+        try {
+            writeFileSync(join(tmp, 'empty.nem'), Buffer.alloc(0));
+            const errors = await loadArtExpectingError(join(tmp, 'empty.nem'), 'Nemesis');
+            expect(errors).toContain('Nemesis decode failed');
+            await expectWorkerStillWorks();
+        } finally {
+            rmSync(tmp, { recursive: true, force: true });
+        }
+    });
+
+    test('art with the wrong compression reports an error', async () => {
+        const errors = await loadArtExpectingError(
+            resolve(FIXTURES, 's2/art/kosinski/EHZ_HTZ.kos'),
+            'Kosinski-M',
+        );
+        expect(errors).toContain('Kosinski-M decode failed');
+        await expectWorkerStillWorks();
+    });
 });
 
 test('electron version is pinned to 22.3.27', () => {
