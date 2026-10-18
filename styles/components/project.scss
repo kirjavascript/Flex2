@@ -75,6 +75,13 @@
         .config-data {
             padding: 10px 10px 0 10px;
             margin-bottom: -10px;
+            .item {
+                flex-shrink: 0;
+                white-space: nowrap;
+            }
+            .ui-input {
+                margin-left: 10px;
+            }
         }
         .path {
             color: $white2;

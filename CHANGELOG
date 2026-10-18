@@ -23,6 +23,7 @@
 - Make all error text selectable
 - Make Shift+Ctrl+I only work when window is focused
 - Make Compression dropdowns wheel-scrollable
+- Make object name input expand to size of name
 - Fix some alpha channel behaviour when importing
 - Fix a bug that causes label conflicts
 - Fix an issue where you couldn't save with empty art

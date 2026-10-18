@@ -236,7 +236,16 @@ const Project = observer(() => {
                     {node && (
                         <div className="menu-item">
                             <Item>Object Name</Item>
-                            <Input store={node} accessor="name" />
+                            <Input
+                                store={node}
+                                accessor="name"
+                                style={{
+                                    // + input padding and border
+                                    width: `calc(${node.name?.length || 0}ch + 12px)`,
+                                    minWidth: 159,
+                                    maxWidth: 320,
+                                }}
+                            />
                         </div>
                     )}
                 </div>
