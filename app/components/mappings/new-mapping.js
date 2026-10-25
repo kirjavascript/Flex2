@@ -104,6 +104,7 @@ export const NewMapping = observer(
         render() {
             const {
                 tiles,
+                tileLines,
                 config: { currentTile },
             } = environment;
             const {
@@ -126,6 +127,7 @@ export const NewMapping = observer(
                                 data={piece}
                                 scale={mappingState.scale}
                                 tileBuffer={tiles}
+                                lines={tileLines}
                             />
                         </div>
                     )}
@@ -149,6 +151,7 @@ export const NewMapping = observer(
                                             data={def}
                                             scale={4}
                                             tileBuffer={tiles}
+                                            lines={tileLines}
                                         />
                                     );
                                 })}

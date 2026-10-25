@@ -54,6 +54,7 @@ async function setFileObject(page, {
     artPath,
     artCompression = 'Uncompressed',
     artOffset = 0,
+    artPaletteLine = 0,
     artExtra = [],
     mappingsPath,
     dplcsPath,
@@ -67,9 +68,11 @@ async function setFileObject(page, {
         file.art.path = opts.artPath || '';
         file.art.compression = opts.artCompression;
         file.art.offset = opts.artOffset;
+        file.art.paletteLine = opts.artPaletteLine;
         file.art.extra.replace(opts.artExtra.map(source => ({
             compression: 'Uncompressed',
             address: '',
+            paletteLine: 0,
             ...source,
         })));
         file.mappings.path = opts.mappingsPath || '';
@@ -84,7 +87,7 @@ async function setFileObject(page, {
         // start from the script's own defaults, not the last test's config
         for (const key of Object.keys(file.config)) delete file.config[key];
         Object.assign(file.config, opts.config);
-    }, { format, artPath, artCompression, artOffset, artExtra, mappingsPath, dplcsPath, palettePaths, config });
+    }, { format, artPath, artCompression, artOffset, artPaletteLine, artExtra, mappingsPath, dplcsPath, palettePaths, config });
     // wait for MobX → React re-render so FileObject picks up new paths
     await page.waitForTimeout(100);
 }
@@ -956,6 +959,70 @@ test.describe('Extra art sources', () => {
         } finally {
             rmSync(tmp, { recursive: true, force: true });
         }
+    });
+
+    test('each art source sets the palette line of its bank', async () => {
+        await setFileObject(page, {
+            format: 'Sonic 3&K.js',
+            artPath: resolve(FIXTURES, 's3k/art/Penguinator.bin'),
+            artPaletteLine: 1,
+            artExtra: [{ path: resolve(FIXTURES, 's3k/art/Penguinator.bin'), address: 0x200, paletteLine: 3 }],
+        });
+        await clearEnvironment(page);
+        await clickLoad(page, 'Art');
+        await waitForTiles(page);
+
+        expect(await page.evaluate(() => window.__test__.environment.art.map(
+            (bank) => bank.paletteLine,
+        ))).toEqual([1, 3]);
+    });
+
+    test('a bank palette line offsets the pieces drawn from it', async () => {
+        const result = await page.evaluate(() => {
+            const { environment, exportSprite, toJS } = window.__test__;
+            const tile = (pixel) => new Array(64).fill(pixel);
+            const piece = (art) => ({
+                art, width: 1, height: 1, left: 0, top: 0,
+                priority: false, vflip: false, hflip: false, palette: 1,
+            });
+
+            environment.config.artPaletteLine = 0;
+            environment.resetPalettes();
+            environment.setArt([
+                { address: 0, tiles: [tile(1), tile(1)], enabled: true, paletteLine: 0 },
+                { address: 4, tiles: [tile(1)], enabled: true, paletteLine: 2 },
+            ]);
+            environment.mappings.replace([[piece(4)], [piece(0)]]);
+            environment.dplcs.replace([[{ art: 4, size: 1 }], [{ art: 0, size: 1 }]]);
+            environment.spriteMetadata.replace([{}, {}]);
+
+            const pixel = (sprite) => Array.from(
+                exportSprite(sprite).getContext('2d').getImageData(0, 0, 1, 1).data.slice(0, 3),
+            );
+
+            environment.config.dplcsEnabled = false;
+            const plain = environment.sprites.map((sprite) => ({
+                lines: toJS(sprite.lines).slice(0, 5),
+                pixel: pixel(sprite),
+            }));
+            environment.config.dplcsEnabled = true;
+            environment.mappings.replace([[piece(0)], [piece(0)]]);
+            const viaDPLCs = environment.sprites.map((sprite) => ({
+                lines: toJS(sprite.lines),
+                pixel: pixel(sprite),
+            }));
+
+            return {
+                plain, viaDPLCs,
+                expected: [3, 1].map((line) => environment.palettesRGB[line][1]),
+            };
+        });
+
+        // the gap between the banks belongs to neither and has no offset
+        expect(result.plain.map(({ lines }) => lines)).toEqual([[0, 0, 0, 0, 2], [0, 0, 0, 0, 2]]);
+        expect(result.viaDPLCs.map(({ lines }) => lines)).toEqual([[2], [0]]);
+        expect(result.plain.map(({ pixel }) => pixel)).toEqual(result.expected);
+        expect(result.viaDPLCs.map(({ pixel }) => pixel)).toEqual(result.expected);
     });
 });
 

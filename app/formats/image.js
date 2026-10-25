@@ -8,7 +8,7 @@ import { colorMatch } from '~/components/import/color-match';
 import { removeBackground } from '~/components/import/remove-background';
 import { mappingState } from '~/components/mappings/state';
 
-export function exportSprite({ buffer, mappings }) {
+export function exportSprite({ buffer, mappings, lines = [] }) {
 
     const { palettesRGB } = environment;
 
@@ -43,8 +43,6 @@ export function exportSprite({ buffer, mappings }) {
     const { artPaletteLine } = environment.config;
 
     mappings.slice(0).reverse().forEach((mapping) => {
-        const palette = palettesRGB[(mapping.palette + artPaletteLine) % 4];
-
         mappingCanvas.width = mapping.width * 8;
         mappingCanvas.height = mapping.height * 8;
 
@@ -52,6 +50,8 @@ export function exportSprite({ buffer, mappings }) {
         Array.from({length: mapping.width * mapping.height})
             .forEach((_, index) => {
                 const tile = buffer[mapping.art + index] || Array.from({length: 0x40}).fill(0);
+                const line = mapping.palette + (lines[mapping.art + index] || 0) + artPaletteLine;
+                const palette = palettesRGB[line % 4];
 
                 for (let i = 0, j = 0; i < 64; i++, j+=4) {
                     tileBuffer.data[j] = palette[tile[i] || 0][0];
@@ -104,7 +104,7 @@ export function exportSpritesheet() {
             if (filePath) {
                 workspace.lastDialogDir = nodePath.dirname(filePath);
 
-                const canvases = sprites.map(({ buffer, mappings }) => exportSprite({ buffer, mappings }));
+                const canvases = sprites.map((sprite) => exportSprite(sprite));
 
                 const canvas = document.createElement('canvas');
                 canvas.width = 8;
@@ -139,11 +139,11 @@ export function exportSpritesheet() {
 }
 
 export function exportPNG() {
-    const { currentSprite: { buffer, mappings }, sprites } = environment;
+    const { currentSprite, sprites } = environment;
 
-    if (!mappings.length || !sprites.length) return;
+    if (!currentSprite.mappings.length || !sprites.length) return;
 
-    const canvas = exportSprite({ buffer, mappings });
+    const canvas = exportSprite(currentSprite);
 
     dialog.showSaveDialog({
         title: 'Export Sprite',
@@ -205,7 +205,7 @@ export async function importImg() {
 
     // get smallest X/Y
 
-    const { currentSprite: { buffer, mappings }, palettesRGB, sprites } = environment;
+    const { currentSprite: { buffer, lines, mappings }, palettesRGB, sprites } = environment;
 
     const minX = mappings.reduce((a, c) => c.left < a ? c.left : a, Infinity);
     const minY = mappings.reduce((a, c) => c.top < a ? c.top : a, Infinity);
@@ -229,9 +229,6 @@ export async function importImg() {
     for (const { top, left, palette, vflip, hflip, width, height, art } of mappings) {
         const x = left - minX;
         const y = top - minY;
-        const shiftedPalette = (palette + environment.config.artPaletteLine) % 4;
-        const paletteLine = palettesRGB[shiftedPalette];
-
         // handle flipping
         const flipCtx = await flipBuffer(
             ctx.getImageData(x, y, width * 8, height * 8),
@@ -243,11 +240,12 @@ export async function importImg() {
             const offX = (0|(i / height)) * 8;
             const offY = (i % height) * 8;
 
+            const bufferOffset = art + i;
+            const shiftedPalette = (palette + (lines[bufferOffset] || 0) + environment.config.artPaletteLine) % 4;
             const tileBuffer = colorMatch(flipCtx.getImageData(offX, offY, 8, 8), shiftedPalette);
 
-            const bufferOffset = art + i;
             if (bufferOffset < buffer.length) {
-                buffer[bufferOffset].replace(getPixels(tileBuffer, paletteLine));
+                buffer[bufferOffset].replace(getPixels(tileBuffer, palettesRGB[shiftedPalette]));
             }
         }
     }

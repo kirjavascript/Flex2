@@ -184,6 +184,12 @@ class ImportState {
         return this.sprites[this.spriteIndex];
     }
 
+    // tiles are imported into the current bank, so they take its offset too
+    get shiftedLine() {
+        const bankLine = environment.currentBank?.paletteLine || 0;
+        return (this.paletteLine + bankLine + environment.config.artPaletteLine) % 4;
+    }
+
     get tileQty() {
         return this.mappings.reduce((a, c) => {
             return a + (c.width * c.height);
@@ -206,7 +212,7 @@ class ImportState {
         canvas.height = this.importHeight = height+16;
 
         // draw sprite
-        const shiftedLine = (this.paletteLine + environment.config.artPaletteLine) % 4;
+        const shiftedLine = this.shiftedLine;
         const coloredBuffer = colorMatch(buffer, shiftedLine);
         ctx.putImageData(coloredBuffer, 8, 8);
 
@@ -222,7 +228,7 @@ class ImportState {
     changePalette = () => {
         const { canvas, ctx } = this;
         const { width, height, buffer } = this.currentSprite;
-        const shiftedLine = (this.paletteLine + environment.config.artPaletteLine) % 4;
+        const shiftedLine = this.shiftedLine;
         const coloredBuffer = colorMatch(buffer, shiftedLine);
         ctx.putImageData(coloredBuffer, 8, 8);
     };

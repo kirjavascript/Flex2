@@ -14,6 +14,8 @@ NEXT
             check DPLC metadata issue
             maybe remove auto palette
 
+        check the weird display objects from the disasm and see if they can be converted
+
         radiotails stuff
             highlighing tiles with more than one art source
 

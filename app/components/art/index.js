@@ -119,7 +119,7 @@ export const Art = observer(class Art extends DimensionsComponent {
                             <Tile
                                 key={`${index}-${i}`}
                                 data={tile}
-                                paletteLine={0}
+                                paletteLine={bank.paletteLine || 0}
                                 scale={scale}
                                 onMouseDown={() => {
                                     mappingState.newMapping.active = true;

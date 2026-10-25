@@ -9,7 +9,8 @@ export class ObjectDef {
         path: '',
         compression: 'Uncompressed',
         offset: 0,
-        extra: [/* {path, compression, address} */],
+        paletteLine: 0,
+        extra: [/* {path, compression, address, paletteLine} */],
     };
     mappings = {
         path: '',
@@ -43,7 +44,9 @@ export function hydrate(objects) {
         delete obj.uuid;
         if (obj.art) {
             obj.art.offset = obj.art.offset || 0;
+            obj.art.paletteLine ??= 0;
             obj.art.extra ??= [];
+            obj.art.extra.forEach((source) => { source.paletteLine ??= 0; });
         }
         obj.config ??= {};
         obj.children && hydrate(obj.children);

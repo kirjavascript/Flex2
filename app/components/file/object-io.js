@@ -122,7 +122,7 @@ export function createObjectIO(obj, options = {}) {
                 }
 
                 const tiles = bufferToTiles(decompBuffer);
-                banks.push({ address, tiles, enabled: true });
+                banks.push({ address, tiles, enabled: true, paletteLine: Number(source.paletteLine) || 0 });
                 end = Math.max(end, address + tiles.length);
             }
 

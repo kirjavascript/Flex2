@@ -38,7 +38,8 @@ export function importSprite(ctx, newMappings, paletteLine) {
     } = environment;
     const fillMetadata = prepareMetadataFill();
 
-    const shiftedLine = (paletteLine + environment.config.artPaletteLine) % 4;
+    const bankLine = environment.currentBank?.paletteLine || 0;
+    const shiftedLine = (paletteLine + bankLine + environment.config.artPaletteLine) % 4;
     const palette = palettesRGB[shiftedLine];
 
     let newMappingsList = [];

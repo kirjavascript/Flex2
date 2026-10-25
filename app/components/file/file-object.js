@@ -9,6 +9,7 @@ import { createObjectIO } from './object-io';
 import { extname, basename } from 'path';
 
 const compressionList = Object.keys(compressionFormats);
+const paletteLines = [0, 1, 2, 3];
 
 const isASM = (path) => ['.asm', '.s'].includes(extname(path).toLowerCase());
 
@@ -79,6 +80,14 @@ export const FileObject = observer(({ obj, isInProject = false }) => {
                 <Item>Load Offset</Item>
                 <Input store={obj.art} accessor="offset" isNumber wheel={false} />
             </div>}
+            <div className="menu-item">
+                <Item>Palette Line Offset</Item>
+                <Select
+                    options={paletteLines}
+                    store={obj.art}
+                    accessor="paletteLine"
+                />
+            </div>
 
             <ErrorMsg error={artError} />
             <FileInput
@@ -101,6 +110,7 @@ export const FileObject = observer(({ obj, isInProject = false }) => {
                             path: '',
                             compression: 'Uncompressed',
                             address: '',
+                            paletteLine: 0,
                         });
                         setOpenArt(obj.art.extra.length - 1);
                     }}
@@ -150,6 +160,14 @@ export const FileObject = observer(({ obj, isInProject = false }) => {
                                     options={compressionList}
                                     store={source}
                                     accessor="compression"
+                                />
+                            </div>
+                            <div className="menu-item">
+                                <Item>Palette Line Offset</Item>
+                                <Select
+                                    options={paletteLines}
+                                    store={source}
+                                    accessor="paletteLine"
                                 />
                             </div>
                             <FileInput

@@ -62,7 +62,7 @@ export const Mappings = observer(class Mappings extends Component {
     }
 
     render() {
-        const { buffer, index, mappings } = environment.currentSprite;
+        const { buffer, lines, index, mappings } = environment.currentSprite;
         const { scale, x, y, baseWidth, mode, selectedIndices } = mappingState;
 
         return (
@@ -104,6 +104,7 @@ export const Mappings = observer(class Mappings extends Component {
                                 <Mapping
                                     data={mapping}
                                     tileBuffer={buffer}
+                                    lines={lines}
                                     scale={scale}
                                 />
                             </div>

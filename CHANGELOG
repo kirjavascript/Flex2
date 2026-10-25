@@ -15,6 +15,7 @@
 - Add option for uncapped DPLC entries: entries are no longer limited to 16 tiles and each format fits them to its own limit on save
 - Add search to object tree
 - Add more valid file extensions for art
+- Add art_tile style palette offset for loaded art in objects
 - Add ability to cycle through sprite pieces
 - Add count/step display
 - Add timeout for compression to catch crashes / errors from invalid data

@@ -321,7 +321,11 @@ const SortableDPLCItem = SortableElement(
                                 environment.tiles.length > dplc.art + i
                                     ? environment.tiles[dplc.art + i]
                                     : undefined;
-                            return <Tile key={i} data={data} />;
+                            return <Tile
+                                key={i}
+                                data={data}
+                                paletteLine={environment.tileLines[dplc.art + i] || 0}
+                            />;
                         })}
                     </div>
                 </div>

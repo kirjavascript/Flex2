@@ -11,7 +11,7 @@ export const Sprite = observer(class Sprite extends Component {
         const { config } = environment;
         const { currentSprite } = config;
 
-        const { index, mappings, buffer, metadata } = this.props.data;
+        const { index, mappings, buffer, lines, metadata } = this.props.data;
 
         return <div
             className="sprite"
@@ -40,6 +40,7 @@ export const Sprite = observer(class Sprite extends Component {
                         scale={spriteState.zoom}
                         data={mapping}
                         tileBuffer={buffer}
+                        lines={lines}
                     />
                 </div>;
             })}
