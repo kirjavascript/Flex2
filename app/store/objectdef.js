@@ -55,7 +55,9 @@ export function hydrate(objects) {
 
 export function editPaths(obj, lambda) {
     for (const name in obj) {
+        // an unset path resolves against the cwd or project dir otherwise
         if (name === 'path') {
+            if (!obj[name]) continue;
             obj[name] = lambda(obj[name]);
         } else {
             const item = obj[name];

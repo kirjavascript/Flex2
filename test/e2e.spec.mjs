@@ -1758,6 +1758,84 @@ test.describe('Compression', () => {
     });
 });
 
+test.describe('Project paths', () => {
+
+    const openProject = (page, projectPath) => page.evaluate(async (projectPath) => {
+        const { workspace, toJS } = window.__test__;
+        workspace.projectPath = projectPath;
+        workspace.openProject();
+        for (let i = 0; i < 50 && !workspace.project.objects.length; i++) {
+            await new Promise((r) => setTimeout(r, 20));
+        }
+        return toJS(workspace.project.objects);
+    }, projectPath);
+
+    const closeProject = (page) => page.evaluate(() => {
+        window.__test__.workspace.closeProject();
+    });
+
+    test('backslashes from Windows are read and saved as /', async () => {
+        const tmp = mkdtempSync(join(tmpdir(), 'flex2-test-'));
+        try {
+            const projectPath = join(tmp, 'project.flex.json');
+            writeFileSync(projectPath, JSON.stringify({
+                Flex: 2,
+                name: 'windows',
+                objects: [{
+                    name: 'obj',
+                    art: { path: 'art\\Sonic.bin', extra: [{ path: 'art\\extra\\Tails.bin' }] },
+                    mappings: { path: 'map\\Sonic.asm' },
+                    dplcs: { enabled: false, path: '' },
+                    palettes: [{ path: 'pal\\Sonic.bin', length: 1 }],
+                }],
+            }));
+
+            const [obj] = await openProject(page, projectPath);
+            expect([
+                obj.art.path, obj.art.extra[0].path, obj.mappings.path, obj.palettes[0].path,
+            ]).toEqual(['art/Sonic.bin', 'art/extra/Tails.bin', 'map/Sonic.asm', 'pal/Sonic.bin']);
+
+            await expect.poll(() => readFileSync(projectPath, 'utf8'), { timeout: 2000 })
+                .toContain('"art/Sonic.bin"');
+            expect(readFileSync(projectPath, 'utf8')).not.toContain('\\\\');
+        } finally {
+            await closeProject(page);
+            rmSync(tmp, { recursive: true, force: true });
+        }
+    });
+
+    test('unset paths stay unset when copied between file and project', async () => {
+        const tmp = mkdtempSync(join(tmpdir(), 'flex2-test-'));
+        try {
+            const projectPath = join(tmp, 'project.flex.json');
+            writeFileSync(projectPath, JSON.stringify({ Flex: 2, name: 'empty', objects: [{ name: 'seed' }] }));
+            await openProject(page, projectPath);
+            await setFileObject(page, {
+                format: 'Sonic 1.js',
+                artPath: join(tmp, 'art', 'Sonic.bin'),
+            });
+
+            const result = await page.evaluate(() => {
+                const { workspace, toJS } = window.__test__;
+                workspace.fileToProject();
+                const copied = toJS(workspace.project.objects[0]);
+                workspace.file.art.path = 'stale';
+                workspace.projectToFile(workspace.project.objects[0]);
+                return { copied, file: toJS(workspace.file) };
+            });
+
+            expect(result.copied.art.path).toBe('art/Sonic.bin');
+            expect(result.copied.mappings.path).toBe('');
+            expect(result.copied.dplcs.path).toBe('');
+            expect(result.file.art.path).toBe(join(tmp, 'art', 'Sonic.bin'));
+            expect(result.file.mappings.path).toBe('');
+        } finally {
+            await closeProject(page);
+            rmSync(tmp, { recursive: true, force: true });
+        }
+    });
+});
+
 test('electron version is pinned to 22.3.27', () => {
     const pkg = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8'));
     expect(pkg.dependencies.electron).toBe('22.3.27');
