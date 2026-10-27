@@ -299,7 +299,6 @@ export const FileObject = observer(({ obj, isInProject = false }) => {
                                 options={[1, 2, 3, 4]}
                                 store={palette}
                                 accessor="length"
-                                flipScroll
                             />
                         </div>
                         <FileInput

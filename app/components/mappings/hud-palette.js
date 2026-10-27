@@ -39,7 +39,6 @@ export const PaletteHUD = observer(
                         label="line"
                         store={mappingState}
                         accessor="drawPalette"
-                        flipScroll
                     />
                     <Select
                         key={`tool-${drawTool}`}

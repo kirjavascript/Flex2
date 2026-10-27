@@ -56,7 +56,6 @@ export const Settings = observer(() => {
                             options={[0, 1, 2, 3]}
                             store={environment.config}
                             accessor="artPaletteLine"
-                            flipScroll
                         />
                     </div>
                 </div>
