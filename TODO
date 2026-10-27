@@ -14,8 +14,7 @@ NEXT
             check DPLC metadata issue
             maybe remove auto palette
 
-        radiotails stuff
-            highlighing tiles with more than one art source
+        radiotails stuff (hide sprites)
 
     clear undo history when loading an object
 
