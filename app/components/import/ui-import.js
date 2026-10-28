@@ -1,7 +1,8 @@
 import React from 'react';
 import { observer } from 'mobx-react';
 import { importState } from './state';
-import { Item, Select, Input } from '~/ui';
+import { Item, Select, Input, Checkbox } from '~/ui';
+import { environment } from '~/store/environment';
 import { zoomAssert, paletteLineAssert } from '~/util/assertions';
 
 export const ImportSprites = observer(() => {
@@ -55,6 +56,17 @@ export const ImportSprites = observer(() => {
                     />
 
                     <div className="input">
+                        <span>Allow Overlap</span>
+                        <Checkbox
+                            checked={importState.overlap}
+                            onChange={() => {
+                                importState.overlap = !importState.overlap;
+                                importState.changeType();
+                            }}
+                        />
+                    </div>
+
+                    <div className="input">
                         <span>Palette</span>
                         <Input
                             store={importState}
@@ -77,13 +89,25 @@ export const ImportSprites = observer(() => {
 
                     <div className="input">
                         <span>Mappings</span>
-                        <span>{mappings.length}</span>
+                        <span>{importState.pending ? '...' : mappings.length}</span>
                     </div>
 
                     <div className="input">
                         <span>Tiles</span>
                         <span>{importState.tileQty}</span>
                     </div>
+
+                    <div className="input">
+                        <span>New Tiles</span>
+                        <span>{importState.newTileQty}</span>
+                    </div>
+
+                    {environment.config.dplcsEnabled && (
+                        <div className="input">
+                            <span>Loaded Tiles</span>
+                            <span>{importState.loadedTileQty}</span>
+                        </div>
+                    )}
 
                     {sprites.length > 1 && (
                         <div className="input">

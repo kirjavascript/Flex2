@@ -4,8 +4,10 @@ import { errorMsg } from '~/util/dialog';
 import { removeBackground } from './remove-background';
 import { colorMatch } from './color-match';
 import { getSpriteBBoxes } from './get-sprite';
-import { getMappings } from './generate-mappings';
-import { importSprite } from './import-sprite';
+import {
+    importSprite, planSprite, resetImportCache, commonPixels, padded,
+} from './import-sprite';
+import { generateInWorker, resetWorkerSession } from './worker-client';
 import { environment } from '~/store/environment';
 import { workspace } from '~/store/workspace';
 import { readFile } from 'fs';
@@ -18,7 +20,13 @@ class ImportState {
     bboxes = [];
     sprites = [];
     mappings = [];
+    newTileQty = 0;
+    loadedTileQty = 0;
+    // pieces are being worked out, so there is nothing to import yet
+    pending = false;
+    request = 0;
     type = 'mappings';
+    overlap = false;
     importWidth = 0;
     importHeight = 0;
     spriteIndex = 0;
@@ -33,6 +41,11 @@ class ImportState {
         this.ctx = undefined;
         this.spriteIndex = 0;
         this.auto = false;
+        resetImportCache();
+        resetWorkerSession();
+        // anything still being generated is for an import that is gone
+        this.request++;
+        this.pending = false;
         this.bboxes.replace([]);
         this.sprites.replace([]);
         this.mappings.replace([]);
@@ -152,8 +165,13 @@ class ImportState {
             config: observable,
             bboxes: observable,
             sprites: observable,
-            mappings: observable,
+            // pieces can hold buffers and templates, which must stay as they are
+            mappings: observable.shallow,
+            newTileQty: observable,
+            loadedTileQty: observable,
+            pending: observable,
             type: observable,
+            overlap: observable,
             importWidth: observable,
             importHeight: observable,
             spriteIndex: observable,
@@ -169,6 +187,8 @@ class ImportState {
             backToDetect: action,
             currentSprite: computed,
             tileQty: computed,
+            updatePlan: action,
+            regenerate: action,
             changePalette: action,
             changeType: action,
             importOne: action,
@@ -184,17 +204,52 @@ class ImportState {
         return this.sprites[this.spriteIndex];
     }
 
+    get tileQty() {
+        return this.mappings.reduce((a, c) => {
+            return a + (c.width * c.height);
+        }, 0);
+    }
+
     // tiles are imported into the current bank, so they take its offset too
     get shiftedLine() {
         const bankLine = environment.currentBank?.paletteLine || 0;
         return (this.paletteLine + bankLine + environment.config.artPaletteLine) % 4;
     }
 
-    get tileQty() {
-        return this.mappings.reduce((a, c) => {
-            return a + (c.width * c.height);
-        }, 0);
+    get buffer() {
+        const { canvas, ctx } = this;
+        return ctx.getImageData(0, 0, canvas.width, canvas.height);
     }
+
+    // how many tiles are actually new once existing art is reused
+    updatePlan = () => {
+        const plan = planSprite(this.buffer, this.mappings, this.paletteLine);
+        this.newTileQty = plan.newTiles.length;
+        this.loadedTileQty = plan.dplcs ? plan.dplcs.reduce((a, d) => a + d.size, 0) : 0;
+    };
+
+    // draw the sprite matched to its palette, then work out its pieces. resolves
+    // false when another regenerate replaced this one before it finished
+    regenerate = () => {
+        const { canvas, ctx, type } = this;
+        const { buffer } = this.currentSprite;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.putImageData(colorMatch(buffer, this.shiftedLine), 8, 8);
+
+        // frames of the same size, like monitors, often share a part
+        const shared = commonPixels(buffer, this.sprites.map((sprite) => sprite.buffer));
+        const common = shared && { keep: padded(shared.keep, buffer.width, buffer.height), share: shared.share };
+
+        const request = ++this.request;
+        this.pending = true;
+        const options = { overlap: this.overlap };
+        return generateInWorker(this.buffer, type, this.paletteLine, common, options).then((pieces) => {
+            if (request !== this.request) return false;
+            this.mappings.replace(pieces);
+            this.pending = false;
+            return true;
+        });
+    };
 
     canvasRefImport = (node) => {
         if (!node) return;
@@ -205,42 +260,32 @@ class ImportState {
 
         this.canvas = node;
         this.ctx = node.getContext('2d', { willReadFrequently: true });
-        const { canvas, ctx, type } = this;
-        const { width, height, buffer } = this.currentSprite;
+        const { canvas } = this;
+        const { width, height } = this.currentSprite;
 
         canvas.width = this.importWidth = width+16;
         canvas.height = this.importHeight = height+16;
 
-        // draw sprite
-        const shiftedLine = this.shiftedLine;
-        const coloredBuffer = colorMatch(buffer, shiftedLine);
-        ctx.putImageData(coloredBuffer, 8, 8);
-
-        this.mappings.replace(getMappings(canvas, ctx, type));
-
-        if (this.auto) {
-            requestAnimationFrame(() => {
-                this.importOne();
-            });
-        }
+        this.regenerate().then((done) => {
+            if (!done) return;
+            if (this.auto) this.importOne();
+            else this.updatePlan();
+        });
     };
 
+    // palette and type both change which pieces are best
     changePalette = () => {
-        const { canvas, ctx } = this;
-        const { width, height, buffer } = this.currentSprite;
-        const shiftedLine = this.shiftedLine;
-        const coloredBuffer = colorMatch(buffer, shiftedLine);
-        ctx.putImageData(coloredBuffer, 8, 8);
+        this.regenerate().then((done) => done && this.updatePlan());
     };
 
     changeType = () => {
-        const { canvas, ctx, type } = this;
-        this.mappings.replace(getMappings(canvas, ctx, type));
+        this.regenerate().then((done) => done && this.updatePlan());
     };
 
     importOne = () => {
-        const { ctx, mappings, paletteLine } = this;
-        importSprite(ctx, mappings, paletteLine);
+        if (this.pending) return;
+        const { mappings, paletteLine } = this;
+        importSprite(this.buffer, mappings, paletteLine, { select: !this.auto });
         this.next();
     };
 
@@ -254,6 +299,7 @@ class ImportState {
             this.spriteIndex++;
         }
         else {
+            if (this.auto) environment.config.currentSprite = environment.mappings.length - 1;
             this.cancel();
         }
     };

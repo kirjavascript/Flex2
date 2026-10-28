@@ -35,4 +35,12 @@ import { mappingState } from '~/components/mappings/state';
 import { toJS } from 'mobx';
 import { exportSprite } from '~/formats/image';
 import { keymap } from '~/store/keymap';
-window.__test__ = { environment, workspace, mappingState, toJS, exportSprite, keymap };
+import { importState } from '~/components/import/state';
+import { importSprite, generateSpriteMappings, commonPixels, padded } from '~/components/import/import-sprite';
+import { generateMappings } from '~/components/import/generate-mappings';
+import { generateInWorker } from '~/components/import/worker-client';
+window.__test__ = {
+    environment, workspace, mappingState, toJS, exportSprite, keymap,
+    importState, importSprite, generateSpriteMappings, commonPixels, padded,
+    generateMappings, generateInWorker,
+};

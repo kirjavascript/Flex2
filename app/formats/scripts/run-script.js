@@ -272,7 +272,9 @@ export default catchFunc((obj) => {
 
                 if (writeMapping) {
                     for (let frameIndex = 0; frameIndex < sprite.length; frameIndex++) {
-                        const mapping = sprite[frameIndex];
+                        // scripts can rely on metadata, as reading always sets it,
+                        // but entries made in the editor may not have any
+                        const mapping = { ...sprite[frameIndex], metadata: sprite[frameIndex].metadata || {} };
                         const frame = [];
                         setWrite((size, data, type = binary) => {
                             frame.push([type, size, unsign(size, +data)]);

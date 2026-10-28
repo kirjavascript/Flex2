@@ -31,7 +31,7 @@ mappings([
         },
         ({ environment }, spriteIndex) => {
             const dplcPieces = environment?.dplcs?.[spriteIndex] || [];
-            const regions = buildVramRegions(dplcPieces);
+            const regions = buildVramRegions(dplcPieces, environment);
             return ({ mapping, sprite }, frameIndex) => {
                 write(nybble, 0);
                 write(2, mapping.width - 1);
@@ -68,13 +68,14 @@ dplcs([
         },
         ({ environment, sprite }) => {
             const artBase = environment?.spriteMetadata?.[0]?.artBase || 0;
+            const filled = fillPLCs(sprite, environment);
             return ({ mapping }, frameIndex) => {
                 const metadata = mapping.metadata || {};
                 write(dc.w, swapBytes(mapping.size * 0x10));
-                write(dc.w, metadata.dmaSrc || 0);
+                write(dc.w, filled[frameIndex].dmaSrc);
                 write(12, mapping.art + artBase);
                 write(4, metadata.unknown || 0);
-                write(dc.w, metadata.dmaDst || 0);
+                write(dc.w, filled[frameIndex].dmaDst);
                 write(dc.w, frameIndex === sprite.length - 1 ? 0xFFFF : 0);
             };
         },
@@ -86,15 +87,32 @@ dplcs([
     mergeContiguous: true,
 });
 
-function buildVramRegions(dplcPieces) {
-    const regions = [];
+// where each of a frame's entries reads from and loads to. entries made in
+// Flex rather than read may not say, so they take the object's ROM bank and
+// VRAM slot from an entry that does, each loading after the one before it
+function fillPLCs(dplcPieces, environment) {
+    const known = (environment?.dplcs || []).flat()
+        .find((piece) => piece.metadata?.dmaDst !== undefined) || { metadata: {} };
+    const filled = [];
+    dplcPieces.forEach((piece, i) => {
+        const previous = filled[i - 1];
+        filled.push({
+            dmaSrc: piece.metadata?.dmaSrc ?? known.metadata.dmaSrc ?? 0,
+            dmaDst: piece.metadata?.dmaDst
+                ?? (previous ? previous.dmaDst + dplcPieces[i - 1].size * 0x20 : known.metadata.dmaDst ?? 0),
+        });
+    });
+    return filled;
+}
+
+function buildVramRegions(dplcPieces, environment) {
+    const filled = fillPLCs(dplcPieces, environment);
     let localArt = 0;
-    for (const piece of dplcPieces) {
-        const vramBase = (piece.metadata?.dmaDst || 0) / 0x20;
-        regions.push({ vramBase, localArt, size: piece.size });
+    return dplcPieces.map((piece, i) => {
+        const region = { vramBase: filled[i].dmaDst / 0x20, localArt, size: piece.size };
         localArt += piece.size;
-    }
-    return regions;
+        return region;
+    });
 }
 
 function rebaseArt(vramArt, regions) {

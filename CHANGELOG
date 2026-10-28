@@ -14,6 +14,11 @@
 - Add option to autofill metadata, palette and priority on new mappings and DPLCs
 - Add option for uncapped DPLC entries: entries are no longer limited to 16 tiles and each format fits them to its own limit on save
 - Add search to object tree
+- Spritesheet import produces fewer mappings / tiles and places pieces off the tile grid
+- Spritesheet import reuses existing tiles, including flipped and with DPLCs
+- Spritesheet import aims pieces at art already imported, parts frames of one size share, and mirrored halves
+- Spritesheet import option to allow overlapping pieces (off by default)
+- Fix saving Sonic Crackers DPLCs made in Flex rather than loaded (imported, added, or from enabling DPLCs)
 - Add more valid file extensions for art
 - Add art_tile style palette offset for loaded art in objects
 - Add ability to cycle through sprite pieces

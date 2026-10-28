@@ -4,7 +4,9 @@
         "start": "electron ./static --dev --user-data-dir=.userdata",
         "web": "node -e \"require('./development/build')()\" -- --dev",
         "test": "npx playwright test",
-        "test:headless": "xvfb-run -a npx playwright test"
+        "test:headless": "xvfb-run -a npx playwright test",
+        "bench": "npx playwright test --config playwright.bench.config.mjs",
+        "bench:headless": "xvfb-run -a npx playwright test --config playwright.bench.config.mjs"
     },
     "devDependencies": {
         "@playwright/test": "^1.61.1",

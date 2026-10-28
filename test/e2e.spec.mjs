@@ -1,142 +1,14 @@
-import { test, expect, _electron } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 import { resolve, join } from 'path';
 import { readFileSync, writeFileSync, mkdtempSync, rmSync } from 'fs';
 import { tmpdir } from 'os';
+import {
+    FIXTURES, launchApp, closeApp, clearEnvironment, setFileObject, clickLoad,
+    waitForIO, clickSave, waitForMappings, waitForTiles, waitForDplcs,
+} from './helpers.mjs';
+import { importProblems } from './import-invariants.mjs';
 
 const ROOT = resolve(import.meta.dirname, '..');
-const FIXTURES = resolve(import.meta.dirname, 'fixtures');
-const ELECTRON = resolve(ROOT, 'node_modules', '.bin', 'electron');
-const APP_DIR = resolve(ROOT, 'static');
-
-let userDataDir;
-
-async function launchApp() {
-    // throwaway profile so tests never touch the real app's localStorage
-    userDataDir = mkdtempSync(join(tmpdir(), 'flex2-userdata-'));
-    const app = await _electron.launch({
-        executablePath: ELECTRON,
-        args: [APP_DIR, `--user-data-dir=${userDataDir}`],
-    });
-    const page = await app.firstWindow();
-    await page.waitForSelector('.file-object', { timeout: 30_000 });
-    await page.waitForFunction(() => localStorage.length === 0, null, { timeout: 10_000 });
-    return { app, page };
-}
-
-async function closeApp(app) {
-    if (!app) return;
-    let pid;
-    try { pid = app.process()?.pid; } catch {}
-    const timeout = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('close timeout')), 5_000),
-    );
-    try {
-        await Promise.race([app.close(), timeout]);
-    } catch {
-        if (pid) try { process.kill(pid, 'SIGKILL'); } catch {}
-    }
-}
-
-async function clearEnvironment(page) {
-    await page.evaluate(() => {
-        const { environment } = window.__test__;
-        environment.clearArt();
-        environment.mappings.replace([]);
-        environment.dplcs.replace([]);
-        environment.spriteMetadata.replace([]);
-        environment.resetPalettes();
-        environment.config.dplcsEnabled = false;
-    });
-}
-
-async function setFileObject(page, {
-    format,
-    artPath,
-    artCompression = 'Uncompressed',
-    artOffset = 0,
-    artPaletteLine = 0,
-    artExtra = [],
-    mappingsPath,
-    dplcsPath,
-    palettePaths = [],
-    config = {},
-}) {
-    await page.evaluate((opts) => {
-        const { workspace } = window.__test__;
-        const file = workspace.file;
-        file.format = opts.format;
-        file.art.path = opts.artPath || '';
-        file.art.compression = opts.artCompression;
-        file.art.offset = opts.artOffset;
-        file.art.paletteLine = opts.artPaletteLine;
-        file.art.extra.replace(opts.artExtra.map(source => ({
-            compression: 'Uncompressed',
-            address: '',
-            paletteLine: 0,
-            ...source,
-        })));
-        file.mappings.path = opts.mappingsPath || '';
-        file.dplcs.path = opts.dplcsPath || '';
-        file.dplcs.enabled = !!opts.dplcsPath;
-        file.palettes.replace(
-            opts.palettePaths.map(p => ({
-                path: typeof p === 'string' ? p : p.path,
-                length: typeof p === 'string' ? 1 : (p.length || 1),
-            })),
-        );
-        // start from the script's own defaults, not the last test's config
-        for (const key of Object.keys(file.config)) delete file.config[key];
-        Object.assign(file.config, opts.config);
-    }, { format, artPath, artCompression, artOffset, artPaletteLine, artExtra, mappingsPath, dplcsPath, palettePaths, config });
-    // wait for MobX → React re-render so FileObject picks up new paths
-    await page.waitForTimeout(100);
-}
-
-async function clickButton(page, label, action) {
-    const items = page.locator('.file-object .menu-item');
-    const count = await items.count();
-    for (let i = 0; i < count; i++) {
-        const item = items.nth(i);
-        const text = await item.locator('.item').first().textContent();
-        if (text?.trim() === label) {
-            await item.locator('button', { hasText: action }).click();
-            return;
-        }
-    }
-    throw new Error(`No menu-item found with label "${label}" action "${action}"`);
-}
-
-const clickLoad = (page, label) => clickButton(page, label, 'load');
-async function waitForIO(page) {
-    // flush: ensure requestIdleCallbacks from the triggering click have fired
-    await page.evaluate(() => new Promise(r => requestIdleCallback(r)));
-    // wait for all "..." indicators to clear (IO finished)
-    const busy = page.locator('.file-object').getByText('...', { exact: true });
-    await expect(busy).toHaveCount(0, { timeout: 15_000 });
-}
-
-async function clickSave(page, label) {
-    await clickButton(page, label, 'save');
-    await waitForIO(page);
-}
-
-async function waitForMappings(page) {
-    await expect.poll(() => page.evaluate(() =>
-        window.__test__.environment.mappings.length,
-    ), { timeout: 15_000 }).toBeGreaterThan(0);
-}
-
-async function waitForTiles(page) {
-    await expect.poll(() => page.evaluate(() =>
-        window.__test__.environment.tiles.length,
-    ), { timeout: 15_000 }).toBeGreaterThan(0);
-}
-
-async function waitForDplcs(page) {
-    await expect.poll(() => page.evaluate(() =>
-        window.__test__.environment.dplcs.length,
-    ), { timeout: 15_000 }).toBeGreaterThan(0);
-}
 
 /** Snapshot the full environment state as JSON. */
 async function snapshotEnv(page) {
@@ -220,8 +92,8 @@ async function expectSnapshots(page, name) {
     return snap;
 }
 
-let app, page;
-test.beforeAll(async () => { ({ app, page } = await launchApp()); });
+let app, page, userDataDir;
+test.beforeAll(async () => { ({ app, page, userDataDir } = await launchApp()); });
 test.afterAll(async () => {
     await closeApp(app);
     if (userDataDir) rmSync(userDataDir, { recursive: true, force: true });
@@ -1835,6 +1707,556 @@ test.describe('Project paths', () => {
         }
     });
 });
+
+test.describe('Import spritesheet', () => {
+
+    // a 16x16 block of distinct tiles, the same block again, it mirrored, and
+    // an irregular blob. returns the palette index grid of each sprite
+    async function writeSheet(page, path) {
+        const { png, sprites } = await page.evaluate(() => {
+            const palette = window.__test__.environment.palettesRGB[0];
+            const seen = new Set();
+            const usable = [];
+            palette.forEach((rgb, i) => {
+                const key = rgb.join();
+                if (i && !seen.has(key)) usable.push(i);
+                seen.add(key);
+            });
+
+            const block = Array.from({ length: 16 }, (_, y) =>
+                Array.from({ length: 16 }, (_, x) => usable[(x * 3 + y * 5 + (x >> 3) * 7) % usable.length]));
+            const mirrored = block.map((row) => [...row].reverse());
+            const blob = Array.from({ length: 30 }, (_, y) =>
+                Array.from({ length: 37 }, (_, x) => (
+                    ((x - 12) / 12) ** 2 + ((y - 10) / 10) ** 2 < 1
+                    || ((x - 27) / 9) ** 2 + ((y - 20) / 9) ** 2 < 1
+                ) ? usable[(x + y) % usable.length] : 0));
+
+            const sprites = [block, block, mirrored, blob];
+            const sheet = document.createElement('canvas');
+            sheet.width = 200;
+            sheet.height = 48;
+            const ctx = sheet.getContext('2d');
+            let left = 4;
+            sprites.forEach((grid) => {
+                grid.forEach((row, y) => row.forEach((index, x) => {
+                    if (!index) return;
+                    const [r, g, b] = palette[index];
+                    ctx.fillStyle = `rgb(${r},${g},${b})`;
+                    ctx.fillRect(left + x, 4 + y, 1, 1);
+                }));
+                left += grid[0].length + 12;
+            });
+            return { png: sheet.toDataURL('image/png').split(',')[1], sprites };
+        });
+        writeFileSync(path, Buffer.from(png, 'base64'));
+        return sprites;
+    }
+
+    async function importSheet(page, path, type, { sheetWidth = 200, importAll = true } = {}) {
+        await page.evaluate(([path, type]) => {
+            const { importState } = window.__test__;
+            importState.type = type;
+            importState.openImport(path);
+        }, [path, type]);
+        // loading pads the sheet by 64px, which a fresh canvas never is
+        await expect.poll(() => page.evaluate(() =>
+            window.__test__.importState.canvas?.width,
+        ), { timeout: 10_000 }).toBe(sheetWidth + 64);
+        await page.evaluate(() => {
+            const { importState } = window.__test__;
+            importState.getBBoxes();
+            importState.importSprites();
+        });
+        await page.waitForTimeout(100);
+        if (!importAll) return;
+        await page.evaluate(() => window.__test__.importState.importAll());
+        await expect.poll(() => page.evaluate(() =>
+            window.__test__.importState.config.active,
+        ), { timeout: 15_000 }).toBe(false);
+    }
+
+    // redraw every sprite from its pieces, honouring flips, cropped to its pixels
+    async function drawSprites(page, sources) {
+        return page.evaluate((sources) => {
+            const crop = (pixels) => {
+                const ys = [...pixels.keys()].map((k) => k.split(',').map(Number));
+                const minX = Math.min(...ys.map(([x]) => x)), maxX = Math.max(...ys.map(([x]) => x));
+                const minY = Math.min(...ys.map(([, y]) => y)), maxY = Math.max(...ys.map(([, y]) => y));
+                return Array.from({ length: maxY - minY + 1 }, (_, y) =>
+                    Array.from({ length: maxX - minX + 1 }, (_, x) => pixels.get(`${x + minX},${y + minY}`) || 0));
+            };
+            const expected = sources.map((grid) => {
+                const pixels = new Map();
+                grid.forEach((row, y) => row.forEach((index, x) => index && pixels.set(`${x},${y}`, index)));
+                return crop(pixels);
+            });
+            const drawn = window.__test__.environment.sprites.map(({ buffer, mappings }) => {
+                const pixels = new Map();
+                // earlier pieces are drawn in front
+                [...mappings].reverse().forEach(({ art, left, top, width, height, hflip, vflip }) => {
+                    for (let c = 0; c < width; c++) for (let r = 0; r < height; r++) {
+                        const tile = buffer[art + c * height + r];
+                        for (let i = 0; i < 64; i++) {
+                            if (!tile[i]) continue;
+                            let x = c * 8 + (i & 7), y = r * 8 + (i >> 3);
+                            if (hflip) x = width * 8 - 1 - x;
+                            if (vflip) y = height * 8 - 1 - y;
+                            pixels.set(`${left + x},${top + y}`, tile[i]);
+                        }
+                    }
+                });
+                return crop(pixels);
+            });
+            return { drawn, expected };
+        }, sources);
+    }
+
+    for (const dplcs of [false, true]) {
+        for (const type of ['mappings', 'tiles']) {
+            test(`imports and dedupes (${type}${dplcs ? ', DPLCs' : ''})`, async () => {
+                const tmp = mkdtempSync(join(tmpdir(), 'flex2-test-'));
+                try {
+                    await clearEnvironment(page);
+                    await page.evaluate((dplcs) => {
+                        window.__test__.environment.config.dplcsEnabled = dplcs;
+                    }, dplcs);
+                    const path = join(tmp, 'sheet.png');
+                    const sources = await writeSheet(page, path);
+                    await importSheet(page, path, type);
+
+                    const { drawn, expected } = await drawSprites(page, sources);
+                    expect(drawn).toEqual(expected);
+
+                    const snap = await snapshotEnv(page);
+                    expect(snap.mappings).toHaveLength(4);
+                    // the block is four distinct tiles, and the copy and mirror reuse them
+                    expect(snap.mappings[1]).toEqual(snap.mappings[0]);
+                    expect(snap.mappings[2]).toHaveLength(1);
+                    expect(snap.mappings[2][0].hflip).toBe(true);
+                    if (dplcs) {
+                        expect(snap.dplcs[1]).toEqual(snap.dplcs[0]);
+                        expect(snap.dplcs[2]).toEqual(snap.dplcs[0]);
+                    }
+                    const blobTiles = snap.mappings[3].reduce((a, c) => a + c.width * c.height, 0);
+                    expect(snap.tileCount).toBeLessThanOrEqual(4 + blobTiles);
+                    expect(await getErrors(page)).toHaveLength(0);
+                } finally {
+                    rmSync(tmp, { recursive: true, force: true });
+                }
+            });
+        }
+    }
+
+    // grids of [r, g, b] or 0 for transparent, laid out left to right
+    async function writeGrids(page, path, grids, sheetWidth) {
+        const png = await page.evaluate(([grids, sheetWidth]) => {
+            const sheet = document.createElement('canvas');
+            sheet.width = sheetWidth;
+            sheet.height = Math.max(...grids.map((g) => g.length)) + 8;
+            const ctx = sheet.getContext('2d');
+            let left = 4;
+            grids.forEach((grid) => {
+                grid.forEach((row, y) => row.forEach((rgb, x) => {
+                    if (!rgb) return;
+                    ctx.fillStyle = `rgb(${rgb.join()})`;
+                    ctx.fillRect(left + x, 4 + y, 1, 1);
+                }));
+                left += grid[0].length + 12;
+            });
+            return sheet.toDataURL('image/png').split(',')[1];
+        }, [grids, sheetWidth]);
+        writeFileSync(path, Buffer.from(png, 'base64'));
+    }
+
+    // each imported sprite redrawn in colour, against its source grid
+    async function redraw(page, grids) {
+        return page.evaluate((grids) => {
+            const { environment, exportSprite } = window.__test__;
+            const crop = (points) => {
+                const minX = Math.min(...points.map(([x]) => x));
+                const minY = Math.min(...points.map(([, y]) => y));
+                return points.map(([x, y, ...rgb]) => [x - minX, y - minY, ...rgb])
+                    .sort((a, b) => a[1] - b[1] || a[0] - b[0]);
+            };
+            const expected = grids.map((grid) => crop(grid.flatMap((row, y) => row
+                .map((rgb, x) => rgb && [x, y, ...rgb]).filter(Boolean))));
+            const drawn = environment.sprites.map(({ buffer, mappings }) => {
+                const canvas = exportSprite({ buffer, mappings });
+                const { data, width, height } = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height);
+                const points = [];
+                for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) {
+                    const j = (y * width + x) * 4;
+                    if (data[j + 3] > 0x80) points.push([x, y, data[j], data[j + 1], data[j + 2]]);
+                }
+                return crop(points);
+            });
+            return { drawn, expected };
+        }, grids);
+    }
+
+    // colours unique to each palette line, so a pixel's line is unambiguous
+    async function lineColours(page) {
+        return page.evaluate(() => {
+            const lines = window.__test__.environment.palettesRGB;
+            const count = new Map();
+            lines.forEach((line) => line.slice(1).forEach((rgb) => {
+                count.set(rgb.join(), (count.get(rgb.join()) || 0) + 1);
+            }));
+            return lines.map((line) => line.slice(1).filter((rgb) => count.get(rgb.join()) == 1)
+                .filter((rgb, i, all) => all.findIndex((o) => o.join() == rgb.join()) == i));
+        });
+    }
+
+    test('covers half of a symmetric sprite and mirrors it (tiles)', async () => {
+        const tmp = mkdtempSync(join(tmpdir(), 'flex2-test-'));
+        try {
+            await clearEnvironment(page);
+            const [colours] = await lineColours(page);
+            // 32x16, mirrored left to right, no two tiles of a half alike
+            const half = Array.from({ length: 16 }, (_, y) =>
+                Array.from({ length: 16 }, (_, x) => colours[(x * 5 + y * 3 + x * y) % colours.length]));
+            const grid = half.map((row) => [...row, ...[...row].reverse()]);
+            const path = join(tmp, 'sheet.png');
+            await writeGrids(page, path, [grid], 64);
+            await importSheet(page, path, 'tiles', { sheetWidth: 64 });
+
+            const { drawn, expected } = await redraw(page, [grid]);
+            expect(drawn).toEqual(expected);
+            const snap = await snapshotEnv(page);
+            expect(snap.tileCount).toBe(4);
+            expect(snap.mappings[0]).toHaveLength(2);
+            expect(snap.mappings[0].filter((m) => m.hflip)).toHaveLength(1);
+        } finally {
+            rmSync(tmp, { recursive: true, force: true });
+        }
+    });
+
+    test('worker generates the same pieces as the main thread', async () => {
+        await setFileObject(page, {
+            format: 'Sonic 1.js',
+            mappingsPath: resolve(FIXTURES, 's1/maps/Monitor.asm'),
+            artPath: resolve(FIXTURES, 's1/art/Monitors.nem'),
+            artCompression: 'Nemesis',
+            palettePaths: [{ path: resolve(FIXTURES, 's1/palette/Sonic-full.bin'), length: 4 }],
+        });
+        await clearEnvironment(page);
+        await clickLoad(page, 'Object');
+        await waitForMappings(page);
+        await waitForTiles(page);
+
+        const differences = await page.evaluate(async () => {
+            const { environment, exportSprite, importSprite, importState, generateSpriteMappings, generateInWorker, commonPixels } = window.__test__;
+            const frames = environment.sprites.map(({ buffer, mappings }) => {
+                const sprite = exportSprite({ buffer, mappings });
+                const canvas = document.createElement('canvas');
+                canvas.width = sprite.width + 16;
+                canvas.height = sprite.height + 16;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(sprite, 8, 8);
+                return { image: ctx.getImageData(0, 0, canvas.width, canvas.height), palette: mappings[0].palette };
+            });
+            environment.clearArt();
+            environment.mappings.replace([]);
+            importState.reset();
+
+            const plain = (pieces) => JSON.stringify(pieces.map(({ template, source, ...piece }) => ({
+                ...piece, template: template && template.key, source: !!source,
+            })));
+            const images = frames.map((f) => f.image);
+            let differences = 0;
+            for (const type of ['tiles', 'mappings']) {
+                for (const { image, palette } of frames) {
+                    const common = commonPixels(image, images);
+                    const sync = generateSpriteMappings(image, type, palette, common);
+                    const worker = await generateInWorker(image, type, palette, common);
+                    if (plain(sync) !== plain(worker)) differences++;
+                    // later frames see this one's art, which the worker gets sent
+                    importSprite(image, sync, palette, { select: false });
+                }
+            }
+            importState.reset();
+            return differences;
+        });
+        expect(differences).toBe(0);
+    });
+
+    // seeded random sprites through the generator, held to the totals it
+    // reached when this was written so a change that makes it worse fails
+    // real art rendered and imported again with the default options. the result
+    // is kept as a snapshot, so any change to what import produces fails here
+    // and has to be accepted with --update-snapshots, which shows as a diff
+    const realArt = [
+        { name: 's1-monitor', format: 'Sonic 1.js', mappingsPath: 's1/maps/Monitor.asm', artPath: 's1/art/Monitors.nem', artCompression: 'Nemesis', palettePaths: [{ path: 's1/palette/Sonic-full.bin', length: 4 }] },
+        { name: 's1-sonic', frames: 30, format: 'Sonic 2.js', mappingsPath: 's1/maps/Sonic.asm', dplcsPath: 's1/maps/Sonic_DPLC.asm', artPath: 's1/art/Sonic.bin', palettePaths: [{ path: 's1/palette/Sonic-full.bin', length: 4 }] },
+        { name: 'crackers-arm', format: 'Sonic Crackers.js', mappingsPath: 'crackers/maps/SonicArm.asm', dplcsPath: 'crackers/maps/PLC_SonicArm.asm', artPath: 'crackers/art/SonicArm.bin', palettePaths: [{ path: 'crackers/palette/Primary-full.bin', length: 4 }] },
+        { name: 's3k-penguinator', format: 'Sonic 3&K.js', mappingsPath: 's3k/maps/Penguinator.asm', dplcsPath: 's3k/dplc/Penguinator.asm', artPath: 's3k/art/Penguinator.bin', config: { format: 'object', mapMacros: true } },
+    ];
+    for (const object of realArt) {
+        test(`import output on real art: ${object.name}`, async () => {
+            const fixture = (path) => path && resolve(FIXTURES, path);
+            await setFileObject(page, {
+                ...object,
+                mappingsPath: fixture(object.mappingsPath),
+                dplcsPath: fixture(object.dplcsPath),
+                artPath: fixture(object.artPath),
+                palettePaths: (object.palettePaths || []).map((p) => ({ ...p, path: fixture(p.path) })),
+            });
+            await clearEnvironment(page);
+            await clickLoad(page, 'Object');
+            await waitForMappings(page);
+            await waitForTiles(page);
+            if (object.dplcsPath) await waitForDplcs(page);
+
+            // each frame drawn the way the importer would see it
+            await page.evaluate((limit) => {
+                const { environment, exportSprite } = window.__test__;
+                window.__realFrames = [];
+                window.__realPalettes = [];
+                environment.sprites.filter(({ mappings }) => mappings.length).slice(0, limit).forEach(({ buffer, mappings }) => {
+                    const sprite = exportSprite({ buffer, mappings });
+                    const canvas = document.createElement('canvas');
+                    canvas.width = sprite.width + 16;
+                    canvas.height = sprite.height + 16;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(sprite, 8, 8);
+                    window.__realFrames.push(ctx.getImageData(0, 0, canvas.width, canvas.height));
+                    window.__realPalettes.push(mappings[0].palette);
+                });
+            }, object.frames || Infinity);
+
+            const output = {};
+            for (const type of ['mappings', 'tiles']) {
+                const summary = await page.evaluate((type) => {
+                    const { environment, generateSpriteMappings, importSprite, commonPixels, importState } = window.__test__;
+                    environment.clearArt();
+                    environment.mappings.replace([]);
+                    environment.dplcs.replace([]);
+                    importState.reset();
+                    window.__realFrames.forEach((frame, i) => {
+                        const palette = window.__realPalettes[i];
+                        const common = commonPixels(frame, window.__realFrames);
+                        const pieces = generateSpriteMappings(frame, type, palette, common);
+                        importSprite(frame, pieces, palette, { select: false });
+                    });
+                    const flags = (m) => `${m.hflip ? 'h' : ''}${m.vflip ? 'v' : ''}`;
+                    return {
+                        art: environment.tiles.length,
+                        frames: environment.sprites.map(({ mappings, dplcs }) => ({
+                            pieces: mappings.map((m) => `${m.left},${m.top} ${m.width}x${m.height} @${m.art}${flags(m)} p${m.palette}`),
+                            ...(dplcs && { dplcs: dplcs.map(({ art, size }) => `${art}+${size}`) }),
+                        })),
+                    };
+                }, type);
+                const problems = await page.evaluate(importProblems, { frames: '__realFrames', overlap: false });
+                expect(problems, `${type} mode`).toEqual([]);
+                output[type] = summary;
+            }
+            expect(JSON.stringify(output, null, 1)).toMatchSnapshot({ name: `import-${object.name}.json` });
+        });
+    }
+
+    // Crackers keeps where each frame's DPLCs end, and where they load to, in
+    // their metadata, which entries an import makes don't have
+    test('imported Crackers sprites with DPLCs save and load back', async () => {
+        const tmp = mkdtempSync(join(tmpdir(), 'flex2-test-'));
+        try {
+            const palettePaths = [{ path: resolve(FIXTURES, 'crackers/palette/Primary-full.bin'), length: 4 }];
+            await setFileObject(page, {
+                format: 'Sonic Crackers.js',
+                mappingsPath: resolve(FIXTURES, 'crackers/maps/SonicArm.asm'),
+                dplcsPath: resolve(FIXTURES, 'crackers/maps/PLC_SonicArm.asm'),
+                artPath: resolve(FIXTURES, 'crackers/art/SonicArm.bin'),
+                palettePaths,
+            });
+            await clearEnvironment(page);
+            await clickLoad(page, 'Object');
+            await waitForMappings(page);
+            await waitForTiles(page);
+            await waitForDplcs(page);
+
+            // frames drawn, then imported into an object with nothing in it
+            await page.evaluate(() => {
+                const { environment, exportSprite, generateSpriteMappings, importSprite, commonPixels, importState } = window.__test__;
+                const frames = environment.sprites.slice(0, 20).map(({ buffer, mappings }) => {
+                    const sprite = exportSprite({ buffer, mappings });
+                    const canvas = document.createElement('canvas');
+                    canvas.width = sprite.width + 16;
+                    canvas.height = sprite.height + 16;
+                    canvas.getContext('2d').drawImage(sprite, 8, 8);
+                    return { image: canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height), palette: mappings[0].palette };
+                });
+                environment.clearArt();
+                environment.mappings.replace([]);
+                environment.dplcs.replace([]);
+                environment.spriteMetadata.replace([]);
+                importState.reset();
+                window.__crackersFrames = frames.map(({ image }) => image);
+                frames.forEach(({ image, palette }) => {
+                    const common = commonPixels(image, window.__crackersFrames);
+                    const pieces = generateSpriteMappings(image, 'tiles', palette, common);
+                    importSprite(image, pieces, palette, { select: false });
+                });
+            });
+            expect(await page.evaluate(importProblems, { frames: '__crackersFrames', overlap: false })).toEqual([]);
+
+            const plain = () => page.evaluate(() => {
+                const { environment, toJS } = window.__test__;
+                const strip = ({ metadata, ...rest }) => rest;
+                return {
+                    mappings: toJS(environment.mappings).map((frame) => frame.map(strip)),
+                    dplcs: toJS(environment.dplcs).map((frame) => frame.map(strip)),
+                    tiles: toJS(environment.tiles),
+                };
+            });
+            const imported = await plain();
+
+            await setFileObject(page, {
+                format: 'Sonic Crackers.js',
+                mappingsPath: join(tmp, 'map.bin'),
+                dplcsPath: join(tmp, 'dplc.bin'),
+                artPath: join(tmp, 'art.bin'),
+                palettePaths,
+            });
+            await clickSave(page, 'Object');
+            expect(await getErrors(page)).toHaveLength(0);
+
+            await clearEnvironment(page);
+            await clickLoad(page, 'Object');
+            await waitForMappings(page);
+            await waitForTiles(page);
+            await waitForDplcs(page);
+
+            const reloaded = await plain();
+            expect(reloaded.mappings).toEqual(imported.mappings);
+            expect(reloaded.dplcs).toEqual(imported.dplcs);
+            expect(reloaded.tiles).toEqual(imported.tiles);
+        } finally {
+            rmSync(tmp, { recursive: true, force: true });
+        }
+    });
+
+    // seeded random sheets through generating and importing, the way Import All
+    // does it, under every combination of options. each frame is checked by
+    // importProblems; a failure names the seed and options to reproduce it
+    test('fuzz: every option combination imports correctly', async () => {
+        test.setTimeout(240_000);
+        await setFileObject(page, { format: 'Sonic 2.js' });
+        const failures = [];
+        for (const type of ['mappings', 'tiles']) for (const dplcs of [false, true])
+        for (const overlap of [false, true]) {
+            for (let seed = 1; seed <= 8; seed++) {
+                await clearEnvironment(page);
+                await page.evaluate(({ type, dplcs, overlap, seed }) => {
+                    const { environment, generateSpriteMappings, importSprite, commonPixels } = window.__test__;
+                    environment.config.dplcsEnabled = dplcs;
+                    let state = seed * 7919;
+                    const rand = () => (state = (state * 16807) % 2147483647) / 2147483647;
+                    const pick = (list) => list[(rand() * list.length) | 0];
+                    const colours = environment.palettesRGB[0].slice(1);
+
+                    // a frame as rows of [r, g, b] or 0
+                    const blobs = (w, h) => {
+                        const grid = Array.from({ length: h }, () => Array(w).fill(0));
+                        const count = 1 + ((rand() * 3) | 0);
+                        for (let b = 0; b < count; b++) {
+                            const cx = rand() * w, cy = rand() * h, rx = 3 + rand() * w / 2, ry = 3 + rand() * h / 2;
+                            for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+                                if (((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2 < 1) grid[y][x] = pick(colours);
+                            }
+                        }
+                        return grid;
+                    };
+                    const w = 12 + ((rand() * 52) | 0), h = 12 + ((rand() * 52) | 0);
+                    const first = blobs(w, h);
+                    // a copy, a mirror, one sharing a part with the first, and another
+                    const shared = first.map((row, y) => row.map((c, x) => (y < h / 2 ? c : 0)));
+                    const extra = blobs(w, h);
+                    shared.forEach((row, y) => row.forEach((c, x) => { if (!c) row[x] = extra[y][x]; }));
+                    const grids = [first, first.map((row) => [...row]), first.map((row) => [...row].reverse()), shared, blobs(w, h)];
+
+                    const toImage = (grid) => {
+                        const image = new ImageData(w, h);
+                        grid.forEach((row, y) => row.forEach((c, x) => {
+                            if (c) image.data.set([...c, 255], (y * w + x) * 4);
+                        }));
+                        return image;
+                    };
+                    const pad = (image) => {
+                        const out = new ImageData(w + 16, h + 16);
+                        for (let y = 0; y < h; y++) {
+                            out.data.set(image.data.subarray(y * w * 4, (y + 1) * w * 4), ((y + 8) * (w + 16) + 8) * 4);
+                        }
+                        return out;
+                    };
+
+                    window.__fuzzFrames = grids.map((grid) => pad(toImage(grid)));
+                    window.__fuzzFrames.forEach((frame) => {
+                        const common = commonPixels(frame, window.__fuzzFrames);
+                        const pieces = generateSpriteMappings(frame, type, 0, common, { overlap });
+                        importSprite(frame, pieces, 0, { select: false });
+                    });
+                }, { type, dplcs, overlap, seed });
+                const problems = await page.evaluate(importProblems, { frames: '__fuzzFrames', overlap });
+                if (problems.length) failures.push({ seed, type, dplcs, overlap, problems: problems.slice(0, 3) });
+            }
+        }
+        expect(failures).toEqual([]);
+    });
+
+    for (const overlap of [false, true]) test(`generator covers every pixel and does not regress (overlap ${overlap ? 'on' : 'off'})`, async () => {
+        const totals = await page.evaluate((overlap) => {
+            const { generateMappings } = window.__test__;
+            let seed = 1;
+            const rand = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+            const totals = { mappings: { pieces: 0, tiles: 0 }, tiles: { pieces: 0, tiles: 0 }, bad: 0 };
+            const apart = (a, b) => a.x >= b.x + b.width * 8 || b.x >= a.x + a.width * 8
+                || a.y >= b.y + b.height * 8 || b.y >= a.y + a.height * 8;
+            for (let n = 0; n < 30; n++) {
+                const w = 16 + (rand() * 48 | 0), h = 16 + (rand() * 48 | 0), blobs = 1 + (rand() * 3 | 0);
+                const W = w + 16, H = h + 16;
+                const buffer = new ImageData(W, H);
+                for (let b = 0; b < blobs; b++) {
+                    const cx = rand() * w, cy = rand() * h, rx = 3 + rand() * w / 3, ry = 3 + rand() * h / 3;
+                    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+                        if (((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2 >= 1) continue;
+                        const j = ((y + 8) * W + x + 8) * 4;
+                        buffer.data.set([(x * 37 + y * 11) & 255, (x * y * 7) & 255, (y * 53) & 255, 255], j);
+                    }
+                }
+                for (const type of ['mappings', 'tiles']) {
+                    const pieces = generateMappings(buffer, type, { overlap });
+                    const ok = pieces.every((p, i) => (
+                        p.width >= 1 && p.width <= 4 && p.height >= 1 && p.height <= 4
+                        && Number.isInteger(p.x) && Number.isInteger(p.y)
+                        && (overlap || pieces.every((q, j) => j <= i || apart(p, q)))
+                    ));
+                    let covered = true;
+                    for (let y = 0; y < H && covered; y++) for (let x = 0; x < W; x++) {
+                        if (buffer.data[(y * W + x) * 4 + 3] <= 0x80) continue;
+                        if (!pieces.some((p) => x >= p.x && x < p.x + p.width * 8 && y >= p.y && y < p.y + p.height * 8)) {
+                            covered = false;
+                            break;
+                        }
+                    }
+                    if (!ok || !covered) totals.bad++;
+                    totals[type].pieces += pieces.length;
+                    totals[type].tiles += pieces.reduce((a, p) => a + p.width * p.height, 0);
+                }
+            }
+            return totals;
+        }, overlap);
+        const baseline = BASELINE[overlap ? 'overlap' : 'apart'];
+        expect(totals.bad).toBe(0);
+        expect(totals.mappings.pieces).toBeLessThanOrEqual(baseline.mappings.pieces);
+        expect(totals.tiles.tiles).toBeLessThanOrEqual(baseline.tiles.tiles);
+    });
+});
+
+const BASELINE = {
+    apart: { mappings: { pieces: 50 }, tiles: { tiles: 322 } },
+    overlap: { mappings: { pieces: 50 }, tiles: { tiles: 319 } },
+};
 
 test('electron version is pinned to 22.3.27', () => {
     const pkg = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8'));
