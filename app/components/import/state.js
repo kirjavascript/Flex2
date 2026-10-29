@@ -3,7 +3,7 @@ const { dialog } = require('@electron/remote');
 import { errorMsg } from '~/util/dialog';
 import { removeBackground } from './remove-background';
 import { colorMatch } from './color-match';
-import { getSpriteBBoxes } from './get-sprite';
+import { getSpriteBBoxes, getCanvasBBoxes } from './get-sprite';
 import {
     importSprite, planSprite, resetImportCache, commonPixels, padded,
 } from './import-sprite';
@@ -11,6 +11,8 @@ import { generateInWorker, resetWorkerSession } from './worker-client';
 import { environment } from '~/store/environment';
 import { workspace } from '~/store/workspace';
 import { readFile } from 'fs';
+
+const SHEET_MARGIN = 32;
 
 class ImportState {
     config = {
@@ -28,6 +30,8 @@ class ImportState {
     overlap = false;
     alignToArt = false;
     gridAligned = false;
+    // one row of square cells, a sprite in each, lined up on the cell centre
+    fixedCanvas = false;
     importWidth = 0;
     importHeight = 0;
     spriteIndex = 0;
@@ -129,19 +133,21 @@ class ImportState {
          * has to be at least the size of the max fuzziness (maybe)
          */
         Object.assign(canvas, {
-            width: width+64,
-            height: height+64,
+            width: width + SHEET_MARGIN * 2,
+            height: height + SHEET_MARGIN * 2,
         });
-        ctx.putImageData(buffer, 32, 32);
+        ctx.putImageData(buffer, SHEET_MARGIN, SHEET_MARGIN);
+        // cells don't depend on what's drawn, so there's nothing to wait for
+        if (this.fixedCanvas) this.getBBoxes();
     };
 
     getBBoxes = () => {
         const { ctx, canvas } = this;
         const { width, height } = canvas;
         const buffer = ctx.getImageData(0, 0, width, height);
-        this.bboxes.replace(
-            getSpriteBBoxes(buffer, width, height, this.fuzziness)
-        );
+        this.bboxes.replace(this.fixedCanvas
+            ? getCanvasBBoxes(width, height, SHEET_MARGIN)
+            : getSpriteBBoxes(buffer, width, height, this.fuzziness));
     };
 
     importSprites = () => {
@@ -150,6 +156,7 @@ class ImportState {
                 width,
                 height,
                 buffer: this.ctx.getImageData(x, y, width, height),
+                fixed: this.fixedCanvas,
             };
         });
 
@@ -174,6 +181,7 @@ class ImportState {
             overlap: observable,
             alignToArt: observable,
             gridAligned: observable,
+            fixedCanvas: observable,
             importWidth: observable,
             importHeight: observable,
             spriteIndex: observable,
@@ -288,8 +296,10 @@ class ImportState {
 
     importOne = () => {
         if (this.pending) return;
-        const { mappings, paletteLine } = this;
-        importSprite(this.buffer, mappings, paletteLine, { select: !this.auto });
+        const { mappings, paletteLine, currentSprite: { fixed, width, height } } = this;
+        // the import canvas pads the sprite by 8px
+        const origin = fixed ? { x: 8 + Math.floor(width / 2), y: 8 + Math.floor(height / 2) } : undefined;
+        importSprite(this.buffer, mappings, paletteLine, { select: !this.auto, origin });
         this.next();
     };
 

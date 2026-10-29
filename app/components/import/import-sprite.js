@@ -111,20 +111,21 @@ export function generateSpriteMappings(buffer, type, paletteLine, common, option
     return generateFrame(getScene(), buffer, type, paletteLine, common, options);
 }
 
-// a planned frame's pieces as mappings, centred on the sprite
-function frameMappings(plan) {
+// a planned frame's pieces as mappings, relative to origin ({ x, y } on the
+// import canvas) or else centred on the sprite
+function frameMappings(plan, origin) {
     const list = plan.pieces.map((piece) => ({ priority: false, ...piece }));
     if (!list.length) return list;
     // pieces can sit at any pixel, so the centre can land between two
-    const center = getCenter(list);
+    const center = origin || getCenter(list);
     const cx = Math.floor(center.x);
     const cy = Math.floor(center.y);
     return list.map((mapping) => ({ ...mapping, left: mapping.left - cx, top: mapping.top - cy }));
 }
 
 // select: make it the current sprite, which scrolls the sprite list to it.
-// Import All leaves that to the end
-export function importSprite(buffer, newMappings, paletteLine, { select = true } = {}) {
+// Import All leaves that to the end. origin: see frameMappings
+export function importSprite(buffer, newMappings, paletteLine, { select = true, origin } = {}) {
     const { mappings, dplcs, spriteMetadata, config: { dplcsEnabled } } = environment;
     const plan = planSprite(buffer, newMappings, paletteLine);
     const fillMetadata = prepareMetadataFill();
@@ -132,7 +133,7 @@ export function importSprite(buffer, newMappings, paletteLine, { select = true }
     if (plan.newTiles.length) environment.appendTiles(plan.newTiles);
     if (dplcsEnabled) dplcs.push(plan.dplcs);
 
-    mappings.push(frameMappings(plan));
+    mappings.push(frameMappings(plan, origin));
     // without a real entry the sprite gets a throwaway {} and edits are lost
     while (spriteMetadata.length < mappings.length) {
         spriteMetadata.push({});

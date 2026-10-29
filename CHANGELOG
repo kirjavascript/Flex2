@@ -6,8 +6,9 @@
     - Pencil / Line / Rectangle / Fill / Ellipse / Star
     - Middle/Ctrl click for eyedropper
 - Spritesheet import
-    - Fewer mappings / tiles, with pieces placed off the tile grid
+    - Automatic sprite origin alignment when using Fixed Canvas sizes
     - Dedupes existing tiles / Aims pieces at art already imported, parts frames of one size share, and mirrored halves
+    - Fewer mappings / tiles, with pieces placed off the tile grid
     - Options: Allow Overlap / Grid Aligned / Reuse More Tiles
 - Remappable keys
 - Improve recent project listing UI

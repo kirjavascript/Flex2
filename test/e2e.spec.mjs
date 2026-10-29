@@ -1848,6 +1848,46 @@ test.describe('Import spritesheet', () => {
         }
     }
 
+    test('Fixed Canvas splits the sheet into square cells and lines frames up on their centres', async () => {
+        const tmp = mkdtempSync(join(tmpdir(), 'flex2-test-'));
+        try {
+            await clearEnvironment(page);
+            // 32x32 cells, the third one empty
+            const squares = [[20, 4], [6, 10], null, [20, 20]];
+            const path = join(tmp, 'sheet.png');
+            const png = await page.evaluate((squares) => {
+                const [, colour] = window.__test__.environment.palettesRGB[0];
+                const sheet = document.createElement('canvas');
+                sheet.width = 128;
+                sheet.height = 32;
+                const ctx = sheet.getContext('2d');
+                ctx.fillStyle = `rgb(${colour.join()})`;
+                squares.forEach((square, i) => square && ctx.fillRect(i * 32 + square[0], square[1], 8, 8));
+                return sheet.toDataURL('image/png').split(',')[1];
+            }, squares);
+            writeFileSync(path, Buffer.from(png, 'base64'));
+            // the cells are there as soon as the sheet loads, without detecting
+            await page.evaluate((path) => {
+                const { importState } = window.__test__;
+                importState.fixedCanvas = true;
+                importState.openImport(path);
+            }, path);
+            await expect.poll(() => page.evaluate(() => window.__test__.importState.bboxes.length)).toBe(4);
+            await page.evaluate(() => window.__test__.importState.cancel());
+
+            await importSheet(page, path, 'mappings', { sheetWidth: 128 });
+
+            const snap = await snapshotEnv(page);
+            const placed = snap.mappings.map((sprite) => sprite.map(({ left, top, width, height }) => ({ left, top, width, height })));
+            expect(placed).toEqual(squares.map((square) => (square
+                ? [{ left: square[0] - 16, top: square[1] - 16, width: 1, height: 1 }]
+                : [])));
+        } finally {
+            await page.evaluate(() => { window.__test__.importState.fixedCanvas = false; });
+            rmSync(tmp, { recursive: true, force: true });
+        }
+    });
+
     test('Import All with Reuse More Tiles redraws every frame', async () => {
         const tmp = mkdtempSync(join(tmpdir(), 'flex2-test-'));
         try {

@@ -14,7 +14,8 @@ export const Input = observer(class Input extends Component {
     }
 
     mutateNum = (num = 1) => {
-        const { store, accessor, assert = (d) => d } = this.props;
+        const { store, accessor, assert = (d) => d, disabled } = this.props;
+        if (disabled) return;
         store[accessor] = assert(Number(store[accessor] ?? '') + num);
         this.props.onChange &&
         this.props.onChange(store[accessor]);
