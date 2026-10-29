@@ -5,6 +5,10 @@
 - Drawing tools
     - Pencil / Line / Rectangle / Fill / Ellipse / Star
     - Middle/Ctrl click for eyedropper
+- Spritesheet import
+    - Fewer mappings / tiles, with pieces placed off the tile grid
+    - Dedupes existing tiles / Aims pieces at art already imported, parts frames of one size share, and mirrored halves
+    - Options: Allow Overlap / Grid Aligned / Reuse More Tiles
 - Remappable keys
 - Improve recent project listing UI
 - Drop an image in the mappings area to import as spritesheet
@@ -14,11 +18,6 @@
 - Add option to autofill metadata, palette and priority on new mappings and DPLCs
 - Add option for uncapped DPLC entries: entries are no longer limited to 16 tiles and each format fits them to its own limit on save
 - Add search to object tree
-- Spritesheet import produces fewer mappings / tiles and places pieces off the tile grid
-- Spritesheet import reuses existing tiles, including flipped and with DPLCs
-- Spritesheet import aims pieces at art already imported, parts frames of one size share, and mirrored halves
-- Spritesheet import option to allow overlapping pieces (off by default)
-- Fix saving Sonic Crackers DPLCs made in Flex rather than loaded (imported, added, or from enabling DPLCs)
 - Add more valid file extensions for art
 - Add art_tile style palette offset for loaded art in objects
 - Add ability to cycle through sprite pieces
@@ -36,6 +35,7 @@
 - Fix an issue where you couldn't save with empty art
 - Fix metadata edits being lost on imported sprites
 - Fix Puyo Puyo DPLC support
+- Fix Sonic Crackers DPLC saving
 - Fix windows filepaths for other OSs (always use /)
 - Update AS to 1.42 build 313
 

@@ -2,9 +2,10 @@
 // page: pass to page.evaluate with
 //   { frames: name of a window property holding the source ImageData of each
 //     frame, in import order; first: the sprite index the first frame went to;
-//     overlap: whether overlapping pieces were allowed }
+//     overlap: whether overlapping pieces were allowed; grid: whether pieces
+//     had to share one 8px grid }
 // and it returns a description of each problem found, so none means it's fine
-export function importProblems({ frames, first = 0, overlap }) {
+export function importProblems({ frames, first = 0, overlap, grid }) {
     const { environment, exportSprite } = window.__test__;
     const sources = window[frames];
     const problems = [];
@@ -53,6 +54,10 @@ export function importProblems({ frames, first = 0, overlap }) {
                 });
             }
         });
+
+        if (grid && mappings.some((p) => (p.left - mappings[0].left) % 8 || (p.top - mappings[0].top) % 8)) {
+            say('pieces are off the 8px grid');
+        }
 
         if (dplcs) {
             dplcs.forEach(({ art, size, metadata }, i) => {

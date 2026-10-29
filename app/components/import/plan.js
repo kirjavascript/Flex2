@@ -262,13 +262,15 @@ export function padded(values, width, height, fill = 0) {
 
 // pieces for a frame, aimed at reusing what the art already has. common: the
 // pixels it shares with other frames, as from commonPixels but padded.
-// options.overlap: whether pieces may overlap
-export function generateFrame(scene, buffer, type, paletteLine, common, { overlap = false } = {}) {
+// options: overlap, align and grid, as generateMappings takes them
+export function generateFrame(scene, buffer, type, paletteLine, common, { overlap = false, align = false, grid = false } = {}) {
     const shared = common && { buffer: masked(buffer, common.keep), share: common.share };
     return generateMappings(buffer, type, {
         templates: scene.templates.filter((template) => template.palette == paletteLine),
         common: shared,
         overlap,
+        align,
+        grid,
         cost: (pieces) => {
             const plan = planFrame(scene, buffer, pieces, paletteLine);
             let tiles = plan.newTiles.length;

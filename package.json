@@ -1,5 +1,5 @@
 {
-    "version": "1.5.1",
+    "version": "1.6.0",
     "scripts": {
         "start": "electron ./static --dev --user-data-dir=.userdata",
         "web": "node -e \"require('./development/build')()\" -- --dev",

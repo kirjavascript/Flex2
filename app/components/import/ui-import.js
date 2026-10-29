@@ -67,6 +67,28 @@ export const ImportSprites = observer(() => {
                     </div>
 
                     <div className="input">
+                        <span>Grid Aligned</span>
+                        <Checkbox
+                            checked={importState.gridAligned}
+                            onChange={() => {
+                                importState.gridAligned = !importState.gridAligned;
+                                importState.changeType();
+                            }}
+                        />
+                    </div>
+
+                    <div className="input">
+                        <span>Reuse More Tiles</span>
+                        <Checkbox
+                            checked={importState.alignToArt}
+                            onChange={() => {
+                                importState.alignToArt = !importState.alignToArt;
+                                importState.changeType();
+                            }}
+                        />
+                    </div>
+
+                    <div className="input">
                         <span>Palette</span>
                         <Input
                             store={importState}

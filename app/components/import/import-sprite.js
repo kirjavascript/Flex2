@@ -140,3 +140,4 @@ export function importSprite(buffer, newMappings, paletteLine, { select = true }
     fillMetadata(mappings.length - 1);
     if (select) environment.config.currentSprite = mappings.length - 1;
 }
+

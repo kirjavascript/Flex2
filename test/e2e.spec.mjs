@@ -1848,6 +1848,31 @@ test.describe('Import spritesheet', () => {
         }
     }
 
+    test('Import All with Reuse More Tiles redraws every frame', async () => {
+        const tmp = mkdtempSync(join(tmpdir(), 'flex2-test-'));
+        try {
+            await clearEnvironment(page);
+            await page.evaluate(() => {
+                const { environment, importState } = window.__test__;
+                environment.config.dplcsEnabled = true;
+                importState.alignToArt = true;
+            });
+            const path = join(tmp, 'sheet.png');
+            const sources = await writeSheet(page, path);
+            await importSheet(page, path, 'tiles');
+
+            const { drawn, expected } = await drawSprites(page, sources);
+            expect(drawn).toEqual(expected);
+            expect(await getErrors(page)).toHaveLength(0);
+        } finally {
+            await page.evaluate(() => {
+                const { importState } = window.__test__;
+                importState.alignToArt = false;
+            });
+            rmSync(tmp, { recursive: true, force: true });
+        }
+    });
+
     // grids of [r, g, b] or 0 for transparent, laid out left to right
     async function writeGrids(page, path, grids, sheetWidth) {
         const png = await page.evaluate(([grids, sheetWidth]) => {
@@ -2144,10 +2169,10 @@ test.describe('Import spritesheet', () => {
         await setFileObject(page, { format: 'Sonic 2.js' });
         const failures = [];
         for (const type of ['mappings', 'tiles']) for (const dplcs of [false, true])
-        for (const overlap of [false, true]) {
+        for (const overlap of [false, true]) for (const align of [false, true]) for (const grid of [false, true]) {
             for (let seed = 1; seed <= 8; seed++) {
                 await clearEnvironment(page);
-                await page.evaluate(({ type, dplcs, overlap, seed }) => {
+                await page.evaluate(({ type, dplcs, overlap, align, grid, seed }) => {
                     const { environment, generateSpriteMappings, importSprite, commonPixels } = window.__test__;
                     environment.config.dplcsEnabled = dplcs;
                     let state = seed * 7919;
@@ -2191,14 +2216,15 @@ test.describe('Import spritesheet', () => {
                     };
 
                     window.__fuzzFrames = grids.map((grid) => pad(toImage(grid)));
+                    const options = { overlap, align, grid };
                     window.__fuzzFrames.forEach((frame) => {
                         const common = commonPixels(frame, window.__fuzzFrames);
-                        const pieces = generateSpriteMappings(frame, type, 0, common, { overlap });
+                        const pieces = generateSpriteMappings(frame, type, 0, common, options);
                         importSprite(frame, pieces, 0, { select: false });
                     });
-                }, { type, dplcs, overlap, seed });
-                const problems = await page.evaluate(importProblems, { frames: '__fuzzFrames', overlap });
-                if (problems.length) failures.push({ seed, type, dplcs, overlap, problems: problems.slice(0, 3) });
+                }, { type, dplcs, overlap, align, grid, seed });
+                const problems = await page.evaluate(importProblems, { frames: '__fuzzFrames', overlap, grid });
+                if (problems.length) failures.push({ seed, type, dplcs, overlap, align, grid, problems: problems.slice(0, 3) });
             }
         }
         expect(failures).toEqual([]);

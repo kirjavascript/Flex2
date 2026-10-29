@@ -9,6 +9,7 @@ const EXACT_FREE_MAX_PIECES = 8;
 const EXACT_FREE_BUDGET = 2000;
 const MIN_TEMPLATE_PIXELS = 16;
 const MIN_SEED_GAIN = 32;
+const ALIGNED_OFFSETS = 2;
 
 const tileCount = (mappings) => mappings.reduce((a, c) => a + c.width * c.height, 0);
 
@@ -838,6 +839,69 @@ function seededCandidates(sprite, type, templates, strategies) {
     return strategies(rest).map((pieces) => refine([...seeds, ...pieces], sprite, type, seeds.length));
 }
 
+// a tile's 64 pixels, rgb or -1 for transparent, hashed
+function hashTile(pixel) {
+    let h = 2166136261;
+    for (let i = 0; i < 64; i++) h = Math.imul(h ^ pixel(i & 7, i >> 3), 16777619);
+    return h;
+}
+
+// hashes of a template's tiles in every flip, worked out once
+const templateTiles = new WeakMap();
+function tilesOf(template) {
+    let hashes = templateTiles.get(template);
+    if (hashes) return hashes;
+    hashes = [];
+    const W = template.width * 8;
+    for (let c = 0; c < template.width; c++) {
+        for (let r = 0; r < template.height; r++) {
+            const at = (x, y) => template.rgb[(r * 8 + y) * W + c * 8 + x];
+            let empty = true;
+            for (let i = 0; i < 64 && empty; i++) empty = at(i & 7, i >> 3) < 0;
+            if (empty) continue;
+            [[false, false], [true, false], [false, true], [true, true]].forEach(([hflip, vflip]) => {
+                hashes.push(hashTile((x, y) => at(hflip ? 7 - x : x, vflip ? 7 - y : y)));
+            });
+        }
+    }
+    templateTiles.set(template, hashes);
+    return hashes;
+}
+
+// grid layouts on the offsets where the most of the frame's cells are tiles
+// the art already has, so parts drawn before are cut the same way again.
+// refine would move pieces off that grid, so they're offered unrefined too
+function alignedCandidates(sprite, type, templates) {
+    const known = new Set();
+    templates.forEach((template) => tilesOf(template).forEach((h) => known.add(h)));
+    if (!known.size) return [];
+
+    const { mask, color, colorMap, width, height } = sprite;
+    const rgbOf = [];
+    colorMap.forEach((id, rgb) => { rgbOf[id] = rgb; });
+    const pixel = (x, y) => (x < width && y < height && mask[y * width + x] ? rgbOf[color[y * width + x]] : -1);
+
+    const offsets = [];
+    for (let ox = 0; ox < 8; ox++) {
+        for (let oy = 0; oy < 8; oy++) {
+            const cells = getActiveCells(mask, width, height, ox, oy);
+            const matched = cells.filter(([c, r]) => (
+                known.has(hashTile((x, y) => pixel(ox + c * 8 + x, oy + r * 8 + y)))
+            )).length;
+            if (matched) offsets.push({ ox, oy, cells, matched });
+        }
+    }
+    offsets.sort((a, b) => b.matched - a.matched || a.cells.length - b.cells.length);
+
+    const results = [];
+    offsets.slice(0, ALIGNED_OFFSETS).forEach(({ ox, oy, cells }) => {
+        const pieces = byLayout('grid', cells, (layout) => pickBest(gridCandidates(layout), 'mappings'))
+            .map(({ col, row, w, h }) => ({ x: ox + col * 8, y: oy + row * 8, width: w, height: h }));
+        results.push(pieces, refine(pieces, sprite, type));
+    });
+    return results;
+}
+
 // light leaves out the slower strategies, for the parts of a sprite left
 // around seeds or one half of a symmetric one
 // pixels this frame shares with others of its size, covered by pieces that
@@ -888,8 +952,11 @@ function baseStrategies(sprite, type, light = false) {
 // other frames share with this one. cost: how many new tiles a list of
 // pieces needs; by default only reuse within the frame is counted
 // overlap: whether pieces may draw over each other. without it only the
-// candidates that keep them apart count; grid placements always do
-export function generateMappings(buffer, type, { templates = [], common, cost, overlap = false } = {}) {
+// candidates that keep them apart count; grid placements always do.
+// align: also try cutting the frame on the grid that best lines up with
+// tiles the art already has. grid: only keep candidates whose pieces all sit
+// on one 8px grid
+export function generateMappings(buffer, type, { templates = [], common, cost, overlap = false, align = false, grid = false } = {}) {
     const sprite = prepare(buffer);
     sprite.overlap = overlap;
     if (!sprite.mask.some(Boolean)) return [];
@@ -900,7 +967,13 @@ export function generateMappings(buffer, type, { templates = [], common, cost, o
         ...symmetricCandidates(sprite, type, light),
         ...seededCandidates(sprite, type, templates, light),
         ...(common ? commonCandidates(sprite, type, common, light) : []),
+        ...(align ? alignedCandidates(sprite, type, templates) : []),
+        // refine can move pieces off the grid, so the grid layout goes in as is
+        ...(grid ? [gridMappings(sprite.mask, sprite.width, sprite.height, type)] : []),
     ];
+    const onGrid = (pieces) => pieces.every((p) => (
+        (p.x - pieces[0].x) % 8 == 0 && (p.y - pieces[0].y) % 8 == 0
+    ));
 
     // strategies often land on the same pieces, and costing them means planning
     // the whole frame, so each distinct list is costed once
@@ -915,6 +988,7 @@ export function generateMappings(buffer, type, { templates = [], common, cost, o
     let best, bestScore;
     candidates.forEach((pieces) => {
         if (!overlap && hasOverlap(pieces)) return;
+        if (grid && !onGrid(pieces)) return;
         const tiles = tilesFor(pieces);
         const s = type == 'tiles' ? [tiles, pieces.length] : [pieces.length, tiles];
         if (!best || better(s, bestScore)) {

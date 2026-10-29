@@ -27,6 +27,8 @@ class ImportState {
     request = 0;
     type = 'mappings';
     overlap = false;
+    alignToArt = false;
+    gridAligned = false;
     importWidth = 0;
     importHeight = 0;
     spriteIndex = 0;
@@ -172,6 +174,8 @@ class ImportState {
             pending: observable,
             type: observable,
             overlap: observable,
+            alignToArt: observable,
+            gridAligned: observable,
             importWidth: observable,
             importHeight: observable,
             spriteIndex: observable,
@@ -216,6 +220,10 @@ class ImportState {
         return (this.paletteLine + bankLine + environment.config.artPaletteLine) % 4;
     }
 
+    get options() {
+        return { overlap: this.overlap, align: this.alignToArt, grid: this.gridAligned };
+    }
+
     get buffer() {
         const { canvas, ctx } = this;
         return ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -242,8 +250,7 @@ class ImportState {
 
         const request = ++this.request;
         this.pending = true;
-        const options = { overlap: this.overlap };
-        return generateInWorker(this.buffer, type, this.paletteLine, common, options).then((pieces) => {
+        return generateInWorker(this.buffer, type, this.paletteLine, common, this.options).then((pieces) => {
             if (request !== this.request) return false;
             this.mappings.replace(pieces);
             this.pending = false;
