@@ -126,9 +126,6 @@ Each sprite is shown with the mappings that will be made for it. **Import Sprite
 - Colours are matched to the chosen palette line using CIEDE2000 nearest colour. The palette offset of the art and of the current art bank is applied too.
 - New tiles are added to the current art bank.
 - Tiles already in the art are reused, including flipped ones, rather than added again. Without DPLCs a piece can only reuse a whole matching run of tiles. With DPLCs, tiles are reused one at a time from anywhere in the art, and DPLC entries are made up to 16 tiles long. Each format merges or splits entries to its own limit when saving.
-- Several candidate layouts are tried for each frame, and the one with the fewest pieces or new tiles is chosen. Frames are imported in order, so each one can reuse the art of the frames before it.
-- If **Autofill metadata** is on in Settings, new mappings and DPLCs get metadata, palette and priority filled in like any new mapping.
-- Mappings are worked out in the background, so the window stays responsive.
 
 ### Importing over the current frame
 
