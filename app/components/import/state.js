@@ -21,7 +21,6 @@ class ImportState {
     sprites = [];
     mappings = [];
     newTileQty = 0;
-    loadedTileQty = 0;
     // pieces are being worked out, so there is nothing to import yet
     pending = false;
     request = 0;
@@ -170,7 +169,6 @@ class ImportState {
             // pieces can hold buffers and templates, which must stay as they are
             mappings: observable.shallow,
             newTileQty: observable,
-            loadedTileQty: observable,
             pending: observable,
             type: observable,
             overlap: observable,
@@ -233,7 +231,6 @@ class ImportState {
     updatePlan = () => {
         const plan = planSprite(this.buffer, this.mappings, this.paletteLine);
         this.newTileQty = plan.newTiles.length;
-        this.loadedTileQty = plan.dplcs ? plan.dplcs.reduce((a, d) => a + d.size, 0) : 0;
     };
 
     // draw the sprite matched to its palette, then work out its pieces. resolves
@@ -275,8 +272,8 @@ class ImportState {
 
         this.regenerate().then((done) => {
             if (!done) return;
+            this.updatePlan();
             if (this.auto) this.importOne();
-            else this.updatePlan();
         });
     };
 
