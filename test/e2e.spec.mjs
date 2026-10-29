@@ -1888,6 +1888,66 @@ test.describe('Import spritesheet', () => {
         }
     });
 
+    test('an exported spritesheet imports back the same with Fixed Canvas', async () => {
+        const tmp = mkdtempSync(join(tmpdir(), 'flex2-test-'));
+        try {
+            await setFileObject(page, {
+                format: 'Sonic 1.js',
+                mappingsPath: resolve(FIXTURES, 's1/maps/Monitor.asm'),
+                artPath: resolve(FIXTURES, 's1/art/Monitors.nem'),
+                artCompression: 'Nemesis',
+                palettePaths: [{ path: resolve(FIXTURES, 's1/palette/Sonic-full.bin'), length: 4 }],
+            });
+            await clearEnvironment(page);
+            await clickLoad(page, 'Object');
+            await waitForMappings(page);
+            await waitForTiles(page);
+
+            // each sprite's opaque pixels at their position from its origin
+            const drawn = () => page.evaluate(() => {
+                const { environment, exportSprite } = window.__test__;
+                return environment.sprites.map((sprite) => {
+                    if (!sprite.mappings.length) return [];
+                    const canvas = exportSprite(sprite);
+                    const { data, width, height } = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height);
+                    const minX = Math.min(...sprite.mappings.map((m) => m.left));
+                    const minY = Math.min(...sprite.mappings.map((m) => m.top));
+                    const points = [];
+                    for (let y = 0; y < height; y++) for (let x = 0; x < width; x++) {
+                        const j = (y * width + x) * 4;
+                        if (data[j + 3] > 0x80) points.push(`${x + minX},${y + minY},${data[j]},${data[j + 1]},${data[j + 2]}`);
+                    }
+                    return points.sort();
+                });
+            });
+            const original = await drawn();
+            expect(original.flat().length).toBeGreaterThan(0);
+
+            const path = join(tmp, 'sheet.png');
+            const { png, width } = await page.evaluate(() => {
+                const { environment, spritesheetCanvas } = window.__test__;
+                const canvas = spritesheetCanvas(environment.sprites);
+                return { png: canvas.toDataURL('image/png').split(',')[1], width: canvas.width };
+            });
+            writeFileSync(path, Buffer.from(png, 'base64'));
+
+            await page.evaluate(() => {
+                const { environment, importState } = window.__test__;
+                environment.clearArt();
+                environment.mappings.replace([]);
+                environment.dplcs.replace([]);
+                environment.spriteMetadata.replace([]);
+                importState.fixedCanvas = true;
+            });
+            await importSheet(page, path, 'mappings', { sheetWidth: width });
+
+            expect(await drawn()).toEqual(original);
+        } finally {
+            await page.evaluate(() => { window.__test__.importState.fixedCanvas = false; });
+            rmSync(tmp, { recursive: true, force: true });
+        }
+    });
+
     test('Import All with Reuse More Tiles redraws every frame', async () => {
         const tmp = mkdtempSync(join(tmpdir(), 'flex2-test-'));
         try {

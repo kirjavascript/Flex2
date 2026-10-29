@@ -44,11 +44,11 @@ The mapping editor has the following mouse interactions;
 
 | action | behaviour  |
 |---|---|
-| drag  | select mapping(s)  |
-| double click | toggle mapping piece |
+| drag  | select the pieces fully inside the box, replacing the selection  |
+| double click (on a piece) | add the piece to the selection, or remove it |
 | drag (on sprite)  | move mapping(s)  |
 | right drag | pan viewport |
-| wheel | zoom |
+| wheel | zoom in whole steps from 1x to 20x, around the sprite's origin rather than the cursor; ignored while placing a new piece |
 
 ### New Mapping
 
@@ -58,7 +58,13 @@ The overlay can be configured to autodismiss when placing a piece, or return to 
 
 ### Drawing Mode
 
-When entering drawing mode by pressing <kbd>m</kbd>, dragging over the sprite will draw in the respective colour of that mouse button. If mappings overlap, both will have the colour applied.
+Press <kbd>m</kbd> to enter drawing mode. The left and right mouse buttons each draw with their own colour, picked from the palette HUD.
+
+Tools: Pencil, Line, Rectangle, Fill, Ellipse and Star, with a brush width (and a point count for Star).
+
+Middle click, or <kbd>Ctrl</kbd>+click, is an eyedropper: it picks up the colour under the cursor into that button's colour, and keeps picking while held.
+
+Drawing changes the art directly, so every piece using a tile shows the change. If mappings overlap, both will have the colour applied.
 
 ### Data Tab
 
@@ -81,17 +87,52 @@ Palette input will be normalised to Megadrive colours. To change the order of pa
 
 ## Sprites
 
-The Sprites tab gives an overview of your full object's data, allowing you to change sprites or reorder them by dragging and dropping. Each sprite will autozoom out to best fit the mapping for it in the frame.
+The Sprites tab gives an overview of your full object's data, allowing you to change sprites or reorder them by dragging and dropping. Every sprite is drawn at the same zoom, set by the slider under the list (1x to 8x).
 
 ## Importing
 
-When importing an image over the current frame there is no limitation on image dimensions.
+### Importing a spritesheet
 
-For importing a spritesheet, either the alpha channel or the top left pixel color can serve as transparency. The fuzziness dictates the minimum separation distance between sprites.
+Open a spritesheet with **Import Spritesheet** (<kbd>s</kbd>), or drop an image onto the mapping area. Importing has two steps: **detect**, which splits the sheet into sprites, and **import**, which turns each sprite into mappings and art.
 
-Mapping output can be configured to either reduce the number of tiles, or the number of mappings. The algorithm favours fewer horizontal sprites over vertical ones.
+#### Detecting sprites
 
-Both methods of importing use CIEDE2000 nearest colour matching to the current palette.
+**Detect Sprites** finds each separate sprite and draws a box around it. **Fuzziness** is the gap in pixels that still counts as part of the same sprite; raise it if sprites are being split into pieces. Sprites are read in rows, top to bottom and left to right.
+
+**Fixed Canvas** is for sheets where every frame sits in the same size canvas:
+
+- The sheet must be a single row of square cells. Cell size is the sheet's height, and the number of cells is the width divided by the height. Any strip left over on the right is ignored.
+- Each cell becomes one sprite, including empty cells, so sprite numbers match cell positions.
+- Each frame is positioned relative to its cell's centre rather than centred on its own pixels, so frames keep the alignment they have in the sheet.
+- **Export Spritesheet** (<kbd>E</kbd>) writes sheets in this layout, with each sprite's origin at its cell's centre, so an exported sheet imports back with the same positions.
+
+#### Importing sprites
+
+Each sprite is shown with the mappings that will be made for it. **Import Sprite** imports the current one; **Import All** imports every sprite in order. **Next / Prev Sprite** move between sprites, and **Back** returns to detection.
+
+| Option | Behaviour |
+|---|---|
+| Reduce Mappings / Reduce Tiles | Whether to prefer fewer mapping pieces or fewer tiles |
+| Allow Overlap | Lets pieces overlap; usually fewer pieces and tiles. Off: pieces never overlap |
+| Grid Aligned | Keeps all of a frame's pieces on one 8px grid. Off: pieces can be placed at any pixel, which usually saves tiles |
+| Reuse More Tiles | Tries cutting the frame on the grid that matches tiles already in the art, so parts repeated across frames come out as identical tiles. Saves tiles, especially with DPLCs, but can add DPLC entries |
+| Palette | The palette line the sprite's colours are matched to |
+| Zoom | Preview zoom |
+
+**Mappings** and **Tiles** show the current sprite's piece count and the tiles its pieces cover, with how many of those tiles are new to the art. The piece count shows `...` while mappings are being worked out.
+
+#### Behaviour
+
+- Colours are matched to the chosen palette line using CIEDE2000 nearest colour. The palette offset of the art and of the current art bank is applied too.
+- New tiles are added to the current art bank.
+- Tiles already in the art are reused, including flipped ones, rather than added again. Without DPLCs a piece can only reuse a whole matching run of tiles. With DPLCs, tiles are reused one at a time from anywhere in the art, and DPLC entries are made up to 16 tiles long. Each format merges or splits entries to its own limit when saving.
+- Several candidate layouts are tried for each frame, and the one with the fewest pieces or new tiles is chosen. Frames are imported in order, so each one can reuse the art of the frames before it.
+- If **Autofill metadata** is on in Settings, new mappings and DPLCs get metadata, palette and priority filled in like any new mapping.
+- Mappings are worked out in the background, so the window stays responsive.
+
+### Importing over the current frame
+
+**Import Image** (<kbd>i</kbd>) redraws the current sprite's existing tiles from an image, keeping its mappings. The image's top left lines up with the top left of the sprite's pieces; there is no limit on its size, and anything outside the pieces is ignored. Colours are matched to each piece's palette line the same way. The top left pixel is only used as transparency when **Import Image: use top left pixel as alpha** is on in Settings.
 
 ## Custom Formats
 

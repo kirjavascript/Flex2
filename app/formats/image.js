@@ -91,6 +91,30 @@ export function exportSprite({ buffer, mappings, lines = [] }) {
 }
 
 
+// every sprite in a row of square cells, each with its origin at the centre
+// of its cell, so the sheet imports back the same with Fixed Canvas
+export function spritesheetCanvas(sprites) {
+    const bounds = sprites.map(({ mappings }) => mappings.length && {
+        minX: Math.min(...mappings.map((m) => m.left)),
+        maxX: Math.max(...mappings.map((m) => m.left + m.width * 8)),
+        minY: Math.min(...mappings.map((m) => m.top)),
+        maxY: Math.max(...mappings.map((m) => m.top + m.height * 8)),
+    });
+    const reach = Math.max(4, ...bounds.filter(Boolean)
+        .map(({ minX, maxX, minY, maxY }) => Math.max(-minX, maxX, -minY, maxY)));
+    const cell = reach * 2;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = cell * sprites.length;
+    canvas.height = cell;
+    const ctx = canvas.getContext('2d');
+    sprites.forEach((sprite, i) => {
+        if (!bounds[i]) return;
+        ctx.drawImage(exportSprite(sprite), i * cell + reach + bounds[i].minX, reach + bounds[i].minY);
+    });
+    return canvas;
+}
+
 export function exportSpritesheet() {
     const { sprites } = environment;
     if (!sprites.length) return;
@@ -103,32 +127,8 @@ export function exportSpritesheet() {
         .then(({ filePath }) => {
             if (filePath) {
                 workspace.lastDialogDir = nodePath.dirname(filePath);
-
-                const canvases = sprites.map((sprite) => exportSprite(sprite));
-
-                const canvas = document.createElement('canvas');
-                canvas.width = 8;
-                canvas.height = 8;
-                const ctx = canvas.getContext('2d', { willReadFrequently: true });
-                // canvas.className = 'canvas-debug';
-                // document.body.appendChild(canvas);
-
-                let cursor = 8;
-
-                canvases.forEach(current => {
-                    const last = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                    const { width, height } = current;
-                    const diff = width + 8;
-                    canvas.width += diff
-                    canvas.height = Math.max(canvas.height, height + 8);
-                    ctx.putImageData(last, 0, 0);
-                    ctx.drawImage(current, cursor, 8);
-                    cursor += diff;
-                    canvas.remove();
-                });
-
+                const canvas = spritesheetCanvas(sprites);
                 const base64Data = canvas.toDataURL().replace(/data(.*?),/, '');
-                canvas.remove();
                 writeFile(filePath, Buffer.from(base64Data, 'base64'), (err) => {
                     err && errorMsg('Error exporting spritesheet', String(err));
                 });

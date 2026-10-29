@@ -10,6 +10,7 @@
     - Dedupes existing tiles / Aims pieces at art already imported, parts frames of one size share, and mirrored halves
     - Fewer mappings / tiles, with pieces placed off the tile grid
     - Options: Allow Overlap / Grid Aligned / Reuse More Tiles
+- Export Spritesheet produces well-formed sheets: a full export then import now keeps alignment
 - Remappable keys
 - Improve recent project listing UI
 - Drop an image in the mappings area to import as spritesheet

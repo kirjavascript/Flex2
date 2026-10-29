@@ -566,6 +566,27 @@ export function piecesOverlap(a, b) {
         && a.y < b.y + b.height * 8 && b.y < a.y + a.height * 8;
 }
 
+// the hardware only draws so many pieces on one scanline, so with everything
+// else equal, fewer side by side is better
+function busiestRow(pieces) {
+    const rows = new Map();
+    let most = 0;
+    pieces.forEach(({ y, height }) => {
+        for (let row = y; row < y + height * 8; row++) {
+            const count = (rows.get(row) || 0) + 1;
+            rows.set(row, count);
+            if (count > most) most = count;
+        }
+    });
+    return most;
+}
+
+// lexical comparison of scores of any length
+const ahead = (a, b) => {
+    for (let i = 0; i < a.length; i++) if (a[i] != b[i]) return a[i] < b[i];
+    return false;
+};
+
 const hasOverlap = (pieces) => pieces.some((a, i) => pieces.some((b, j) => j > i && piecesOverlap(a, b)));
 
 // with the sprite's overlap off, pieces are only moved or merged to where
@@ -991,7 +1012,8 @@ export function generateMappings(buffer, type, { templates = [], common, cost, o
         if (grid && !onGrid(pieces)) return;
         const tiles = tilesFor(pieces);
         const s = type == 'tiles' ? [tiles, pieces.length] : [pieces.length, tiles];
-        if (!best || better(s, bestScore)) {
+        s.push(busiestRow(pieces));
+        if (!best || ahead(s, bestScore)) {
             best = pieces;
             bestScore = s;
         }
