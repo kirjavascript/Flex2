@@ -7,12 +7,9 @@
 /* http://info.sonicretro.org/Disassemblies */
 
 NEXT
-    make the buttons look more clickable
 
     TODO:
-        review git checkout photoshop-better-boxing -- .
-            check DPLC metadata issue
-            maybe remove auto palette
+    make the buttons look more clickable
 
     radiotails stuff (hide sprites)
 
@@ -26,7 +23,6 @@ NEXT
 
     put each load type in boxes, rename to LOAD ALL, make the dropzone target the whole box?
 
-    when importing, dedupe tiles
     when importing, figure out how to line up sprites
 
 
