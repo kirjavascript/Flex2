@@ -11,16 +11,20 @@ export const File = observer(class File extends Component {
         dragging: false,
     };
 
-    openFile = () => {
-        const defaultPath = this.props.absolute ? workspace.lastDialogDir : workspace.projectDir;
+    getFilters = () => {
         const { filtername, filterextensions } = this.props;
-        const filters = filterextensions && [
+        return filterextensions && [
             {
                 name: `${filtername} (${filterextensions.map((e) => `.${e}`).join(' ')})`,
                 extensions: filterextensions,
             },
             { name: 'All Files', extensions: ['*'] },
         ];
+    };
+
+    openFile = () => {
+        const defaultPath = this.props.absolute ? workspace.lastDialogDir : workspace.projectDir;
+        const filters = this.getFilters();
         dialog
             .showOpenDialog({
                 title: `Choose ${this.props.label}`,
@@ -58,13 +62,15 @@ export const File = observer(class File extends Component {
     };
 
     createFile = () => {
-        const ext = this.props.ext || 'asm';
-        const extensions = this.props.ext ? [this.props.ext] : ['asm', 'bin', 's'];
+        const { ext, filterextensions, label } = this.props;
+        const defaultExt = ext || filterextensions?.[0];
+        const filename = label.toLowerCase() + (defaultExt ? `.${defaultExt}` : '');
         const dir = this.props.absolute ? workspace.lastDialogDir : workspace.projectDir;
+        const filters = this.getFilters();
         dialog.showSaveDialog({
-            title: `New ${this.props.label}`,
-            defaultPath: path.join(dir || '', `${this.props.label.toLowerCase()}.${ext}`),
-            filters: [{name: `${this.props.label} File`, extensions }],
+            title: `New ${label}`,
+            defaultPath: path.join(dir || '', filename),
+            ...(filters && { filters }),
         })
             .then(({ filePath }) => {
                 if (filePath) {
@@ -88,7 +94,7 @@ export const File = observer(class File extends Component {
     };
 
     render() {
-        const { label, store, accessor, absolute, filtername, filterextensions, ...otherProps } = this.props;
+        const { label, store, accessor, absolute, filtername, filterextensions, ext, ...otherProps } = this.props;
         const { dragging } = this.state;
 
         return (

@@ -1,13 +1,45 @@
 # Changelog
 
-## [1.5.2]
+## [1.6.0]
 
-- Double click on object icon in project to load object
+- Drawing tools
+    - Pencil / Line / Rectangle / Fill / Ellipse / Star
+    - Middle/Ctrl click for eyedropper
+- Spritesheet import
+    - Automatic sprite alignment when using Fixed Canvas sizes
+    - Dedupes existing tiles / Aims pieces at art already imported, parts frames of one size share, and mirrored halves
+    - Fewer mappings / tiles, with pieces placed off the tile grid
+    - Options: Allow Overlap / Grid Aligned / Reuse More Tiles
+- Export Spritesheet produces well-formed sheets: a full export then import now keeps alignment
+- Remappable keys
 - Improve recent project listing UI
-- Make all error text selectable
 - Drop an image in the mappings area to import as spritesheet
-- Fix some alpha channel behaviour when importing
+- Double click on object icon in project to load object
+- Double click on a guideline to reset it
+- Move Settings modal to a tab
+- Add option to autofill metadata, palette and priority on new mappings and DPLCs
+- Add option for uncapped DPLC entries: entries are no longer limited to 16 tiles and each format fits them to its own limit on save
+- Add search to object tree
+- Add more valid file extensions for art
+- Add art_tile style palette offset for loaded art in objects
+- Add ability to cycle through sprite pieces
+- Add count/step display
+- Add timeout for compression to catch crashes / errors from invalid data
+- Show label name in sprites tab
 - Show update modal when there is a newer release
+- Make all error text selectable
+- Make Shift+Ctrl+I only work when window is focused
+- Make Compression dropdowns wheel-scrollable
+- Make object name input expand to size of name
+- Make active art selection work for all art sources
+- Fix some alpha channel behaviour when importing
+- Fix a bug that causes label conflicts
+- Fix an issue where you couldn't save with empty art
+- Fix metadata edits being lost on imported sprites
+- Fix Puyo Puyo DPLC support
+- Fix Sonic Crackers DPLC saving
+- Fix windows filepaths for other OSs (always use /)
+- Update AS to 1.42 build 313
 
 ## [1.5.1]
 

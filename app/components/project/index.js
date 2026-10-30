@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { observer } from 'mobx-react';
+import { observable } from 'mobx';
 import { workspace } from '~/store/workspace';
 import { selection } from '~/store/selection';
 import { FileObject } from '~/components/file/file-object';
@@ -8,8 +9,9 @@ import ErrorMsg from '~/components/file/error';
 import { errorMsg } from '~/util/dialog';
 import { File as FileInput, Button, Item, Input } from '~/ui';
 import SortableTree from 'react-sortable-tree';
-import { basename } from 'path';
+import { basename, dirname } from 'path';
 import { promises as fs } from 'fs';
+import { exec } from 'child_process';
 import objectMenu from './object-menu';
 import theme from './theme';
 
@@ -23,6 +25,18 @@ function toTree(objects) {
         };
     });
 }
+
+function filterTree(nodes, query) {
+    return nodes.flatMap((node) => {
+        if (node.isDirectory) {
+            const children = filterTree(node.children || [], query);
+            return children.length ? [{ ...node, expanded: true, children }] : [];
+        }
+        return node.name.toLowerCase().includes(query) ? [node] : [];
+    });
+}
+
+const search = observable({ query: '' });
 
 function fromTree(objects) {
     return objects.map((obj) => {
@@ -42,11 +56,13 @@ const showLoadError = (section) => (error) => {
 
 const RecentProject = ({ projectPath }) => {
     const [name, setName] = useState();
+    const [gitRoot, setGitRoot] = useState();
 
     useEffect(() => {
         let cancelled = false;
 
         setName(undefined);
+        setGitRoot(undefined);
         (async () => {
             try {
                 const json = JSON.parse(await fs.readFile(projectPath, 'utf8'));
@@ -55,6 +71,13 @@ const RecentProject = ({ projectPath }) => {
                 if (!cancelled) setName(undefined);
             }
         })();
+        exec(
+            'git rev-parse --show-toplevel',
+            { cwd: dirname(projectPath) },
+            (error, stdout) => {
+                if (!cancelled && !error) setGitRoot(stdout.trim());
+            }
+        );
 
         return () => {
             cancelled = true;
@@ -70,7 +93,10 @@ const RecentProject = ({ projectPath }) => {
                 requestAnimationFrame(workspace.openProject);
             }}
         >
-            {name || basename(projectPath)}
+            <div className="recent-title">
+                {name || basename(projectPath)}
+                {gitRoot && <span className="recent-git">[{basename(gitRoot)}]</span>}
+            </div>
             <span className="recent-path">{projectPath}</span>
         </div>
     );
@@ -109,7 +135,11 @@ const Project = observer(() => {
         );
     }
 
-    const tree = toTree(project.objects);
+    const query = search.query.trim().toLowerCase();
+    // the filtered tree is a partial view, so it must never be written back
+    const tree = query
+        ? filterTree(toTree(project.objects), query)
+        : toTree(project.objects);
 
     const node = selection.resolve(project.objects);
 
@@ -125,11 +155,16 @@ const Project = observer(() => {
                         folder
                     </Button>
                 </div>
+                <div className="tree-search">
+                    <Input placeholder="search" store={search} accessor="query" />
+                </div>
                 <SortableTree
                     treeData={tree}
-                    onChange={(tree) => project.objects.replace(fromTree(tree))}
+                    onChange={(tree) => {
+                        if (!query) project.objects.replace(fromTree(tree));
+                    }}
                     theme={theme}
-                    canDrag={({ node }) => !node.dragDisabled}
+                    canDrag={({ node }) => !query && !node.dragDisabled}
                     canDrop={({ nextParent }) =>
                         (!nextParent || nextParent.isDirectory)
                     }
@@ -201,7 +236,16 @@ const Project = observer(() => {
                     {node && (
                         <div className="menu-item">
                             <Item>Object Name</Item>
-                            <Input store={node} accessor="name" />
+                            <Input
+                                store={node}
+                                accessor="name"
+                                style={{
+                                    // + input padding and border
+                                    width: `calc(${node.name?.length || 0}ch + 12px)`,
+                                    minWidth: 159,
+                                    maxWidth: 320,
+                                }}
+                            />
                         </div>
                     )}
                 </div>

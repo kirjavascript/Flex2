@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { environment } from '~/store/environment';
 import { observer } from 'mobx-react';
 import { mappingState } from './state';
+import { inputState } from '~/controls/distance';
 
 const numFmt = (num) => `${0>num?'-':''}0x${(Math.abs(+num)).toString(16).toUpperCase()}`;
 
@@ -49,6 +50,16 @@ export const HUD = observer(class HUD extends Component {
                 {dplcsEnabled ? '✔' : '✗'}
             </span>
             <br/>
+            {inputState.multiplier && (
+                <div>
+                    count: <span className="yellow">{inputState.multiplier}</span>
+                </div>
+            )}
+            {inputState.coarse && (
+                <div>
+                    step: <span className="yellow">8</span>
+                </div>
+            )}
         </div>;
     }
 

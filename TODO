@@ -7,25 +7,37 @@
 /* http://info.sonicretro.org/Disassemblies */
 
 NEXT
+    persist import settings
+
+post:
+    automatic sprite alignment on import
+
+    now when you import something from a well-formed spritesheet you can have the origin be placed automatically, no more manually aligning things!
+
+    additionally, an export and then import round trip will retain the same alignment!
+
+    remapping
+
+    you should be able to configure the keys to match SonMapEd's bindings
+
+
+    TODO:
     make the buttons look more clickable
+
+    radiotails stuff (hide sprites)
 
     clear undo history when loading an object
 
+    change mapping order from the visual editor
+
+    find a way to inject tiles part way through the art (shift everything after)
+
     allow specifying per-sprite canvas size, show grid when importing
 
-    Sonic 1 [folder name]
-        detect where there is a .git folder I guess
+    put each load type in boxes, rename to LOAD ALL, make the dropzone target the whole box?
 
-    highlighing tiles with more than one art source
-
-    when importing, dedupe tiles
     when importing, figure out how to line up sprites
 
-    make available updates more obvious
-
-    write the name of the sprite on the sprite in the sprits view
-
-    key remapping
 
 ---
     persist comments?
@@ -50,5 +62,4 @@ no projects
 ==
 select multiple sprites at once to reorder
 copy / paste mappings
-time travel for undo/redo
 import palette from spritesheet https://yarnpkg.com/en/package/node-vibrant

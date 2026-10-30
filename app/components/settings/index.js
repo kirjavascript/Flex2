@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { webFrame } from 'electron';
 import { observer } from 'mobx-react';
 import { environment } from '~/store/environment';
-import { Modal, Item, Button, Checkbox } from '~/ui';
-import { mappingState } from './state';
+import { Checkbox, Select } from '~/ui';
+import { mappingState } from '~/components/mappings/state';
+import { keymap } from '~/store/keymap';
+import { Keys } from './keys';
 
 const ScaleSlider = observer(() => {
     const [draft, setDraft] = useState(null);
@@ -44,38 +46,18 @@ const ScaleSlider = observer(() => {
 });
 
 export const Settings = observer(() => {
-    const { active } = mappingState.settings;
-
     return (
-        <Modal
-            className="mapping-settings"
-            spring={{
-                top: active ? 60 : -100,
-                opacity: active ? 1 : 0,
-            }}
-        >
-            <Item bold>Settings</Item>
-
+        <div className="mapping-settings">
             <div className="settings">
                 <div className="setting-row">
                     <span>Render starting with palette line</span>
-                    <input
-                        type="text"
-                        className="render-line"
-                        value={environment.config.artPaletteLine ?? 0}
-                        readOnly
-                        onKeyDown={(e) => {
-                            if (e.repeat) return;
-                            const v = parseInt(e.key);
-                            if (v >= 0 && v <= 3) environment.config.artPaletteLine = v;
-                            e.preventDefault();
-                        }}
-                        onWheel={(e) => {
-                            const cur = environment.config.artPaletteLine;
-                            const next = cur + (e.deltaY > 0 ? -1 : 1);
-                            if (next >= 0 && next <= 3) environment.config.artPaletteLine = next;
-                        }}
-                    />
+                    <div className="render-line">
+                        <Select
+                            options={[0, 1, 2, 3]}
+                            store={environment.config}
+                            accessor="artPaletteLine"
+                        />
+                    </div>
                 </div>
 
                 <div className="setting-row">
@@ -93,14 +75,32 @@ export const Settings = observer(() => {
                         onChange={mappingState.toggleAutodismiss}
                     />
                 </div>
+
+                <div className="setting-row">
+                    <span>Autofill metadata, palette and priority on new mappings and DPLCs</span>
+                    <Checkbox
+                        checked={mappingState.autofillMetadata}
+                        onChange={mappingState.toggleAutofillMetadata}
+                    />
+                </div>
+
+                <div className="setting-row">
+                    <span>Uncapped DPLC entries (chunked on save; off caps at 16 tiles)</span>
+                    <Checkbox
+                        checked={mappingState.uncappedDPLCs}
+                        onChange={mappingState.toggleUncappedDPLCs}
+                    />
+                </div>
+                <div className="setting-row">
+                    <span>Use number keys as command multipliers</span>
+                    <Checkbox
+                        checked={keymap.counts}
+                        onChange={keymap.toggleCounts}
+                    />
+                </div>
                 <ScaleSlider />
             </div>
-
-            <div className="actions">
-                <Button color="magenta" onClick={mappingState.toggleSettings}>
-                    close
-                </Button>
-            </div>
-        </Modal>
+            <Keys />
+        </div>
     );
 });

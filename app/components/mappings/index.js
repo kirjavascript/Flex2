@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import { environment } from '~/store/environment';
 import classNames from 'classnames';
 import { mappingState } from './state';
+import { inputState } from '~/controls/distance';
 import { Slider } from '~/ui';
 import { Mapping } from './mapping';
 import { Selection } from './selection';
@@ -15,7 +16,6 @@ import { Rotate } from './rotate';
 import { DragSelect, attachDragSelectToNode } from './drag-select';
 import { attachDragMoveToNode } from './drag-move';
 import { Commands } from './commands';
-import { Settings } from './settings';
 import { importState } from '~/components/import/state';
 
 export const Mappings = observer(class Mappings extends Component {
@@ -62,14 +62,18 @@ export const Mappings = observer(class Mappings extends Component {
     }
 
     render() {
-        const { buffer, index, mappings } = environment.currentSprite;
+        const { buffer, lines, index, mappings } = environment.currentSprite;
         const { scale, x, y, baseWidth, mode, selectedIndices } = mappingState;
 
         return (
             <div className="mappings" ref={this.onRef}>
                 <div
                     ref={this.mappingRef}
-                    className="mappingContainer"
+                    className={classNames('mappingContainer', {
+                        drawing: mode == 'drawing',
+                        [`drawing-${mappingState.drawTool}`]: mode == 'drawing',
+                        picking: mode == 'drawing' && inputState.ctrl,
+                    })}
                     onDragOver={(e) => e.preventDefault()}
                     onDrop={this.onDrop}
                     style={{
@@ -100,6 +104,7 @@ export const Mappings = observer(class Mappings extends Component {
                                 <Mapping
                                     data={mapping}
                                     tileBuffer={buffer}
+                                    lines={lines}
                                     scale={scale}
                                 />
                             </div>
@@ -144,7 +149,6 @@ export const Mappings = observer(class Mappings extends Component {
                 />
 
                 <Rotate />
-                <Settings />
 
                 <Commands />
             </div>

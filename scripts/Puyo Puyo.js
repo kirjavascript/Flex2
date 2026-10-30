@@ -12,6 +12,7 @@ const {
     signed,
     asm,
     config,
+    postRead,
 } = Flex2;
 
 config(({ number }) => [
@@ -82,7 +83,11 @@ dplcs([
             return endFrame;
         },
     ],
-]);
+], {
+    // the size isn't stored: the game DMAs one slot of PLC Tiles per frame
+    maxSize: () => config.dplcTiles || Infinity,
+    maxEntries: 1,
+});
 
 function nextSprite(ref, start) {
     return (ref.global.headers || []).reduce(
@@ -93,6 +98,47 @@ function nextSprite(ref, start) {
 
 function link(mapping) {
     return Number(mapping.metadata && mapping.metadata.link) || 0;
+}
+
+// the art label of each DPLC longword, in file order: undefined for raw dc.l
+// and for dplcEntry with only a slot
+function dplcArtLabels(source) {
+    const labels = [];
+    source.split('\n').forEach((line) => {
+        const code = line.replace(/;.*/, '');
+        const entry = code.match(/(?:^|\s)dplcEntry\s+([^,]+?)\s*(?:,\s*(.+?))?\s*$/i);
+        if (entry) {
+            labels.push(entry[2] !== undefined ? entry[1] : undefined);
+            return;
+        }
+        const longs = code.match(/(?:^|\s)dc\.l\s+(.+?)\s*$/i);
+        if (longs) longs[1].split(',').forEach(() => labels.push(undefined));
+    });
+    return labels;
+}
+
+// the label isn't assembled, so it's read from the source
+postRead(({ dplcs, sources }) => {
+    if (!dplcs || !sources.dplcs) return;
+    const labels = dplcArtLabels(sources.dplcs);
+    const entries = dplcs.flat();
+    // anything cleverer than a flat list (includes, conditionals) can't be
+    // matched up, so it gets no labels rather than wrong ones
+    if (labels.length !== entries.length) return;
+    entries.forEach((entry, i) => {
+        if (labels[i]) entry.metadata.artLabel = labels[i];
+    });
+});
+
+// an entry without a label is named after the others, so with ArtUnc_X_3 at
+// slot 3, slot 7 becomes ArtUnc_X_7
+function artLabel(metadata, slot, entries, label) {
+    if (metadata?.artLabel) return metadata.artLabel;
+    for (const { art, metadata: other } of entries) {
+        const match = other?.artLabel?.match(/^(.*_)(\d+)$/);
+        if (match && Number(match[2]) === art / config.dplcTiles) return match[1] + slot;
+    }
+    return `${label}_Art_${slot}`;
 }
 
 asm(({ addScript, importScript, writeMappings, writeDPLCs }) => {
@@ -162,15 +208,14 @@ asm(({ addScript, importScript, writeMappings, writeDPLCs }) => {
     });
 
     writeDPLCs(({ label, sprites, renderHex }) => {
-        const list = [`${label}:`, ''];
+        const list = [`${label}:`, '\t; Art, Slot'];
 
-        sprites.forEach(({ dplcs: entries }) => {
-            entries.forEach(({ art }) => {
-                const slot = art / config.dplcTiles;
-                list.push(Number.isInteger(slot)
-                    ? `\tdplcEntry\t${slot}`
-                    : `\tdc.l\t${renderHex(art * 0x20)}`);
-            });
+        const entries = sprites.flatMap(({ dplcs }) => dplcs || []);
+        entries.forEach(({ art, metadata }) => {
+            const slot = art / config.dplcTiles;
+            list.push(Number.isInteger(slot)
+                ? `\tdplcEntry\t${artLabel(metadata, slot, entries, label)}, ${slot}`
+                : `\tdc.l\t${renderHex(art * 0x20)}`);
         });
 
         list.push('', '\teven');

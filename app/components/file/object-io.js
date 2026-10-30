@@ -12,12 +12,11 @@ import { scripts, runScript, writeBIN } from '~/formats/scripts';
 import { environment } from '~/store/environment';
 import { workspace } from '~/store/workspace';
 import { toggleDPLCs as mappingStateToggleDPLCs } from '~/components/mappings/state/toggle-dplcs';
-import { promises } from 'fs';
+import { promises as fs } from 'fs';
 import { extname, basename } from 'path';
 import { uuid } from '~/util/uuid';
 import SaveLoad from './save-load';
 
-const fs = promises;
 const noop = () => {};
 const isASM = (path) => ['.asm', '.s'].includes(extname(path).toLowerCase());
 const sourceAddress = (source, fallback) => {
@@ -74,12 +73,13 @@ export function createObjectIO(obj, options = {}) {
         if (asm) {
             const contents = await fs.readFile(path, 'utf8');
 
-            return assemble(script.asm.prelude + contents, {
+            const result = await assemble(script.asm.prelude + contents, {
                 filename: basename(path),
             });
+            return { ...result, source: contents };
         }
 
-        return { buffer: await fs.readFile(path), symbols: null };
+        return { buffer: await fs.readFile(path), symbols: null, source: null };
     }
 
     function loadObject() {
@@ -122,7 +122,7 @@ export function createObjectIO(obj, options = {}) {
                 }
 
                 const tiles = bufferToTiles(decompBuffer);
-                banks.push({ address, tiles, enabled: true });
+                banks.push({ address, tiles, enabled: true, paletteLine: Number(source.paletteLine) || 0 });
                 end = Math.max(end, address + tiles.length);
             }
 
@@ -141,24 +141,20 @@ export function createObjectIO(obj, options = {}) {
                         throw new Error('Can only save art at offset 0');
                     }
                     const bank = environment.art[i];
-                    if (!bank) {
-                        throw new Error(
-                            `${source.path} is not loaded, so there is no art to save for it`,
-                        );
-                    }
                     return {
                         source,
                         path: workspace.fuzzyAbsolutePath(source.path),
-                        tiles: toJS(bank.tiles),
+                        tiles: bank ? toJS(bank.tiles) : [],
+                        loaded: !!bank,
                     };
                 });
 
             const byPath = new Map();
             for (const write of writes) {
                 const seen = byPath.get(write.path);
-                if (!seen) {
+                if (!seen || !seen.loaded) {
                     byPath.set(write.path, write);
-                } else if (!sameTiles(seen.tiles, write.tiles)) {
+                } else if (write.loaded && !sameTiles(seen.tiles, write.tiles)) {
                     throw new Error(
                         `${write.source.path} is loaded into more than one bank and `
                         + 'they no longer hold the same art, so it cannot be saved',
@@ -178,18 +174,21 @@ export function createObjectIO(obj, options = {}) {
 
     function loadMappingsAndDPLCs(e) {
         ioWrap(obj.mappings.path, setMappingError, e, async (path) => {
-            const { buffer, symbols } = await getBuffer(path, mappingsASM);
+            const { buffer, symbols, source } = await getBuffer(path, mappingsASM);
 
-            let dplcBuffer, dplcSymbols;
+            let dplcBuffer, dplcSymbols, dplcSource;
 
             environment.config.dplcsEnabled = obj.dplcs.enabled;
 
             if (obj.dplcs.enabled) {
                 const dplcPath = workspace.fuzzyAbsolutePath(obj.dplcs.path);
-                ({ buffer: dplcBuffer, symbols: dplcSymbols } = await getBuffer(dplcPath, dplcsASM));
+                ({ buffer: dplcBuffer, symbols: dplcSymbols, source: dplcSource } = await getBuffer(dplcPath, dplcsASM));
             }
 
-            const result = script.readMappings(buffer, symbols, dplcBuffer, dplcSymbols);
+            const result = script.readMappings(buffer, symbols, dplcBuffer, dplcSymbols, {
+                mappings: source,
+                dplcs: dplcSource,
+            });
             if (result.error) throw result.error;
 
             environment.mappings.replace(result.mappings.sprites);
@@ -211,10 +210,19 @@ export function createObjectIO(obj, options = {}) {
             }
 
             const dplcsData = obj.dplcs.enabled ? environment.dplcs : null;
-            const sprites = environment.sprites;
-
             const result = script.writeMappings(environment.mappings, dplcsData, environment.spriteMetadata, environment);
             if (result.error) throw result.error;
+
+            // ASM writers read DPLCs from the sprites, so give them the ones
+            // the format actually writes
+            const sprites = result.dplcSprites
+                ? environment.sprites.map(({ index, mappings, metadata }) => ({
+                    index,
+                    mappings,
+                    metadata,
+                    ...(result.dplcSprites[index] && { dplcs: result.dplcSprites[index] }),
+                }))
+                : environment.sprites;
 
             if (!mappingsASM) {
                 await fs.writeFile(path, writeBIN(result.mappings));

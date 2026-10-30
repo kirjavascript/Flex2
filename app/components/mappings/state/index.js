@@ -8,6 +8,7 @@ import { deleteUnusedTiles } from './delete-unused-tiles';
 import { toggleDPLCs } from './toggle-dplcs';
 import { arrangeTilesBySpriteOrder } from './arrange-tiles-by-sprite-order';
 import { storage } from '~/store/storage';
+import { drawingTools } from '../drawing-tools';
 import { webFrame } from 'electron';
 
 class MappingState {
@@ -46,6 +47,9 @@ class MappingState {
     drawIndexLeft = 1;
     drawIndexRight = 0;
     drawPalette = 0;
+    drawTool = 'pencil';
+    drawWidth = 1;
+    drawPoints = 5;
     mode = 'mapping';
 
     toggleMode = () => {
@@ -70,6 +74,9 @@ class MappingState {
             drawIndexLeft: observable,
             drawIndexRight: observable,
             drawPalette: observable,
+            drawTool: observable,
+            drawWidth: observable,
+            drawPoints: observable,
             mode: observable,
             toggleMode: action,
             guidelines: observable,
@@ -83,8 +90,6 @@ class MappingState {
             selectToggle: action,
             rotate: observable,
             toggleRotate: action,
-            settings: observable,
-            toggleSettings: action,
             closeModals: action,
             globalScale: observable,
             newMapping: observable,
@@ -93,6 +98,10 @@ class MappingState {
             toggleAutodismiss: action,
             topLeftAlphaPixel: observable,
             toggleTopLeftAlphaPixel: action,
+            autofillMetadata: observable,
+            toggleAutofillMetadata: action,
+            uncappedDPLCs: observable,
+            toggleUncappedDPLCs: action,
             placeNewMapping: action,
             activeMappings: computed,
             hasActive: computed,
@@ -123,7 +132,7 @@ class MappingState {
         );
 
         // ensure only one modal is open at once
-        const modals = ['newMapping', 'rotate', 'settings'];
+        const modals = ['newMapping', 'rotate'];
         modals.forEach(modal => {
             observe(this[modal], value => {
                 if (value.name === 'active' && value.object.active) {
@@ -186,6 +195,17 @@ class MappingState {
         this.selectedIndices.replace([]);
     };
 
+    selectCycle = (dir) => {
+        if (this.move.active) return;
+        const { length } = environment.currentSprite.mappings;
+        if (!length) return;
+        const valid = this.selectedIndices.filter((i) => i < length);
+        const from = valid.length
+            ? (dir > 0 ? Math.max(...valid) : Math.min(...valid))
+            : (dir > 0 ? -1 : length);
+        this.selectedIndices.replace([(from + dir + length) % length]);
+    };
+
     selectToggle = (index) => {
         if (this.move.active) return;
         if (~this.selectedIndices.indexOf(index)) {
@@ -198,22 +218,11 @@ class MappingState {
         }
     };
 
-    // settings
-
-    settings = {
-        active: false,
-    };
-
-    toggleSettings = () => {
-        this.settings.active = !this.settings.active;
-    };
-
     globalScale = 1;
 
     closeModals = () => {
         this.newMapping.active = false;
         this.rotate.active = false;
-        this.settings.active = false;
     };
 
     // rotate
@@ -248,6 +257,18 @@ class MappingState {
 
     toggleTopLeftAlphaPixel = () => {
         this.topLeftAlphaPixel = !this.topLeftAlphaPixel;
+    };
+
+    autofillMetadata = true;
+
+    toggleAutofillMetadata = () => {
+        this.autofillMetadata = !this.autofillMetadata;
+    };
+
+    uncappedDPLCs = true;
+
+    toggleUncappedDPLCs = () => {
+        this.uncappedDPLCs = !this.uncappedDPLCs;
     };
 
     placeNewMapping = placeNewMapping;
@@ -288,7 +309,32 @@ class MappingState {
 }
 
 const mappingState = new MappingState();
-storage(mappingState, 'mapping-state', ['autodismiss', 'topLeftAlphaPixel', 'globalScale']);
+storage(mappingState, 'mapping-state', [
+    'mode',
+    'drawTool',
+    'drawWidth',
+    'drawPoints',
+    'drawIndexLeft',
+    'drawIndexRight',
+    'drawPalette',
+    'autodismiss',
+    'topLeftAlphaPixel',
+    'autofillMetadata',
+    'uncappedDPLCs',
+    'globalScale',
+]);
+
+// storage restores verbatim, so stale/corrupt values must not reach the tools
+if (!drawingTools[mappingState.drawTool]) {
+    mappingState.drawTool = 'pencil';
+}
+if (!(mappingState.drawWidth >= 1 && mappingState.drawWidth <= 8)) {
+    mappingState.drawWidth = 1;
+}
+if (!Number.isInteger(mappingState.drawPoints)
+    || mappingState.drawPoints < 3 || mappingState.drawPoints > 12) {
+    mappingState.drawPoints = 5;
+}
 
 if (!mappingState.globalScale) {
     mappingState.globalScale = 1;

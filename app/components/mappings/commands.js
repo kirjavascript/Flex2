@@ -5,6 +5,7 @@ import { observer } from 'mobx-react';
 import { commands, getCommandLabel } from '~/controls/commands';
 import { mappingState } from './state';
 import { Item } from '~/ui';
+import { keymap } from '~/store/keymap';
 
 export const Commands = observer(class Commands extends Component {
 
@@ -19,7 +20,7 @@ export const Commands = observer(class Commands extends Component {
             >
                 {commands.map((group, i) => (
                     <div key={i} className="group">
-                        {group.map(({ name, map, func, color, hidden }) => hidden || (
+                        {group.map(({ id, name, func, color, hidden }) => hidden || (
                             <Item
                                 key={name}
                                 onClick={func}
@@ -27,7 +28,7 @@ export const Commands = observer(class Commands extends Component {
                                 prefix={getCommandLabel(name)}
                                 inverted
                             >
-                                {map}
+                                {keymap.combo(id)}
                             </Item>
                         ))}
                     </div>

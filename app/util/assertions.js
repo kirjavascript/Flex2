@@ -10,7 +10,7 @@ export const isPositiveNumber = (num) => {
 };
 
 export const isDPLCSize = (num) => {
-    return clamp(isPositiveNumber(num), 1, 256);
+    return Math.max(1, isPositiveNumber(num));
 };
 
 export const isWidthHeight = (num) => {

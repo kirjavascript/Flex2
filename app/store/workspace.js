@@ -38,8 +38,10 @@ class Workspace {
         return this.projectPath ? path.dirname(this.projectPath) : undefined;
     }
 
+    // stored in the project file, so always / to stay portable across OSes
     relativePath = (filepath) => {
-        return path.relative(path.dirname(this.projectPath), filepath);
+        return path.relative(path.dirname(this.projectPath), filepath)
+            .split(path.sep).join('/');
     };
     absolutePath = (filepath) => {
         return path.resolve(path.dirname(this.projectPath), filepath);

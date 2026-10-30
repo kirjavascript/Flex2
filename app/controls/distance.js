@@ -1,18 +1,29 @@
-let distance = 1;
+import { observable } from 'mobx';
+import { keymap, modifierFromEvent } from '~/store/keymap';
+
+export const inputState = observable({ multiplier: '', coarse: false, ctrl: false });
 
 document.addEventListener('keydown', (e) => {
     if (e.repeat) return;
-    if (e.key == 'Shift') {
-        distance = 8;
+    if (e.key === 'Control') inputState.ctrl = true;
+    if (modifierFromEvent(e) === keymap.combo('coarse')) {
+        inputState.coarse = true;
     }
 });
 
 document.addEventListener('keyup', (e) => {
-    if (e.key == 'Shift') {
-        distance = 1;
+    if (e.key === 'Control') inputState.ctrl = false;
+    if (modifierFromEvent(e) === keymap.combo('coarse')) {
+        inputState.coarse = false;
     }
 });
 
+// the keyup never arrives if focus leaves while the key is held
+window.addEventListener('blur', () => {
+    inputState.coarse = false;
+    inputState.ctrl = false;
+});
+
 export const getDistance = () => {
-    return distance;
+    return inputState.coarse ? 8 : 1;
 };
