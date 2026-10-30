@@ -11,6 +11,7 @@ import { generateInWorker, resetWorkerSession } from './worker-client';
 import { environment } from '~/store/environment';
 import { workspace } from '~/store/workspace';
 import { readFile } from 'fs';
+import { storage } from '~/store/storage';
 
 const SHEET_MARGIN = 32;
 
@@ -326,4 +327,7 @@ class ImportState {
 }
 
 const importState = new ImportState();
+storage(importState, 'import-state', [
+    'fuzziness', 'scale', 'fixedCanvas', 'type', 'overlap', 'gridAligned', 'alignToArt',
+]);
 export { importState };

@@ -16,6 +16,10 @@ post:
 
     additionally, an export and then import round trip will retain the same alignment!
 
+    remapping
+
+    you should be able to configure the keys to match SonMapEd's bindings
+
 
     TODO:
     make the buttons look more clickable

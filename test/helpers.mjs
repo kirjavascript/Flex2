@@ -8,16 +8,17 @@ export const FIXTURES = resolve(import.meta.dirname, 'fixtures');
 const ELECTRON = resolve(ROOT, 'node_modules', '.bin', 'electron');
 const APP_DIR = resolve(ROOT, 'static');
 
-export async function launchApp() {
+// existing: a profile from an earlier launch, to check what it kept
+export async function launchApp({ existing } = {}) {
     // throwaway profile so tests never touch the real app's localStorage
-    const userDataDir = mkdtempSync(join(tmpdir(), 'flex2-userdata-'));
+    const userDataDir = existing || mkdtempSync(join(tmpdir(), 'flex2-userdata-'));
     const app = await _electron.launch({
         executablePath: ELECTRON,
         args: [APP_DIR, `--user-data-dir=${userDataDir}`],
     });
     const page = await app.firstWindow();
     await page.waitForSelector('.file-object', { timeout: 30_000 });
-    await page.waitForFunction(() => localStorage.length === 0, null, { timeout: 10_000 });
+    if (!existing) await page.waitForFunction(() => localStorage.length === 0, null, { timeout: 10_000 });
     return { app, page, userDataDir };
 }
 
