@@ -10,7 +10,7 @@
     - Dedupes existing tiles / Aims pieces at art already imported, parts frames of one size share, and mirrored halves
     - Fewer mappings / tiles, with pieces placed off the tile grid
     - Options: Allow Overlap / Grid Aligned / Reuse More Tiles
-- Export Spritesheet produces well-formed sheets: a full export then import now keeps alignment
+- Export Spritesheet produces well-formed sheets: a full export then import keeps alignment
 - Remappable keys
 - Improve recent project listing UI
 - Drop an image in the mappings area to import as spritesheet
@@ -36,6 +36,7 @@
 - Fix a bug that causes label conflicts
 - Fix an issue where you couldn't save with empty art
 - Fix metadata edits being lost on imported sprites
+- Fix loading some AS-incomptible mapping formats that use `; \` as comments (eg. Sonic CD)
 - Fix Puyo Puyo DPLC support
 - Fix Sonic Crackers DPLC saving
 - Fix windows filepaths for other OSs (always use /)

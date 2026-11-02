@@ -13,6 +13,12 @@ function atLabels(code) {
     return code;
 }
 
+// AS treats a trailing backslash as line continuation even inside a comment,
+// swallowing the next line (IDA emits char comments like `dc.b $5C ; \`)
+function stripCommentContinuations(code) {
+    return code.replace(/(;[^\n]*?)\\[ \t]*(?=\r?$)/gm, '$1');
+}
+
 export async function assemble(
     code,
     { filename } = {
@@ -22,7 +28,7 @@ export async function assemble(
     const aslWorker = new Worker('bundles/asl-worker.js');
     const asl = Comlink.wrap(aslWorker);
 
-    const result = await asl.assemble(atLabels(code), { filename });
+    const result = await asl.assemble(atLabels(stripCommentContinuations(code)), { filename });
     aslWorker.terminate();
 
     const pFile = result.binary || result;

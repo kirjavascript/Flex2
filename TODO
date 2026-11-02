@@ -7,14 +7,14 @@
 /* http://info.sonicretro.org/Disassemblies */
 
 NEXT
-    persist import settings
-
 post:
     automatic sprite alignment on import
 
     now when you import something from a well-formed spritesheet you can have the origin be placed automatically, no more manually aligning things!
 
     additionally, an export and then import round trip will retain the same alignment!
+
+    drawing shapes
 
     remapping
 
