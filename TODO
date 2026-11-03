@@ -30,6 +30,8 @@ post:
 
     change mapping order from the visual editor
 
+    copy paste mappings
+
     find a way to inject tiles part way through the art (shift everything after)
 
     allow specifying per-sprite canvas size, show grid when importing

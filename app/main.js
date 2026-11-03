@@ -39,8 +39,19 @@ import { importState } from '~/components/import/state';
 import { importSprite, generateSpriteMappings, commonPixels, padded } from '~/components/import/import-sprite';
 import { generateMappings } from '~/components/import/generate-mappings';
 import { generateInWorker } from '~/components/import/worker-client';
+// used as external API
+import { createObjectIO } from '~/components/file/object-io';
+import { scripts, runScript } from '~/formats/scripts';
+import { undo, redo, setDrawing } from '~/store/history';
+import { createDrawingSurface } from '~/components/mappings/drawing-surface';
+import { drawingTools } from '~/components/mappings/drawing-tools';
+import { commands, getCommandLabel } from '~/controls/commands';
+import { inputState } from '~/controls/distance';
+import { prepareMetadataFill } from '~/components/mappings/state/fill-metadata';
 window.__test__ = {
     environment, workspace, mappingState, toJS, exportSprite, spritesheetCanvas, keymap,
     importState, importSprite, generateSpriteMappings, commonPixels, padded,
     generateMappings, generateInWorker,
+    createObjectIO, scripts, runScript, undo, redo, setDrawing, createDrawingSurface,
+    drawingTools, commands, getCommandLabel, inputState, prepareMetadataFill,
 };
