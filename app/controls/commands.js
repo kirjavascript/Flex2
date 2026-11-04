@@ -6,6 +6,7 @@ import { exportPNG, importImg, exportSpritesheet } from '~/formats/image';
 import { getDistance } from './distance';
 import { toJS } from 'mobx';
 import { keymap } from '~/store/keymap';
+import { lastObject } from '~/components/file/last-object';
 
 /*
  * mod = ctrl / cmd
@@ -290,6 +291,17 @@ export const commands = [
         {
             id: 'redo', map: 'mod+r', name: 'Redo', color: 'magenta', noMultiplier: true,
             func: () => { redo(); },
+        },
+    ],
+
+    [
+        {
+            id: 'loadLastObject', map: 'mod+l', name: 'Load Last Object', color: 'green', noMultiplier: true,
+            func: (e) => { e?.preventDefault(); lastObject.load(); },
+        },
+        {
+            id: 'saveLastObject', map: 'mod+s', name: 'Save Last Object', color: 'green', noMultiplier: true,
+            func: (e) => { e?.preventDefault(); lastObject.save(); },
         },
     ],
 

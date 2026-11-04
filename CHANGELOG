@@ -11,6 +11,7 @@
     - Fewer mappings / tiles, with pieces placed off the tile grid
     - Options: Allow Overlap / Grid Aligned / Reuse More Tiles
 - Export Spritesheet produces well-formed sheets: a full export then import keeps alignment
+- New shortcuts for Save / Load last used object
 - Remappable keys
 - Improve recent project listing UI
 - Drop an image in the mappings area to import as spritesheet

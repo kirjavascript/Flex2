@@ -1,0 +1,23 @@
+.toast {
+    position: fixed;
+    z-index: $z-float + 1;
+    right: 16px;
+    bottom: 16px;
+    max-width: 480px;
+    padding: 8px 12px;
+    background-color: $darkgrey;
+    color: $white;
+    border-left: 4px solid $blue;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+    white-space: pre-wrap;
+    user-select: text;
+    cursor: pointer;
+}
+
+.toast__copy {
+    float: right;
+    margin: 0 0 4px 12px;
+}
+
+.toast--success { border-left-color: $green; }
+.toast--error { border-left-color: $red; }

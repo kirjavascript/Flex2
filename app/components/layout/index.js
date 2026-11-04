@@ -14,6 +14,7 @@ import { RawEditor } from '~/components/mappings/raw-editor';
 import { Settings } from '~/components/settings';
 import { Documentation } from '~/components/documentation';
 import { UpdateNotification } from '~/components/update';
+import { Toast } from '~/components/toast';
 
 export class Layout extends Component {
     factory = (node) => {
@@ -81,6 +82,7 @@ export class Layout extends Component {
     render() {
         return <>
             <UpdateNotification />
+            <Toast />
             <FlexLayout
                 model={model}
                 factory={this.factory}

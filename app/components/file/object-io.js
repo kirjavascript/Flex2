@@ -16,6 +16,7 @@ import { promises as fs } from 'fs';
 import { extname, basename } from 'path';
 import { uuid } from '~/util/uuid';
 import SaveLoad from './save-load';
+import { lastObject } from './last-object';
 
 const noop = () => {};
 const isASM = (path) => ['.asm', '.s'].includes(extname(path).toLowerCase());
@@ -51,11 +52,13 @@ export function createObjectIO(obj, options = {}) {
         return SaveLoad.indicator(target && { target });
     }
 
+    // resolves to whether the section ran at all
     function ioWrap(filePath, setError, e, cb) {
         const target = targetFromEvent(e);
         setError();
-        if (script && !script.error && filePath) {
-            const done = indicator(target);
+        if (!(script && !script.error && filePath)) return Promise.resolve(false);
+        const done = indicator(target);
+        return new Promise((resolve) => {
             requestIdleCallback(async () => {
                 try {
                     await cb(workspace.fuzzyAbsolutePath(filePath));
@@ -64,9 +67,10 @@ export function createObjectIO(obj, options = {}) {
                     console.error(e);
                 } finally {
                     done();
+                    resolve(true);
                 }
             });
-        }
+        });
     }
 
     async function getBuffer(path, asm) {
@@ -83,27 +87,33 @@ export function createObjectIO(obj, options = {}) {
     }
 
     function loadObject() {
+        lastObject.remember(obj);
         const targets = getTargets();
         targets.forEach((n) => {
             n.textContent = '';
         });
-        loadArt(targets[0]);
-        loadMappingsAndDPLCs(targets[1]);
-        loadPalettes(targets[2]);
+        return Promise.all([
+            loadArt(targets[0]),
+            loadMappingsAndDPLCs(targets[1]),
+            loadPalettes(targets[2]),
+        ]);
     }
 
     function saveObject() {
+        lastObject.remember(obj);
         const targets = getTargets();
         targets.forEach((n) => {
             n.textContent = '';
         });
-        saveArt(targets[0]);
-        saveMappingsAndDPLCs(targets[1]);
-        savePalettes(targets[2]);
+        return Promise.all([
+            saveArt(targets[0]),
+            saveMappingsAndDPLCs(targets[1]),
+            savePalettes(targets[2]),
+        ]);
     }
 
     function loadArt(e) {
-        ioWrap(obj.art.path, setArtError, e, async () => {
+        return ioWrap(obj.art.path, setArtError, e, async () => {
             validateArtSources(obj.art);
 
             const banks = [];
@@ -131,7 +141,7 @@ export function createObjectIO(obj, options = {}) {
     }
 
     function saveArt(e) {
-        ioWrap(obj.art.path, setArtError, e, async () => {
+        return ioWrap(obj.art.path, setArtError, e, async () => {
             validateArtSources(obj.art);
 
             const writes = artSources(obj.art)
@@ -173,7 +183,7 @@ export function createObjectIO(obj, options = {}) {
     }
 
     function loadMappingsAndDPLCs(e) {
-        ioWrap(obj.mappings.path, setMappingError, e, async (path) => {
+        return ioWrap(obj.mappings.path, setMappingError, e, async (path) => {
             const { buffer, symbols, source } = await getBuffer(path, mappingsASM);
 
             let dplcBuffer, dplcSymbols, dplcSource;
@@ -201,7 +211,7 @@ export function createObjectIO(obj, options = {}) {
     }
 
     function saveMappingsAndDPLCs(e) {
-        ioWrap(obj.mappings.path, setMappingError, e, async (path) => {
+        return ioWrap(obj.mappings.path, setMappingError, e, async (path) => {
             if (
                 (obj.dplcs.enabled && !environment.config.dplcsEnabled)
                 || (!obj.dplcs.enabled && environment.config.dplcsEnabled)
@@ -256,7 +266,7 @@ export function createObjectIO(obj, options = {}) {
     }
 
     function loadPalettes(e) {
-        ioWrap('dummy.bin', setPaletteError, e, async () => {
+        return ioWrap('dummy.bin', setPaletteError, e, async () => {
             let cursor = 0;
             for (let i = 0; i < obj.palettes.length; i++) {
                 const { path: palPath, length, blank } = obj.palettes[i];
@@ -280,7 +290,7 @@ export function createObjectIO(obj, options = {}) {
     }
 
     function savePalettes(e) {
-        ioWrap('dummy.bin', setPaletteError, e, async () => {
+        return ioWrap('dummy.bin', setPaletteError, e, async () => {
             let cursor = 0;
             for (let i = 0; i < obj.palettes.length; i++) {
                 const { path: palPath, length, blank } = obj.palettes[i];
