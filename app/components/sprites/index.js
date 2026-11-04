@@ -5,7 +5,7 @@ import { spriteState } from './state';
 import { observer } from 'mobx-react';
 import { Sprite } from './sprite';
 import { SortableContainer, SortableElement } from 'react-sortable-hoc';
-import { Slider } from '~/ui';
+import { Button } from '~/ui';
 import {
     baseSize,
     margin,
@@ -159,12 +159,21 @@ export const Sprites = observer(class Sprites extends DimensionsComponent {
                         scroll={scroll}
                     />
                 </div>
-                <Slider
-                    store={spriteState}
-                    accessor="zoom"
-                    min="1"
-                    max="8"
-                />
+                <div className="sprite-zoom">
+                    <div className="sprite-zoom__buttons">
+                        <div className="sprite-zoom__grid">
+                            {Array.from({ length: 8 }, (_, i) => i + 1).map((zoom) => (
+                                <Button
+                                    key={zoom}
+                                    color={spriteState.zoom === zoom ? 'magenta' : 'white2'}
+                                    onClick={() => { spriteState.zoom = zoom; }}
+                                >
+                                    {zoom}x
+                                </Button>
+                            ))}
+                        </div>
+                    </div>
+                </div>
             </div>
         );
     }

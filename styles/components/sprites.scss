@@ -67,6 +67,42 @@
 
 }
 
+.sprite-zoom {
+    display: flex;
+    align-items: center;
+    padding: 2px 5px;
+
+    .button {
+        width: auto;
+        padding: 2px 0;
+    }
+}
+
+// rows halve (8, 4, 2 per row) so they always split evenly; widths are
+// 8 / 4 buttons at 28px plus gaps
+.sprite-zoom__buttons {
+    flex: 1;
+    container-type: inline-size;
+}
+
+.sprite-zoom__grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 0 2px;
+}
+
+@container (max-width: 150px) {
+    .sprite-zoom__grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+@container (max-width: 100px) {
+    .sprite-zoom__grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@container (max-width: 25px) {
+    .sprite-zoom__grid { grid-template-columns: repeat(1, 1fr); }
+}
+
 .sortable-float-sprite {
     z-index: $z-float;
 }
