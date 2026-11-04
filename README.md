@@ -95,6 +95,8 @@ The Sprites tab gives an overview of your full object's data, allowing you to ch
 
 Open a spritesheet with **Import Spritesheet** (<kbd>s</kbd>), or drop an image onto the mapping area. Importing has two steps: **detect**, which splits the sheet into sprites, and **import**, which turns each sprite into mappings and art.
 
+Transparency comes from the image's alpha. When **Import: use top left pixel as alpha** is on in Settings (the default), every pixel matching the colour of an opaque top left pixel is also made transparent.
+
 #### Detecting sprites
 
 **Detect Sprites** finds each separate sprite and draws a box around it. **Fuzziness** is the gap in pixels that still counts as part of the same sprite; raise it if sprites are being split into pieces. Sprites are read in rows, top to bottom and left to right.
@@ -129,7 +131,7 @@ Each sprite is shown with the mappings that will be made for it. **Import Sprite
 
 ### Importing over the current frame
 
-**Import Image** (<kbd>i</kbd>) redraws the current sprite's existing tiles from an image, keeping its mappings. The image's top left lines up with the top left of the sprite's pieces; there is no limit on its size, and anything outside the pieces is ignored. Colours are matched to each piece's palette line the same way. The top left pixel is only used as transparency when **Import Image: use top left pixel as alpha** is on in Settings.
+**Import Image** (<kbd>i</kbd>) redraws the current sprite's existing tiles from an image, keeping its mappings. The image's top left lines up with the top left of the sprite's pieces; there is no limit on its size, and anything outside the pieces is ignored. Colours are matched to each piece's palette line the same way. The top left pixel is only used as transparency when **Import: use top left pixel as alpha** is on in Settings.
 
 ## Custom Formats
 

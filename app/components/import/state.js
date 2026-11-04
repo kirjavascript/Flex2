@@ -9,6 +9,7 @@ import {
 } from './import-sprite';
 import { generateInWorker, resetWorkerSession } from './worker-client';
 import { environment } from '~/store/environment';
+import { mappingState } from '~/components/mappings/state';
 import { workspace } from '~/store/workspace';
 import { readFile } from 'fs';
 import { storage } from '~/store/storage';
@@ -127,7 +128,7 @@ class ImportState {
         const { ctx, canvas } = this;
         const { width, height } = canvas;
         const buffer = ctx.getImageData(0, 0, width, height);
-        removeBackground(buffer);
+        if (mappingState.topLeftAlphaPixel) removeBackground(buffer);
         /*
          * moving the sprite 'fixes' a bug where fuzziness going
          * out of bounds acts as a 'hit' by adding buffer space.

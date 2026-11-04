@@ -61,7 +61,7 @@ export const Settings = observer(() => {
                 </div>
 
                 <div className="setting-row">
-                    <span>Import Image: use top left pixel as alpha</span>
+                    <span>Import: use top left pixel as alpha</span>
                     <Checkbox
                         checked={mappingState.topLeftAlphaPixel}
                         onChange={() => mappingState.toggleTopLeftAlphaPixel()}
