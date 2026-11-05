@@ -4,5 +4,6 @@ export default defineConfig({
     testDir: './test/bench',
     testMatch: '*.bench.mjs',
     workers: 1,
-    reporter: 'list',
+    outputDir: './test/test-results',
+    reporter: [['list'], ['./test/cleanup-reporter.mjs']],
 });

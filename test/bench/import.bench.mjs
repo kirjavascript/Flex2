@@ -314,7 +314,7 @@ test('import benchmark', async () => {
         'bound: fewest pieces the frames could have; atBound: frames that reach it.',
     ].join('\n');
 
-    mkdirSync(resolve(ROOT, 'test-results'), { recursive: true });
-    writeFileSync(resolve(ROOT, 'test-results/bench.md'), `${table}\n\n${notes}\n`);
+    mkdirSync(resolve(ROOT, 'test/test-results'), { recursive: true });
+    writeFileSync(resolve(ROOT, 'test/test-results/bench.md'), `${table}\n\n${notes}\n`);
     console.log(`\n${table}\n\n${notes}`);
 });
