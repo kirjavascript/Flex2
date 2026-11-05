@@ -6,24 +6,6 @@
 /* https://raw.githubusercontent.com/Dandaman955/Streets-of-Rage-1-Disassembly-Redux/master/SoR.asm */
 /* http://info.sonicretro.org/Disassemblies */
 
-NEXT
-post:
-
-    Some new features I want to call out specifically;
-
-
-    automatic sprite alignment on import
-
-    now when you import something from a well-formed spritesheet you can have the origin be placed automatically, no more manually aligning things!
-
-    additionally, an export and then import round trip will retain the same alignment!
-
-    drawing shapes
-
-    remapping
-
-    you should be able to configure the keys to match SonMapEd's bindings
-
 
     TODO:
     make the buttons look more clickable
