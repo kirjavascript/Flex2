@@ -9,7 +9,8 @@ export class ObjectDef {
         path: '',
         compression: 'Uncompressed',
         offset: 0,
-        extra: [/* {path, compression, address} */],
+        paletteLine: 0,
+        extra: [/* {path, compression, address, paletteLine} */],
     };
     mappings = {
         path: '',
@@ -43,7 +44,9 @@ export function hydrate(objects) {
         delete obj.uuid;
         if (obj.art) {
             obj.art.offset = obj.art.offset || 0;
+            obj.art.paletteLine ??= 0;
             obj.art.extra ??= [];
+            obj.art.extra.forEach((source) => { source.paletteLine ??= 0; });
         }
         obj.config ??= {};
         obj.children && hydrate(obj.children);
@@ -52,7 +55,9 @@ export function hydrate(objects) {
 
 export function editPaths(obj, lambda) {
     for (const name in obj) {
+        // an unset path resolves against the cwd or project dir otherwise
         if (name === 'path') {
+            if (!obj[name]) continue;
             obj[name] = lambda(obj[name]);
         } else {
             const item = obj[name];

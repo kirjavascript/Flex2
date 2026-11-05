@@ -1,41 +1,43 @@
-import { environment } from '~/store/environment';
-import range from 'lodash/range';
+// anything over the format's own limit is split when writing, see
+// normaliseDPLCs in run-script
 
-export function concatDPLCs(dplcs) {
+export const isEmpty = (metadata) => !metadata || !Object.keys(metadata).length;
 
-    let newDPLCs = [];
+// adjacent tiles share an entry unless both carry metadata and it differs
+export function compatible(a, b) {
+    if (isEmpty(a) || isEmpty(b)) return true;
+    const keys = Object.keys(a);
+    return keys.length === Object.keys(b).length
+        && keys.every((key) => a[key] === b[key]);
+}
 
-    let tiles = [];
+// without matchMetadata, a merged entry keeps the metadata of its first tile
+export function concatDPLCs(dplcs, { maxSize = Infinity, matchMetadata = true } = {}) {
+    const newDPLCs = [];
+    let obj;
 
-    dplcs.forEach(({art, size, metadata}) => {
+    dplcs.forEach(({ art, size, metadata }) => {
         for (let i = 0; i < size; i++) {
-            tiles.push({ art: art + i, metadata });
+            const num = art + i;
+            if (
+                obj
+                && obj.size < maxSize
+                && obj.art + obj.size === num
+                && (!matchMetadata || compatible(obj.metadata, metadata))
+            ) {
+                obj.size++;
+                if (matchMetadata && isEmpty(obj.metadata) && !isEmpty(metadata)) {
+                    obj.metadata = { ...metadata };
+                }
+            } else {
+                if (obj) newDPLCs.push(obj);
+                obj = { art: num, size: 1 };
+                if (metadata) obj.metadata = { ...metadata };
+            }
         }
     });
 
-    let obj = {};
-
-    tiles.forEach(({ art: num, metadata }) => {
-        if (typeof obj.art == 'undefined') {
-            obj.art = num;
-            obj.size = 1;
-            if (metadata) obj.metadata = {...metadata};
-        }
-        else if (obj.size == 16 || obj.art + obj.size != num) {
-            newDPLCs.push(obj);
-            obj = {
-                art: num,
-                size: 1,
-            };
-            if (metadata) obj.metadata = {...metadata};
-        }
-        else {
-            obj.size++;
-        }
-    });
-    if (typeof obj.art != 'undefined') {
-        newDPLCs.push(obj);
-    }
+    if (obj) newDPLCs.push(obj);
 
     return newDPLCs;
 }

@@ -43,8 +43,9 @@ const SelectionLayer = observer(class SelectionLayer extends Component {
         const {
             remainder,
             itemsPerRow,
-            baseIndex,
-            itemQty,
+            layout,
+            scroll,
+            height,
             offset = 0,
             color = null,
             ...otherProps
@@ -55,9 +56,14 @@ const SelectionLayer = observer(class SelectionLayer extends Component {
 
         return <g {...otherProps}>
             {activeTiles.map((index) => {
-                const x = remainder + (index % itemsPerRow) * baseSize;
-                const y = (0|(index / itemsPerRow)) * baseSize;
-                const shouldRender = index >= baseIndex && index < baseIndex + itemQty;
+                const owner = environment.bankAt(index);
+                const entry = owner && layout.find(({ bank }) => bank === owner);
+                if (!entry) return null;
+                const i = index - owner.address;
+                const x = remainder + (i % itemsPerRow) * baseSize;
+                const y = entry.top + (0|(i / itemsPerRow)) * baseSize;
+                const shouldRender = y > scroll - baseSize * 2
+                    && y < scroll + height + baseSize * 2;
 
                 return shouldRender && (
                     <rect

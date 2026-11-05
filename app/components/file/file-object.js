@@ -9,8 +9,13 @@ import { createObjectIO } from './object-io';
 import { extname, basename } from 'path';
 
 const compressionList = Object.keys(compressionFormats);
+const paletteLines = [0, 1, 2, 3];
 
 const isASM = (path) => ['.asm', '.s'].includes(extname(path).toLowerCase());
+
+const artExtensions = ['bin', 'unc', 'nem', 'kos', 'kosm', 'kospls', 'kospm', 'comp', 'compx', 'compxm', 'eni', 'sor'];
+
+const asmExtensions = ['asm', 'bin', 's'];
 
 export const FileObject = observer(({ obj, isInProject = false }) => {
     scripts.length; // react to script updates
@@ -68,7 +73,6 @@ export const FileObject = observer(({ obj, isInProject = false }) => {
                     options={compressionList}
                     store={obj.art}
                     accessor="compression"
-                    wheel={false}
                 />
             </div>
             {!isInProject &&
@@ -76,6 +80,14 @@ export const FileObject = observer(({ obj, isInProject = false }) => {
                 <Item>Load Offset</Item>
                 <Input store={obj.art} accessor="offset" isNumber wheel={false} />
             </div>}
+            <div className="menu-item">
+                <Item>Palette Line Offset</Item>
+                <Select
+                    options={paletteLines}
+                    store={obj.art}
+                    accessor="paletteLine"
+                />
+            </div>
 
             <ErrorMsg error={artError} />
             <FileInput
@@ -84,7 +96,7 @@ export const FileObject = observer(({ obj, isInProject = false }) => {
                 accessor="path"
                 absolute={isAbsolute}
                 filtername="Art File"
-                filterextensions={['bin', 'unc', 'kos', 'nem', 'eni', 'sor']}
+                filterextensions={artExtensions}
             />
 
             {!!obj.art.path && <>
@@ -98,6 +110,7 @@ export const FileObject = observer(({ obj, isInProject = false }) => {
                             path: '',
                             compression: 'Uncompressed',
                             address: '',
+                            paletteLine: 0,
                         });
                         setOpenArt(obj.art.extra.length - 1);
                     }}
@@ -147,7 +160,14 @@ export const FileObject = observer(({ obj, isInProject = false }) => {
                                     options={compressionList}
                                     store={source}
                                     accessor="compression"
-                                    wheel={false}
+                                />
+                            </div>
+                            <div className="menu-item">
+                                <Item>Palette Line Offset</Item>
+                                <Select
+                                    options={paletteLines}
+                                    store={source}
+                                    accessor="paletteLine"
                                 />
                             </div>
                             <FileInput
@@ -156,7 +176,7 @@ export const FileObject = observer(({ obj, isInProject = false }) => {
                                 accessor="path"
                                 absolute={isAbsolute}
                                 filtername="Art File"
-                                filterextensions={['bin', 'unc', 'kos', 'nem', 'eni', 'sor']}
+                                filterextensions={artExtensions}
                             />
                         </div>
                     )}
@@ -175,7 +195,7 @@ export const FileObject = observer(({ obj, isInProject = false }) => {
                 accessor="path"
                 absolute={isAbsolute}
                 filtername="Mapping File"
-                filterextensions={['asm', 's', 'bin']}
+                filterextensions={asmExtensions}
             />
             {mappingsASM && (
                 <div className="menu-item">
@@ -237,7 +257,7 @@ export const FileObject = observer(({ obj, isInProject = false }) => {
                                 accessor="path"
                                 absolute={isAbsolute}
                                 filtername="DPLC Mapping File"
-                                filterextensions={['asm', 's', 'bin']}
+                                filterextensions={asmExtensions}
                             />
                             {dplcsASM && (
                                 <div className="menu-item">
@@ -279,7 +299,6 @@ export const FileObject = observer(({ obj, isInProject = false }) => {
                                 options={[1, 2, 3, 4]}
                                 store={palette}
                                 accessor="length"
-                                flipScroll
                             />
                         </div>
                         <FileInput

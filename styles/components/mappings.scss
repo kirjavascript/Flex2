@@ -22,6 +22,10 @@
             filter: blur(1px);
         }
     }
+
+    &.picking, &.picking * {
+        cursor: crosshair;
+    }
 }
 
 .commands {

@@ -6,6 +6,7 @@ import {
 } from 'react-sortable-hoc';
 import arrayMove from 'array-move';
 import { mappingState } from './state';
+import { prepareMetadataFill } from './state/fill-metadata';
 import { environment } from '~/store/environment';
 import { observer } from 'mobx-react';
 import { Select, Input, Item } from '~/ui';
@@ -247,7 +248,6 @@ const SortableMappingItem = SortableElement(
                             store={mapping}
                             accessor="palette"
                             options={[0, 1, 2, 3]}
-                            flipScroll
                         />
                     </div>
                 </div>
@@ -320,7 +320,11 @@ const SortableDPLCItem = SortableElement(
                                 environment.tiles.length > dplc.art + i
                                     ? environment.tiles[dplc.art + i]
                                     : undefined;
-                            return <Tile key={i} data={data} />;
+                            return <Tile
+                                key={i}
+                                data={data}
+                                paletteLine={environment.tileLines[dplc.art + i] || 0}
+                            />;
                         })}
                     </div>
                 </div>
@@ -372,8 +376,9 @@ export const RawEditor = observer(
 
         addNewMapping = () => {
             const {
-                currentSprite: { mappings },
+                currentSprite: { mappings, index },
             } = environment;
+            const fillMetadata = prepareMetadataFill();
             mappings.push({
                 art: 0,
                 priority: false,
@@ -386,6 +391,7 @@ export const RawEditor = observer(
                 palette: 0,
                 metadata: {},
             });
+            fillMetadata(index);
         };
 
         onSortEndDPLC = ({ oldIndex, newIndex }) => {
@@ -397,12 +403,14 @@ export const RawEditor = observer(
 
         addNewDPLC = () => {
             const {
-                currentSprite: { dplcs },
+                currentSprite: { dplcs, index },
             } = environment;
+            const fillMetadata = prepareMetadataFill();
             dplcs.push({
                 art: 0,
                 size: 1,
             });
+            fillMetadata(index);
         };
 
         render() {

@@ -11,8 +11,10 @@ import { Art } from '~/components/art/index';
 import { Sprites } from '~/components/sprites';
 import { Mappings } from '~/components/mappings';
 import { RawEditor } from '~/components/mappings/raw-editor';
+import { Settings } from '~/components/settings';
 import { Documentation } from '~/components/documentation';
 import { UpdateNotification } from '~/components/update';
+import { Toast } from '~/components/toast';
 
 export class Layout extends Component {
     factory = (node) => {
@@ -47,6 +49,8 @@ export class Layout extends Component {
                         return <RawEditor node={node} />;
                     } else if (component === 'documentation') {
                         return <Documentation node={node} />;
+                    } else if (component === 'settings') {
+                        return <Settings node={node} />;
                     }
 
                     if (component === 'sub') {
@@ -78,6 +82,7 @@ export class Layout extends Component {
     render() {
         return <>
             <UpdateNotification />
+            <Toast />
             <FlexLayout
                 model={model}
                 factory={this.factory}

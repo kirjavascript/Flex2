@@ -1,28 +1,24 @@
 import * as Comlink from 'comlink';
 
-const endStr = '__flex2__done__';
-
 const errorList = [];
 
-function assemble(code, { messages, filename }) {
+function assemble(code, { filename }) {
     return new Promise((resolve, reject) => {
         self.Module = {
             locateFile: url => `../wasm/${url}`,
             arguments: ['-q', '-xx', '-U', '-L', '-t', '2', filename],
             print: (text) => {
-                if (text === endStr) return handleResult(resolve, reject, code);
                 console.log('asl: ' + text);
             },
             printErr: (text) => {
                 errorList.push(text);
             },
-            onAbort: console.error,
-            preInit: () => {
-                FS.writeFile('as.msg', messages.asmsg);
-                FS.writeFile('cmdarg.msg', messages.cmdargmsg);
-                FS.writeFile('ioerrs.msg', messages.ioerrsmsg);
+            onAbort: (e) => reject(new Error('asl aborted: ' + e)),
+            // memory only exists once the wasm is instantiated, so not preInit
+            preRun: () => {
                 FS.writeFile(filename, code);
             },
+            postRun: () => handleResult(resolve, reject, code),
         };
         importScripts('../wasm/asl.js');
     });

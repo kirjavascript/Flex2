@@ -2,7 +2,7 @@ import React from 'react';
 import { render } from 'react-dom';
 import { observer } from 'mobx-react';
 import { importState } from './state';
-import { Item, Select, Input } from '~/ui';
+import { Item, Input, Checkbox } from '~/ui';
 import { fuzzyAssert, zoomAssert } from '~/util/assertions';
 
 export const DetectSprites = observer(class DetectSprites extends React.Component {
@@ -34,11 +34,23 @@ export const DetectSprites = observer(class DetectSprites extends React.Componen
                     )}
 
                     <div className="input">
+                        <span>Fixed Canvas</span>
+                        <Checkbox
+                            checked={importState.fixedCanvas}
+                            onChange={() => {
+                                importState.fixedCanvas = !importState.fixedCanvas;
+                                importState.getBBoxes();
+                            }}
+                        />
+                    </div>
+
+                    <div className={`input${importState.fixedCanvas ? ' disabled' : ''}`}>
                         <span>Fuzziness</span>
                         <Input
                             store={importState}
                             accessor="fuzziness"
                             assert={fuzzyAssert}
+                            disabled={importState.fixedCanvas}
                             isNumber
                         />
                     </div>

@@ -29,8 +29,6 @@ export const Art = observer(class Art extends DimensionsComponent {
         const itemsPerRow = Math.max(1, realItemsPerRow);
         const rowCount = Math.ceil(tiles.length / itemsPerRow);
         const remainder = !realItemsPerRow ? 0 : (realWidth % baseSize) / 2;
-        const baseIndex = (0|(scroll / baseSize)) * itemsPerRow;
-        const itemQty = (itemsPerRow * (height / baseSize)) + (itemsPerRow * 2);
 
         // banks are stacked one after another, each starting on its own row.
         // the tiles between two banks aren't art and aren't drawn, and a bank
@@ -86,11 +84,12 @@ export const Art = observer(class Art extends DimensionsComponent {
             </div>}
             <div ref={this.onContainerRef} className="tile-container">
                 <div className="tile-list" style={{height: totalHeight}}>
-                    {!banked && tiles.length > 0 && <ActiveSelection
+                    {tiles.length > 0 && <ActiveSelection
                         remainder={remainder}
                         itemsPerRow={itemsPerRow}
-                        baseIndex={baseIndex}
-                        itemQty={itemQty}
+                        layout={layout}
+                        scroll={scroll}
+                        height={height}
                         totalHeight={totalHeight}
                     />}
                     {banked && layout.map(({ bank, index, headerTop }) => (
@@ -119,7 +118,7 @@ export const Art = observer(class Art extends DimensionsComponent {
                             <Tile
                                 key={`${index}-${i}`}
                                 data={tile}
-                                paletteLine={0}
+                                paletteLine={bank.paletteLine || 0}
                                 scale={scale}
                                 onMouseDown={() => {
                                     mappingState.newMapping.active = true;

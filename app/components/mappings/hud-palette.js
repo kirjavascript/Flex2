@@ -8,7 +8,7 @@ export const PaletteHUD = observer(
     class PaletteHUD extends Component {
         render() {
             const { palettes } = environment;
-            const { drawIndexLeft, drawIndexRight, drawPalette } = mappingState;
+            const { drawIndexLeft, drawIndexRight, drawPalette, drawTool, drawWidth, drawPoints } = mappingState;
             const palette = ['erase', ...palettes[drawPalette].slice(1)];
             return (
                 <div className="hud">
@@ -39,7 +39,36 @@ export const PaletteHUD = observer(
                         label="line"
                         store={mappingState}
                         accessor="drawPalette"
-                        flipScroll
+                    />
+                    <Select
+                        key={`tool-${drawTool}`}
+                        options={[
+                            { value: 'pencil', label: 'pencil' },
+                            { value: 'line', label: 'line' },
+                            { value: 'fill', label: 'fill' },
+                            { value: 'rectangle', label: 'rect' },
+                            { value: 'ellipse', label: 'ellipse' },
+                            { value: 'star', label: 'star' },
+                        ]}
+                        label="tool"
+                        store={mappingState}
+                        accessor="drawTool"
+                    />
+                    {drawTool == 'star' && (
+                        <Select
+                            key={`points-${drawPoints}`}
+                            options={[3, 4, 5, 6, 7, 8, 9, 10, 11, 12]}
+                            label="points"
+                            store={mappingState}
+                            accessor="drawPoints"
+                        />
+                    )}
+                    <Select
+                        key={`width-${drawWidth}`}
+                        options={[1, 2, 3, 4, 5, 6, 7, 8]}
+                        label="width"
+                        store={mappingState}
+                        accessor="drawWidth"
                     />
                 </div>
             );

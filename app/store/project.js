@@ -1,5 +1,5 @@
 import { observable, autorun, action, makeObservable } from 'mobx';
-import { ObjectDef, hydrate } from '~/store/objectdef';
+import { ObjectDef, hydrate, editPaths } from '~/store/objectdef';
 import { promises, exists as fsExists } from 'fs';
 import { promisify } from 'util';
 
@@ -25,6 +25,8 @@ export class Project {
                     onDisk = await fs.readFile(path, 'utf8');
                     const json = JSON.parse(onDisk);
                     this.name = json.name;
+                    // projects saved on Windows before paths were stored with /
+                    editPaths(json.objects, (p) => p.replace(/\\/g, '/'));
                     hydrate(json.objects);
                     this.objects.replace(json.objects || []);
                 }

@@ -1,5 +1,6 @@
 import { environment } from '~/store/environment';
 import { mappingState } from './index';
+import { prepareMetadataFill } from './fill-metadata';
 
 export function placeNewMapping() {
     if (!environment.mappings.length) {
@@ -7,7 +8,8 @@ export function placeNewMapping() {
         return;
     }
 
-    const { currentSprite: { mappings, dplcs }, config: { dplcsEnabled } } = environment;
+    const { currentSprite: { mappings, dplcs, index }, config: { dplcsEnabled } } = environment;
+    const fillMetadata = prepareMetadataFill();
 
     const { piece } = mappingState.newMapping;
 
@@ -35,4 +37,5 @@ export function placeNewMapping() {
         mappingState.newMapping.active = false;
     }
     mappingState.optimizeCurrentDPLCs();
+    fillMetadata(index);
 }

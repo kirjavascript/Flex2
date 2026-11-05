@@ -1,5 +1,3 @@
-import * as Comlink from 'comlink';
-
 const ready = new Promise(resolve => {
     self.Module = {
         locateFile: url => `../wasm/${url}`,
@@ -8,6 +6,10 @@ const ready = new Promise(resolve => {
 });
 
 importScripts('../wasm/mdcomp_portable.js');
+
+class InvalidData extends Error {
+    message = 'invalid data';
+}
 
 async function mdcomp(func, data) {
     await ready;
@@ -33,6 +35,7 @@ async function mdcomp(func, data) {
                     Module._free(outputPtr);
                 }
             }
+            throw new InvalidData();
         } finally {
             Module._free(dataPtr);
         }
@@ -41,4 +44,13 @@ async function mdcomp(func, data) {
     }
 };
 
-Comlink.expose({ mdcomp });
+self.addEventListener('message', async ({ data: { id, func, data } }) => {
+    try {
+        const result = await mdcomp(func, data);
+        self.postMessage({ id, result }, [result.buffer]);
+    } catch (e) {
+        // anything else is likely a wasm trap, after which the module is unusable
+        const fatal = !(e instanceof InvalidData);
+        self.postMessage({ id, error: e?.message || String(e), fatal });
+    }
+});

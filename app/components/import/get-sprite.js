@@ -175,3 +175,16 @@ export function getSprite(buffer, width, height, fuzziness = 0, startOffset = 0)
     };
 
 }
+
+// a sheet that is one row of square cells, as boxes in the same coordinates as
+// getSpriteBBoxes. margin: the padding around the sheet
+export function getCanvasBBoxes(width, height, margin) {
+    const sheetWidth = width - margin * 2;
+    const cell = height - margin * 2;
+    return Array.from({ length: Math.floor(sheetWidth / cell) }, (_, i) => ({
+        x: margin + i * cell,
+        y: margin,
+        width: cell,
+        height: cell,
+    }));
+}

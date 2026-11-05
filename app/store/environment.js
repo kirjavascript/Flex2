@@ -50,6 +50,7 @@ class Environment {
             spriteMetadata: observable,
             palettesRGB: computed,
             tiles: computed,
+            tileLines: computed,
             enabledBanks: computed,
             bankOrder: computed,
             currentBank: computed,
@@ -106,6 +107,19 @@ class Environment {
         return flat;
     }
 
+    // the palette line each tile is offset by, owned the same way as tiles
+    get tileLines() {
+        const lines = [];
+
+        this.bankOrder.forEach(({ address, tiles, paletteLine = 0 }) => {
+            for (let i = 0; i < tiles.length; i++) {
+                lines[address + i] ??= paletteLine;
+            }
+        });
+
+        return Array.from(lines, (line) => line ?? 0);
+    }
+
     // the bank tiles are added to, drawn into and rearranged in
     get currentBank() {
         const bank = this.art[this.config.currentBank];
@@ -132,7 +146,7 @@ class Environment {
     appendTiles = (newTiles) => {
         const bank = this.currentBank;
         if (bank) bank.tiles.push(...newTiles);
-        else this.art.push({ address: 0, tiles: newTiles, enabled: true });
+        else this.art.push({ address: 0, tiles: newTiles, enabled: true, paletteLine: 0 });
     };
 
     toggleBank = (index) => {
@@ -179,22 +193,30 @@ class Environment {
                 ...(dplcs && { dplcs }),
             };
 
+            const throughDPLCs = (flat, missing) => {
+                if (!dplcs) return flat;
+
+                const out = [];
+                dplcs.forEach(({ art, size }) => {
+                    for (let i = 0; i < size; i++) {
+                        out.push(flat.length <= art + i ? missing() : flat[art + i]);
+                    }
+                });
+                return out;
+            };
+
             // most sprites are off screen most of the time, so a buffer is only
             // gathered for the ones something actually reads
-            Object.defineProperty(sprite, 'buffer', {
-                enumerable: true,
-                configurable: true,
-                get: () => {
-                    if (!dplcs) return this.tiles;
-
-                    const tiles = this.tiles;
-                    const buffer = [];
-                    dplcs.forEach(({ art, size }) => {
-                        for (let i = 0; i < size; i++) {
-                            buffer.push(tiles.length <= art + i ? [] : tiles[art + i]);
-                        }
-                    });
-                    return buffer;
+            Object.defineProperties(sprite, {
+                buffer: {
+                    enumerable: true,
+                    configurable: true,
+                    get: () => throughDPLCs(this.tiles, () => []),
+                },
+                lines: {
+                    enumerable: true,
+                    configurable: true,
+                    get: () => throughDPLCs(this.tileLines, () => 0),
                 },
             });
 
@@ -205,7 +227,7 @@ class Environment {
     get currentSprite() {
         return this.sprites[this.config.currentSprite]
             || this.sprites[0]
-            || { mappings: [], buffer: [], index: 0, dplcs: [], metadata: {} };
+            || { mappings: [], buffer: [], lines: [], index: 0, dplcs: [], metadata: {} };
     }
 
     get activeTiles() {

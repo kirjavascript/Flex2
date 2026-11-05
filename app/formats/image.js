@@ -8,7 +8,7 @@ import { colorMatch } from '~/components/import/color-match';
 import { removeBackground } from '~/components/import/remove-background';
 import { mappingState } from '~/components/mappings/state';
 
-export function exportSprite({ buffer, mappings }) {
+export function exportSprite({ buffer, mappings, lines = [] }) {
 
     const { palettesRGB } = environment;
 
@@ -43,8 +43,6 @@ export function exportSprite({ buffer, mappings }) {
     const { artPaletteLine } = environment.config;
 
     mappings.slice(0).reverse().forEach((mapping) => {
-        const palette = palettesRGB[(mapping.palette + artPaletteLine) % 4];
-
         mappingCanvas.width = mapping.width * 8;
         mappingCanvas.height = mapping.height * 8;
 
@@ -52,6 +50,8 @@ export function exportSprite({ buffer, mappings }) {
         Array.from({length: mapping.width * mapping.height})
             .forEach((_, index) => {
                 const tile = buffer[mapping.art + index] || Array.from({length: 0x40}).fill(0);
+                const line = mapping.palette + (lines[mapping.art + index] || 0) + artPaletteLine;
+                const palette = palettesRGB[line % 4];
 
                 for (let i = 0, j = 0; i < 64; i++, j+=4) {
                     tileBuffer.data[j] = palette[tile[i] || 0][0];
@@ -91,6 +91,30 @@ export function exportSprite({ buffer, mappings }) {
 }
 
 
+// every sprite in a row of square cells, each with its origin at the centre
+// of its cell, so the sheet imports back the same with Fixed Canvas
+export function spritesheetCanvas(sprites) {
+    const bounds = sprites.map(({ mappings }) => mappings.length && {
+        minX: Math.min(...mappings.map((m) => m.left)),
+        maxX: Math.max(...mappings.map((m) => m.left + m.width * 8)),
+        minY: Math.min(...mappings.map((m) => m.top)),
+        maxY: Math.max(...mappings.map((m) => m.top + m.height * 8)),
+    });
+    const reach = Math.max(4, ...bounds.filter(Boolean)
+        .map(({ minX, maxX, minY, maxY }) => Math.max(-minX, maxX, -minY, maxY)));
+    const cell = reach * 2;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = cell * sprites.length;
+    canvas.height = cell;
+    const ctx = canvas.getContext('2d');
+    sprites.forEach((sprite, i) => {
+        if (!bounds[i]) return;
+        ctx.drawImage(exportSprite(sprite), i * cell + reach + bounds[i].minX, reach + bounds[i].minY);
+    });
+    return canvas;
+}
+
 export function exportSpritesheet() {
     const { sprites } = environment;
     if (!sprites.length) return;
@@ -103,32 +127,8 @@ export function exportSpritesheet() {
         .then(({ filePath }) => {
             if (filePath) {
                 workspace.lastDialogDir = nodePath.dirname(filePath);
-
-                const canvases = sprites.map(({ buffer, mappings }) => exportSprite({ buffer, mappings }));
-
-                const canvas = document.createElement('canvas');
-                canvas.width = 8;
-                canvas.height = 8;
-                const ctx = canvas.getContext('2d', { willReadFrequently: true });
-                // canvas.className = 'canvas-debug';
-                // document.body.appendChild(canvas);
-
-                let cursor = 8;
-
-                canvases.forEach(current => {
-                    const last = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                    const { width, height } = current;
-                    const diff = width + 8;
-                    canvas.width += diff
-                    canvas.height = Math.max(canvas.height, height + 8);
-                    ctx.putImageData(last, 0, 0);
-                    ctx.drawImage(current, cursor, 8);
-                    cursor += diff;
-                    canvas.remove();
-                });
-
+                const canvas = spritesheetCanvas(sprites);
                 const base64Data = canvas.toDataURL().replace(/data(.*?),/, '');
-                canvas.remove();
                 writeFile(filePath, Buffer.from(base64Data, 'base64'), (err) => {
                     err && errorMsg('Error exporting spritesheet', String(err));
                 });
@@ -139,11 +139,11 @@ export function exportSpritesheet() {
 }
 
 export function exportPNG() {
-    const { currentSprite: { buffer, mappings }, sprites } = environment;
+    const { currentSprite, sprites } = environment;
 
-    if (!mappings.length || !sprites.length) return;
+    if (!currentSprite.mappings.length || !sprites.length) return;
 
-    const canvas = exportSprite({ buffer, mappings });
+    const canvas = exportSprite(currentSprite);
 
     dialog.showSaveDialog({
         title: 'Export Sprite',
@@ -205,7 +205,7 @@ export async function importImg() {
 
     // get smallest X/Y
 
-    const { currentSprite: { buffer, mappings }, palettesRGB, sprites } = environment;
+    const { currentSprite: { buffer, lines, mappings }, palettesRGB, sprites } = environment;
 
     const minX = mappings.reduce((a, c) => c.left < a ? c.left : a, Infinity);
     const minY = mappings.reduce((a, c) => c.top < a ? c.top : a, Infinity);
@@ -229,9 +229,6 @@ export async function importImg() {
     for (const { top, left, palette, vflip, hflip, width, height, art } of mappings) {
         const x = left - minX;
         const y = top - minY;
-        const shiftedPalette = (palette + environment.config.artPaletteLine) % 4;
-        const paletteLine = palettesRGB[shiftedPalette];
-
         // handle flipping
         const flipCtx = await flipBuffer(
             ctx.getImageData(x, y, width * 8, height * 8),
@@ -243,11 +240,12 @@ export async function importImg() {
             const offX = (0|(i / height)) * 8;
             const offY = (i % height) * 8;
 
+            const bufferOffset = art + i;
+            const shiftedPalette = (palette + (lines[bufferOffset] || 0) + environment.config.artPaletteLine) % 4;
             const tileBuffer = colorMatch(flipCtx.getImageData(offX, offY, 8, 8), shiftedPalette);
 
-            const bufferOffset = art + i;
             if (bufferOffset < buffer.length) {
-                buffer[bufferOffset].replace(getPixels(tileBuffer, paletteLine));
+                buffer[bufferOffset].replace(getPixels(tileBuffer, palettesRGB[shiftedPalette]));
             }
         }
     }

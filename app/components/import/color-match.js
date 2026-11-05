@@ -6,24 +6,18 @@ function nearestColor(line = 0) {
         .slice(1) // ignore transparency
         .map(([R, G, B]) => ({R, G, B}));
 
-    const cache = [];
+    const cache = new Map();
 
     return (color) => {
-        const preCalculated = cache.find((obj) => (
-            obj.color.R == color.R &&
-            obj.color.G == color.G &&
-            obj.color.B == color.B
-        ));
+        const key = (color.R << 16) | (color.G << 8) | color.B;
+        let result = cache.get(key);
 
-        if (preCalculated) {
-            return preCalculated.result;
-        } else {
-            const result = closest(color, palette);
-
-            cache.push({color, result});
-
-            return result;
+        if (!result) {
+            result = closest(color, palette);
+            cache.set(key, result);
         }
+
+        return result;
     };
 }
 

@@ -6,7 +6,7 @@ const devMode = process.argv.includes('--dev');
 module.exports = ({ mainWindow } = {}) => {
     const { writeFile, rmSync, readdirSync } = fs;
 
-    mainWindow?.openDevTools();
+    // mainWindow?.openDevTools();
 
     const outdir = './static/bundles';
     readdirSync(outdir).forEach((f) => rmSync(`${outdir}/${f}`));
@@ -19,6 +19,7 @@ module.exports = ({ mainWindow } = {}) => {
                 'compression-worker': './app/formats/compression-worker.js',
                 'asl-worker': './app/formats/asm/asl-worker.js',
                 'p2bin-worker': './app/formats/asm/p2bin-worker.js',
+                'import-worker': './app/components/import/import-worker.js',
             },
             bundle: true,
             watch: devMode,
@@ -54,7 +55,6 @@ module.exports = ({ mainWindow } = {}) => {
             loader: {
                 '.js': 'jsx',
                 '.md': 'text',
-                '.msg': 'binary',
             },
         })
         .catch(() => {

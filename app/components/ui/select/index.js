@@ -26,9 +26,11 @@ export const Select = observer(class Select extends Component {
 
     onWheel = (e) => {
         const options = this.options();
-        const { store, accessor, flipScroll } = this.props;
-        const delta = e.deltaY > 0 ? 1 : -1;
-        const index = (delta * (flipScroll ? -1 : 1))  + options.findIndex((d) => d.value == store[accessor]);
+        const { store, accessor } = this.props;
+        // numeric selects match number inputs: scroll down decreases
+        const isNumeric = options.every((d) => typeof d.value === 'number');
+        const delta = (e.deltaY > 0 ? 1 : -1) * (isNumeric ? -1 : 1);
+        const index = delta + options.findIndex((d) => d.value == store[accessor]);
 
         if (index >= 0 && index < options.length) {
             store[accessor] = options[index].value;

@@ -11,7 +11,7 @@ export const Mapping = observer(class Mapping extends Component {
     }
 
     render() {
-        const { wrapRef, data, tileBuffer, scale = 4, ...otherProps } = this.props;
+        const { wrapRef, data, tileBuffer, lines, scale = 4, ...otherProps } = this.props;
         const { top, left, width, height, art, palette, vflip, hflip } = data;
 
         return <div
@@ -40,7 +40,7 @@ export const Mapping = observer(class Mapping extends Component {
                     return <Tile
                         key={tileIndex}
                         data={tile}
-                        paletteLine={palette}
+                        paletteLine={palette + ((lines && lines[index]) || 0)}
                         scale={scale}
                     />;
                 })}

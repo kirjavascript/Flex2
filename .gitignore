@@ -1,4 +1,5 @@
 node_modules
+dist
 flex.json
 _test
 static/bundles

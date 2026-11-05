@@ -28,6 +28,9 @@
                 width: 50px;
                 text-align: center;
             }
+            &.disabled {
+                opacity: 0.4;
+            }
         }
         .select {
             margin-top: 5px;

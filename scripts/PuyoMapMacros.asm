@@ -23,9 +23,15 @@ __LABEL__ label *
 __LABEL___Begin label *
     endm
 
-; art slot DMA'd into the sprite's VRAM window, see PuyoDPLCSlotSize
-dplcEntry macro slot
+; art slot DMA'd into the sprite's VRAM window, see PuyoDPLCSlotSize. offset
+; is the art's ROM label, which the game reads instead of the slot. the one
+; argument form is just a slot
+dplcEntry macro offset,slot
+	ifb slot
+	dc.l offset*PuyoDPLCSlotSize
+	else
 	dc.l slot*PuyoDPLCSlotSize
+	endif
 	endm
 
 spritePiece macro xpos,ypos,width,height,tile,xflip,yflip,pal,pri,lnk

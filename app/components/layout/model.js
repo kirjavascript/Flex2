@@ -1,47 +1,11 @@
 import { Model, Actions } from 'flexlayout-react';
+import { MAPPINGS_LAYOUT, SETTINGS_LAYOUT, findNode } from './nodes';
+import { migrate, saveLayout } from './migrations';
 
 window.resetLayout = () => {
     localStorage.removeItem('layout');
+    localStorage.removeItem('layout-version');
     window.location.reload();
-};
-
-const MAPPINGS_LAYOUT = {
-    type: 'tab',
-    name: 'Mappings',
-    component: 'sub',
-    config: {
-        model: {
-            global: {
-                tabSetTabLocation: 'bottom',
-                splitterSize: 6,
-                tabEnableClose: false,
-                tabEnableRename: false,
-                tabSetEnableMaximize: false,
-            },
-            borders: [],
-            layout: {
-                type: 'row',
-                children: [
-                    {
-                        type: 'tabset',
-                        weight: 50,
-                        children: [
-                            {
-                                type: 'tab',
-                                name: 'Visual',
-                                component: 'mappings-visual',
-                            },
-                            {
-                                type: 'tab',
-                                name: 'Data',
-                                component: 'mappings-raw',
-                            },
-                        ],
-                    },
-                ],
-            },
-        },
-    },
 };
 
 const DEFAULT_LAYOUT = {
@@ -86,9 +50,10 @@ const DEFAULT_LAYOUT = {
                         component: 'project',
                     },
                     MAPPINGS_LAYOUT,
+                    SETTINGS_LAYOUT,
                     {
                         type: 'tab',
-                        name: 'About',
+                        name: 'Documentation',
                         component: 'documentation',
                     },
                 ],
@@ -112,33 +77,13 @@ const savedLayout = localStorage.getItem('layout');
 
 const rawModel = savedLayout ? JSON.parse(savedLayout) : DEFAULT_LAYOUT;
 
-// migrations
-
-// 1.4.0
-const mappingsNode = findNode(
-    (child) => child.component === 'mappings',
-    rawModel.layout.children,
-);
-
-if (mappingsNode) {
-    Object.assign(mappingsNode, MAPPINGS_LAYOUT);
-}
-
-function findNode(cond, children) {
-    for (let i = 0; i < children.length; i++) {
-        const child = children[i];
-        if (cond(child)) return child;
-        if (child.children) {
-            const result = findNode(cond, child.children);
-            if (result) return result;
-        }
-    }
-}
+// the default layout is already current
+if (savedLayout) migrate(rawModel);
 
 export const model = Model.fromJson(rawModel);
 
 export function saveModel(model) {
-    localStorage.setItem('layout', JSON.stringify(model.toJson()));
+    saveLayout(model.toJson());
 }
 
 export function selectTab(name) {

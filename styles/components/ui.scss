@@ -32,7 +32,7 @@ input {
     font-family: 'Hack Bold';
     padding: 2px 5px;
     width: 159px;
-    &:placeholder {
+    &::placeholder {
         color: $white2;
     }
     &:focus {
