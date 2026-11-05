@@ -1,5 +1,7 @@
 let saveData = true;
 
+export const savingStorage = () => saveData;
+
 // no keys = save everything
 
 export function storage(obj, name, keys) {
