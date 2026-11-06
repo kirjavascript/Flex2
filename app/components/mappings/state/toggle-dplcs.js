@@ -13,9 +13,14 @@ export function toggleDPLCs() {
                 dplcIndices.push(...range(art, art + size));
             });
 
-            // update mapping art locations
+            // pieces past the loaded tiles draw whatever is already in VRAM, which
+            // only DPLCs can express, so they keep their index until re-enabled
             mappings.forEach((mapping) => {
-                mapping.art = dplcIndices[mapping.art];
+                if (mapping.art >= dplcIndices.length) {
+                    mapping.outsideDPLCs = true;
+                } else {
+                    mapping.art = dplcIndices[mapping.art];
+                }
             });
 
         });
@@ -30,6 +35,10 @@ export function toggleDPLCs() {
             let dplcIndex = 0;
 
             mappings.forEach((mapping) => {
+                if (mapping.outsideDPLCs) {
+                    delete mapping.outsideDPLCs;
+                    return;
+                }
                 const tileSize = mapping.width * mapping.height;
 
                 newDPLCs.push({
