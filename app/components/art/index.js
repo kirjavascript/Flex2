@@ -8,6 +8,24 @@ import { DimensionsComponent } from '~/util/dimensions-component';
 import { Checkbox } from '~/ui';
 import { ActiveSelection } from './active-selection';
 
+// props are all primitives or stable, so scrolling only renders tiles coming into view
+const ArtTile = observer(({ data, paletteLine, scale, x, y, bank, address, onPick, onEnter }) => (
+    <Tile
+        data={data}
+        paletteLine={paletteLine}
+        scale={scale}
+        onMouseDown={() => onPick(bank, address)}
+        onMouseEnter={() => onEnter(address)}
+        style={{
+            position: 'absolute',
+            top: y,
+            left: x,
+            width: scale * 8,
+            height: scale * 8,
+        }}
+    />
+));
+
 export const Art = observer(class Art extends DimensionsComponent {
 
     mousedown = false;
@@ -16,6 +34,16 @@ export const Art = observer(class Art extends DimensionsComponent {
 
     setTile = (index) => {
         environment.config.currentTile = index;
+    };
+
+    pickTile = (bank, address) => {
+        mappingState.newMapping.active = true;
+        environment.config.currentBank = bank;
+        this.setTile(address);
+    };
+
+    enterTile = (address) => {
+        this.mousedown && this.setTile(address);
     };
 
     render() {
@@ -115,27 +143,17 @@ export const Art = observer(class Art extends DimensionsComponent {
                             && y < scroll + height + baseSize * 2;
 
                         return shouldRender && (
-                            <Tile
+                            <ArtTile
                                 key={`${index}-${i}`}
                                 data={tile}
                                 paletteLine={bank.paletteLine || 0}
                                 scale={scale}
-                                onMouseDown={() => {
-                                    mappingState.newMapping.active = true;
-                                    config.currentBank = index;
-                                    this.setTile(bank.address + i);
-                                }}
-                                onMouseEnter={() => {
-                                    this.mousedown &&
-                                    this.setTile(bank.address + i);
-                                }}
-                                style={{
-                                    position: 'absolute',
-                                    top: y,
-                                    left: x,
-                                    width: baseSize,
-                                    height: baseSize,
-                                }}
+                                x={x}
+                                y={y}
+                                bank={index}
+                                address={bank.address + i}
+                                onPick={this.pickTile}
+                                onEnter={this.enterTile}
                             />
                         );
                     }))}

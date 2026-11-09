@@ -2,11 +2,13 @@
 
 ## [1.6.1]
 
+- Optimized tile rendering
 - Add Reuse Tiles import option: when off, each frame only shares tiles with itself, keeping its DPLCs in one run
 - Optimize DPLCs uses fewer entries by loading tiles in art order when a frame shares no data with others
 - Saving now errors when a value doesn't fit its field, instead of writing a corrupted file
 - Fix pieces using VRAM tiles pointing at art tile 0 after toggling DPLCs
 - Fix resizing the canvas resetting the pan position
+- Fix lag when scrolling the Settings tab in large windows
 
 ## [1.6.0]
 
