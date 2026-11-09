@@ -32,6 +32,7 @@ class ImportState {
     overlap = false;
     alignToArt = false;
     gridAligned = false;
+    reuseTiles = true;
     // one row of square cells, a sprite in each, lined up on the cell centre
     fixedCanvas = false;
     importWidth = 0;
@@ -183,6 +184,7 @@ class ImportState {
             overlap: observable,
             alignToArt: observable,
             gridAligned: observable,
+            reuseTiles: observable,
             fixedCanvas: observable,
             importWidth: observable,
             importHeight: observable,
@@ -229,7 +231,7 @@ class ImportState {
     }
 
     get options() {
-        return { overlap: this.overlap, align: this.alignToArt, grid: this.gridAligned };
+        return { overlap: this.overlap, align: this.alignToArt, grid: this.gridAligned, reuse: this.reuseTiles };
     }
 
     get buffer() {
@@ -239,7 +241,7 @@ class ImportState {
 
     // how many tiles are actually new once existing art is reused
     updatePlan = () => {
-        const plan = planSprite(this.buffer, this.mappings, this.paletteLine);
+        const plan = planSprite(this.buffer, this.mappings, this.paletteLine, { reuse: this.reuseTiles });
         this.newTileQty = plan.newTiles.length;
     };
 
@@ -301,7 +303,7 @@ class ImportState {
         const { mappings, paletteLine, currentSprite: { fixed, width, height } } = this;
         // the import canvas pads the sprite by 8px
         const origin = fixed ? { x: 8 + Math.floor(width / 2), y: 8 + Math.floor(height / 2) } : undefined;
-        importSprite(this.buffer, mappings, paletteLine, { select: !this.auto, origin });
+        importSprite(this.buffer, mappings, paletteLine, { select: !this.auto, origin, reuse: this.reuseTiles });
         this.next();
     };
 
@@ -329,6 +331,6 @@ class ImportState {
 
 const importState = new ImportState();
 storage(importState, 'import-state', [
-    'fuzziness', 'scale', 'fixedCanvas', 'type', 'overlap', 'gridAligned', 'alignToArt',
+    'fuzziness', 'scale', 'fixedCanvas', 'type', 'overlap', 'gridAligned', 'alignToArt', 'reuseTiles',
 ]);
 export { importState };

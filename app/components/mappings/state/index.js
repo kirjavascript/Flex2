@@ -26,9 +26,9 @@ class MappingState {
     };
 
     setWidth = (width) => {
+        // keep the pan, anchored to the centre of the canvas
+        this.x += ((width - this.baseWidth) / 2)|0;
         this.baseWidth = width;
-        this.x = (width / 2)|0;
-        this.y = 300;
     };
 
     setZoom = (newScaleRaw) => {

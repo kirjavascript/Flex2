@@ -77,10 +77,23 @@ export const ImportSprites = observer(() => {
                     </div>
 
                     <div className="input">
+                        <span>Reuse Tiles</span>
+                        <Checkbox
+                            checked={importState.reuseTiles}
+                            onChange={() => {
+                                importState.reuseTiles = !importState.reuseTiles;
+                                importState.changeType();
+                            }}
+                        />
+                    </div>
+
+                    {/* it lines frames up with tiles in the art, which frames only use with Reuse Tiles */}
+                    <div className={`input${importState.reuseTiles ? '' : ' disabled'}`}>
                         <span>Reuse More Tiles</span>
                         <Checkbox
                             checked={importState.alignToArt}
                             onChange={() => {
+                                if (!importState.reuseTiles) return;
                                 importState.alignToArt = !importState.alignToArt;
                                 importState.changeType();
                             }}

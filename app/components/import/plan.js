@@ -108,12 +108,15 @@ function mergeDPLCs(sources) {
 
 // works out which tiles and pieces a sprite needs, reusing what already exists
 // in the art. nothing is written, so the result can also be previewed.
-// pieces may carry a buffer to read from and a template whose tiles they use
-export function planFrame(scene, buffer, newMappings, paletteLine) {
+// pieces may carry a buffer to read from and a template whose tiles they use.
+// without reuse, the frame only shares tiles with itself, which keeps its DPLCs
+// in one run
+export function planFrame(scene, buffer, newMappings, paletteLine, { reuse = true } = {}) {
     const { art, nextTile, dplcsEnabled, palettes } = scene;
 
-    const index = overlay(art);
+    const index = overlay(reuse ? art : { keys: [], positions: new Map() });
     const newTiles = [];
+    const newKeys = [];
     const pieces = [];
 
     // without DPLCs the art is what is in VRAM; with them, the frame's VRAM is
@@ -125,6 +128,7 @@ export function planFrame(scene, buffer, newMappings, paletteLine) {
     const appendTile = (tile, k) => {
         const at = nextTile + newTiles.length;
         newTiles.push(tile);
+        newKeys.push(k);
         index.add(at, k);
         return at;
     };
@@ -211,6 +215,21 @@ export function planFrame(scene, buffer, newMappings, paletteLine) {
         pieces.push({ ...piece, art: start, hflip: variant.hflip, vflip: variant.vflip });
     });
 
+    // a frame that repeats an earlier one can still load that frame's tiles,
+    // as they are already in one run
+    if (!reuse && newTiles.length) {
+        const start = findRun(overlay(art), newKeys);
+        if (start !== undefined) {
+            const moved = (i) => (i >= nextTile ? i - nextTile + start : i);
+            if (dplcsEnabled) {
+                sources.forEach((source, i) => { sources[i] = moved(source); });
+            } else {
+                pieces.forEach((piece) => { piece.art = moved(piece.art); });
+            }
+            newTiles.length = 0;
+        }
+    }
+
     const dplcs = dplcsEnabled && mergeDPLCs(sources);
 
     return { newTiles, pieces, dplcs };
@@ -262,23 +281,24 @@ export function padded(values, width, height, fill = 0) {
 
 // pieces for a frame, aimed at reusing what the art already has. common: the
 // pixels it shares with other frames, as from commonPixels but padded.
-// options: overlap, align and grid, as generateMappings takes them
-export function generateFrame(scene, buffer, type, paletteLine, common, { overlap = false, align = false, grid = false } = {}) {
+// options: overlap, align and grid, as generateMappings takes them, and reuse,
+// as planFrame takes it
+export function generateFrame(scene, buffer, type, paletteLine, common, { overlap = false, align = false, grid = false, reuse = true } = {}) {
     const shared = common && { buffer: masked(buffer, common.keep), share: common.share };
     return generateMappings(buffer, type, {
-        templates: scene.templates.filter((template) => template.palette == paletteLine),
+        templates: reuse ? scene.templates.filter((template) => template.palette == paletteLine) : [],
         common: shared,
         overlap,
         align,
         grid,
         cost: (pieces) => {
-            const plan = planFrame(scene, buffer, pieces, paletteLine);
+            const plan = planFrame(scene, buffer, pieces, paletteLine, { reuse });
             let tiles = plan.newTiles.length;
             // shared pieces get reused by the rest of the group, so this
             // frame only pays its part of their tiles
             const sharedPieces = shared ? pieces.filter((p) => p.source === shared.buffer) : [];
             if (sharedPieces.length) {
-                const own = planFrame(scene, buffer, sharedPieces, paletteLine).newTiles.length;
+                const own = planFrame(scene, buffer, sharedPieces, paletteLine, { reuse }).newTiles.length;
                 tiles -= own * (1 - 1 / shared.share);
             }
             // fewer DPLC entries only breaks ties between equal tile counts

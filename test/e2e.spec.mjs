@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { resolve, join } from 'path';
-import { readFileSync, writeFileSync, mkdtempSync, rmSync } from 'fs';
+import { readFileSync, writeFileSync, mkdtempSync, rmSync, existsSync } from 'fs';
 import { tmpdir } from 'os';
 import {
     FIXTURES, launchApp, closeApp, clearEnvironment, setFileObject, clickLoad,
@@ -1132,6 +1132,37 @@ test.describe('DPLC entry limits', () => {
             }
         });
     }
+
+    test('a value too wide for its field is an error on save, not a shifted file', async () => {
+        const tmp = mkdtempSync(join(tmpdir(), 'flex2-test-'));
+        const sonic2 = {
+            format: 'Sonic 2.js',
+            mappingsPath: resolve(FIXTURES, 's2/maps/Sonic.asm'),
+            dplcsPath: resolve(FIXTURES, 's2/dplc/Sonic.asm'),
+        };
+        try {
+            await setFileObject(page, sonic2);
+            await clickLoad(page, 'Object');
+            await waitForDplcs(page);
+            const index = await page.evaluate(() => {
+                const { dplcs } = window.__test__.environment;
+                const index = dplcs.findIndex((entries) => entries.length);
+                // DPLC art is 12 bits in Sonic 2
+                dplcs[index][0].art = 0x1000;
+                return index;
+            });
+
+            await setFileObject(page, { ...sonic2, mappingsPath: join(tmp, 'map.bin'), dplcsPath: join(tmp, 'dplc.bin') });
+            await clickSave(page, 'Object');
+            const sprite = index.toString(16).toUpperCase();
+            expect(await getErrors(page)).toEqual([
+                `Error: Sprite 0x${sprite} has a value of 4096, which doesn't fit in the 12 bits this format gives it`,
+            ]);
+            expect(existsSync(join(tmp, 'dplc.bin'))).toBe(false);
+        } finally {
+            rmSync(tmp, { recursive: true, force: true });
+        }
+    });
 });
 
 test.describe('Settings tab', () => {
@@ -1847,6 +1878,32 @@ test.describe('Import spritesheet', () => {
             });
         }
     }
+
+    test('Reuse More Tiles is greyed out and ignored while Reuse Tiles is off', async () => {
+        const tmp = mkdtempSync(join(tmpdir(), 'flex2-test-'));
+        try {
+            await clearEnvironment(page);
+            const path = join(tmp, 'sheet.png');
+            await writeSheet(page, path);
+            await importSheet(page, path, 'mappings', { importAll: false });
+            const row = page.locator('.importer .input', { hasText: 'Reuse More Tiles' });
+            const share = page.locator('.importer .input', { has: page.locator('span', { hasText: /^Reuse Tiles$/ }) });
+            const alignToArt = () => page.evaluate(() => window.__test__.importState.alignToArt);
+
+            await expect(row).not.toHaveClass(/disabled/);
+            await share.locator('.checkbox').click();
+            await expect(row).toHaveClass(/disabled/);
+            const before = await alignToArt();
+            await row.locator('.checkbox').click();
+            expect(await alignToArt()).toBe(before);
+
+            await share.locator('.checkbox').click();
+            await expect(row).not.toHaveClass(/disabled/);
+        } finally {
+            await page.evaluate(() => window.__test__.importState.cancel());
+            rmSync(tmp, { recursive: true, force: true });
+        }
+    });
 
     test('Fixed Canvas splits the sheet into square cells and lines frames up on their centres', async () => {
         const tmp = mkdtempSync(join(tmpdir(), 'flex2-test-'));

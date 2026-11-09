@@ -251,6 +251,17 @@ export default catchFunc((obj) => {
         return num;
     };
 
+    // a value wider than its field would push every bit after it along,
+    // corrupting the rest of the file
+    const fit = (size, data, spriteIndex) => {
+        const value = unsign(size, +data);
+        if (!Number.isInteger(value) || +data < -(2 ** (size - 1)) || value >= 2 ** size) {
+            const sprite = spriteIndex.toString(16).toUpperCase();
+            throw new Error(`Sprite 0x${sprite} has a value of ${data}, which doesn't fit in the ${size} bits this format gives it`);
+        }
+        return value;
+    };
+
     const createWriter = (sectionList = []) => catchFunc((mappings, spriteMetadata, environment) => {
         // mapping output format is [type, size, data]
 
@@ -266,7 +277,7 @@ export default catchFunc((obj) => {
                 const ref = { global };
                 const mappings = []
                 setWrite((size, data, type = binary) => {
-                    mappings.push([[type, size, unsign(size, +data)]]);
+                    mappings.push([[type, size, fit(size, data, spriteIndex)]]);
                 });
                 const writeMapping = writeFrame({ sprite, ref, environment }, spriteIndex);
 
@@ -277,7 +288,7 @@ export default catchFunc((obj) => {
                         const mapping = { ...sprite[frameIndex], metadata: sprite[frameIndex].metadata || {} };
                         const frame = [];
                         setWrite((size, data, type = binary) => {
-                            frame.push([type, size, unsign(size, +data)]);
+                            frame.push([type, size, fit(size, data, spriteIndex)]);
                         });
                         const param = {
                             mapping,

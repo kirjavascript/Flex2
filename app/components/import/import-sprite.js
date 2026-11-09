@@ -53,8 +53,8 @@ export function getScene({ templates = true } = {}) {
     };
 }
 
-export function planSprite(buffer, newMappings, paletteLine) {
-    return planFrame(getScene({ templates: false }), buffer, newMappings, paletteLine);
+export function planSprite(buffer, newMappings, paletteLine, { reuse = true } = {}) {
+    return planFrame(getScene({ templates: false }), buffer, newMappings, paletteLine, { reuse });
 }
 
 // every distinct piece already in the art, as drawn, for new frames to reuse
@@ -124,10 +124,10 @@ function frameMappings(plan, origin) {
 }
 
 // select: make it the current sprite, which scrolls the sprite list to it.
-// Import All leaves that to the end. origin: see frameMappings
-export function importSprite(buffer, newMappings, paletteLine, { select = true, origin } = {}) {
+// Import All leaves that to the end. origin: see frameMappings. reuse: see planFrame
+export function importSprite(buffer, newMappings, paletteLine, { select = true, origin, reuse = true } = {}) {
     const { mappings, dplcs, spriteMetadata, config: { dplcsEnabled } } = environment;
-    const plan = planSprite(buffer, newMappings, paletteLine);
+    const plan = planSprite(buffer, newMappings, paletteLine, { reuse });
     const fillMetadata = prepareMetadataFill();
 
     if (plan.newTiles.length) environment.appendTiles(plan.newTiles);

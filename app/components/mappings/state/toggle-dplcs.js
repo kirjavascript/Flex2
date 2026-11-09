@@ -1,5 +1,5 @@
 import { environment } from '~/store/environment';
-import { optimizeDPLCs } from './optimize-dplcs';
+import { optimizeAllDPLCs } from './optimize-dplcs';
 import range from 'lodash/range';
 
 export function toggleDPLCs() {
@@ -57,10 +57,6 @@ export function toggleDPLCs() {
         environment.dplcs.replace(newDPLCList);
         environment.config.dplcsEnabled = true;
 
-        // optimize & dedupe
-        const { mappings, dplcs } = environment;
-        for (let i = 0; i < mappings.length; i++) {
-            optimizeDPLCs(mappings[i], dplcs[i]);
-        }
+        optimizeAllDPLCs();
     }
 }
