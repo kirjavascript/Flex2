@@ -48,10 +48,12 @@ import { drawingTools } from '~/components/mappings/drawing-tools';
 import { commands, getCommandLabel } from '~/controls/commands';
 import { inputState } from '~/controls/distance';
 import { prepareMetadataFill } from '~/components/mappings/state/fill-metadata';
+import { compress, decompress } from '~/formats/compression';
 window.__test__ = {
     environment, workspace, mappingState, toJS, exportSprite, spritesheetCanvas, keymap,
     importState, importSprite, generateSpriteMappings, commonPixels, padded,
     generateMappings, generateInWorker,
     createObjectIO, scripts, runScript, undo, redo, setDrawing, createDrawingSurface,
     drawingTools, commands, getCommandLabel, inputState, prepareMetadataFill,
+    compress, decompress,
 };

@@ -1,3 +1,5 @@
+import * as nlz from './nlz';
+
 const ready = new Promise(resolve => {
     self.Module = {
         locateFile: url => `../wasm/${url}`,
@@ -9,6 +11,25 @@ importScripts('../wasm/mdcomp_portable.js');
 
 class InvalidData extends Error {
     message = 'invalid data';
+}
+
+const NLZ_MODULE_CONFIG = 3; // 0x800 byte modules
+
+const js = {
+    _nlz_decode: data => nlz.decompress(data),
+    _nlz_encode: data => nlz.compress(data, 0),
+    _moduled_nlz_decode: data => nlz.decompress(data),
+    _moduled_nlz_encode: data => nlz.compress(data, NLZ_MODULE_CONFIG),
+};
+
+function runJS(func, data) {
+    try {
+        return js[func](data);
+    } catch (e) {
+        const error = new InvalidData();
+        error.message = e.message;
+        throw error;
+    }
 }
 
 async function mdcomp(func, data) {
@@ -46,7 +67,7 @@ async function mdcomp(func, data) {
 
 self.addEventListener('message', async ({ data: { id, func, data } }) => {
     try {
-        const result = await mdcomp(func, data);
+        const result = js[func] ? runJS(func, data) : await mdcomp(func, data);
         self.postMessage({ id, result }, [result.buffer]);
     } catch (e) {
         // anything else is likely a wasm trap, after which the module is unusable

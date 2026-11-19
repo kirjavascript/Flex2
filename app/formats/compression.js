@@ -8,6 +8,8 @@ export const compressionFormats = {
     'Comper': 'comper',
     'ComperX': 'comperx',
     'ComperX-M': 'moduled_comperx',
+    'NLZ': 'nlz',
+    'NLZ-M': 'moduled_nlz',
     'Enigma': 'enigma',
     'ArtC42': 'artc42',
     'LZKN1': 'lzkn1',

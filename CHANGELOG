@@ -2,6 +2,7 @@
 
 ## [1.6.1]
 
+- Add NLZ / NLZ-M compression
 - Optimized tile rendering
 - Add Reuse Tiles import option: when off, each frame only shares tiles with itself, keeping its DPLCs in one run
 - Optimize DPLCs uses fewer entries by loading tiles in art order when a frame shares no data with others

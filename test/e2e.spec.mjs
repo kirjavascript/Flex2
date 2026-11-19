@@ -1659,6 +1659,40 @@ test.describe('Compression', () => {
         expect(errors).toContain('Kosinski-M decode failed');
         await expectWorkerStillWorks();
     });
+
+    for (const compression of ['NLZ', 'NLZ-M']) {
+        test(`${compression}: compressed art loads the same tiles`, async () => {
+            const art = readFileSync(resolve(FIXTURES, 's1/art/Sonic.bin'));
+            const result = await page.evaluate(async ([data, compression]) => {
+                const { compress, decompress } = window.__test__;
+                const packed = await compress(new Uint8Array(data), compression);
+                const unpacked = await decompress(packed, compression);
+                return { packed: [...packed], unpacked: [...unpacked] };
+            }, [[...art], compression]);
+            expect(result.packed.length).toBeLessThan(art.length);
+            expect(result.unpacked).toEqual([...art]);
+
+            const tmp = mkdtempSync(join(tmpdir(), 'flex2-test-'));
+            try {
+                writeFileSync(join(tmp, 'Sonic.nlz'), Buffer.from(result.packed));
+                await setFileObject(page, { format: 'Sonic 1.js', artPath: join(tmp, 'Sonic.nlz'), artCompression: compression });
+                await clearEnvironment(page);
+                await clickLoad(page, 'Art');
+                await waitForTiles(page);
+                expect(await getErrors(page)).toHaveLength(0);
+                const tiles = await page.evaluate(() => window.__test__.environment.tiles.length);
+                expect(tiles).toBe(art.length / 32);
+            } finally {
+                rmSync(tmp, { recursive: true, force: true });
+            }
+        });
+    }
+
+    test('art with the wrong compression as NLZ reports an error', async () => {
+        const errors = await loadArtExpectingError(resolve(FIXTURES, 's1/art/Rings.nem'), 'NLZ');
+        expect(errors).toContain('NLZ decode failed');
+        await expectWorkerStillWorks();
+    });
 });
 
 test.describe('Project paths', () => {
